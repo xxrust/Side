@@ -2,7 +2,7 @@ import {nodeDocumentation} from './node-documentation.js';
 import {renderChatMarkdown} from './chat-markdown.js';
 import './node-documentation-view.css';
 import {invoke,isTauri} from '@tauri-apps/api/core';
-import {documentationVisual,buildNodeDocumentationPage} from './node-documentation-page.js';
+import {documentationVisual,buildNodeDocumentationPage,buildNodeAnimationPage} from './node-documentation-page.js';
 
 export function renderNodeDocumentation(node){
  const record=nodeDocumentation(node),body=documentElement('article','node-document');
@@ -21,9 +21,10 @@ export function renderNodeDocumentation(node){
 }
 export function nodeDocumentationActions(node){
  const toolbar=documentElement('div','node-document-actions'),feedback=documentElement('span','node-document-feedback');feedback.setAttribute('role','status');
- for(const [label,mode]of [['在瀏覽器開啟','open'],['匯出 HTML','save'],['列印／另存 PDF','print']]){
+ const actions=[...(/\bdata-node-animation(?:\s|=|>)/.test(nodeDocumentation(node).text)?[['動畫模式','animate']]:[]),['在瀏覽器開啟','open'],['匯出 HTML','save'],['列印／另存 PDF','print']];
+ for(const [label,mode]of actions){
   const button=documentElement('button','');button.type='button';button.textContent=label;
-  button.onclick=async()=>{button.disabled=true;try{const html=buildNodeDocumentationPage(node,{printOnLoad:mode==='print'});if(isTauri()){await invoke(mode==='save'?'save_node_article':'open_node_article',{document:html,...(mode==='save'?{}:{print:mode==='print'})});feedback.textContent=mode==='print'?'已開啟瀏覽器列印；在目的地選擇另存 PDF。':mode==='save'?'':'已在瀏覽器開啟。';}else{const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));if(mode==='save'){const a=document.createElement('a');a.href=url;a.download='node-article.html';a.click();}else window.open(url,'_blank','noopener');setTimeout(()=>URL.revokeObjectURL(url),60000);}}catch(error){feedback.textContent=error.message||String(error);}finally{button.disabled=false;}};
+  button.onclick=async()=>{button.disabled=true;try{const html=mode==='animate'?buildNodeAnimationPage(node):buildNodeDocumentationPage(node,{printOnLoad:mode==='print'});if(isTauri()){await invoke(mode==='save'?'save_node_article':'open_node_article',{document:html,...(mode==='save'?{}:{print:mode==='print'})});feedback.textContent=mode==='print'?'已開啟瀏覽器列印；在目的地選擇另存 PDF。':mode==='save'?'':'已在瀏覽器開啟。';}else{const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));if(mode==='save'){const a=document.createElement('a');a.href=url;a.download='node-article.html';a.click();}else window.open(url,'_blank','noopener');setTimeout(()=>URL.revokeObjectURL(url),60000);}}catch(error){feedback.textContent=error.message||String(error);}finally{button.disabled=false;}};
   toolbar.append(button);
  }
  toolbar.append(feedback);return toolbar;

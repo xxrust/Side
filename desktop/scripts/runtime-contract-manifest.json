@@ -113,7 +113,7 @@
     },
     {
       "path": "agent-packages/agentcv-cv/skills/cv/references/node-documentation-example.md",
-      "sha256": "3e56dfde5308da9e5c10240cdb4f8e9bdb6b27d14761be7b5ae308bf6e091603"
+      "sha256": "8c1d84903b3cbbfa0d83ff6e53f02cf01e78d9f78d5fd922197bc781f3cf58e5"
     },
     {
       "path": "agent-packages/agentcv-cv/skills/cv/references/project-acceptance.md",
@@ -133,7 +133,7 @@
     },
     {
       "path": "agent-packages/agentcv-cv/skills/cv/references/visual-explanations.md",
-      "sha256": "3f769a79cfe221023e00ac8bc3b7bfb13e96790809d7187fba318d7d76c06c87"
+      "sha256": "c595a22ec8954722f59bd59916dcadd479395685c027fc17f9a1c73306c68ff1"
     },
     {
       "path": "agent-packages/agentcv-cv/skills/cv/SKILL.md",

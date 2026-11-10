@@ -26,3 +26,12 @@ export function buildNodeDocumentationPage(node,{document:doc=globalThis.documen
  const title=doc.createElement('title');title.textContent=(node.title||'節點')+' · 節點文章';
  return `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; frame-src 'self' about:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">${title.outerHTML}<style>${articleStyles}</style></head><body><nav class="reading-toolbar"><strong>AgentCV · 節點文章</strong><button id="print-article">列印／另存 PDF</button><span class="print-note">PDF 保留圖解的列印當下狀態；互動請使用 HTML。</span></nav>${main.outerHTML}<script>document.getElementById('print-article').onclick=()=>window.print();${printOnLoad?"window.addEventListener('load',()=>setTimeout(()=>window.print(),300));":''}</script></body></html>`;
 }
+
+/** Open an authored demonstration as a single viewport, using the same sandbox
+ * document builder as inline figures. Do not insert its markup into the host. */
+export function buildNodeAnimationPage(node,{document:doc=globalThis.document}={}){
+ let animation=null;
+ renderChatMarkdown(nodeDocumentation(node).text,{document:doc,renderVisual:metadata=>{if(!animation&&/\bdata-node-animation(?:\s|=|>)/.test(metadata.source))animation=metadata;return doc.createElement('span');}});
+ if(!animation)throw Error('此節點尚未編寫動畫示範');
+ return buildArtifactDocument(animation.source,{document:doc,title:(node.title||'節點')+' · 動畫示範',theme:'light'});
+}

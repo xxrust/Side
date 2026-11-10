@@ -34,11 +34,17 @@
 .flow-source-panel>.flow-source-pair{overflow:hidden;align-content:stretch;margin:8px 0;gap:12px}
 .flow-source-panel .flow-source-original,.flow-source-panel .source-decision{display:flex;flex-direction:column;min-height:0;gap:5px}
 .flow-source-panel .flow-source-original>h3,.flow-source-panel .source-decision-heading{height:24px;min-height:24px;margin:0;display:flex;align-items:center;gap:10px}
-.flow-source-panel .flow-source-original>img{flex:1;min-height:0;height:0;max-height:none;object-fit:contain}
+.flow-source-panel .flow-source-original>.image-renderer{flex:1;min-height:0;height:0;border:0;border-radius:0}
+.flow-source-panel .flow-source-original>.image-renderer .image-renderer-viewport{min-height:0}
+.flow-source-panel .flow-source-original>.image-renderer .image-renderer-viewport>img{width:auto;max-width:none;height:auto;max-height:none;object-fit:initial}
+.flow-source-panel .flow-source-original>.image-renderer .image-renderer-controls{top:6px;left:6px}
 .flow-source-panel .flow-source-original>figcaption:empty{display:none}
 .flow-source-panel .source-decision-body{display:flex;flex:1;min-height:0}
 .flow-source-panel .source-decision figure{flex:1;min-height:0;height:auto;display:flex;margin:0}
-.flow-source-panel .source-decision figure img{height:0;flex:1;min-height:0;max-height:none;object-fit:contain}
+.flow-source-panel .source-decision figure>.image-renderer{height:0;flex:1;min-height:0;border:0;border-radius:0}
+.flow-source-panel .source-decision figure>.image-renderer .image-renderer-viewport{min-height:0}
+.flow-source-panel .source-decision figure>.image-renderer .image-renderer-viewport>img{width:auto;max-width:none;height:auto;max-height:none;object-fit:initial}
+.flow-source-panel .source-decision figure>.image-renderer .image-renderer-controls{top:6px;left:6px}
 .flow-source-panel .source-decision-empty{flex:1;height:auto;width:100%;margin:0}
 .source-decision-heading h3{margin:0;white-space:nowrap}.source-decision-heading>.source-decision-status{font-size:13px;color:#a4edc4}.source-decision-heading>.source-decision-status[data-quality=bad]{color:#ffc575}
 .source-decision-controls{display:flex;align-items:center;gap:4px;min-width:0;overflow-x:auto;margin-left:auto}.source-decision-controls button{padding:2px 6px;font-size:11px;white-space:nowrap}

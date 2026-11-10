@@ -276,11 +276,11 @@ export class PipelineView{
  toggleMaximize(){const area=this.root?.querySelector('.pipeline-board')||this.container;area?.classList.toggle('is-maximized');this.root?.querySelector('.pipeline-maximize')?.replaceChildren(document.createTextNode(area?.classList.contains('is-maximized')?'恢復大小':'最大化'));requestAnimationFrame(()=>this.paint())}
  changeZoom(factor){this.zoom=Math.max(1,Math.min(20,this.zoom*factor));if(this.zoom===1)this.pan={x:0,y:0};this.paint()}
  bindCanvas(canvas){
-  canvas.addEventListener('wheel',e=>{e.preventDefault();if(e.shiftKey){this.rotate(e.deltaY>0?-5:5);return}this.changeZoom(e.deltaY<0?1.15:1/1.15)},{passive:false});
+  canvas.addEventListener('wheel',e=>{e.preventDefault();this.changeZoom(e.deltaY<0?1.15:1/1.15)},{passive:false});
   canvas.ondblclick=()=>{this.zoom=1;this.pan={x:0,y:0};this.rotation=0;this.paint()};let drag;
   canvas.onpointerdown=e=>{drag={x:e.clientX,y:e.clientY,pan:{...this.pan}};canvas.setPointerCapture?.(e.pointerId)};
   canvas.onpointermove=e=>{if(!drag)return;this.pan={x:drag.pan.x+e.clientX-drag.x,y:drag.pan.y+e.clientY-drag.y};this.paint()};canvas.onpointerup=canvas.onpointercancel=()=>drag=null;
-  canvas.onkeydown=e=>{if(e.key==='+'||e.key==='=')this.changeZoom(1.2);else if(e.key==='-')this.changeZoom(1/1.2);else if(e.key==='0'){this.zoom=1;this.pan={x:0,y:0};this.rotation=0;this.paint()}else if(e.key.toLowerCase()==='r'){this.rotate(e.shiftKey?-90:90)}else return;e.preventDefault()};
+  canvas.onkeydown=e=>{if(e.key==='+'||e.key==='=')this.changeZoom(1.2);else if(e.key==='-')this.changeZoom(1/1.2);else if(e.key==='0'){this.zoom=1;this.pan={x:0,y:0};this.rotation=0;this.paint()}else return;e.preventDefault()};
  }
  canvasContext(canvas){const rect=canvas.getBoundingClientRect(),width=rect.width||640,height=rect.height||360,dpr=window.devicePixelRatio||1;canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);const ctx=canvas.getContext('2d');if(!ctx)return null;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#0c151b';ctx.fillRect(0,0,width,height);return {ctx,width,height}}
  paint(){if(!this.container||!this.model?.plan)return;for(const item of this.canvases||[])this.paintPane(item.canvas,item.type,this.model);if(this.curveCanvas)this.paintCurves(this.curveCanvas,this.nodeCurves(this.model));for(const item of this.thumbnailCanvases||[]){const node=item.node,output=this.model.result?.nodes?.find(n=>n.id===node.id);this.paintPane(item.canvas,item.original?'original':'result',{...this.model,selected:node,output,kind:method(node.op)},{thumbnail:true})}}

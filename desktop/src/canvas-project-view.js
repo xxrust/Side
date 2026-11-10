@@ -10,6 +10,7 @@ import {classificationSummary} from './canvas-inspection-cards.js';
 import {classificationDecisionModel} from './classification-flow-contract.js';
 import {schemeFingerprint} from './purpose-compiler.js';
 import {iconButton,iconLabelButton} from './ui-icons.js';
+import {ImageRenderer} from './image-renderer.js';
 import './canvas-project-view.css';
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=String(text);if(cls)node.className=cls;return node};
 const number=(value,fallback)=>Number.isFinite(value)?value:fallback;
@@ -191,14 +192,14 @@ export class CanvasProjectView{
  sourcePreview(source,image){
   const identity=JSON.stringify(this.view.project.imageIdentity?.(image.id)||{id:image.id,sha256:image.sha256}),cached=this.sourcePreviews.get(source.id);
   if(cached?.identity===identity)return cached.preview;
-  const preview=el('button',undefined,'canvas-project-preview'),img=el('img'),status=el('span','載入中…','canvas-source-preview-status');preview.type='button';preview.setAttribute('aria-busy','true');img.alt=image.name;img.style.visibility='hidden';preview.append(img,status);this.sourcePreviews.set(source.id,{identity,preview});this.loadPreview(img,image.id,preview,status);return preview;
+  const preview=el('div',undefined,'canvas-project-preview'),renderer=new ImageRenderer({label:'圖像源預覽'}),img=renderer.image,status=el('span','載入中…','canvas-source-preview-status');preview.setAttribute('role','button');preview.tabIndex=0;preview.setAttribute('aria-busy','true');img.alt=image.name;img.style.visibility='hidden';renderer.root.addEventListener('pointerdown',event=>event.stopPropagation());renderer.root.addEventListener('click',event=>event.stopPropagation());preview.append(renderer.root,status);this.sourcePreviews.set(source.id,{identity,preview,renderer});this.loadPreview(img,image.id,preview,status,renderer);return preview;
  }
- async loadPreview(img,imageId,preview,status){
+ async loadPreview(img,imageId,preview,status,renderer){
   try{const thumbnail=this.view.project.readImageThumbnail?await this.view.project.readImageThumbnail(imageId,{maxDimension:512}):null,dataURL=thumbnail?.dataURL||(this.view.project.readImageAsset?await this.view.project.readImageAsset(imageId):this.view.project.data.images.find(i=>i.id===imageId)?.dataURL);if(!dataURL)throw Error('來源沒有圖片內容');if(thumbnail){img.dataset.pixelRole='thumbnail';img.title='來源縮圖；加入畫板時使用完整原圖，不以縮圖量測。';}
    // Never expose an empty/broken <img>: browsers paint its alt filename before
    // a cold thumbnail is available. Keep the decoded element across redraws.
    if(typeof img.decode==='function'){img.src=dataURL;await img.decode();}else await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('圖片解碼失敗'));img.src=dataURL;});
-   img.style.visibility='visible';status.remove();preview.setAttribute('aria-busy','false');
+   const record=this.view.project.imageRecord(imageId);renderer?.setSource({src:dataURL,width:record?.width||img.naturalWidth,height:record?.height||img.naturalHeight,alt:record?.name||img.alt});img.style.visibility='visible';status.remove();preview.setAttribute('aria-busy','false');
   }catch(error){status.textContent='無法讀取圖片';status.title=error.message;status.setAttribute('role','alert');preview.setAttribute('aria-busy','false');}
  }
 

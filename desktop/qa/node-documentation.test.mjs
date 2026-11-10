@@ -14,7 +14,7 @@ import {buildProgramFlow} from '../src/program-flow.js';
 import {setNodeDocumentation,nodeDocumentation} from '../src/node-documentation.js';
 import {agentTools} from '../src/agent-contract.js';
 import {createPipelinePlan} from '../src/pipeline-registry.js';
-import {buildNodeDocumentationPage} from '../src/node-documentation-page.js';
+import {buildNodeDocumentationPage,buildNodeAnimationPage} from '../src/node-documentation-page.js';
 import {validatePipelineEvidenceProposal} from '../src/pipeline-evidence-contract.js';
 
 const require=createRequire(import.meta.url),{createCanvas}=require('../../qa/node_modules/@napi-rs/canvas');
@@ -84,13 +84,13 @@ test('illustrated node article uses isolated diagrams and its controls update th
   h.api.project.data.purposeScheme=h.w.JSON.parse(JSON.stringify(scheme));await h.api.go(6);await h.tick();
   const view=h.api.inquiryView;view.outputView.focus('measure');view.render();view.programFlow.openEvidence('scheme::measure');
   const panel=h.w.document.querySelector('.node-document-panel'),frames=panel.querySelectorAll('iframe');
-  assert.equal(frames.length,6);assert.equal(panel.querySelectorAll('script,img').length,0,'visual source must not enter the host document');
+  assert.equal(frames.length,2);assert.equal(panel.querySelectorAll('script,img').length,0,'visual source must not enter the host document');
   assert.equal(panel.querySelectorAll('table').length,1,'tables remain in the reading flow');
   assert.ok([...frames].every(frame=>frame.getAttribute('sandbox')==='allow-scripts'));
   const exported=buildNodeDocumentationPage(scheme.operatorGraph.nodes[0],{document:h.w.document});
   assert.match(exported,/@media print/);assert.match(exported,/window.print/);
   const exportedDOM=new h.w.DOMParser().parseFromString(exported,'text/html');
-  assert.equal(exportedDOM.querySelectorAll('main iframe').length,6);
+  assert.equal(exportedDOM.querySelectorAll('main iframe').length,2);
   assert.equal(exportedDOM.querySelectorAll('main table').length,1);
   assert.equal(exportedDOM.querySelectorAll('main script').length,0);
 
@@ -103,16 +103,29 @@ test('illustrated node article uses isolated diagrams and its controls update th
    assert.match(doc.getElementById('reading').textContent,/-40.0 px/);
    doc.getElementById('reset').click();assert.match(doc.getElementById('reading').textContent,/25.0 px/);
   }finally{demo.window.close();}
-  const source=frames[0].srcdoc;
-  const evidence=new JSDOM(source,{runScripts:'dangerously'});
+  assert.ok([...panel.querySelectorAll('button')].some(b=>b.textContent==='動畫模式'));
+  const source=buildNodeAnimationPage(scheme.operatorGraph.nodes[0],{document:h.w.document});
+  let scheduled=null,time=0;
+  const evidence=new JSDOM(source,{runScripts:'dangerously',pretendToBeVisual:true,beforeParse(win){win.requestAnimationFrame=fn=>{scheduled=fn;return 1};win.cancelAnimationFrame=()=>{scheduled=null};}});
   try{
-   const doc=evidence.window.document;assert.ok(doc.querySelector('svg image').getAttribute('href').startsWith('data:image/jpeg;base64,'));
-   assert.equal(doc.querySelectorAll('svg image').length,2);assert.ok(doc.querySelectorAll('#supports circle').length>=100);
-   const check=doc.getElementById('show-estimate');check.checked=false;check.dispatchEvent(new evidence.window.Event('change'));
-   assert.equal(doc.getElementById('estimates').style.display,'none');
-   assert.ok(doc.querySelectorAll('#estimates polyline').length>=2);
-   const scan=doc.getElementById('show-scan');scan.checked=false;scan.dispatchEvent(new evidence.window.Event('change'));assert.equal(doc.getElementById('scans').style.display,'none');
-   assert.equal(doc.querySelectorAll('#scans polygon').length,8);
+   const doc=evidence.window.document,root=doc.getElementById('demo'),stats=()=>[...doc.querySelectorAll('.stats')],click=selector=>doc.querySelector(selector).click();
+   assert.equal(doc.querySelectorAll('svg image').length,2);
+   assert.ok([...doc.querySelectorAll('svg image')].every(n=>n.getAttribute('href').startsWith('data:image/jpeg;base64,')));
+   assert.equal(root.dataset.side,'1');assert.equal(root.dataset.phase,'3');
+   assert.match(stats()[1].textContent,/844/);assert.match(stats()[1].textContent,/885/);
+   click('button[data-side="0"]');
+   const progress=doc.getElementById('progress');progress.value=70;progress.dispatchEvent(new evidence.window.Event('input'));
+   assert.equal(root.dataset.phase,'1');assert.ok(stats().every(n=>n.dataset.sample==='70'&&n.dataset.side==='0'));
+   assert.match(stats()[0].textContent,/y=262 px/);assert.match(stats()[1].textContent,/y=298 px/);
+   const probe=doc.querySelector('#normal .probe').getAttribute('y1');
+   progress.value=90;progress.dispatchEvent(new evidence.window.Event('input'));assert.notEqual(doc.querySelector('#normal .probe').getAttribute('y1'),probe);
+   click('#next');assert.equal(root.dataset.phase,'2');click('#next');assert.equal(root.dataset.phase,'3');click('#next');assert.equal(root.dataset.phase,'4');assert.match(stats()[1].textContent,/細化後 lid/);
+   click('#restart');assert.equal(root.dataset.side,'0');assert.equal(root.dataset.phase,'0');assert.ok(scheduled);
+   const step=()=>{const fn=scheduled;scheduled=null;time+=100;fn(time)};
+   for(let i=0;i<21;i++)step();assert.equal(root.dataset.phase,'1');
+   for(let i=0;i<10;i++)step();assert.ok(+root.dataset.sample>0);assert.ok(stats().every(n=>n.dataset.sample===root.dataset.sample));
+   click('#play');assert.equal(scheduled,null);assert.equal(doc.getElementById('play').getAttribute('aria-pressed'),'false');
+   click('button[data-side="3"]');assert.equal(root.dataset.side,'3');click('#previous');assert.equal(root.dataset.phase,'0');
   }finally{evidence.window.close();}
  }finally{h.close();}
 });

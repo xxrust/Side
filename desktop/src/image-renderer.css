@@ -1,0 +1,10 @@
+.image-renderer{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0;flex:1;background:#0b151b;border:1px solid #3b5964;border-radius:8px;overflow:hidden}
+.image-renderer-viewport{position:relative;flex:1;min-height:80px;overflow:hidden;background:#091219;touch-action:none;cursor:grab;outline:none}
+.image-renderer-viewport.is-panning{cursor:grabbing}
+.image-renderer-viewport>img{position:absolute;display:block;max-width:none;max-height:none;object-fit:contain;image-rendering:pixelated;pointer-events:none;user-select:none}
+.image-renderer-controls{position:absolute;z-index:3;left:8px;top:8px;display:flex;align-items:center;gap:3px;padding:4px;background:#101d24df;border:1px solid #52706f;border-radius:7px}
+.image-renderer-controls button{min-width:28px;height:27px;padding:3px 7px;font-size:11px}
+.image-renderer-controls .icon-button{width:28px;padding:4px}
+.image-renderer-zoom{min-width:42px;text-align:center;font-size:10px;color:#d7eee2;font-variant-numeric:tabular-nums}
+.image-renderer.is-maximized{position:fixed;inset:0;width:auto!important;height:auto!important;min-height:0;flex:none!important;z-index:220;box-shadow:0 18px 70px #000c}
+dialog.image-renderer-dialog-maximized{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important}
