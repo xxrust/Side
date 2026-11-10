@@ -203,6 +203,11 @@ fn agent_command(app: &tauri::AppHandle, script: &str) -> Result<Command, String
         else if resources.join("agent-packages").is_dir(){resources.join("agent-packages")}
         else {return Err("應用內缺少 Agent 套件資源，請重新打包".into())};
     let mut command=Command::new(node);
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        command.creation_flags(0x08000000); // Background Agent services must not steal keyboard focus.
+    }
     command.arg(scripts.join(script)).env("AGENTCV_AGENT_CONFIG",data.join("agent-profile.json"))
         .env("AGENTCV_RESOURCE_DIR",package_root).env("AGENTCV_TOOL_CONTRACT",scripts.join("agent-contract.json"))
         .env("AGENTCV_DEFAULT_ADAPTER","codex")
@@ -337,6 +342,17 @@ fn main() {
             };
             std::fs::create_dir_all(&runtime)?;
             std::env::set_var("AGENTCV_RUNTIME_ROOT", &runtime);
+            // Windows file associations and the versioned launcher supply the
+            // document on the command line (there is no RunEvent::Opened).
+            #[cfg(windows)]
+            for argument in std::env::args_os().skip(1) {
+                let path = PathBuf::from(argument);
+                let project = path.extension().is_some_and(|ext| ext.eq_ignore_ascii_case("agentcv"))
+                    || path.file_name().is_some_and(|name| name == "manifest.agentcv.json");
+                if project && path.is_absolute() && path.exists() {
+                    app.state::<project_documents::PendingDocuments>().push(path);
+                }
+            }
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

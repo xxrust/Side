@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 import hashlib
 import importlib
 import importlib.metadata
+import importlib.util
 import io
 import json
 import math
@@ -132,12 +133,17 @@ def validate_structured_layers(layers, image_records, trace, existing_ids=()):
     return normalized
 
 
-def probe():
+def probe(import_optional=True):
     modules = {}
     for name in ("numpy", "PIL", "cv2", "scipy", "skimage", "matplotlib", "torch"):
+        # Routine execution must not import unused frameworks just to describe
+        # the environment. Explicit --probe retains full import validation.
+        if not import_optional and name not in ("numpy", "PIL", "cv2"):
+            modules[name] = {"importChecked": False, "discoverable": importlib.util.find_spec(name) is not None}
+            continue
         try:
             module = importlib.import_module(name)
-            modules[name] = {"available": True, "version": str(getattr(module, "__version__", "unknown"))}
+            modules[name] = {"available": True, "importChecked": True, "version": str(getattr(module, "__version__", "unknown"))}
         except Exception as error:
             modules[name] = {"available": False, "error": f"{type(error).__name__}: {error}"}
     return {
@@ -145,9 +151,10 @@ def probe():
         "libraries": modules, "algorithmAllowlist": None,
         "executionModel": "normal-python-process", "hardSandbox": False,
         "canInstallPackages": True,
+        "packageInventoryScope": "all-installed" if import_optional else "not-collected; use explicit environment probe",
         "installedPackages": sorted(
             [{"name": item.metadata.get("Name", "unknown"), "version": item.version}
-             for item in importlib.metadata.distributions()], key=lambda item: item["name"].lower()),
+             for item in importlib.metadata.distributions()], key=lambda item: item["name"].lower()) if import_optional else None,
     }
 
 
@@ -461,6 +468,13 @@ class ProcedureUnit:
 
 def execute(request_path: Path, run_directory: Path, resident=None):
     started = time.monotonic()
+    phases = []
+    phase_started, phase_name = started, "request"
+    def phase(name):
+        nonlocal phase_started, phase_name
+        now = time.monotonic()
+        phases.append({"key": phase_name, "ms": (now - phase_started) * 1000})
+        phase_started, phase_name = now, name
     request = json.loads(request_path.read_text(encoding="utf-8"))
     code = request["code"]
     (run_directory / "algorithm.py").write_text(code, encoding="utf-8")
@@ -489,6 +503,7 @@ def execute(request_path: Path, run_directory: Path, resident=None):
     total_artifact_bytes = 0
     used_names = set()
     try:
+        phase("imports-and-environment")
         # Imports are deliberately normal Python imports. These convenient globals
         # are not a catalogue restricting the user's program.
         import numpy as np
@@ -497,12 +512,18 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             import cv2
         except ImportError:
             cv2 = None
+        # Small repeated primitives otherwise oversubscribe all machine cores.
+        # Reset per invocation to avoid leaking a previous node's thread policy;
+        # user code may still choose its own policy with normal OpenCV APIs.
+        if cv2 is not None:
+            cv2.setNumThreads(1)
         if resident is not None:
             if resident.get("environment") is None:
-                resident["environment"] = probe()
+                resident["environment"] = probe(import_optional=False)
             report["environment"] = resident["environment"]
         else:
-            report["environment"] = probe()
+            report["environment"] = probe(import_optional=False)
+        phase("inputs-and-decode")
         image_records = []
         decoded_images = []
         raw_images = []
@@ -766,8 +787,10 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         module.__dict__.update(namespace)
         sys.modules[module.__name__] = module
         namespace = module.__dict__
+        phase("algorithm-including-artifacts")
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
             exec(compile(code, str(run_directory / "algorithm.py"), "exec", dont_inherit=True), namespace, namespace)
+        phase("result-validation")
         returned = namespace.get("result")
         report["result"] = json_value(returned.as_dict() if isinstance(returned, Invocation) else returned)
         report["structuredLayers"] = validate_structured_layers(namespace.get("structuredLayers", (returned or {}).get("structuredLayers", []) if isinstance(returned, dict) else []), image_records, trace)
@@ -782,10 +805,13 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         (run_directory / "traceback.txt").write_text(report["traceback"], encoding="utf-8")
     report["stdout"] = stdout.save()
     report["stderr"] = stderr.save()
+    phase("done")
     report["durationMs"] = (time.monotonic() - started) * 1000
     report.setdefault("execution", {"status": "FAULT"})["durationMs"] = report["durationMs"]
     artifact_phase = "artifact-encode-and-memory-retain" if request.get("artifactMode") == "memory" else "artifact-write"
     report["timing"] = {"clock": "monotonic", "totalMs": report["durationMs"], "includes": ["imports", "image-decode", "algorithm", artifact_phase], "excludes": ["host-dispatch", "host-verification", "UI-render"]}
+    report["timing"]["phases"] = phases
+    report["timing"]["opencvThreads"] = cv2.getNumThreads() if "cv2" in locals() and cv2 is not None else None
     if resident is not None:
         report["timing"]["imageCache"] = {"entries":len(resident["decoded"]), "bytes":sum(v[0].nbytes for v in resident["decoded"].values()), "hits":resident["decodeHits"], "misses":resident["decodeMisses"], "scope":"process-resident immutable original decode cache; arrays copied for each program"}
     report["finishedAt"] = datetime.now(timezone.utc).isoformat()

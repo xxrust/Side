@@ -165,6 +165,11 @@ fn clean_command(executable: &Path, directory: &Path) -> Result<Command, String>
         fs::create_dir_all(path).map_err(|error| format!("無法建立算法執行目錄：{error}"))?;
     }
     let mut command = Command::new(executable);
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        command.creation_flags(0x08000000); // CREATE_NO_WINDOW: keep focus on inspection controls.
+    }
     // Do not forward Pi credentials, API keys, proxy passwords, user Python
     // startup hooks or the calling terminal's environment to algorithm code.
     command.env_clear().current_dir(directory)

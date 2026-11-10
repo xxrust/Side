@@ -1,4 +1,5 @@
 import {jsonSnapshot} from './json-snapshot.js';
+import {installInspectionStopShortcut} from './inspection-stop-shortcut.js';
 import {installProjectDocumentOpen} from './project-document-open.js';
 import {sourceFilterRunOptions} from './source-classification-filter.js';
 import {ImageManagerView} from './image-manager-view.js';
@@ -122,6 +123,14 @@ async function runAlgorithmProgram(args,{stayOnBoard=false}={}){
  }finally{working=false;render();}
 }
 let inspectionAbortController=null;
+function cancelInspectionExecution(){
+ if(!inspectionAbortController)return false;
+ inspectionAbortController.abort();
+ status('停止中 · 目前節點結束後停止，不再執行後續節點或工件');
+ project.event('inspection_stop_requested');
+ return true;
+}
+installInspectionStopShortcut(cancelInspectionExecution);
 let inspectionReadGeneration=0;
 async function hydrateInspectionRuns(runs,reference,assertCurrent=()=>{}){
  if(!reference)return runs;
@@ -138,7 +147,7 @@ async function runCompletePurposeScheme(options={}){
  if(working||activeWorkpieceExecution(project))throw Error('目前運算尚未結束');
  if(!isTauri())throw Error('完整方案使用桌面 Python 執行器，請在桌面版執行');
  const navigation={autoAdvance:options.autoAdvance,imageId:project.image?.id,epoch:project.epoch,selectionRevision:project.imageSelection,batch:!Array.isArray(options.units)||options.units.length!==1};
- const controller=options.controller||new AbortController(),foreground=!options.background;if(foreground)inspectionAbortController=controller;working=true;render();let capture,started=false;const before=new Set((project.data.algorithmRuns||[]).map(run=>run.runId));
+ const controller=options.controller||new AbortController();inspectionAbortController=controller;working=true;render();let capture,started=false;const before=new Set((project.data.algorithmRuns||[]).map(run=>run.runId));
  try{
   // Routine inspection already saves immutable per-unit records and the exact
   // scheme. Do not serialize/version the entire editing project per image.
@@ -170,7 +179,7 @@ async function runCompletePurposeScheme(options={}){
  }catch(error){
   if(capture&&started){const runs=(capture.projectData.algorithmRuns||[]).filter(run=>!before.has(run.runId));await trialHistory.finish(capture,{runs,purposeAcceptance:null,error});}
   throw error;
- }finally{if(foreground&&inspectionAbortController===controller)inspectionAbortController=null;working=false;render();}
+ }finally{if(inspectionAbortController===controller)inspectionAbortController=null;working=false;render();}
 }
 
 async function runEdgeTrial(args,{stayOnBoard=false}={}){
@@ -247,7 +256,7 @@ const imageStrip=new ImageStrip($('imageStrip'),{select:id=>guard(()=>selectImag
 const foregroundView=new ForegroundView({project,quote:quoteTool,analyse:parameters=>project.suggestForeground(project.image?.id,parameters),onError:status,help:id=>toolHelp.open(id),onApply:applyForeground});
 const visualSources=new VisualImageSources({project,board,pipelineView,planView,foregroundView,algorithmView});
 let intentCanvasToken=0,intentChatExpanded=true;
-const inquiryView=new VisualInquiryView({project,onReadInspectionUnit:ref=>inspectionRecords.read(ref),onReadInspectionArtifact:ref=>inspectionRecords.artifact(ref),onBrowseInspectionUnit:ref=>openInspectionUnit(ref),onLoadDecisionEvidence:args=>loadSourceDecisionEvidence(project,args,isTauri()?inspectionRecords:null),onLoadOutputRecord:(model,guard)=>restoreCurrentOutputRecord(project,model,inspectionRecords,guard),onRunInspection:options=>runCompletePurposeScheme(options),onLoadOutputImage:(model,artifact,guard)=>loadCurrentOutputImage(project,model,artifact,inspectionRecords,guard),onForegroundEvidence:openForegroundEvidence,onImageManager:sourceId=>imageManager.open(sourceId),onImportImages:importImages,onImportReferences:importReferences,onConfigureSource:(sourceId,boardId)=>configureCanvasSource({sourceId,boardId}),onEditImage:id=>editMetadata(id),onAsk:quoteVisual,onCommand:async text=>{if(await agent.command(text))return true;if(!agent.connected||!agent.model){openAgentSettings();status('輸入已保留，請先連接 螃蟹 並選擇可用模型');return true}await agent.send(text);return true;},onCommandSuggestions:()=>commandSuggestionEntries(),onRenderMessage:message=>renderAgentMessage(message,{sourceMessageAt:message.at}),onRenderActivity:message=>renderAgentActivity(message,{compact:true}),onRenderAttachments:message=>visualAgent.renderAttachments(message),onOpenAlgorithmRecord:({runId,artifactId})=>{const run=readAlgorithmRun(project,runId);if(artifactId&&!run.artifacts.some(a=>a.id===artifactId))throw Error('此圖綁定的產物不存在，未改開其他產物');algorithmView.open(run,{artifactId:artifactId||undefined});algorithmView.showDrawer('code');},onToggleChat:()=>{intentChatExpanded=!intentChatExpanded;render();const button=document.querySelector('.inquiry-collapse[data-icon="ask"]');if(button){const label=intentChatExpanded?'隱藏右側 Agent 對話':'顯示右側 Agent 對話';button.title=label;button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(intentChatExpanded));}},onError:status,collectImages:()=>visualSources.collectImages(),resolveImage:async id=>{if(id.startsWith('asset:')){const asset=project.ensureInquiry().assets.find(a=>a.id===id.slice(6));if(!asset)throw Error('引用圖片不存在');return asset}return visualSources.resolve(id)}});
+const inquiryView=new VisualInquiryView({project,onReadInspectionUnit:ref=>inspectionRecords.read(ref),onReadInspectionArtifact:ref=>inspectionRecords.artifact(ref),onBrowseInspectionUnit:ref=>openInspectionUnit(ref),onLoadDecisionEvidence:args=>loadSourceDecisionEvidence(project,args,isTauri()?inspectionRecords:null),onLoadOutputRecord:(model,guard)=>restoreCurrentOutputRecord(project,model,inspectionRecords,guard),onRunInspection:options=>runCompletePurposeScheme(options),onCancelExecution:cancelInspectionExecution,onLoadOutputImage:(model,artifact,guard)=>loadCurrentOutputImage(project,model,artifact,inspectionRecords,guard),onForegroundEvidence:openForegroundEvidence,onImageManager:sourceId=>imageManager.open(sourceId),onImportImages:importImages,onImportReferences:importReferences,onConfigureSource:(sourceId,boardId)=>configureCanvasSource({sourceId,boardId}),onEditImage:id=>editMetadata(id),onAsk:quoteVisual,onCommand:async text=>{if(await agent.command(text))return true;if(!agent.connected||!agent.model){openAgentSettings();status('輸入已保留，請先連接 螃蟹 並選擇可用模型');return true}await agent.send(text);return true;},onCommandSuggestions:()=>commandSuggestionEntries(),onRenderMessage:message=>renderAgentMessage(message,{sourceMessageAt:message.at}),onRenderActivity:message=>renderAgentActivity(message,{compact:true}),onRenderAttachments:message=>visualAgent.renderAttachments(message),onOpenAlgorithmRecord:({runId,artifactId})=>{const run=readAlgorithmRun(project,runId);if(artifactId&&!run.artifacts.some(a=>a.id===artifactId))throw Error('此圖綁定的產物不存在，未改開其他產物');algorithmView.open(run,{artifactId:artifactId||undefined});algorithmView.showDrawer('code');},onToggleChat:()=>{intentChatExpanded=!intentChatExpanded;render();const button=document.querySelector('.inquiry-collapse[data-icon="ask"]');if(button){const label=intentChatExpanded?'隱藏右側 Agent 對話':'顯示右側 Agent 對話';button.title=label;button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(intentChatExpanded));}},onError:status,collectImages:()=>visualSources.collectImages(),resolveImage:async id=>{if(id.startsWith('asset:')){const asset=project.ensureInquiry().assets.find(a=>a.id===id.slice(6));if(!asset)throw Error('引用圖片不存在');return asset}return visualSources.resolve(id)}});
 const imageManager=new ImageManagerView(project,{refresh:()=>inquiryView.render(),notify:status});
 const visualAgent=new VisualAgentController({project,view:inquiryView,sources:visualSources,onError:status,onCollectAsset:asset=>assetLibraryView.collect(asset),onNavigate:async source=>{inquiryView.close();if(source.imageId&&project.data.images.some(i=>i.id===source.imageId)){project.selectImage(source.imageId);if(source.nodeId&&source.runId===project.image?.pipelineResult?.runId)await setPipelineView({image_id:source.imageId,node_id:source.nodeId});else await go(1)}else status('來源原圖已移除；聊天仍保留當時的圖片快照')}});
 installVisualInquiryEntry({sources:visualSources,view:inquiryView,onError:status,roiAvailable:()=>[3,4].includes(page)&&!working});
@@ -631,6 +640,6 @@ AgentCVDesktop.solutionVersions=solutionVersions;AgentCVDesktop.solutionVersions
 project.on(()=>sessionRecovery.schedule());window.addEventListener('agentcv-workspace-view-changed',()=>sessionRecovery.schedule());window.addEventListener('agentcv-question-edit-ended',()=>render());document.addEventListener('visibilitychange',()=>{if(document.hidden)sessionRecovery.flush().catch(error=>status('工作階段尚未保存：'+error.message));});
 AgentCVDesktop.sessionRecovery=sessionRecovery;AgentCVDesktop.workspaceView=workspaceView;AgentCVDesktop.startupReady=sessionRecovery.ready;sessionRecovery.ready.then(async()=>{sessionBooting=false;document.getElementById('sessionRestoreNotice')?.remove();working=false;document.body.classList.remove('app-restoring');render();if(restoredSession&&!sessionRecovery.blocked){try{if(inquiryView.opened)await Promise.all((inquiryView.board()?.items||[]).map(item=>inquiryView.loadImage(inquiryView.asset(item))));inquiryView.paint();await inquiryView.programFlow.map?.ready;await sessionRecovery.flush();}catch(error){status('工作階段尚未保存：'+error.message);}}if(!restoredSession&&!sessionRecovery.blocked)status('');if(isTauri()){guard(()=>imageManager.recoverMissingImports());if(!sessionRecovery.blocked)imageManager.presentPending();guard(()=>agent.connect());}});
 
-purposeWorkspaceView=mountPurposeWorkspace({project,isBusy:()=>working,onOpenRun:runId=>inquiryView.programFlow.openNode(runId+'::run'),onOpenUnit:openInspectionUnit,onCancel:()=>inspectionAbortController?.abort(),execute:runCompletePurposeScheme,onError:status,onRefresh:render,onOntologyAsk:text=>quoteMainAgent({text})});
+purposeWorkspaceView=mountPurposeWorkspace({project,isBusy:()=>working,onOpenRun:runId=>inquiryView.programFlow.openNode(runId+'::run'),onOpenUnit:openInspectionUnit,onCancel:cancelInspectionExecution,execute:runCompletePurposeScheme,onError:status,onRefresh:render,onOntologyAsk:text=>quoteMainAgent({text})});
 
 if(isTauri())installProjectDocumentOpen({invoke,listen,ready:sessionRecovery.ready,load:loadProject,busy:()=>working||savingProject||agent.busy,onError:status});
