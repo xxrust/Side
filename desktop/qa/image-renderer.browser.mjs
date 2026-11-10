@@ -5,6 +5,9 @@ import {CanvasProjectView} from '../src/canvas-project-view.js';
 import {openFlowNodePanel} from '../src/flow-node-panel.js';
 import {Workspace} from '../src/workspace.js';
 import {schemeFingerprint} from '../src/purpose-compiler.js';
+import {captureWorkpieceArtifactPixels,clearWorkpieceArtifactPixels} from '../src/workpiece-live-state.js';
+import {retainDatasetArtifacts} from '../src/artifact-retention.js';
+import {resolveNodeOutput,outputImageReference} from '../src/node-output-model.js';
 
 const check=(value,message)=>{if(!value)throw Error(message);};
 const near=(a,b)=>Math.abs(a-b)<1.1;
@@ -97,6 +100,15 @@ export async function runWorkbenchRendererCheck(api){
  p.data.purposeScheme=scheme;const fingerprint=schemeFingerprint(scheme),image=p.image;
  const run={runId:'ui-fixture-run',schemeNodeId:'preview',title:'渲染框界面驗證',mode:'scheme',status:'SUCCEEDED',execution:{status:'COMPLETED'},workpieceUnit:{id:'ui-fixture-unit',imageIds:[image.id]},sourceBinding:{schemeFingerprint:fingerprint,workflowRevision:p.workflow.revision,images:[{imageId:image.id,imageSha256:image.sha256,contentSha256:image.contentSha256,width:image.width,height:image.height}]},expectedOutputs:[{id:'image',type:'image',role:'result'}],artifacts:[{id:'image',name:'UI verification output',type:'image',role:'result',dataURL:url,width:1200,height:800,sha256:'ui-fixture-output'}],result:{valid:true}};
  p.data.algorithmRuns=[run];p.data.datasetExecutions=[{id:'ui-fixture-execution',schemeFingerprint:fingerprint,units:[{unitId:'ui-fixture-unit',imageIds:[image.id],runIds:[run.runId]}]}];
+ // Match desktop memory + metadata retention, including reopening the durable
+ // unit summary while its current-workpiece pixels are still in process memory.
+ run.code=scheme.operatorGraph.nodes[0].code;
+ captureWorkpieceArtifactPixels(p,'ui-fixture-unit',[run]);
+ const record={...p.data.datasetExecutions[0].units[0],schemeFingerprint:fingerprint};
+ const durable=retainDatasetArtifacts({executionId:'ui-fixture-execution',record,runs:[run]},{retention:{mode:'metadata'}}).product;
+ p.restoreInspectionUnit(durable,{executionId:'ui-fixture-execution',unitId:'ui-fixture-unit'});
+ check(p.data.algorithmRuns[0].artifacts[0].pixelRetention==='metadata-only','Fixture did not restore metadata retention');
+ check(!p.data.algorithmRuns[0].artifacts[0].dataURL,'Process pixels leaked into project data');
  await api.inquiryView.open();const v=api.inquiryView;v.outputView.focus('preview');v.render();
  await until(()=>document.querySelectorAll('.node-output-gallery img[src]').length===2);await settle();
  for(const root of document.querySelectorAll('.node-output-gallery .image-renderer'))sample(root,'RGB 36, 93, 120');
@@ -105,5 +117,12 @@ export async function runWorkbenchRendererCheck(api){
  check(r.maximizeDialog?.open,'Polling dismissed maximized output');r.restoreMaximize();await settle();
  check(near(saved.scale,r.view.scale)&&near(saved.x,r.view.x),'Workbench refresh lost zoom/pan');
  check(surface.section.dataset.status==='READY','Workbench failed to resolve current fixture output');
- return {status:surface.section.dataset.status,images:document.querySelectorAll('.node-output-gallery img[src]').length,pollingIterations:10,dimensions:[...document.querySelectorAll('.node-output-gallery .image-renderer')].map(node=>({width:node.clientWidth,height:node.clientHeight})),viewport:{width:innerWidth,height:innerHeight}};
+ const model=resolveNodeOutput(p,{schemeNodeId:'preview'});
+ check(outputImageReference(model,model.artifacts[0]).dataURL===url,'Current memory output cannot be referenced');
+ const result={status:surface.section.dataset.status,images:document.querySelectorAll('.node-output-gallery img[src]').length,pollingIterations:10,memoryMetadata:true,dimensions:[...document.querySelectorAll('.node-output-gallery .image-renderer')].map(node=>({width:node.clientWidth,height:node.clientHeight})),viewport:{width:innerWidth,height:innerHeight}};
+ clearWorkpieceArtifactPixels(p);v.outputView.lastPixelFrame=null;v.render();await settle();
+ check(surface.image.hidden&&!surface.empty.hidden,'Expired memory pixels remained visible');
+ check(surface.ask.disabled&&surface.empty.textContent.includes('摘要'),'Metadata history offered unavailable pixels');
+ check(!p.data.algorithmRuns[0].artifacts[0].dataURL,'Viewing memory pixels serialized them');
+ return {...result,expiredMemoryHidden:true};
 }

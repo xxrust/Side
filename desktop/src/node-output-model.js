@@ -61,7 +61,8 @@ export function resolveNodeOutput(project,{schemeNodeId}={}){
 export function outputImageReference(model,artifact){
  if(!model.run||!model.artifacts.some(a=>a.id===artifact.id&&a.sha256===artifact.sha256))throw Error('輸出已變更，請重新選擇圖像');
  artifact=model.artifacts.find(a=>a.id===artifact.id&&a.sha256===artifact.sha256);
- if(artifact.pixelRetention==='metadata-only')throw Error('此批次只保留產物摘要；需要像素時請重跑此工件或改用完整圖像保留');
- const dataURL=artifact.dataURL||artifact.dataUrl;if(!dataURL)throw Error('本次圖像仍在載入，不能引用舊圖');
+ const dataURL=artifact.dataURL||artifact.dataUrl;
+ if(!dataURL&&artifact.pixelRetention==='metadata-only')throw Error('此批次只保留產物摘要；需要像素時請重跑此工件或改用完整圖像保留');
+ if(!dataURL)throw Error('本次圖像仍在載入，不能引用舊圖');
  return {label:artifactDisplayName(artifact),kind:'stage',dataURL,width:artifact.width,height:artifact.height,source:{kind:'algorithm-output',runId:model.run.runId,artifactId:artifact.id,artifactSha256:artifact.sha256,codeSha256:model.run.codeSha256,schemeNodeId:model.schemeNodeId,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'algorithm-output-pixels',sourceBindings:model.run.sourceBinding}};
 }

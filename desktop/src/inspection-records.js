@@ -38,9 +38,11 @@ export async function loadCurrentOutputImage(project,model,artifact,records,guar
   const live=project.data.algorithmRuns?.find(run=>run.runId===model.run.runId)?.artifacts?.find(a=>a.id===artifact.id);
   if(!live||live.sha256!==artifact.sha256)throw Error('本次圖像所屬運算已切換；未套用先前圖像');
  };
+ // Current pixels survive a summary-only durable save. Return a transient
+ // preview without copying those pixels back into the serialized project.
+ current();const cached=workpieceArtifactPixel(project,model.unitId,model.run.runId,artifact.id);if(cached)return {...artifact,dataURL:cached,dataUrl:cached};
  if(artifact?.pixelRetention==='metadata-only')throw Error('此批次只保留產物摘要；若要查看像素，請重跑此工件或選擇保留全部圖像');
  if(!model.recordRef)throw Error('本次產物尚未保存可讀取引用');
- current();const cached=workpieceArtifactPixel(project,model.unitId,model.run.runId,artifact.id);if(cached)return project.setInspectionArtifactPreview(model.run.runId,artifact.id,cached);
  const loaded=await records.artifact({...model.recordRef,runId:model.run.runId,artifactId:artifact.id});current();if(!loaded?.dataURL&&!loaded?.dataUrl)throw Error('執行紀錄沒有返回此輸出圖的像素資料');
  return project.setInspectionArtifactPreview(model.run.runId,artifact.id,loaded.dataURL||loaded.dataUrl);
 }
