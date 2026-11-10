@@ -86,6 +86,33 @@ fn python_candidates() -> Vec<PathBuf> {
     if let Some(paths) = std::env::var_os("PATH") {
         candidates.extend(std::env::split_paths(&paths).map(|path| path.join(if cfg!(windows) { "python.exe" } else { "python3" })));
     }
+    // Explorer-launched applications do not inherit a terminal's activated
+    // Conda/Python PATH. Discover registered Windows installations via PEP 514.
+    #[cfg(windows)]
+    candidates.extend(registered_windows_pythons());
+    candidates
+}
+
+#[cfg(windows)]
+fn registered_windows_pythons() -> Vec<PathBuf> {
+    use winreg::{RegKey, enums::{HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, KEY_READ, KEY_WOW64_64KEY, KEY_WOW64_32KEY}};
+    let mut candidates = Vec::new();
+    for hive in [HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE] {
+        for view in [KEY_WOW64_64KEY, KEY_WOW64_32KEY] {
+            let Ok(root) = RegKey::predef(hive).open_subkey_with_flags("Software\\Python", KEY_READ | view) else { continue; };
+            for company in root.enum_keys().flatten() {
+                let Ok(company) = root.open_subkey(company) else { continue; };
+                for tag in company.enum_keys().flatten() {
+                    let Ok(install) = company.open_subkey(format!("{tag}\\InstallPath")) else { continue; };
+                    let executable = install.get_value::<String, _>("ExecutablePath").ok().filter(|value| !value.trim().is_empty()).map(PathBuf::from)
+                        .or_else(|| install.get_value::<String, _>("").ok().filter(|value| !value.trim().is_empty()).map(|value| PathBuf::from(value).join("python.exe")));
+                    if let Some(path) = executable.filter(|path| path.is_absolute() && path.is_file()) {
+                        if !candidates.contains(&path) { candidates.push(path); }
+                    }
+                }
+            }
+        }
+    }
     candidates
 }
 

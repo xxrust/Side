@@ -40,11 +40,24 @@ async function execute(request,directory){
  return JSON.parse(await fs.readFile(path.join(run,'result.json'),'utf8'));
 }
 
-test('real memory outputs survive metadata record restoration without entering project storage',async()=>{
- const directory=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-output-memory-'));
+async function project(){
  const p=new Workspace(),canvas=createCanvas(64,48),ctx=canvas.getContext('2d');ctx.fillStyle='#e0b83e';ctx.fillRect(0,0,64,48);ctx.fillStyle='#245d78';ctx.fillRect(12,10,30,25);
  await p.addImages([{name:'transport.png',dataUrl:canvas.toDataURL('image/png')}],decode);
  p.setPurposeScheme({id:'output-memory',execution:{unit:'workpiece',inputSlots:[{id:'image',required:true}]},classificationSpec:spec,operatorGraph:{nodes:[{id:'preview',title:'Transport check',code,parameters:{},documentation:'Verify pixel transport and retention only.',expected_outputs:[{id:'measurement',type:'evidence'},...['gray','edges'].map(id=>({id,type:'image',role:'result'}))]}],edges:[]},metricBindings:[{metric:'present',nodeId:'preview',path:'present'}]});
+ return p;
+}
+
+test('native dispatch string errors remain readable in saved node faults',async()=>{
+ const p=await project(),message='找不到 Python 3。請配置 AGENTCV_PYTHON，或建立專案的 runtime/python 環境。';let saved;
+ const outcome=await runDatasetScheme(p,async()=>{throw message;},{units:[{id:'dispatch-failure',imageIds:[p.image.id]}],saveUnitResult:async product=>{saved=JSON.parse(JSON.stringify(product));return {recordRef:{unitId:product.record.unitId}};}});
+ assert.equal(outcome.execution.counts.execution.FAULT,1);
+ const fault=saved.record.nodeStates.find(node=>node.nodeId==='preview');
+ assert.equal(fault.reason,'DISPATCH_FAULT');assert.deepEqual(fault.error,{type:'Error',message});
+ assert.equal(saved.runs.length,0);
+});
+
+test('real memory outputs survive metadata record restoration without entering project storage',async()=>{
+ const directory=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-output-memory-')),p=await project();
  let saved,reads=0;
  const records=createInspectionRecords(async(command,args)=>{assert.equal(command,'save_inspection_unit');saved=structuredClone(args.request);return {recordRef:{executionId:args.request.executionId,unitId:args.request.record.unitId}};});
  await runDatasetScheme(p,request=>execute(request,directory),{units:[{id:'unit-memory',imageIds:[p.image.id]}],artifactMode:'memory',artifactRetention:{mode:'metadata'},saveUnitResult:records.save});
