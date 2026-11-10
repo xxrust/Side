@@ -1,0 +1,13 @@
+{
+  "installedAt": "2026-10-25T05:55:46.931881+00:00",
+  "version": "0.9.8",
+  "app": "/Users/liangshiben/13-cv/AgentCV.app",
+  "previousApp": "/Users/liangshiben/13-cv/AgentCV-0.9.7.app",
+  "runningApplicationNotTerminated": true,
+  "project1Sha256": "a4dbd94854afbfdffd4148899156b6e8d2208e91d70014a6962fd8a305c00e28",
+  "project1Unchanged": true,
+  "algorithmVersion": "agentcv-inspection-0.9.8",
+  "javascriptTestsPassed": 111,
+  "nativeTestsPassed": 5,
+  "nativeWindowVisualQA": false
+}

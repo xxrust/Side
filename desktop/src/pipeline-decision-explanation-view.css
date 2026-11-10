@@ -1,0 +1,12 @@
+/* Three required explanations share the existing bounded row. Images retain
+   the central flexible viewport; completeness never adds a scrolling panel. */
+.pipeline-decision-explanation .explanation-sections{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;min-width:0}
+.pipeline-decision-explanation .explanation-sections>button{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;padding:3px 7px;white-space:nowrap}
+.pipeline-decision-explanation .decision-delivery-status{font-size:9px;line-height:15px;color:#e5c28d;font-weight:400}
+.pipeline-decision-explanation [data-delivery-status=RECORDED]>.decision-delivery-status{color:#a4efc3}
+.pipeline-decision-explanation [data-delivery-status=REJECTED]>.decision-delivery-status{color:#ffb8a3}
+.pipeline-decision-explanation [data-delivery-summary]{color:#dfc895}
+.pipeline-decision-explanation[data-delivery-status=RECORDED] [data-delivery-summary]{color:#afcfbd}
+.pipeline-decision-explanation .explanation-controls select{min-width:64px;flex:0 1 auto}
+.pipeline-decision-explanation .explanation-controls button{flex-shrink:0}
+@media(max-width:900px){.pipeline-decision-explanation .explanation-sections>button{gap:4px;font-size:10px}.pipeline-decision-explanation .decision-delivery-status{font-size:8px}}

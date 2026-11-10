@@ -1,0 +1,11 @@
+✔ goal UI reaches real pixel gear measurement without ROI or legacy check, then batch and invalidate (240.530041ms)
+✔ Agent tools build and run an actual graph and switch images without proposing a legacy check (144.933959ms)
+✔ uncertain geometry stays diagnostic when the user selects downstream rules or batch results (221.766542ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 944.0335

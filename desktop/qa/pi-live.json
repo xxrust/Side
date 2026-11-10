@@ -1,0 +1,19 @@
+{
+  "kind": "Real installed Pi SDK + authenticated model; synthetic context, no user image sent",
+  "ok": true,
+  "reason": "completed",
+  "reply": "目前目標為量測工件外框寬度與高度，已為上邊緣保存備註「選工件最外側」，未做其他修改。",
+  "calls": [
+    {
+      "name": "get_context",
+      "args": {}
+    },
+    {
+      "name": "set_edge_note",
+      "args": {
+        "side": "top",
+        "note": "選工件最外側"
+      }
+    }
+  ]
+}

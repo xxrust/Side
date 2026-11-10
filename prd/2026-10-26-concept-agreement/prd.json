@@ -1,0 +1,340 @@
+{
+  "title": "AgentCV｜畫板協作與可解釋流程",
+  "version": "0.1",
+  "date": "2026-10-26",
+  "status": "CONCEPT_DRAFT_PENDING_USER_REVIEW",
+  "scope": "Concept PRD only. No product changes or CV execution.",
+  "agreementPolicy": "會話共識屬方向；詳細版面、Luna執行架構、驗收閾值與發布權限屬待確認提案。",
+  "chapters": [
+    {
+      "id": "core",
+      "kicker": "01 / 產品核心",
+      "title": "把意圖畫出來，讓 Agent 建立可解釋的方案",
+      "lead": "工程師用圖、標記與關係表達目的；Agent 反推前提、提出方案、執行試驗；人就在結果上核對與修正。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><image href=\"assets/crystal-camera.png\" x=\"32\" y=\"40\" width=\"390\" height=\"340\" preserveAspectRatio=\"xMidYMid meet\"/><polygon points=\"93,91 367,94 366,318 91,317\" fill=\"none\" stroke=\"#9af0bf\" stroke-width=\"3\"/><text x=\"100\" y=\"365\" font-size=\"18\" fill=\"#263f39\">人：這個面相對外框歪斜了嗎？</text><rect x=\"472\" y=\"70\" width=\"252\" height=\"92\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"490\" y=\"102\" font-size=\"20\" fill=\"#263f39\">圖像＋實質標記</text><text x=\"490\" y=\"129\" font-size=\"15\" fill=\"#263f39\">對象、幾何、關係、來源與版本</text><path d=\"M422 195L472 116\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><path d=\"M724 116L775 116\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"775\" y=\"70\" width=\"272\" height=\"92\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"793\" y=\"102\" font-size=\"20\" fill=\"#263f39\">Agent 推導與試驗</text><text x=\"793\" y=\"129\" font-size=\"15\" fill=\"#263f39\">缺前提時提出問題，不猜結論</text><rect x=\"775\" y=\"245\" width=\"272\" height=\"110\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"793\" y=\"277\" font-size=\"20\" fill=\"#263f39\">可執行的依賴流程</text><text x=\"793\" y=\"304\" font-size=\"15\" fill=\"#263f39\">圖像證據 → 數值 → 解釋</text><path d=\"M910 162L910 245\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><path d=\"M775 300L440 300\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><text x=\"480\" y=\"286\" font-size=\"18\" fill=\"#263f39\">回到畫板共同核對</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "表達自由",
+          "不要求先選齒輪、孔、寬高等固定類別；例子不能成為能力邊界。"
+        ],
+        [
+          "Agent 主導",
+          "人定義目的與取捨；Agent 負責推導、調用算法、比較與補足證據。"
+        ],
+        [
+          "保留未知",
+          "執行成功、證據充分、符合規格分開表示；單張成功不等於現場可靠。"
+        ]
+      ],
+      "criteria": [
+        "未預設的需求也能由畫板提出。",
+        "人類標註、Agent 提議與影像實測有明確來源。",
+        "本文件只供概念審核；不代表軟體已具備圖中功能。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "inputs",
+      "kicker": "02 / 從資料開始",
+      "title": "先知道圖像代表什麼，再談能測什麼",
+      "lead": "導入多張實例及參考資料，建立成像條件、對象介紹與已知結果；資料不足也能探索，但不能冒充正式量測。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"32\" y=\"40\" width=\"320\" height=\"100\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"50\" y=\"72\" font-size=\"20\" fill=\"#263f39\">圖片與成像配置</text><text x=\"50\" y=\"99\" font-size=\"15\" fill=\"#263f39\">單張／多選／資料夾；像素與物理尺度</text><rect x=\"32\" y=\"167\" width=\"320\" height=\"92\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"50\" y=\"199\" font-size=\"20\" fill=\"#263f39\">工件參考資料</text><text x=\"50\" y=\"226\" font-size=\"15\" fill=\"#263f39\">介紹、圖紙、3D、規格與來源</text><rect x=\"32\" y=\"286\" width=\"320\" height=\"92\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"50\" y=\"318\" font-size=\"20\" fill=\"#263f39\">實例與已知結果</text><text x=\"50\" y=\"345\" font-size=\"15\" fill=\"#263f39\">OK／NG 類型／未知；可附標註</text><path d=\"M352 90L445 194\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><path d=\"M352 212L445 212\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><path d=\"M352 332L445 233\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"445\" y=\"150\" width=\"280\" height=\"130\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"463\" y=\"182\" font-size=\"20\" fill=\"#263f39\">同一項目的資料脈絡</text><text x=\"463\" y=\"209\" font-size=\"15\" fill=\"#263f39\">Agent 可提議工件與關係</text><path d=\"M725 215L786 215\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"786\" y=\"150\" width=\"262\" height=\"130\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"804\" y=\"182\" font-size=\"20\" fill=\"#263f39\">畫板上確認與修正</text><text x=\"804\" y=\"209\" font-size=\"15\" fill=\"#263f39\">示教不是固定模板填寫</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "空項目入口",
+          "中央顯示「導入圖片」「導入圖片資料夾」；導入後列表居左，可選圖、重命名、標已知判定。"
+        ],
+        [
+          "成像與校準",
+          "記錄感測器像元尺寸、鏡頭倍率、分辨率、裁切／縮放，以及實測校準、畸變等資訊；標明來源與不確定性。"
+        ],
+        [
+          "量綱可信",
+          "像元尺寸／倍率只提供有條件的理想換算，不能取代實際校準；無有效校準只報 px。不同配置的圖不可默認共用尺度。"
+        ]
+      ],
+      "criteria": [
+        "新圖能追到所屬成像配置；改倍率、縮放或配置會提示尺度需重核。",
+        "標籤可以不完整，但未知不能偽裝 OK；標籤來源可追溯。",
+        "已知標籤只作驗證依據，不可偷用來生成待驗證結果。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "dependencies",
+      "kicker": "03 / 方案怎麼出現",
+      "title": "從結論往回追前提，合併可共用的成果",
+      "lead": "流程不是預先寫死的頁面序列。Agent 先解釋目標需要什麼證據，再反推到現有資料，缺口顯式保留。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"30\" y=\"45\" width=\"270\" height=\"90\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"77\" font-size=\"20\" fill=\"#263f39\">人類目標</text><text x=\"48\" y=\"104\" font-size=\"15\" fill=\"#263f39\">偏移？表面是否有凹坑？</text><path d=\"M300 90L360 90\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"360\" y=\"45\" width=\"330\" height=\"90\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"378\" y=\"77\" font-size=\"20\" fill=\"#263f39\">倒推必要前提</text><text x=\"378\" y=\"104\" font-size=\"15\" fill=\"#263f39\">對象定義／定位／可辨識影像</text><path d=\"M690 90L750 90\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"750\" y=\"45\" width=\"300\" height=\"90\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"768\" y=\"77\" font-size=\"20\" fill=\"#263f39\">核對可取得的證據</text><text x=\"768\" y=\"104\" font-size=\"15\" fill=\"#263f39\">缺資料 → 提問或補拍</text><text x=\"35\" y=\"194\" font-size=\"17\" fill=\"#263f39\">執行方向：</text><rect x=\"35\" y=\"220\" width=\"270\" height=\"96\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"53\" y=\"252\" font-size=\"20\" fill=\"#263f39\">lid／pkg 識別與定位</text><text x=\"53\" y=\"279\" font-size=\"15\" fill=\"#263f39\">存在性與定位可靠性分開結論</text><path d=\"M305 268L410 268\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"410\" y=\"193\" width=\"275\" height=\"82\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"428\" y=\"225\" font-size=\"20\" fill=\"#263f39\">相對位置計算</text><text x=\"428\" y=\"252\" font-size=\"15\" fill=\"#263f39\">座標、角度、量測誤差</text><rect x=\"410\" y=\"318\" width=\"275\" height=\"82\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"428\" y=\"350\" font-size=\"20\" fill=\"#263f39\">lid 有效表面區域</text><text x=\"428\" y=\"377\" font-size=\"15\" fill=\"#263f39\">排除邊緣、遮擋與不可辨區</text><path d=\"M305 268L410 356\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><path d=\"M685 235L770 235\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"770\" y=\"193\" width=\"280\" height=\"82\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"788\" y=\"225\" font-size=\"20\" fill=\"#263f39\">偏移判定</text><text x=\"788\" y=\"252\" font-size=\"15\" fill=\"#263f39\">需要人定義合格條件</text><path d=\"M685 356L770 356\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"770\" y=\"318\" width=\"280\" height=\"82\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"788\" y=\"350\" font-size=\"20\" fill=\"#263f39\">表面瑕疵判斷</text><text x=\"788\" y=\"377\" font-size=\"15\" fill=\"#263f39\">影像不足時不可斷言是凹坑</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "規劃前",
+          "列出目標、必要前提、缺口與預計如何核對；人可在圖上補充或糾正。"
+        ],
+        [
+          "執行中",
+          "每個產物是否足以支持下游，由下游需求判斷；定位成功不自動代表精度足夠。"
+        ],
+        [
+          "路線變更",
+          "換方法、換物理特徵或縮小範圍，保留原因與受影響目標；只完成 lid 不能宣稱整個偏移任務完成。"
+        ]
+      ],
+      "criteria": [
+        "共用定位結果，避免偏移與瑕疵節點各造一份不一致定位。",
+        "未知存在、確定不存在、存在但定位不可靠可分辨。",
+        "凹坑與暗斑的區別若無證據，標為未知並提出可區分的試驗。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "layers",
+      "kicker": "04 / 節點與步驟",
+      "title": "節點回答問題，步驟取得證據，試驗決定怎麼做",
+      "lead": "按可獨立審核的結論組織節點；不是一個函數一個節點。節點可分組、拆合，證據與結果身份不隨版面改變。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"30\" y=\"45\" width=\"300\" height=\"100\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"77\" font-size=\"20\" fill=\"#263f39\">節點：lid 定位</text><text x=\"48\" y=\"104\" font-size=\"15\" fill=\"#263f39\">輸出輪廓／座標系／有效範圍</text><path d=\"M330 95L390 95\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"390\" y=\"45\" width=\"650\" height=\"100\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"408\" y=\"77\" font-size=\"20\" fill=\"#263f39\">節點級核對</text><text x=\"408\" y=\"104\" font-size=\"15\" fill=\"#263f39\">處理鏈是否抓對物理邊界？是否滿足下游精度？</text><rect x=\"30\" y=\"195\" width=\"235\" height=\"90\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"227\" font-size=\"20\" fill=\"#263f39\">候選搜尋</text><text x=\"48\" y=\"254\" font-size=\"15\" fill=\"#263f39\">輸入 → 候選圖</text><path d=\"M265 240L293 240\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"293\" y=\"195\" width=\"235\" height=\"90\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"311\" y=\"227\" font-size=\"20\" fill=\"#263f39\">輪廓細化</text><text x=\"311\" y=\"254\" font-size=\"15\" fill=\"#263f39\">候選 → 輪廓圖</text><path d=\"M528 240L556 240\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"556\" y=\"195\" width=\"235\" height=\"90\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"574\" y=\"227\" font-size=\"20\" fill=\"#263f39\">幾何與誤差核對</text><text x=\"574\" y=\"254\" font-size=\"15\" fill=\"#263f39\">輪廓 → 可用定位</text><path d=\"M675 285L675 330\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"400\" y=\"330\" width=\"640\" height=\"76\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"418\" y=\"362\" font-size=\"20\" fill=\"#263f39\">每一步可展開：方法選擇／參數比較／適用邊界</text><text x=\"418\" y=\"389\" font-size=\"15\" fill=\"#263f39\">共同門檻不能因換算法而消失</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "節點",
+          "有明確輸入、輸出、消費者、結論與失敗處置；存在性與定位可同組但不能混為同一結論。"
+        ],
+        [
+          "步驟",
+          "有可核對的資料變換或推斷；灰階等純變換也要說明必要性，不必為簡單確定性換算造無意義試驗。"
+        ],
+        [
+          "試驗",
+          "在固定目標與判據下比較候選方法／參數，保留未選原因與反例；同一原圖的兩種算法不視為獨立真值。"
+        ]
+      ],
+      "criteria": [
+        "單步擬合誤差小，仍必須核對是否擬合正確對象。",
+        "哪些處理需要展開到哪個粒度，保留為待審核設計細節。",
+        "執行結果、品質檢查、規格判定各有狀態，不用一個 PASS 混合。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "workspace",
+      "kicker": "05 / 工作環境",
+      "title": "一個工作區，按節點切換；每個節點留住現場",
+      "lead": "左側流程導覽選節點，中央畫板聚焦當前內容。完整依賴圖按需展開；對話通常收起，圖像保留主要空間。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"24\" y=\"34\" width=\"1032\" height=\"374\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><rect x=\"24\" y=\"34\" width=\"190\" height=\"374\" rx=\"12\" fill=\"#dce7e1\"/><text x=\"43\" y=\"72\" font-size=\"17\" fill=\"#263f39\">AgentCV／專案</text><text x=\"43\" y=\"125\" font-size=\"17\" fill=\"#263f39\">工件定位  ←</text><text x=\"43\" y=\"178\" font-size=\"17\" fill=\"#263f39\">相對偏移</text><text x=\"43\" y=\"231\" font-size=\"17\" fill=\"#263f39\">表面瑕疵</text><text x=\"43\" y=\"284\" font-size=\"17\" fill=\"#263f39\">展開依賴圖</text><text x=\"242\" y=\"68\" font-size=\"18\" fill=\"#263f39\">節點結果／內部步驟</text><image href=\"assets/crystal-camera.png\" x=\"243\" y=\"88\" width=\"610\" height=\"266\" preserveAspectRatio=\"xMidYMid meet\"/><text x=\"245\" y=\"383\" font-size=\"17\" fill=\"#263f39\">輸入圖  ←  本步圖  →  輸出圖</text><rect x=\"876\" y=\"88\" width=\"160\" height=\"190\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"894\" y=\"120\" font-size=\"20\" fill=\"#263f39\">對話收合</text><text x=\"894\" y=\"147\" font-size=\"15\" fill=\"#263f39\">需要時再展開</text><text x=\"876\" y=\"321\" font-size=\"15\" fill=\"#263f39\">圖片集：居左</text><text x=\"244\" y=\"109\" font-size=\"14\" fill=\"#263f39\"></text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "切換節點",
+          "保留圖片、縮放、視野、選中標記、氣泡位置及草稿；返回時恢復，不重新找位置。"
+        ],
+        [
+          "切換步驟",
+          "預設看節點結果；展開後看前一步／本步／後一步圖；需要才並排，保留矩形原圖比例。"
+        ],
+        [
+          "圖像操作",
+          "滾輪以指標為中心縮放，放大時清晰看像素；工具用圖示並提供提示。避免靠縱向捲動找主要操作。"
+        ]
+      ],
+      "criteria": [
+        "不在頂部重複顯示左側已有的當前階段；品牌、版本、專案操作集中左側。",
+        "畫板與結果不做狹窄文字卡片；詳細參數／證據按需展開。",
+        "大流程的折疊、搜尋與面板尺寸屬待確認提案，不能當成已獲批准的具體版式。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "ask",
+      "kicker": "06 / 核心故事 A",
+      "title": "選中對象，就地問；不必把圖搬到聊天欄",
+      "lead": "工程師選一個或多個標記，點詢問；Luna 提供問題草稿，人確認後發送，回答在相連氣泡中出現。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><image href=\"assets/crystal-camera.png\" x=\"30\" y=\"35\" width=\"590\" height=\"375\" preserveAspectRatio=\"xMidYMid meet\"/><polygon points=\"150,91 523,94 522,338 148,338\" fill=\"none\" stroke=\"#9af0bf\" stroke-width=\"3\"/><polygon points=\"139,80 538,81 540,352 137,352\" fill=\"none\" stroke=\"#ecb76b\" stroke-width=\"3\"/><path d=\"M525 98L670 102\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"670\" y=\"45\" width=\"375\" height=\"155\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"688\" y=\"77\" font-size=\"20\" fill=\"#263f39\">Luna 問題草稿 · 尚未發送</text><text x=\"688\" y=\"104\" font-size=\"15\" fill=\"#263f39\">選中：lid 輪廓 ＋ pkg 輪廓</text><text x=\"688\" y=\"133\" font-size=\"17\" fill=\"#263f39\">「這兩個輪廓能可靠計算偏移嗎？」</text><text x=\"688\" y=\"169\" font-size=\"15\" fill=\"#263f39\">可改寫／刪除／自行輸入／人按發送</text><rect x=\"670\" y=\"243\" width=\"375\" height=\"144\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"688\" y=\"275\" font-size=\"20\" fill=\"#263f39\">回答仍在此處</text><text x=\"688\" y=\"302\" font-size=\"15\" fill=\"#263f39\">先看局部疊圖、比較圖與數值</text><text x=\"687\" y=\"340\" font-size=\"16\" fill=\"#263f39\">拖動／收合；連線指向選中的對象</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "人做什麼",
+          "選中輪廓、線、區域、關係或任一步驟產物；點詢問，也可直接寫自己的問題。"
+        ],
+        [
+          "Agent 得到什麼",
+          "相關圖像／局部像素、標記幾何與文字、關係、座標映射、來源版本、當前目標；不是只有截圖。"
+        ],
+        [
+          "現場如何變化",
+          "可拖動、收合、編輯說明；回答引用的圖能再被選中詢問。Luna 不在每次拖動時打斷操作，也不自動發送。"
+        ]
+      ],
+      "criteria": [
+        "同時選兩個標記時，Agent 明確知道問的是哪兩個及什麼關係。",
+        "切換節點不丟草稿；發送後保留問題與當時引用的版本。",
+        "詢問不默認授權改正式方案；Agent 可提議或在討論層添加內容，正式變更要可核對。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "distance",
+      "kicker": "07 / 核心故事 B",
+      "title": "距離是兩個對象的關係，不必再畫兩次",
+      "lead": "選中兩個標記，點距離圖示，就地生成尺寸控件；端點與方向直接畫出，讓人看清到底量了什麼。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><image href=\"assets/crystal-camera.png\" x=\"30\" y=\"35\" width=\"600\" height=\"375\" preserveAspectRatio=\"xMidYMid meet\"/><polygon points=\"159,95 522,98 520,334 158,333\" fill=\"none\" stroke=\"#9af0bf\" stroke-width=\"3\"/><polygon points=\"146,82 538,83 539,350 145,350\" fill=\"none\" stroke=\"#ecb76b\" stroke-width=\"3\"/><path d=\"M522 175L538 175M522 160L522 190M538 160L538 190\" stroke=\"#edb467\" stroke-width=\"3\"/><path d=\"M538 175L685 142\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"685\" y=\"65\" width=\"355\" height=\"160\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"703\" y=\"97\" font-size=\"20\" fill=\"#263f39\">距離控件：選 A ＋ B</text><text x=\"703\" y=\"124\" font-size=\"15\" fill=\"#263f39\">定義：此處法向間距</text><text x=\"705\" y=\"165\" font-size=\"18\" fill=\"#263f39\">值：由當前引用對象計算</text><text x=\"705\" y=\"194\" font-size=\"15\" fill=\"#263f39\">未校準 → px；非預造數值</text><rect x=\"685\" y=\"275\" width=\"355\" height=\"110\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"703\" y=\"307\" font-size=\"20\" fill=\"#263f39\">控件也是關係對象</text><text x=\"703\" y=\"334\" font-size=\"15\" fill=\"#263f39\">可改定義、加說明、直接詢問</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "快速建立",
+          "點點是直線距離，點線是垂距；線線、輪廓輪廓有多種定義時，就地選最小間隙、中心距或指定方向等。"
+        ],
+        [
+          "避免偽精度",
+          "非平行線沒有單一固定間距；需指定量測位置或範圍。手繪標記幾何與真實影像量測分開標示。"
+        ],
+        [
+          "持續關聯",
+          "控件引用 A、B 的版本；標記移動會更新或標記待計算。找線／找圓 ROI 移動須重算，失效時不能殘留舊結果。"
+        ]
+      ],
+      "criteria": [
+        "自動選的距離定義必須可見、可改，不在背景猜測。",
+        "實際找線／找圓可顯示多個合格候選，人工選擇與排除也進入關係資料與歷史。",
+        "Ctrl/Cmd+Z 撤銷、重做、Delete 刪除及右鍵操作需符合平台慣例；不打斷文字編輯。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "evidence",
+      "kicker": "08 / 每步的解釋契約",
+      "title": "圖像證據在前，選擇結論必須跟得上試驗",
+      "lead": "規劃前說假設與比較計畫；執行中留下真實產物；執行後以觀察作決定。不得用預先寫好的理由替代事後核對。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"30\" y=\"35\" width=\"310\" height=\"85\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"67\" font-size=\"20\" fill=\"#263f39\">為何使用這個方法？</text><text x=\"48\" y=\"94\" font-size=\"15\" fill=\"#263f39\">原圖／候選結果／替代法比較</text><rect x=\"385\" y=\"35\" width=\"310\" height=\"85\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"403\" y=\"67\" font-size=\"20\" fill=\"#263f39\">為何選這組參數？</text><text x=\"403\" y=\"94\" font-size=\"15\" fill=\"#263f39\">試驗範圍／比較圖／選擇準則</text><rect x=\"740\" y=\"35\" width=\"310\" height=\"85\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"758\" y=\"67\" font-size=\"20\" fill=\"#263f39\">適用邊界在哪裡？</text><text x=\"758\" y=\"94\" font-size=\"15\" fill=\"#263f39\">反例／誤差／失效與處置</text><image href=\"assets/crystal-camera.png\" x=\"30\" y=\"150\" width=\"310\" height=\"208\" preserveAspectRatio=\"xMidYMid meet\"/><image href=\"assets/crystal-camera.png\" x=\"385\" y=\"150\" width=\"310\" height=\"208\" preserveAspectRatio=\"xMidYMid meet\"/><image href=\"assets/crystal-camera.png\" x=\"740\" y=\"150\" width=\"310\" height=\"208\" preserveAspectRatio=\"xMidYMid meet\"/><text x=\"46\" y=\"390\" font-size=\"16\" fill=\"#263f39\">不能只說「適合找邊」</text><text x=\"400\" y=\"390\" font-size=\"16\" fill=\"#263f39\">不能只解釋參數用途</text><text x=\"754\" y=\"390\" font-size=\"16\" fill=\"#263f39\">不能只寫「光照穩定」</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "方法依據",
+          "指出當前要辨識的物理特徵與候選假設；比較合理替代方案。簡單確定性處理可說明不比較的理由，不能機械增加灰階等空步驟。"
+        ],
+        [
+          "參數依據",
+          "逐個影響決策的參數保留來源、可改值、實際生效值；比較關鍵值及交互影響，承認未試部分，不宣稱窮盡或全局最優。"
+        ],
+        [
+          "邊界依據",
+          "顯示哪些像素／區段不可靠、影響哪個結論；區分同圖自洽、跨圖測試與真值誤差。97%可靠不能掩蓋關鍵邊失效。"
+        ]
+      ],
+      "criteria": [
+        "腳本檢查真實引用、必要試驗與決策鏈；缺項返回步驟／參數／缺少證據及補全建議。",
+        "草稿與診斷可以保存；缺必要證據不得作為可交付節點。形式通過不代表工業可靠性通過。",
+        "深層可展開到算法、參數、支撐點與程式版本；工具問號含 SVG 說明，選字可問 Agent。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "versions",
+      "kicker": "09 / 多節點共作",
+      "title": "引用同一份成果，變更能沿依賴傳遞",
+      "lead": "下游不複製一份無來源的輪廓。每個引用都能返回原圖、生成步驟與版本；討論圖與正式輸出保留關係。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"30\" y=\"55\" width=\"300\" height=\"105\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"87\" font-size=\"20\" fill=\"#263f39\">定位結果 v3</text><text x=\"48\" y=\"114\" font-size=\"15\" fill=\"#263f39\">輪廓、座標、誤差與有效區</text><path d=\"M330 106L430 106\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"430\" y=\"55\" width=\"280\" height=\"105\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"448\" y=\"87\" font-size=\"20\" fill=\"#263f39\">偏移計算</text><text x=\"448\" y=\"114\" font-size=\"15\" fill=\"#263f39\">引用：定位 v3</text><path d=\"M330 106L430 262\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"430\" y=\"212\" width=\"280\" height=\"105\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"448\" y=\"244\" font-size=\"20\" fill=\"#263f39\">瑕疵檢測</text><text x=\"448\" y=\"271\" font-size=\"15\" fill=\"#263f39\">引用：定位 v3</text><rect x=\"780\" y=\"55\" width=\"270\" height=\"262\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"798\" y=\"87\" font-size=\"20\" fill=\"#263f39\">比較畫板</text><text x=\"798\" y=\"114\" font-size=\"15\" fill=\"#263f39\">跨節點引用圖像與標記</text><path d=\"M710 105L780 105\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><path d=\"M710 264L780 264\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"30\" y=\"325\" width=\"680\" height=\"82\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"357\" font-size=\"20\" fill=\"#263f39\">定位改成 v4 → 受影響結果標記「待重算」</text><text x=\"48\" y=\"384\" font-size=\"15\" fill=\"#263f39\">舊結果保留對照；不得繼續充當當前有效結果</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "跨圖討論",
+          "任意平台圖像都能引用到比較畫板，保留座標映射；可用真實找線／找圓、筆、掩膜及關係控件。"
+        ],
+        [
+          "共創來源",
+          "Agent 的新標註與圖像可在共同畫板出現；標示作者、引用與作用，提議和已採用方案分開。"
+        ],
+        [
+          "回讀驗證",
+          "工具執行成功、產物已保存、界面確實載入，是不同事實；保存產物身份與顯示回執，不能只靠 Agent 聲稱改好。"
+        ]
+      ],
+      "criteria": [
+        "上游變更或成像配置變更後，相關下游失效狀態可追查原因。",
+        "用目前資料重新核對後，才恢復有效狀態。",
+        "寬表以可點選 sheet 引用開大面板；對話支援 Markdown 與圖像引用，不塞窄表格。"
+      ],
+      "extra": ""
+    },
+    {
+      "id": "crystal",
+      "kicker": "10 / 完整用戶故事",
+      "title": "晶振：從一句問題，走到可核對的檢測方案",
+      "lead": "這是一個說明交互的故事，不指定晶振必須使用哪種算法，也不宣稱這張原圖已完成偏移或凹坑驗證。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><image href=\"assets/crystal-camera.png\" x=\"30\" y=\"30\" width=\"510\" height=\"375\" preserveAspectRatio=\"xMidYMid meet\"/><rect x=\"590\" y=\"50\" width=\"450\" height=\"95\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"608\" y=\"82\" font-size=\"20\" fill=\"#263f39\">先把對象和關係說清楚</text><text x=\"608\" y=\"109\" font-size=\"15\" fill=\"#263f39\">lid 相對 pkg；有效表面；合格條件</text><rect x=\"590\" y=\"172\" width=\"450\" height=\"95\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"608\" y=\"204\" font-size=\"20\" fill=\"#263f39\">再確認證據足夠支撐結論</text><text x=\"608\" y=\"231\" font-size=\"15\" fill=\"#263f39\">定位精度／成像能力／誤判反例</text><rect x=\"590\" y=\"294\" width=\"450\" height=\"95\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"608\" y=\"326\" font-size=\"20\" fill=\"#263f39\">最後檢驗完整目標是否達成</text><text x=\"608\" y=\"353\" font-size=\"15\" fill=\"#263f39\">不是只抓到一條邊或一圈輪廓</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "操作主體",
+          "故事每一步都要回答：人做了什麼、Agent 收到什麼、畫板如何變化、人如何核對。"
+        ],
+        [
+          "任務完整性",
+          "相對位置任務不能用單一 lid 輪廓冒充完成；凹坑判斷不能用暗斑檢出冒充。"
+        ],
+        [
+          "異常分支",
+          "工件不存在、圖像模糊、候選歧義、精度不足分別處理，不混為一個 UNKNOWN。"
+        ]
+      ],
+      "criteria": [
+        "完整故事應可由不知算法的操作人走通，再由專業人展開核對依據。",
+        "此處不填假測量值、不畫假缺陷、不預選最佳算法。"
+      ],
+      "extra": "<div class=\"story\"><div><b>① 表達</b><p>工程師指認 lid、pkg，選兩者問「是否偏移，表面是否有凹坑？」可用參考圖補充對象定義。</p></div><div><b>② 推導</b><p>Agent 說明需定位兩者、建立有效表面區域；若現有成像不足以區分凹坑與污漬，先提出缺口。</p></div><div><b>③ 共作</b><p>顯示多個邊界候選；人點選正確外沿。Agent 記錄排除原因、比較方法與參數，不能只追求擬合小。</p></div><div><b>④ 核對</b><p>同一定位供偏移與瑕疵引用；看尺寸控件及局部不可靠段。在誤差不足以支撐判定時保留未知。</p></div><div><b>⑤ 驗證</b><p>在已知 OK／不同 NG／困難樣本上批跑，查漏檢、誤判與未知；保留不參與調參的驗證圖。</p></div><div><b>⑥ 交付</b><p>留下可重現流程、實際算法／環境、三項證據、資料版本、判定規則、未覆蓋邊界與回退版本。</p></div></div>"
+    },
+    {
+      "id": "coverage",
+      "kicker": "11 / 通用性驗證",
+      "title": "同一套表達方式，能承接不同的檢測問題",
+      "lead": "晶振是深度故事；已有十個 OpenCV 案例用來檢查平台是否又退回固定表單與固定算法。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><image href=\"assets/gear-0.png\" x=\"30\" y=\"60\" width=\"290\" height=\"270\" preserveAspectRatio=\"xMidYMid meet\"/><image href=\"assets/touching-0.png\" x=\"395\" y=\"60\" width=\"250\" height=\"270\" preserveAspectRatio=\"xMidYMid meet\"/><image href=\"assets/pose-0.png\" x=\"735\" y=\"60\" width=\"310\" height=\"270\" preserveAspectRatio=\"xMidYMid meet\"/><text x=\"65\" y=\"380\" font-size=\"19\" fill=\"#263f39\">圈對象 → 問週期與缺口</text><text x=\"380\" y=\"380\" font-size=\"19\" fill=\"#263f39\">畫關係 → 問分離與計數</text><text x=\"742\" y=\"380\" font-size=\"19\" fill=\"#263f39\">給參考 → 問位置與可信度</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "一致交互",
+          "換樣品不必換一套產品操作：選對象、表達關係、提出問題、看證據、核對。"
+        ],
+        [
+          "算法開放",
+          "傳統 CV、深度學習與自訂算法均可提議；依賴、資料、算力與許可缺口要說明，不以固定工具清單封死能力。"
+        ],
+        [
+          "驗證誠實",
+          "官方範例素材未必有工業規格或完整真值；教學輸出不能充當本系統正確答案。"
+        ]
+      ],
+      "criteria": [
+        "不得為新增案例增設一個強迫選擇的產品入口分類。",
+        "正式驗收須補齊每例的真值、判據、困難樣本及允許的不確定性。"
+      ],
+      "extra": "<div class=\"tablewrap\"><table><thead><tr><th>故事／需求</th><th>人如何表達</th><th>Agent 必須面對的問題</th></tr></thead><tbody><tr><td>齒輪齒數與缺齒</td><td>圈對象，指出疑似缺口</td><td>週期性是否成立？遮擋是否被誤認缺齒？</td></tr><tr><td>墊圈內外徑與偏心</td><td>選兩個圓／輪廓與中心關係</td><td>非圓、透視與斷弧是否影響擬合？</td></tr><tr><td>多孔鈑金孔數與孔位</td><td>圈範圍，標出應有孔的關係</td><td>內部紋理是否被當孔？可見不等於貫穿。</td></tr><tr><td>多工件擺放方向</td><td>標參考方向，指出旋轉關係</td><td>對稱件方向是否有歧義？</td></tr><tr><td>黏連顆粒計數</td><td>指示哪裡應分成兩個</td><td>分離是否切碎單物體？</td></tr><tr><td>線路斷線與橋接</td><td>畫連通關係，標疑似斷點</td><td>線寬變化、交叉與陰影能否區分？</td></tr><tr><td>彩色零件分揀</td><td>給顏色實例與所屬類別</td><td>色偏／反光／成像配置變化影響？</td></tr><tr><td>複雜背景平面定位</td><td>引用模板，圈場景對象</td><td>匹配是否幾何一致？重複紋理誤匹配？</td></tr><tr><td>配準後缺印／異物</td><td>放參考圖與待測圖，標差異</td><td>差異是缺陷還是配準／光照誤差？</td></tr><tr><td>QR 料號核對</td><td>圈碼區，給預期內容／規則</td><td>未讀出、讀錯、不符合規則分開。</td></tr></tbody></table></div><p class=\"small\">來源：既有 OpenCV 用例收集；這些是本產品交互與算法驗證的候選故事，不是已完成驗收、也不是正式工業真值集。詳見 <a href=\"../2026-10-26-canvas-first/opencv-stories.json\">原始用例與來源紀錄</a>。</p>"
+    },
+    {
+      "id": "delivery",
+      "kicker": "12 / 驗收與後續",
+      "title": "先審概念，再審操作故事，之後才進實作",
+      "lead": "本版狀態：概念 PRD 草案 v0.1。共識與提案分開；未經用戶審核，不把畫稿當作已批准的實作規格。",
+      "diagram": "<svg viewBox=\"0 0 1080 460\" role=\"img\" aria-label=\"概念示意，非實測結果\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"7\" refY=\"4\" orient=\"auto\"><path d=\"M0 0L8 4L0 8\" fill=\"#5a807c\"/></marker></defs><rect width=\"1080\" height=\"460\" rx=\"20\" fill=\"#eaf0ed\"/><rect x=\"30\" y=\"65\" width=\"300\" height=\"110\" rx=\"12\" fill=\"#d1e8db\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"97\" font-size=\"20\" fill=\"#263f39\">節點／步驟優化</text><text x=\"48\" y=\"124\" font-size=\"15\" fill=\"#263f39\">同目標、同判據比較方法與參數</text><path d=\"M330 120L395 120\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"395\" y=\"65\" width=\"300\" height=\"110\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"413\" y=\"97\" font-size=\"20\" fill=\"#263f39\">全流程重驗</text><text x=\"413\" y=\"124\" font-size=\"15\" fill=\"#263f39\">下游精度、漏檢／誤判／未知／耗時</text><path d=\"M695 120L760 120\" stroke=\"#5a807c\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#arrow)\"/><rect x=\"760\" y=\"65\" width=\"290\" height=\"110\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"778\" y=\"97\" font-size=\"20\" fill=\"#263f39\">保留或回退</text><text x=\"778\" y=\"124\" font-size=\"15\" fill=\"#263f39\">回寫收益、退步與適用條件</text><rect x=\"30\" y=\"245\" width=\"1020\" height=\"125\" rx=\"12\" fill=\"#fff\" stroke=\"#9bb5a9\"/><text x=\"48\" y=\"277\" font-size=\"20\" fill=\"#263f39\">項目交付物：可執行流程 ＋ 可追溯證據 ＋ 可重現版本</text><text x=\"48\" y=\"304\" font-size=\"15\" fill=\"#263f39\">包含來源圖與成像配置、標記關係、實際生效參數、算法依賴、規則、驗證報告與已知邊界</text><text x=\"24\" y=\"440\" font-size=\"13\" fill=\"#667972\">概念畫稿 · 圖上框線與數值位置均為說明用途，非算法結果</text></svg>",
+      "items": [
+        [
+          "驗收底線",
+          "能從自由意圖走到依賴圖；就地詢問與距離關係成立；逐步證據可追查；版本失效能傳遞；完整目標不漏項。"
+        ],
+        [
+          "優化約束",
+          "人定義漏檢、誤判、未知率、節拍與複核成本的取捨；局部改善必須重驗受影響下游，測試集與調參集區分。"
+        ],
+        [
+          "交付邊界",
+          "本輪只有 PRD 文件與呈現檢查；沒有算法效果驗收、沒有產品修改、沒有部署或發布。現場接入與正式發布規則需另行定義。"
+        ]
+      ],
+      "criteria": [
+        "晶振故事先審通，再以其他案例檢查通用性；不先鋪開修改所有案例。",
+        "優化歷史保留失敗假設與人類糾正，後續方案應主動核對相關前例。",
+        "數學模型可證明有條件性質；真實影像識別仍須實證，不能承諾任意噪聲下皆正確。"
+      ],
+      "extra": "<div class=\"tablewrap\"><table><thead><tr><th>待確認</th><th>目前提案</th><th>不能先假定</th></tr></thead><tbody><tr><td>Luna 的身份</td><td>負責就地問題草稿的交互角色</td><td>是否獨立模型、何時調用及延遲預算尚未定</td></tr><tr><td>節點與步驟粒度</td><td>按結論與資料變換拆分，保留共用結果</td><td>可見步驟的預設展開深度尚未定</td></tr><tr><td>試驗預算</td><td>先驗證關鍵方法／參數與已知反例</td><td>不要求所有組合窮舉；停止準則待定</td></tr><tr><td>正式採用操作</td><td>討論、試驗、正式版本清楚分開</td><td>每次低風險試算是否需確認、發布權限待定</td></tr><tr><td>版面與硬體</td><td>畫板主體、左側流程、收合對話</td><td>精確尺寸、目標螢幕與鍵位尚未做操作驗收</td></tr></tbody></table></div>"
+    }
+  ],
+  "reviewInputs": [
+    "使用者於本會話對產品核心、節點依賴、畫板詢問與距離控件的說明",
+    "../2026-10-26-canvas-first/opencv-stories.json",
+    "../../reviews/2026-10-26-pi-evidence-audit/content-audit.json",
+    "../../reviews/2026-10-26-pi-evidence-audit/execution-audit.json",
+    "../../reviews/2026-10-26-pi-evidence-audit/host-audit.json",
+    "../../references/ontology-engineering/v2.0.0-rc.7/SKILL.md"
+  ]
+}

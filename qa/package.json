@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "@napi-rs/canvas": "0.1.100",
+    "@resvg/resvg-js": "^2.6.2",
+    "jsdom": "^29.1.1"
+  },
+  "private": true,
+  "scripts": {
+    "test": "node check-prd.cjs && node check-line-quality.cjs && node check-pipeline.cjs && node check-viewport.cjs && node check-frame.cjs && node dom-flow.cjs && node check-interaction-flow.cjs",
+    "test:browser": "node browser-flow.cjs"
+  }
+}

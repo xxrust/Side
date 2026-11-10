@@ -1,0 +1,625 @@
+{
+  "mapped": false,
+  "selected": {
+    "method": "SIFT",
+    "ratio": 0.8,
+    "ransacPx": 2,
+    "candidateCount": 15,
+    "inliers": 7,
+    "inlierRatio": 0.4666666666666667,
+    "medianErrorPx": 0.16129367053508759,
+    "templateCoverage": 0.23491939169675322,
+    "accepted": false,
+    "reasons": [
+      "Insufficient geometric support",
+      "Too many inconsistent pairs",
+      "Projected frame is invalid"
+    ],
+    "areaFraction": 0.021995757405615768,
+    "matrix": [
+      [
+        -0.6698272180007332,
+        -0.8911113002935037,
+        320.31141984214923
+      ],
+      [
+        -0.10387743220800517,
+        -0.08064072152916056,
+        53.42712288387041
+      ],
+      [
+        -0.0017965287981277305,
+        -0.003060917754067646,
+        1.0
+      ]
+    ],
+    "quad": [
+      [
+        320.3114318847656,
+        53.4271240234375
+      ],
+      [
+        247.68162536621094,
+        47.352176666259766
+      ],
+      [
+        361.31085205078125,
+        -7.592196941375732
+      ],
+      [
+        382.1958923339844,
+        110.85028076171875
+      ]
+    ]
+  },
+  "trials": [
+    {
+      "method": "SIFT",
+      "ratio": 0.65,
+      "ransacPx": 2,
+      "candidateCount": 3,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.65,
+      "ransacPx": 3,
+      "candidateCount": 3,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.65,
+      "ransacPx": 4,
+      "candidateCount": 3,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.7,
+      "ransacPx": 2,
+      "candidateCount": 4,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "No finite homography"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.7,
+      "ransacPx": 3,
+      "candidateCount": 4,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "No finite homography"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.7,
+      "ransacPx": 4,
+      "candidateCount": 4,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "No finite homography"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.75,
+      "ransacPx": 2,
+      "candidateCount": 7,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "No finite homography"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.75,
+      "ransacPx": 3,
+      "candidateCount": 7,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "No finite homography"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.75,
+      "ransacPx": 4,
+      "candidateCount": 7,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "No finite homography"
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.8,
+      "ransacPx": 2,
+      "candidateCount": 15,
+      "inliers": 7,
+      "inlierRatio": 0.4666666666666667,
+      "medianErrorPx": 0.16129367053508759,
+      "templateCoverage": 0.23491939169675322,
+      "accepted": false,
+      "reasons": [
+        "Insufficient geometric support",
+        "Too many inconsistent pairs",
+        "Projected frame is invalid"
+      ],
+      "areaFraction": 0.021995757405615768,
+      "matrix": [
+        [
+          -0.6698272180007332,
+          -0.8911113002935037,
+          320.31141984214923
+        ],
+        [
+          -0.10387743220800517,
+          -0.08064072152916056,
+          53.42712288387041
+        ],
+        [
+          -0.0017965287981277305,
+          -0.003060917754067646,
+          1.0
+        ]
+      ],
+      "quad": [
+        [
+          320.3114318847656,
+          53.4271240234375
+        ],
+        [
+          247.68162536621094,
+          47.352176666259766
+        ],
+        [
+          361.31085205078125,
+          -7.592196941375732
+        ],
+        [
+          382.1958923339844,
+          110.85028076171875
+        ]
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.8,
+      "ransacPx": 3,
+      "candidateCount": 15,
+      "inliers": 7,
+      "inlierRatio": 0.4666666666666667,
+      "medianErrorPx": 1.0122690200805664,
+      "templateCoverage": 0.20122108925306806,
+      "accepted": false,
+      "reasons": [
+        "Insufficient geometric support",
+        "Too many inconsistent pairs"
+      ],
+      "areaFraction": 0.14889280645620412,
+      "matrix": [
+        [
+          -1.0625843688568464,
+          -0.7292777544871661,
+          413.4889960975771
+        ],
+        [
+          0.06275668129418002,
+          0.6448698436623245,
+          -11.801291821661085
+        ],
+        [
+          -0.002263982974104533,
+          -4.420000408447343e-05,
+          1.0
+        ]
+      ],
+      "quad": [
+        [
+          413.4889831542969,
+          -11.801291465759277
+        ],
+        [
+          261.5016174316406,
+          31.514925003051758
+        ],
+        [
+          -353.8739013671875,
+          585.623291015625
+        ],
+        [
+          254.08248901367188,
+          132.6615447998047
+        ]
+      ]
+    },
+    {
+      "method": "SIFT",
+      "ratio": 0.8,
+      "ransacPx": 4,
+      "candidateCount": 15,
+      "inliers": 7,
+      "inlierRatio": 0.4666666666666667,
+      "medianErrorPx": 1.0122690200805664,
+      "templateCoverage": 0.20122108925306806,
+      "accepted": false,
+      "reasons": [
+        "Insufficient geometric support",
+        "Too many inconsistent pairs"
+      ],
+      "areaFraction": 0.14889280645620412,
+      "matrix": [
+        [
+          -1.0625843688568464,
+          -0.7292777544871661,
+          413.4889960975771
+        ],
+        [
+          0.06275668129418002,
+          0.6448698436623245,
+          -11.801291821661085
+        ],
+        [
+          -0.002263982974104533,
+          -4.420000408447343e-05,
+          1.0
+        ]
+      ],
+      "quad": [
+        [
+          413.4889831542969,
+          -11.801291465759277
+        ],
+        [
+          261.5016174316406,
+          31.514925003051758
+        ],
+        [
+          -353.8739013671875,
+          585.623291015625
+        ],
+        [
+          254.08248901367188,
+          132.6615447998047
+        ]
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.65,
+      "ransacPx": 2,
+      "candidateCount": 0,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.65,
+      "ransacPx": 3,
+      "candidateCount": 0,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.65,
+      "ransacPx": 4,
+      "candidateCount": 0,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.7,
+      "ransacPx": 2,
+      "candidateCount": 0,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.7,
+      "ransacPx": 3,
+      "candidateCount": 0,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.7,
+      "ransacPx": 4,
+      "candidateCount": 0,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.75,
+      "ransacPx": 2,
+      "candidateCount": 2,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.75,
+      "ransacPx": 3,
+      "candidateCount": 2,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.75,
+      "ransacPx": 4,
+      "candidateCount": 2,
+      "inliers": 0,
+      "inlierRatio": 0.0,
+      "medianErrorPx": null,
+      "templateCoverage": 0.0,
+      "accepted": false,
+      "reasons": [
+        "Fewer than four candidate pairs"
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.8,
+      "ransacPx": 2,
+      "candidateCount": 10,
+      "inliers": 4,
+      "inlierRatio": 0.4,
+      "medianErrorPx": 0.0,
+      "templateCoverage": 0.05493094762102945,
+      "accepted": false,
+      "reasons": [
+        "Insufficient geometric support",
+        "Too many inconsistent pairs",
+        "Support occupies too small a template patch",
+        "Projected frame is invalid"
+      ],
+      "areaFraction": 0.013709320551559283,
+      "matrix": [
+        [
+          -2.336712238485167,
+          1.7740590494330897,
+          217.28546474575765
+        ],
+        [
+          -2.144855839718535,
+          2.299666488114,
+          151.3892460320723
+        ],
+        [
+          -0.007722245181318567,
+          0.004458380031146396,
+          1.0
+        ]
+      ],
+      "quad": [
+        [
+          217.28546142578125,
+          151.38925170898438
+        ],
+        [
+          359.6854248046875,
+          362.31317138671875
+        ],
+        [
+          284.6866455078125,
+          61.19268798828125
+        ],
+        [
+          307.1357727050781,
+          332.6607666015625
+        ]
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.8,
+      "ransacPx": 3,
+      "candidateCount": 10,
+      "inliers": 4,
+      "inlierRatio": 0.4,
+      "medianErrorPx": 0.0,
+      "templateCoverage": 0.05493094762102945,
+      "accepted": false,
+      "reasons": [
+        "Insufficient geometric support",
+        "Too many inconsistent pairs",
+        "Support occupies too small a template patch",
+        "Projected frame is invalid"
+      ],
+      "areaFraction": 0.013709320551559283,
+      "matrix": [
+        [
+          -2.336712238485167,
+          1.7740590494330897,
+          217.28546474575765
+        ],
+        [
+          -2.144855839718535,
+          2.299666488114,
+          151.3892460320723
+        ],
+        [
+          -0.007722245181318567,
+          0.004458380031146396,
+          1.0
+        ]
+      ],
+      "quad": [
+        [
+          217.28546142578125,
+          151.38925170898438
+        ],
+        [
+          359.6854248046875,
+          362.31317138671875
+        ],
+        [
+          284.6866455078125,
+          61.19268798828125
+        ],
+        [
+          307.1357727050781,
+          332.6607666015625
+        ]
+      ]
+    },
+    {
+      "method": "ORB",
+      "ratio": 0.8,
+      "ransacPx": 4,
+      "candidateCount": 10,
+      "inliers": 4,
+      "inlierRatio": 0.4,
+      "medianErrorPx": 0.0,
+      "templateCoverage": 0.05493094762102945,
+      "accepted": false,
+      "reasons": [
+        "Insufficient geometric support",
+        "Too many inconsistent pairs",
+        "Support occupies too small a template patch",
+        "Projected frame is invalid"
+      ],
+      "areaFraction": 0.013709320551559283,
+      "matrix": [
+        [
+          -2.336712238485167,
+          1.7740590494330897,
+          217.28546474575765
+        ],
+        [
+          -2.144855839718535,
+          2.299666488114,
+          151.3892460320723
+        ],
+        [
+          -0.007722245181318567,
+          0.004458380031146396,
+          1.0
+        ]
+      ],
+      "quad": [
+        [
+          217.28546142578125,
+          151.38925170898438
+        ],
+        [
+          359.6854248046875,
+          362.31317138671875
+        ],
+        [
+          284.6866455078125,
+          61.19268798828125
+        ],
+        [
+          307.1357727050781,
+          332.6607666015625
+        ]
+      ]
+    }
+  ],
+  "referenceImageId": "0709ecf8-ce2e-414d-a7bd-e1e99200bf9b",
+  "sceneImageId": "50291bfd-adea-4ea2-b152-70c2a7cd5400",
+  "scope": "Observed planar correspondence under explicit trial gates, without independent industrial labels."
+}

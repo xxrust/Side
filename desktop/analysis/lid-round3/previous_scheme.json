@@ -1,0 +1,286 @@
+{
+  "scheme": {
+    "id": "lid-pkg-body",
+    "version": 3,
+    "execution": {
+      "unit": "workpiece",
+      "inputSlots": [
+        {
+          "id": "image",
+          "required": true
+        }
+      ],
+      "dataContracts": "required",
+      "referenceInputs": {
+        "shape": "226b40d8-d738-49c7-95b4-c681b05eabfc"
+      }
+    },
+    "classificationSpec": {
+      "schema": "agentcv-classification-spec-1",
+      "id": "lid-overhang",
+      "provenance": [
+        {
+          "type": "human",
+          "status": "confirmed",
+          "ref": "thread:86d477bc-ed9b-40a2-b1f6-67370a3b56cb; 超出即歪斜；不能區分UNKNOWN；客戶OK/NG映射另定"
+        }
+      ],
+      "categories": [
+        {
+          "id": "GOOD",
+          "label": "不歪斜",
+          "quality": "good"
+        },
+        {
+          "id": "SKEW",
+          "label": "歪斜",
+          "quality": "bad"
+        },
+        {
+          "id": "UNKNOWN",
+          "label": "UNKNOWN",
+          "quality": "undetermined"
+        }
+      ],
+      "metrics": [
+        {
+          "id": "state",
+          "type": "enum",
+          "values": [
+            "contained",
+            "overhang",
+            "uncertain"
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "id": "outside",
+          "categoryId": "SKEW",
+          "when": {
+            "metric": "state",
+            "equals": "overhang"
+          }
+        },
+        {
+          "id": "inside",
+          "categoryId": "GOOD",
+          "when": {
+            "metric": "state",
+            "equals": "contained"
+          }
+        },
+        {
+          "id": "unsure",
+          "categoryId": "UNKNOWN",
+          "when": {
+            "metric": "state",
+            "equals": "uncertain"
+          }
+        }
+      ],
+      "coverage": {
+        "policy": "exhaustive"
+      },
+      "missing": {
+        "NOT_FOUND": "UNKNOWN",
+        "MISSING": "UNKNOWN",
+        "SKIPPED": "UNKNOWN"
+      },
+      "conflicts": {
+        "mode": "priority",
+        "priority": [
+          "outside",
+          "inside",
+          "unsure"
+        ]
+      },
+      "aggregation": {
+        "mode": "priority",
+        "priority": [
+          "SKEW",
+          "GOOD",
+          "UNKNOWN"
+        ]
+      },
+      "fault": {
+        "exit": "FAULT"
+      }
+    },
+    "metricBindings": [
+      {
+        "metric": "state",
+        "nodeId": "body",
+        "path": "state"
+      }
+    ],
+    "operatorGraph": {
+      "edges": [],
+      "nodes": [
+        {
+          "id": "body",
+          "title": "分層本體比較",
+          "op": "programmable-python",
+          "parameters": {
+            "model": {
+              "lidLevels": [
+                200,
+                185,
+                170,
+                155,
+                140
+              ],
+              "pkgLevels": [
+                45,
+                60,
+                75
+              ],
+              "sigma": 1.5,
+              "closing": 49,
+              "minArea": 100000,
+              "radius": 65,
+              "stride": 4,
+              "deltas": [
+                8,
+                4,
+                2,
+                1,
+                0.5
+              ],
+              "passes": 16,
+              "angleStep": 0.2,
+              "clip": 10,
+              "residual": 5,
+              "gap": 12,
+              "samples": 40,
+              "refine": 14,
+              "minVisible": 100,
+              "minSectors": 4,
+              "sectors": 12,
+              "floor": 2,
+              "maxSpread": 8,
+              "holdoutMax": 6,
+              "minLidLevels": 2
+            }
+          },
+          "expected_outputs": [
+            {
+              "id": "overlay",
+              "type": "image",
+              "role": "result",
+              "dataContract": {
+                "kind": "image",
+                "coordinates": {
+                  "frame": {
+                    "kind": "input",
+                    "slot": "image"
+                  },
+                  "unit": "px"
+                }
+              }
+            },
+            {
+              "id": "lid_view",
+              "type": "image",
+              "role": "intermediate",
+              "dataContract": {
+                "kind": "image",
+                "coordinates": {
+                  "frame": {
+                    "kind": "input",
+                    "slot": "image"
+                  },
+                  "unit": "px"
+                }
+              }
+            },
+            {
+              "id": "pkg_view",
+              "type": "image",
+              "role": "intermediate",
+              "dataContract": {
+                "kind": "image",
+                "coordinates": {
+                  "frame": {
+                    "kind": "input",
+                    "slot": "image"
+                  },
+                  "unit": "px"
+                }
+              }
+            },
+            {
+              "id": "stats",
+              "type": "evidence",
+              "dataContract": {
+                "kind": "json"
+              }
+            },
+            {
+              "id": "geometry",
+              "type": "evidence",
+              "dataContract": {
+                "kind": "json"
+              }
+            }
+          ],
+          "justification": {
+            "tool": {
+              "reason": "分層對稱本體加兩條互補觀察：全周可分離輪廓直接檢查包含；遮擋時由固定良品pkg原型與目標可見部分恢復姿態。原型同尺寸假設尚待驗證。",
+              "expectedEvidence": [
+                {
+                  "kind": "artifact",
+                  "type": "image",
+                  "id": "overlay"
+                }
+              ]
+            },
+            "parameters": [
+              {
+                "name": "model",
+                "source": "agent-proposal",
+                "reason": "17/33/49閉合實比後採49以取得斷環候選；原圖回搜與直接間隙核對避免把補線當實測。其餘試驗門檻未最優化，floor2是影像不確定帶非允許超出。",
+                "verification": {
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "id": "stats"
+                }
+              }
+            ],
+            "boundaries": [
+              {
+                "condition": "兩層明暗身份、同產品同尺度、形態學閉合沒有遮蔽局部突出仍需獨立人工輪廓；支持不足、不穩或間隙不足UNKNOWN。",
+                "check": {
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "id": "stats"
+                },
+                "onFailure": "UNKNOWN"
+              }
+            ]
+          },
+          "code": "P=parameters['model']\ndef sdf(x,m):\n a=np.deg2rad(m[4]);q=np.abs((x-m[:2])@np.array([[np.cos(a),-np.sin(a)],[np.sin(a),np.cos(a)]]))-m[2:4]+m[5]\n return np.linalg.norm(np.maximum(q,0),axis=1)+np.minimum(np.maximum(q[:,0],q[:,1]),0)-m[5]\ndef fit(x,m,keys=range(6)):\n def loss(q):\n  if q[5]<2 or min(q[2:4])<=q[5]:return 1e12\n  return np.mean(np.minimum(sdf(x,q)**2,P['clip']**2))\n for d in P['deltas']:\n  ds=np.array([d,d,d,d,P['angleStep']*d,d])\n  for _ in range(P['passes']):\n   changed=False\n   for k in keys:\n    opts=[m.copy(),m.copy(),m.copy()];opts[1][k]+=ds[k];opts[2][k]-=ds[k];j=int(np.argmin([loss(z) for z in opts]))\n    if j:m=opts[j];changed=True\n   if not changed:break\n return m\ndef initial(x):\n (cx,cy),(w,h),a=cv2.minAreaRect(x.astype(np.float32))\n if a>45:a-=90;w,h=h,w\n if w<h:a+=90;w,h=h,w\n return np.array([cx,cy,w/2,h/2,a,P['radius']],float)\ndef curve(m):\n pts=[];N=P['samples']\n for sx,sy,a0 in [(1,1,0),(-1,1,90),(-1,-1,180),(1,-1,270)]:\n  a=np.deg2rad(np.linspace(a0,a0+90,N,endpoint=False));pts.extend(np.stack([sx*(m[2]-m[5])+m[5]*np.cos(a),sy*(m[3]-m[5])+m[5]*np.sin(a)],1));end=np.array([sx*(m[2]-m[5])+m[5]*np.cos(np.deg2rad(a0+90)),sy*(m[3]-m[5])+m[5]*np.sin(np.deg2rad(a0+90))]);sx,sy={0:(-1,1),90:(-1,-1),180:(1,-1),270:(1,1)}[a0];beg=np.array([sx*(m[2]-m[5])+m[5]*np.cos(np.deg2rad(a0+90)),sy*(m[3]-m[5])+m[5]*np.sin(np.deg2rad(a0+90))]);pts.extend(np.linspace(end,beg,N,endpoint=False))\n a=np.deg2rad(m[4]);return np.array(pts)@np.array([[np.cos(a),np.sin(a)],[-np.sin(a),np.cos(a)]])+m[:2]\ndef contour(g,t,k=0):\n mask=(g>t).astype(np.uint8)*255\n if k:mask=cv2.morphologyEx(mask,cv2.MORPH_CLOSE,np.ones((k,k),np.uint8))\n cs,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE);cs=[c for c in cs if cv2.contourArea(c)>P['minArea']]\n return max(cs,key=cv2.contourArea)[:,0,:].astype(float) if cs else None\ndef why(art):\n return {'tool':{'reason':'各自對稱本體保留相對姿態；可見輪廓及原型推估分開。','expectedEvidence':[{'kind':'artifact','type':'image','id':art}]},'parameters':[{'name':'model','source':'agent-proposal','reason':'閉合尺度實比採49，其他控制未調優。原型是資料假設非CAD。','verification':{'kind':'artifact','type':'image','id':art}}],'boundaries':[{'condition':'亮環身份與形態學候選仍須人工核對；UNKNOWN不能當成功命中。','check':{'kind':'artifact','type':'image','id':art},'onFailure':'UNKNOWN'}]}\ng=cv2.GaussianBlur(gray,(0,0),P['sigma']);v=image.copy();lc=[];pc=[];rc=[];direct=[];rings=[];objects=[];state='uncertain';reason='本體支持不足';lm=None;pm=None;lower=None;upper=None;holdout=None\nwith procedure('bodies',name='分層本體比較',parameters=parameters,inputs={'image':image_records[0]['id'],'shape':reference_records['shape']['id']},outputs={'comparison':'stats'},justification=why('overlay')) as pr:\n with step('lid',name='lid本體與原圖回搜',parameters=parameters,justification=why('lid_view')) as st:\n  for t in P['lidLevels']:\n   x=contour(g,t,P['closing'])\n   if x is not None:\n    m=fit(x[::P['stride']],initial(x));r=float(np.sqrt(np.mean(sdf(x,m)**2)));lc.append({'level':t,'m':m.tolist(),'rms':r});rings.append((t,x));cv2.polylines(v,[x.astype(np.int32)],True,(0,150,150),1)\n  candidates=[z for z in lc if z['rms']<=P['residual']]\n  if candidates:\n   lm=np.array(candidates[0]['m']);x=curve(lm);tan=np.roll(x,-1,0)-np.roll(x,1,0);norm=np.stack([tan[:,1],-tan[:,0]],1);norm/=np.maximum(np.linalg.norm(norm,axis=1)[:,None],1e-6);o=np.arange(-P['refine'],P['refine']+1);xy=x[:,None,:]+norm[:,None,:]*o[None,:,None];prof=cv2.remap(g,xy[:,:,0].astype(np.float32),xy[:,:,1].astype(np.float32),cv2.INTER_LINEAR).astype(float);j=np.argmax(prof[:,:-2]-prof[:,2:],axis=1)+1;support=xy[np.arange(len(x)),j];lm=fit(support,lm);lr=float(np.sqrt(np.mean(sdf(support,lm)**2)));cv2.polylines(v,[curve(lm).astype(np.int32)],True,(0,255,0),2)\n  save_image('lid_view',v);st.set_output('candidates',lc)\n with step('pkg',name='pkg可見輪廓與遮擋恢復',parameters=parameters,depends_on=['lid'],justification=why('pkg_view')) as st:\n  rg=cv2.GaussianBlur(cv2.cvtColor(references['shape'],cv2.COLOR_BGR2GRAY),(0,0),P['sigma'])\n  for t in P['pkgLevels']:\n   x=contour(rg,t)\n   if x is not None:\n    m=fit(x[::P['stride']],initial(x));rc.append({'level':t,'m':m.tolist(),'rms':float(np.sqrt(np.mean(sdf(x,m)**2)))})\n  if lm is not None:\n   for t in P['pkgLevels']:\n    x=contour(g,t)\n    if x is None:continue\n    outer=x.astype(np.float32).reshape(-1,1,2);full=fit(x[::P['stride']],initial(x));fr=float(np.sqrt(np.mean(sdf(x,full)**2)))\n    for lt,lx in rings:\n     distances=[cv2.pointPolygonTest(outer,(float(a),float(b)),True) for a,b in lx];direct.append({'lidLevel':lt,'pkgLevel':t,'minGapPx':float(min(distances)),'outerRms':fr})\n    vis=x[sdf(x,lm)>P['gap']][::P['stride']]\n    if len(vis)<P['minVisible']:continue\n    for proto in rc:\n     m=initial(x);m[[2,3,5]]=np.array(proto['m'])[[2,3,5]];m=fit(vis,m,[0,1,4]);res=sdf(vis,m);r=float(np.sqrt(np.mean(np.minimum(res*res,P['clip']**2))));ang=np.arctan2(vis[:,1]-m[1],vis[:,0]-m[0]);sectors=np.floor((ang+np.pi)/(2*np.pi)*P['sectors']).astype(int);models=[]\n     for sec in np.unique(sectors):\n      subset=vis[sectors!=sec]\n      if len(subset)>=P['minVisible']//2:models.append(fit(subset,m.copy(),[0,1,4]))\n     spread=max([float(np.max(np.abs(sdf(curve(m),q)))) for q in models]+[0]);pc.append({'level':t,'prototype':proto['level'],'m':m.tolist(),'rms':r,'sectors':len(np.unique(sectors)),'holdoutSpread':spread,'overrun':float(np.max(sdf(curve(lm),m)))})\n    for pt in vis:cv2.circle(v,tuple(pt.astype(int)),1,(255,100,0),-1)\n   usable=[z for z in pc if z['rms']<=P['residual'] and z['sectors']>=P['minSectors'] and z['holdoutSpread']<=P['holdoutMax']]\n   if usable:pm=np.array(min(usable,key=lambda z:z['rms'])['m'])\n  if pm is not None:\n   q=curve(pm).astype(int)\n   for i in range(len(q)-1):\n    if i%2==0:cv2.line(v,tuple(q[i]),tuple(q[i+1]),(255,100,0),2)\n  save_image('pkg_view',v);st.set_output('candidates',pc);st.set_output('direct',direct)\n with step('comparison',name='超出與可判定性',parameters=parameters,depends_on=['pkg'],justification=why('overlay')) as st:\n  if pm is not None:\n   vals=[z['overrun'] for z in usable];holdout=max(z['holdoutSpread'] for z in usable);err=P['floor']+lr+max(z['rms'] for z in usable)+holdout;lower=min(vals)-err;upper=max(vals)+err\n   if max(vals)-min(vals)<=P['maxSpread'] and lr<=P['residual']:\n    state='overhang' if lower>0 else ('contained' if upper<=0 else 'uncertain');reason='原型形狀假設下的包含比較'\n  if state!='overhang' and len(rings)>=P['minLidLevels'] and len(direct)==len(rings)*len(P['pkgLevels']) and all(z['minGapPx']>P['floor'] and z['outerRms']<=P['residual'] for z in direct):\n   state='contained';reason='多亮度層的全周可見分離輪廓均包含lid'\n  for name,m in [('lid-model',lm),('pkg-inferred-model',pm)]:\n   if m is not None:objects.append({'id':name,'type':'polyline','geometry':{'points':[{'x':float(a),'y':float(b)} for a,b in curve(m)]}})\n  if pm is not None:\n   q=curve(lm)\n   for pt in q[sdf(q,pm)>0]:cv2.circle(v,tuple(pt.astype(int)),2,(0,0,255),-1)\n  save_image('overlay',v);save_layers('geometry',[{'id':'body-models','objects':objects}]);stats={'state':state,'reason':reason,'lid':lm.tolist() if lm is not None else None,'pkg':pm.tolist() if pm is not None else None,'lidCandidates':lc,'pkgCandidates':pc,'referenceModels':rc,'directChecks':direct,'overrunLowerPx':lower,'overrunUpperPx':upper,'holdoutSpreadPx':holdout,'limits':'固定原型假設同產品同尺度；閉合輪廓與多門檻只是像素支持，非獨立物理真值；留一區段不驗證真實尺寸；UNKNOWN客戶映射未設定。'};save_json('stats',stats);st.set_output('comparison',stats);pr.set_output('comparison',stats)\nresult={'valid':True,**stats}\n"
+        }
+      ]
+    },
+    "fingerprints": {
+      "basis": "467fb3fcbfd7291c"
+    }
+  },
+  "compilation": {
+    "ok": true,
+    "mode": "scheme",
+    "isDraft": false,
+    "schema": "agentcv-workpiece-plan-1",
+    "errors": [],
+    "questions": [],
+    "warnings": [],
+    "order": [
+      "body"
+    ],
+    "lifecycleDependencies": [],
+    "version": "agentcv-purpose-compiler-2",
+    "schemeFingerprint": "467fb3fcbfd7291c",
+    "validationScope": "結構、引用與明示規則檢查；不證明算法精度或效能。"
+  }
+}

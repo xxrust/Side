@@ -1,0 +1,23 @@
+PASS line fit recovers a known oblique line
+PASS circle fit recovers known center/radius
+PASS degenerate geometry fails explicitly
+PASS horizontal search finds the actual image edge
+PASS vertical search finds the actual image edge
+PASS radial search finds the actual circle pixels
+PASS blank images and overhigh thresholds return UNKNOWN
+PASS reversed polarity does not reuse previous geometry
+PASS movement preserves identity/notes but invalidates tool result
+PASS all drawing types move without detaching metadata
+PASS movement is clamped to the source image bounds
+PASS text editing preserves native keys and clipboard behavior
+PASS IME composition and Alt shortcuts never mutate canvas objects
+PASS Mac and Windows undo/redo/duplicate shortcuts agree
+PASS context menu, inline edit and rename have keyboard entry points
+PASS tool shortcuts do not steal browser commands
+PASS nudges support one-pixel and ten-pixel steps
+PASS multiple parallel edges survive without default selection
+PASS selection is a set scoped to its run, not an ordinal
+PASS advanced coverage gate and angle gate affect acceptance
+
+20 behavior checks passed. All scripts parse; IDs and references are valid.
+Browser visual/interaction QA: not covered by this script.

@@ -1,0 +1,179 @@
+/* Long source names must never set the intrinsic width of a workspace or dialog. */
+.workspace,.work-area,#stageBody,#stagePanel,.page-content,.page-heading>div,
+.app-header,.agent-panel,.agent-name>div,.content-bar,.recipe-inspector>*{min-width:0}
+.page-heading>div{overflow:hidden}
+.page-heading h1{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.page-heading p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.content-bar>p{min-width:0;overflow-wrap:anywhere}
+dialog{min-inline-size:0;max-inline-size:calc(100dvw - 24px);max-block-size:calc(100dvh - 24px)}
+.dialog-heading{min-width:0}
+.dialog-heading>:first-child{min-width:0;flex:1;overflow:hidden}
+.dialog-heading h2,.dialog-heading small{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dialog-heading>button{flex:0 0 32px;width:32px;height:32px;padding:0;align-self:flex-start;display:grid;place-items:center}
+
+/* One compact rectangle for the image collection; each image owns a vertical card. */
+.image-strip{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center;gap:8px;height:112px;min-width:0;padding:6px 8px;margin-top:8px;border:1px solid #3b535e;border-radius:9px;background:#152731}
+.image-deck{display:grid;grid-auto-flow:column;grid-auto-columns:104px;justify-content:start;gap:8px;min-width:0;height:98px;overflow:hidden}
+.image-card{height:98px;min-width:0;position:relative;border:1px solid #3c5663;border-radius:7px;background:#1b303b;overflow:hidden}
+.image-card.active{border-color:#a4efc3;background:#284638}
+.image-tile{position:relative;display:grid;grid-template-rows:58px minmax(0,1fr);align-items:stretch;gap:3px;width:100%;height:100%;padding:4px;border:0;border-radius:6px;background:transparent;text-align:center;min-width:0}
+.image-tile:hover{background:#33505a}
+.image-tile img{width:100%;height:58px;object-fit:contain;background:#0c1a22;image-rendering:pixelated;pointer-events:none}
+.image-caption{display:grid;grid-template-rows:13px 12px;min-width:0;width:100%;overflow:hidden;pointer-events:none}
+.image-tile .tile-name{display:block;width:100%;max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:13px}
+.image-tile .tile-label{display:block;min-width:0;margin:0;font-size:9px;line-height:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.image-number{position:absolute;top:5px;left:5px;min-width:18px;padding:0 3px;border-radius:3px;background:#10212be8;color:#d7e9e2;font-size:9px;line-height:16px;pointer-events:none}
+.image-edit{position:absolute;right:5px;top:5px;width:23px;height:23px;padding:0;margin:0;border:1px solid #476773;border-radius:5px;background:#18333feb;font-size:12px;display:grid;place-items:center}
+.image-arrow{width:34px;height:44px;padding:0;justify-self:center;align-self:center;font-size:23px;touch-action:none;user-select:none}
+.image-navigation{display:grid;place-items:center;height:100%;position:relative}
+.image-position{position:absolute;top:calc(50% + 25px);left:0;width:100%;white-space:nowrap;text-align:center;font-size:9px;font-variant-numeric:tabular-nums;overflow:hidden}
+.image-tile:focus-visible{outline-offset:-3px}
+
+/* The header, content and footer share the viewport budget; no child sets dialog width. */
+dialog.plan-dialog{width:min(900px,calc(100dvw - 32px));height:min(710px,calc(100dvh - 32px));padding:20px;overflow:hidden}
+dialog.plan-dialog[open]{display:grid;grid-template-rows:auto 44px minmax(0,1fr) auto;gap:12px}
+.plan-dialog>.dialog-heading{margin:0}
+.plan-dialog .dialog-heading h2{margin-top:4px}
+#planBinding{width:100%;font-size:10px}
+.plan-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding-bottom:9px;min-width:0}
+.plan-tabs button{min-width:0;overflow:hidden;text-overflow:ellipsis;padding:6px 8px}
+.plan-detail-body{height:auto;min-height:0;min-width:0;padding:0;overflow:hidden;gap:9px}
+.plan-detail-body>*{min-width:0;flex-shrink:0}
+.plan-detail-card{min-width:0}
+.plan-detail-card p{overflow-wrap:anywhere}
+.plan-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.plan-data{display:grid;grid-template-columns:max-content minmax(0,1fr);min-width:0;gap:10px}
+.plan-data strong{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.plan-formula{max-width:100%;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.plan-gate-tables{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.plan-gate-card{min-width:0;display:grid;gap:9px;border:1px solid #38545f;border-radius:7px;padding:10px}
+.plan-gate-card p{overflow-wrap:anywhere}
+.plan-table{table-layout:fixed;min-width:0;max-width:100%}
+.plan-table th,.plan-table td{overflow-wrap:anywhere;padding:7px 5px}
+#planDetailFooter{min-width:0;padding-top:9px;gap:12px}
+#planDetailFooter>p{min-width:0;flex:1}
+#planDetailFooter>.row{flex:0 0 auto}
+.plan-detail-body[data-plan-tab="dataset"] .plan-table{font-size:10px}
+@media(max-height:800px){
+ .image-strip{height:94px;padding:5px 8px;margin-top:6px}
+ .image-deck,.image-card{height:82px}
+ .image-tile{grid-template-rows:43px minmax(0,1fr);gap:3px}
+ .image-tile img{height:43px}
+ .image-arrow{height:37px}
+ .image-position{top:calc(50% + 21px)}
+ dialog.plan-dialog{padding:16px}
+ dialog.plan-dialog[open]{grid-template-rows:auto 38px minmax(0,1fr) auto;gap:10px}
+ .plan-detail-body{gap:7px}
+ .plan-detail-card{padding:7px 10px}
+ .plan-template-preview{height:90px}
+ .plan-gate-card{padding:8px;gap:7px}
+ .plan-table th,.plan-table td{padding:6px 4px}
+}
+
+.validation-table{table-layout:fixed;min-width:0;max-width:100%}
+.validation-table th:nth-child(1){width:34%}
+.validation-table th:nth-child(2),.validation-table th:nth-child(3){width:10%}
+.validation-table td{min-width:0;overflow-wrap:anywhere}
+.result-image-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+
+/* The executable graph owns the stage; image strip and chat stay fixed. */
+#stageBody.pipeline-stage{display:flex;min-height:0;overflow:hidden}#stageBody.pipeline-stage .board-area{width:100%;min-height:0;min-width:0;display:flex;overflow:hidden}.pipeline-host{width:100%;height:100%;min-height:0;min-width:0;overflow:hidden}#stageBody.pipeline-stage~.page-content:empty{display:none}
+
+/* Keep navigation beside the image: the workbench and chat own the full height. */
+#desktop{grid-template-columns:150px minmax(0,1fr);grid-template-rows:minmax(0,1fr);min-width:0;overflow:hidden}
+#desktop>.app-rail{grid-column:1;grid-row:1;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;min-width:0;min-height:0;height:100%;padding:12px 10px;border-right:1px solid var(--line);background:#15232c;overflow:hidden}
+.app-rail>.app-header{display:grid;align-items:start;gap:10px;padding:0 0 10px;border-bottom:1px solid var(--line);background:transparent}
+.app-rail .brand{display:grid;grid-template-columns:23px minmax(0,1fr);gap:0 6px;align-items:center;min-width:0;white-space:nowrap;user-select:none}
+.app-rail .brand>span{grid-column:1;grid-row:1/3;font-size:27px;line-height:36px}
+.app-rail .brand>strong{grid-column:2;grid-row:1;font-size:17px;font-weight:750;line-height:22px}
+.app-rail .brand>small{display:block;grid-column:2;grid-row:2;font-size:8px;letter-spacing:.3px;line-height:13px;color:#a9c2c9}
+.rail-project{display:grid;gap:2px;min-width:0}.rail-project>small{font-size:9px;line-height:13px;color:#89a7b2}
+.app-rail #projectName{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-width:0;max-height:30px;overflow:hidden;white-space:normal;overflow-wrap:anywhere;font-size:11px;line-height:15px;color:#d1e1e3}
+.app-rail #steps{display:grid;grid-auto-rows:40px;align-content:start;align-items:stretch;gap:4px;min-width:0;min-height:0;padding:0;border:0;background:transparent}
+.app-rail #steps button{display:flex;align-items:center;gap:7px;min-width:0;width:100%;padding:7px;border:1px solid transparent;border-radius:6px;background:transparent;color:#b2c9d1;font-size:11px;line-height:16px;white-space:nowrap;text-align:left}
+.app-rail #steps .step-number{display:inline-grid;place-items:center;flex:0 0 20px;width:20px;height:20px;margin:0;font-size:10px;line-height:18px}
+.app-rail #steps button.current{border-color:#628c74;background:#294b39;color:#d9fbe4}.app-rail #steps button:disabled{opacity:.42}.app-rail #steps button.current:disabled{opacity:.7}
+.app-rail>.header-actions{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:32px;gap:4px;margin:0;padding-top:10px;border-top:1px solid var(--line);min-width:0}
+.app-rail .header-actions button{width:100%;min-width:0;padding:5px 9px;text-align:left;font-size:11px;background:#1b303a;border-color:#354f5b}
+.app-rail .header-actions #saveProject{border-color:#537263;background:#254337}.app-rail .header-actions kbd{float:right;margin:0;font-size:9px}
+#desktop>.workspace{grid-column:2;grid-row:1;grid-template-columns:minmax(0,1fr) 330px;min-width:0;min-height:0;height:100%;overflow:hidden}
+/* The active step is already named in the rail; do not spend a second row on it. */
+#desktop .work-area>.page-heading{display:none}
+#desktop .work-area{grid-template-rows:minmax(0,1fr) auto auto 68px;padding-top:12px}
+#desktop .work-area>#stageBody{grid-row:1}
+#desktop .work-area>#pageContent{grid-row:2}
+#desktop .work-area>#imageStrip{grid-row:3}
+#desktop .work-area>.page-footer{grid-row:4}
+#desktop .work-area:has(.gear-workbench){grid-template-rows:minmax(0,1fr) auto auto 38px}
+@media(max-width:1200px){#desktop>.workspace{grid-template-columns:minmax(0,1fr) 290px}}
+@media(max-height:800px){#desktop .work-area{grid-template-rows:minmax(0,1fr) auto auto 58px;padding-top:10px}#desktop .work-area:has(.gear-workbench){grid-template-rows:minmax(0,1fr) auto auto 38px}}
+@media(max-height:680px){
+ #desktop>.app-rail{gap:8px;padding:8px 10px}.app-rail>.app-header{gap:8px;padding-bottom:8px}
+ .app-rail #steps{grid-auto-rows:36px}.app-rail #steps button{padding:5px 7px}
+ .app-rail>.header-actions{grid-auto-rows:28px;padding-top:8px}.app-rail .header-actions button{padding:3px 9px}
+}
+
+.project-load-notice{position:absolute;z-index:80;left:14px;right:14px;bottom:12px;display:flex;align-items:center;gap:12px;padding:12px 16px;background:#443b22;border:1px solid #b79d56;border-radius:8px;font-size:12px;line-height:1.6;box-shadow:0 5px 22px #0007}.project-load-notice span{flex:1;min-width:0}.project-load-notice button{flex-shrink:0;font-size:11px}
+
+body.app-closing #desktop,body.app-restoring #desktop{pointer-events:none}body.app-closing #desktop{opacity:.8}
+#sessionRestoreNotice{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:var(--side-paper,#fbf5f6);color:var(--side-ink,#3f2d38);font-size:18px;font-weight:700;letter-spacing:.04em}
+
+/* Settings use three package rows and explicit pages within the dialog budget. */
+#settingsDialog{width:min(540px,calc(100dvw - 24px));padding:18px;overflow:auto}
+#settingsForm{display:grid;gap:10px;min-width:0}
+#settingsForm .dialog-heading{margin:0}
+#settingsForm h2{font-size:19px;margin:0}
+#settingsForm p{margin:0;overflow-wrap:anywhere;line-height:1.45}
+#settingsForm section{min-width:0;display:grid;gap:10px}
+#settingsForm section[hidden]{display:none}
+#settingsForm label{min-width:0;margin:0}
+#settingsForm select{width:100%;min-width:0}
+.settings-tabs{display:flex;gap:6px;border-bottom:1px solid #3b535e;padding-bottom:8px}
+.settings-tabs button{flex:1}
+.settings-tabs [aria-selected=true]{border-color:#a4efc3;background:#284638}
+.settings-note{font-size:12px;color:#a8bcc5}
+.settings-list-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}
+#agentPackageList{display:grid;gap:6px;min-width:0}
+.settings-package{display:flex;align-items:center;gap:10px;min-width:0;padding:8px;border:1px solid #3b535e;border-radius:6px}
+.settings-package>input{width:16px;height:16px;flex:none;margin:0}
+.settings-package-copy{flex:1;min-width:0;display:grid;gap:3px}
+.settings-package-copy strong,.settings-package-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.settings-package-copy small{font-size:10px;color:#a8bcc5}
+.settings-package>button{flex:none;padding:5px 9px;font-size:11px}
+.settings-pager{display:flex;align-items:center;justify-content:center;gap:12px;font-size:11px}
+.settings-pager button{padding:2px 12px}
+#agentRuntimeSummary{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#agentProfileState{font-size:12px}
+#settingsError:empty{display:none}
+#settingsError{font-size:12px;max-height:52px;overflow:auto}
+
+/* The project is the canvas; legacy setup pages have no navigation surface. */
+.project-canvas-mode #steps,.project-canvas-mode .page-heading,.project-canvas-mode .page-footer,.project-canvas-mode #pageContent,.project-canvas-mode .program-project-toggle{display:none!important}
+.project-canvas-mode #boardArea{height:100%;min-height:0}
+.project-canvas-mode .work-area{display:flex;flex-direction:column;min-height:0}
+.project-canvas-mode #stageBody{flex:1;min-height:0}
+.project-canvas-mode .program-flow-rail{flex:1;min-height:0}
+.project-canvas-mode .program-flow-rail .program-flow-map{flex:1}
+.project-canvas-mode .inquiry-heading h2{font-size:14px}
+.project-canvas-mode .intent-guide{display:none}
+
+/* Compact project commands above a collapsible full-height flow rail. */
+body.project-canvas-mode #desktop{grid-template-rows:44px minmax(0,1fr);grid-template-columns:clamp(260px,22vw,330px) minmax(0,1fr)}
+body.project-canvas-mode #desktop>.workspace{grid-row:2;grid-column:2}
+body.project-canvas-mode #desktop>.app-rail{grid-row:2;grid-column:1;grid-template-rows:auto minmax(0,1fr);padding:8px 10px;gap:8px}
+.project-topbar{grid-column:1/-1;grid-row:1;display:flex;align-items:center;gap:14px;padding:5px 10px;background:#15232c;border-bottom:1px solid #344c57;min-width:0}
+.project-topbar .brand{display:flex;align-items:center;gap:7px;white-space:nowrap}.project-topbar .brand>span{color:#a3ebc9;font-size:23px}.project-topbar .brand strong{font-size:14px}.project-topbar .brand small{font-size:9px;color:#a5bdc7}
+.project-topbar .header-actions{display:flex;align-items:center;gap:5px;margin:0;padding:0;border:0}
+.project-topbar .header-actions button{height:30px;padding:5px 9px;font-size:11px;min-width:0;border-radius:5px}.project-topbar .header-actions svg{width:14px;height:14px}.project-topbar kbd{display:none}
+.project-topbar>#flowRailToggle{margin-left:auto;height:30px;width:32px;padding:6px}
+body.project-canvas-mode.flow-rail-collapsed #desktop{grid-template-columns:0 minmax(0,1fr)}
+body.flow-rail-collapsed #desktop>.app-rail{visibility:hidden;padding:0;border:0;overflow:hidden}
+#flowRailHandle{display:none;position:fixed;left:0;top:45%;width:18px;min-width:18px;height:64px;padding:1px;z-index:15;border-radius:0 6px 6px 0;border-left:0;background:#25414d}
+body.flow-rail-collapsed #flowRailHandle{display:flex;align-items:center;justify-content:center}
+
+.project-topbar .header-actions button{border:1px solid #3b5560;background:#1c303a}.project-topbar .header-actions #saveProject{border-color:#5d826d;background:#254337}
+
+/* Left rail controls remain attached to the boundary they operate on. */
+#flowRailToggle{position:fixed;left:calc(clamp(260px,22vw,330px) - 16px);top:48%;z-index:16;width:24px;min-width:24px;height:58px;padding:3px;border-radius:6px;border:1px solid #73958b;background:#254539;color:#d4f4df;display:flex;align-items:center;justify-content:center}
+body.flow-rail-collapsed #flowRailToggle{display:none}
+#flowRailHandle{top:48%;width:24px;min-width:24px;height:58px;padding:3px;border:1px solid #73958b;background:#254539;color:#d4f4df}

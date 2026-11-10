@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-25T10:03:25.845Z",
+  "bundle": "/Users/liangshiben/13-cv/AgentCV.app",
+  "node": "/Users/liangshiben/.local/bin/node",
+  "architecture": "/Users/liangshiben/13-cv/AgentCV.app/Contents/MacOS/agentcv-desktop: Mach-O 64-bit executable arm64",
+  "signature": "valid local ad-hoc signature",
+  "resourcesVerified": {
+    "pi-bridge.mjs": "1d20d5f978ed003565764aa894a4545691e94cb3454decbcecc0bce1cdbcef24",
+    "pi-auth.mjs": "a2d5c05e735e870472e57fd60fc9834cac6e2b09a6ec9020cf7907ffe014366e",
+    "agent-contract.json": "212f1022dd5957f7e272655b7f229f59b2f2bd945c73aa1215d207d8d2f8c2d3"
+  },
+  "piBridge": {
+    "model": {
+      "provider": "openai-codex",
+      "id": "gpt-6.1-sol"
+    },
+    "availableModelCount": 24,
+    "tools": [
+      "get_pipeline_capabilities",
+      "get_pipeline_evidence",
+      "select_image",
+      "create_pipeline",
+      "set_pipeline_graph",
+      "run_pipeline",
+      "run_pipeline_batch",
+      "get_context",
+      "go_to_step",
+      "propose_region",
+      "suggest_foreground",
+      "set_workpiece_info",
+      "add_part",
+      "set_target_note",
+      "add_relation",
+      "read_reference",
+      "propose_label",
+      "propose_check",
+      "build_recipe",
+      "run_current"
+    ]
+  },
+  "nativeUiAcceptance": "Not completed: Sky Computer Use service startup failed"
+}

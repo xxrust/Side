@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "mode": "scheme",
+  "isDraft": false,
+  "schema": "agentcv-workpiece-plan-1",
+  "errors": [],
+  "questions": [],
+  "warnings": [],
+  "order": [
+    "objects"
+  ],
+  "lifecycleDependencies": [],
+  "version": "agentcv-purpose-compiler-2",
+  "schemeFingerprint": "d99c236af6bff616",
+  "validationScope": "結構、引用與明示規則檢查；不證明算法精度或效能。"
+}

@@ -1,0 +1,20 @@
+✔ Agent context keeps numerical geometry while dense supports remain in the visual evidence (29.467625ms)
+✔ pipeline measurement needs no check, taught ROI or tolerance and retains pixel values with SPEC_MISSING (19.510583ms)
+✔ explicit rules classify observed quantities and preserve size values when millimeter calibration is absent (45.0945ms)
+✔ an uncertain feature keeps its diagnostics and cannot turn a candidate value into a reliable FAIL (13.816375ms)
+✔ all-image validation executes each raster separately and leaves unlabelled accuracy null (26.435542ms)
+✔ parameter and source-identity edits invalidate completed results instead of silently reusing them (18.67475ms)
+✔ in-flight parameter mutation discards the late result without overwriting the current image (7.773833ms)
+✔ in-flight source-identity mutation also discards the late result (7.8875ms)
+✔ current-result binding detects changed pixels even if source metadata was not refreshed (12.414583ms)
+✔ in-flight pixel edits discard results computed from the earlier pixel snapshot (8.203416ms)
+✔ malformed saved graphs reject atomically before image decoding or workspace replacement (29.1385ms)
+✔ save/load preserves the graph and historical evidence but requires a fresh run for current results (27.513041ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 286.392375

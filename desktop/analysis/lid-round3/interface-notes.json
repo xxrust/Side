@@ -1,0 +1,1 @@
+{"validationAttempt1":{"code":"PARAMETER_SOURCE_MISMATCH","path":"operations.comparison.justification.parameters[0].source","message":"來源與宿主保存的 agent-proposal 不符。","supplied":"development-data","resolution":"改為宿主要求agent-proposal；理由保留實際離線開發數據來源，未修改平台源碼。"}}

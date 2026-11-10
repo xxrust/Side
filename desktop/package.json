@@ -1,0 +1,25 @@
+{
+  "name": "agentcv-desktop",
+  "version": "0.16.7",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "node scripts/generate-agent-contract.mjs && vite build",
+    "desktop": "tauri dev",
+    "package": "node scripts/package-local.mjs",
+    "test": "node --test qa/*.test.mjs",
+    "package:preview": "tauri build --debug --bundles app",
+    "agentcv": "node scripts/agentcv.mjs"
+  },
+  "dependencies": {
+    "@agentclientprotocol/codex-acp": "2.5.0",
+    "@tauri-apps/api": "^2.0.0",
+    "elkjs": "^0.12.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "ajv": "^8.20.0",
+    "vite": "^7.0.0"
+  }
+}

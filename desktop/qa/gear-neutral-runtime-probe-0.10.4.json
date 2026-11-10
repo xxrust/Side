@@ -1,0 +1,1912 @@
+{
+  "scope": "Source-level replay from saved native inputs using Node/V8. Not native UI acceptance and not a blind operation round. Tiny floating-point differences from the saved WebKit result are explicitly listed; QA requires absolute difference below 1e-10 and exact count/classification/pixel identity.",
+  "planId": "pipeline-75c82433-6054-4e7a-88cd-ae449140bff0",
+  "planRevision": 1,
+  "rows": [
+    {
+      "image": "test-01.png",
+      "sourceImageSha256": "0a644cb00df4434a2fe84b5f7af36e12cc1911a5108000898aa2d6067f8bfe50",
+      "pixelSha256": "8181f17161b1d693f9f35e2e7707c88ba51f5baf594d463d783285a3272a529e",
+      "previousRunId": "fa28c183-2378-4a8e-b255-c8ad1a4f179d",
+      "newRunId": "e7bc2a30-2332-4653-a477-779413484246",
+      "measurements": {
+        "unit": "px",
+        "workpieceCenter": {
+          "x": 255.87525452831787,
+          "y": 255.9996392471297
+        },
+        "visibleTeeth": 16,
+        "missingTeeth": 0,
+        "pitchVariation": 0.0023050328937646554,
+        "radialToothHeight": 25.07708258504286,
+        "holeCenter": {
+          "x": 268,
+          "y": 256
+        },
+        "eccentricityPx": 12.12474547704895,
+        "centerOffset": {
+          "x": 12.124745471682132,
+          "y": 0.0003607528703071239
+        },
+        "excessTeeth": 0
+      },
+      "discreteMeasurementsExactlyUnchanged": true,
+      "floatingPointDifferences": [
+        {
+          "path": "pitchVariation",
+          "actual": 0.0023050328937646554,
+          "previous": 0.002305032893764655,
+          "absoluteDifference": 4.336808689942018e-19
+        },
+        {
+          "path": "eccentricityPx",
+          "actual": 12.12474547704895,
+          "previous": 12.124745477048952,
+          "absoluteDifference": 1.7763568394002505e-15
+        }
+      ],
+      "maximumAbsoluteDifference": 1.7763568394002505e-15,
+      "classificationUnchanged": true,
+      "classification": "UNKNOWN",
+      "inputInspection": {
+        "classification": "color",
+        "colorPixels": 207602,
+        "grayLevelCount": 31,
+        "strictBinary": false
+      },
+      "preprocessing": [
+        {
+          "id": "grayscale",
+          "executionMode": "format-conversion",
+          "choiceStatus": "prescribed"
+        },
+        {
+          "id": "segment",
+          "executionMode": "segmentation",
+          "choiceStatus": "prescribed"
+        }
+      ],
+      "featureStatus": "MEASURED",
+      "sweeps": [
+        {
+          "parameterName": "smoothingWindow",
+          "candidates": [
+            {
+              "value": 3,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 5,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 7,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 11,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 17,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 25,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 41,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 61,
+              "count": 16,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 4,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 101,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 147,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minProminence",
+          "candidates": [
+            {
+              "value": 0.17670524619437541,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 0.5890174873145847,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 1.4725437182864618,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 2.9450874365729236,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 5.890174873145847,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 8.835262309718772,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 11.780349746291694,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 17.670524619437543,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 29.450874365729234,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minPeakDistance",
+          "candidates": [
+            {
+              "value": 1,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 2.6550000000000002,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 6.6375,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 13.275,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 19.9125,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 26.55,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 39.825,
+              "count": 15,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 1,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 53.1,
+              "count": 13,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 79.65,
+              "count": 8,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "ordinary_gap_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4.8,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "test-02.png",
+      "sourceImageSha256": "9f8d7d0a386cb3f85c53b8c6e8b96f5c81c746a9a21ea37d70f5fcb07505b3cd",
+      "pixelSha256": "f84fee6f5007f3e2431194b64c93bff110217a404e8b2ab84e9ae12d167788e6",
+      "previousRunId": "9c663b7f-5481-466e-9702-107efe847a72",
+      "newRunId": "ae9cf496-2d7b-430c-8ad4-3458b61d1ca3",
+      "measurements": {
+        "unit": "px",
+        "workpieceCenter": {
+          "x": 254.83127240842188,
+          "y": 254.62056427045343
+        },
+        "visibleTeeth": 10,
+        "missingTeeth": null,
+        "pitchVariation": 0.027764002439593212,
+        "radialToothHeight": 173.9924570686859
+      },
+      "discreteMeasurementsExactlyUnchanged": true,
+      "floatingPointDifferences": [],
+      "maximumAbsoluteDifference": 0,
+      "classificationUnchanged": true,
+      "classification": "UNKNOWN",
+      "inputInspection": {
+        "classification": "binary",
+        "colorPixels": 0,
+        "grayLevelCount": 2,
+        "strictBinary": true
+      },
+      "preprocessing": [
+        {
+          "id": "grayscale",
+          "executionMode": "pass-through",
+          "choiceStatus": "bypassed"
+        },
+        {
+          "id": "segment",
+          "executionMode": "pass-through",
+          "choiceStatus": "bypassed"
+        }
+      ],
+      "featureStatus": "UNKNOWN",
+      "sweeps": [
+        {
+          "parameterName": "smoothingWindow",
+          "candidates": [
+            {
+              "value": 3,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 5,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 7,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 11,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 13,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 17,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 25,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 41,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 61,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 101,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 171,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minProminence",
+          "candidates": [
+            {
+              "value": 1.2283963317082214,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 4.094654439027405,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 10.236636097568512,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 20.473272195137024,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 40.94654439027405,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 61.41981658541107,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 81.8930887805481,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 122.83963317082214,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 204.73272195137025,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minPeakDistance",
+          "candidates": [
+            {
+              "value": 1,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 4.9776,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "local_count_agreement",
+                  "actual": 4,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 12.443999999999999,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 24.887999999999998,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 37.331999999999994,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 49.775999999999996,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 74.66399999999999,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 99.55199999999999,
+              "count": 10,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 149.32799999999997,
+              "count": 4,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "ordinary_gap_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 2.4,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                },
+                {
+                  "id": "radial_modulation",
+                  "actual": 0.7232901776079503,
+                  "operator": "<=",
+                  "threshold": 0.35,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "test-03.png",
+      "sourceImageSha256": "3588cc1fa7518537a2db2d4ce97335686bb03b3819cc96aa8b3af92974a2877e",
+      "pixelSha256": "ed5c3678d2eef212d4e4342c089d15c47648e491dd9b384089835ddc95a54552",
+      "previousRunId": "1a0c7a13-c583-45a3-b1ad-8be50354a62c",
+      "newRunId": "222bccf2-936c-43f1-b99d-5193e05e00b4",
+      "measurements": {
+        "unit": "px",
+        "workpieceCenter": {
+          "x": 255.87525452831787,
+          "y": 255.9996392471297
+        },
+        "visibleTeeth": 16,
+        "missingTeeth": 0,
+        "pitchVariation": 0.0023050328937646554,
+        "radialToothHeight": 25.07708258504286,
+        "holeCenter": {
+          "x": 256,
+          "y": 256
+        },
+        "eccentricityPx": 0.1247459933137378,
+        "centerOffset": {
+          "x": 0.12474547168213235,
+          "y": 0.0003607528703071239
+        },
+        "excessTeeth": 0
+      },
+      "discreteMeasurementsExactlyUnchanged": true,
+      "floatingPointDifferences": [
+        {
+          "path": "pitchVariation",
+          "actual": 0.0023050328937646554,
+          "previous": 0.002305032893764655,
+          "absoluteDifference": 4.336808689942018e-19
+        },
+        {
+          "path": "centerOffset.x",
+          "actual": 0.12474547168213235,
+          "previous": 0.12474547168213236,
+          "absoluteDifference": 1.3877787807814457e-17
+        }
+      ],
+      "maximumAbsoluteDifference": 1.3877787807814457e-17,
+      "classificationUnchanged": true,
+      "classification": "UNKNOWN",
+      "inputInspection": {
+        "classification": "color",
+        "colorPixels": 207602,
+        "grayLevelCount": 31,
+        "strictBinary": false
+      },
+      "preprocessing": [
+        {
+          "id": "grayscale",
+          "executionMode": "format-conversion",
+          "choiceStatus": "prescribed"
+        },
+        {
+          "id": "segment",
+          "executionMode": "segmentation",
+          "choiceStatus": "prescribed"
+        }
+      ],
+      "featureStatus": "MEASURED",
+      "sweeps": [
+        {
+          "parameterName": "smoothingWindow",
+          "candidates": [
+            {
+              "value": 3,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 5,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 7,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 11,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 17,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 25,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 41,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 61,
+              "count": 16,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 4,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 101,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 147,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minProminence",
+          "candidates": [
+            {
+              "value": 0.17670524619437541,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 0.5890174873145847,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 1.4725437182864618,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 2.9450874365729236,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 5.890174873145847,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 8.835262309718772,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 11.780349746291694,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 17.670524619437543,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 29.450874365729234,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minPeakDistance",
+          "candidates": [
+            {
+              "value": 1,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 2.6550000000000002,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 6.6375,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 13.275,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 19.9125,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 26.55,
+              "count": 16,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 39.825,
+              "count": 15,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 1,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 53.1,
+              "count": 13,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 79.65,
+              "count": 8,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "ordinary_gap_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4.8,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "image": "test-04.png",
+      "sourceImageSha256": "525eec9535ac40ebc14ee577f33bab9639d9ade0255fd56f8d9d440b8e39af72",
+      "pixelSha256": "78eb8f96f1c822543221887d036f2186d615ce11b4840fe397d7c41d888a7afb",
+      "previousRunId": "c7439872-71bd-4ab9-ac5f-1f4492e4cf38",
+      "newRunId": "f340f401-2800-437c-abb4-ba23532fa2f3",
+      "measurements": {
+        "unit": "px",
+        "workpieceCenter": {
+          "x": 256.1663216285402,
+          "y": 255.97228437151247
+        },
+        "visibleTeeth": 15,
+        "missingTeeth": 1,
+        "pitchVariation": 0.002205424691936666,
+        "radialToothHeight": 25.169324969627908,
+        "holeCenter": {
+          "x": 256,
+          "y": 256
+        },
+        "eccentricityPx": 0.16861506511197163,
+        "centerOffset": {
+          "x": -0.16632162854017452,
+          "y": 0.02771562848752751
+        },
+        "excessTeeth": 0
+      },
+      "discreteMeasurementsExactlyUnchanged": true,
+      "floatingPointDifferences": [
+        {
+          "path": "pitchVariation",
+          "actual": 0.002205424691936666,
+          "previous": 0.0022054246919360945,
+          "absoluteDifference": 5.715913853343579e-16
+        }
+      ],
+      "maximumAbsoluteDifference": 5.715913853343579e-16,
+      "classificationUnchanged": true,
+      "classification": "UNKNOWN",
+      "inputInspection": {
+        "classification": "color",
+        "colorPixels": 208329,
+        "grayLevelCount": 31,
+        "strictBinary": false
+      },
+      "preprocessing": [
+        {
+          "id": "grayscale",
+          "executionMode": "format-conversion",
+          "choiceStatus": "prescribed"
+        },
+        {
+          "id": "segment",
+          "executionMode": "segmentation",
+          "choiceStatus": "prescribed"
+        }
+      ],
+      "featureStatus": "MEASURED",
+      "sweeps": [
+        {
+          "parameterName": "smoothingWindow",
+          "candidates": [
+            {
+              "value": 3,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 5,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 7,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 11,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 17,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 25,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 41,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 61,
+              "count": 15,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 4,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 101,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 147,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minProminence",
+          "candidates": [
+            {
+              "value": 0.17664630723765717,
+              "count": 15,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 0.588821024125524,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 1.47205256031381,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 2.94410512062762,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 5.88821024125524,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 8.83231536188286,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 11.77642048251048,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 17.66463072376572,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 29.4410512062762,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "parameterName": "minPeakDistance",
+          "candidates": [
+            {
+              "value": 1,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 2.646,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 6.614999999999999,
+              "count": 0,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "minimum_peaks",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4,
+                  "passed": false
+                },
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 13.229999999999999,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 19.845,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 26.459999999999997,
+              "count": 15,
+              "status": "SUPPORTED",
+              "failedGates": []
+            },
+            {
+              "value": 39.69,
+              "count": 13,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 2,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 52.919999999999995,
+              "count": 13,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "local_count_agreement",
+                  "actual": 3,
+                  "operator": "==",
+                  "threshold": 5,
+                  "passed": false
+                }
+              ]
+            },
+            {
+              "value": 79.38,
+              "count": 8,
+              "status": "REJECTED",
+              "failedGates": [
+                {
+                  "id": "pitch_variation",
+                  "actual": 1,
+                  "operator": "<=",
+                  "threshold": 0.18,
+                  "passed": false
+                },
+                {
+                  "id": "ordinary_gap_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 4.8,
+                  "passed": false
+                },
+                {
+                  "id": "root_support",
+                  "actual": 0,
+                  "operator": ">=",
+                  "threshold": 0.7,
+                  "passed": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

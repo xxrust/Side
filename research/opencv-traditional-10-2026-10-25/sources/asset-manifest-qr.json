@@ -1,0 +1,42 @@
+[
+  {
+    "name": "qr-version_1_down.jpg",
+    "path": "testdata/cv/qrcode/version_1_down.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_down.jpg",
+    "bytes": 57555,
+    "sha256": "4b29417c673225aff71672519684f2db9798e9d27356580d90438467bfbb595d",
+    "status": "downloaded"
+  },
+  {
+    "name": "qr-version_1_top.jpg",
+    "path": "testdata/cv/qrcode/version_1_top.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_top.jpg",
+    "bytes": 52787,
+    "sha256": "2f58406d668f34286e95bc3e3797beae1e231f15200247deccd6489dbe3c8865",
+    "status": "downloaded"
+  },
+  {
+    "name": "qr-version_1_left.jpg",
+    "path": "testdata/cv/qrcode/version_1_left.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_left.jpg",
+    "bytes": 52827,
+    "sha256": "94cd751c5d2255ea2e02e7129bda5f73a53feaa887ebd1ba93ffcab2763ca625",
+    "status": "downloaded"
+  },
+  {
+    "name": "qr-version_1_right.jpg",
+    "path": "testdata/cv/qrcode/version_1_right.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_right.jpg",
+    "bytes": 50634,
+    "sha256": "72eefeefaeaaa87d0169c9debf8fb3e30c6fae2a31cb123e3fbd1fd61a2d7679",
+    "status": "downloaded"
+  },
+  {
+    "name": "qr-version_1_up.jpg",
+    "path": "testdata/cv/qrcode/version_1_up.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_up.jpg",
+    "bytes": 51333,
+    "sha256": "1e46c71e861317256129ff9c36e2d57a8d0fb251970ff7b52f38736c151ed917",
+    "status": "downloaded"
+  }
+]

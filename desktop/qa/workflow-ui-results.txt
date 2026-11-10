@@ -1,0 +1,13 @@
+✔ Seven-stage real UI and raster closed loop, correction, release and stale reload (829.639375ms)
+✔ Pi command entry handles local account/model/help actions without an LLM prompt (57.374125ms)
+✔ Original user raster: left edge search and physical-unit gate use actual pixels (566.613791ms)
+✔ An unrelated uncircled part does not block a width-only inspection (259.258959ms)
+✔ Changing only magnification revokes measured-scale confirmation until explicit recheck (280.772917ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2307.343625

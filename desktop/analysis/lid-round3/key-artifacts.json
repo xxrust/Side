@@ -1,0 +1,23 @@
+{
+  "overlay": {
+    "$asset": "assets/a51bc173456de1b614fa3b4c0159b3d1cba25d20975f8d144a551b670375ced2.png",
+    "mime": "image/png",
+    "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+    "sha256": "a51bc173456de1b614fa3b4c0159b3d1cba25d20975f8d144a551b670375ced2",
+    "size": 924097
+  },
+  "optical": {
+    "$asset": "assets/481ff43b2b2b4c1c2503f1d8a6cf6a260a58ffc21d86d4931a949f5cfa742f36.png",
+    "mime": "image/png",
+    "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+    "sha256": "481ff43b2b2b4c1c2503f1d8a6cf6a260a58ffc21d86d4931a949f5cfa742f36",
+    "size": 923645
+  },
+  "distribution": {
+    "$asset": "assets/e860965f4c983e6a3732f4e3a000f8c795db513cf01dc42aafc378071bb4adba.png",
+    "mime": "image/png",
+    "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+    "sha256": "e860965f4c983e6a3732f4e3a000f8c795db513cf01dc42aafc378071bb4adba",
+    "size": 26256
+  }
+}

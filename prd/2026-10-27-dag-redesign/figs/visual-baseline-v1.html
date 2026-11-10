@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AgentCV 观感基线 v1 · 浅色无限板</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: #e8eaed;
+    color: #111827;
+    padding: 24px;
+  }
+  .frame {
+    max-width: 1120px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 22px 24px 18px;
+    box-shadow: 0 1px 3px rgba(17,24,39,0.06);
+  }
+  .chrome-title {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .chrome-title h1 {
+    font-size: 15px; font-weight: 650; letter-spacing: -0.01em;
+  }
+  .chrome-title .meta {
+    font-size: 11px; color: #6b7280;
+  }
+  .stage {
+    position: relative;
+    height: 560px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    background: #fafbfc;
+    /* tldraw-like soft dot grid */
+    background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+    background-size: 18px 18px;
+    background-position: 8px 8px;
+  }
+  /* floating left toolbar */
+  .toolbar {
+    position: absolute;
+    left: 14px; top: 50%; transform: translateY(-50%);
+    width: 52px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(17,24,39,0.08);
+    padding: 8px 6px;
+    display: flex; flex-direction: column; gap: 4px;
+    z-index: 5;
+  }
+  .tool {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 8px 4px 6px;
+    border-radius: 8px;
+    border: none; background: transparent;
+    cursor: default;
+    color: #374151;
+  }
+  .tool.active {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+  .tool .icon {
+    width: 22px; height: 22px;
+    display: grid; place-items: center;
+  }
+  .tool .icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .tool .lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.02em; }
+  .tool.sep {
+    height: 1px; padding: 0; margin: 4px 6px;
+    background: #e5e7eb; border-radius: 0;
+  }
+
+  /* board images */
+  .img-card {
+    position: absolute;
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(17,24,39,0.07);
+    overflow: hidden;
+  }
+  .img-card .bar {
+    height: 28px;
+    background: #f9fafb;
+    border-bottom: 1px solid #eef0f3;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 10px;
+    font-size: 11px; font-weight: 650; color: #374151;
+  }
+  .img-card .bar .tag {
+    font-size: 9px; font-weight: 600;
+    padding: 1px 6px; border-radius: 999px;
+    background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;
+  }
+  .img-card .bar .tag.ghost {
+    background: #f3f4f6; color: #6b7280; border-color: #e5e7eb;
+  }
+  .img-card .viewport {
+    position: relative;
+    background: #0f172a;
+    overflow: hidden;
+  }
+  .img-card .viewport > img.plate {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  /* legacy silhouette unused when real plates present */
+  .part { display: none; }
+
+  /* ROI editable solid */
+  .roi {
+    position: absolute;
+    z-index: 2;
+    border: 2.25px solid #2563eb;
+    background: rgba(37,99,235,0.08);
+    border-radius: 3px;
+  }
+  .roi .handle {
+    position: absolute; width: 7px; height: 7px;
+    background: #fff; border: 1.5px solid #2563eb; border-radius: 1px;
+  }
+  .roi .handle.tl { left: -4px; top: -4px; }
+  .roi .handle.tr { right: -4px; top: -4px; }
+  .roi .handle.bl { left: -4px; bottom: -4px; }
+  .roi .handle.br { right: -4px; bottom: -4px; }
+  .roi-badge {
+    position: absolute; left: 0; top: -18px;
+    font-size: 9px; font-weight: 700; color: #1d4ed8;
+    background: #eff6ff; border: 1px solid #bfdbfe;
+    padding: 1px 6px; border-radius: 4px; white-space: nowrap;
+  }
+
+  /* ghost ROI dashed */
+  .roi-ghost {
+    position: absolute;
+    z-index: 2;
+    border: 2px dashed #64748b;
+    background: rgba(100,116,139,0.06);
+    border-radius: 3px;
+  }
+  .roi-ghost-badge {
+    position: absolute; left: 0; top: -18px;
+    font-size: 9px; font-weight: 700; color: #475569;
+    background: #f8fafc; border: 1px solid #cbd5e1;
+    padding: 1px 6px; border-radius: 4px; white-space: nowrap;
+  }
+
+  /* distance annotation on image */
+  .dist-ann {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .dist-ann .line {
+    position: absolute;
+    height: 1.75px;
+    background: #0d9488;
+    transform-origin: left center;
+  }
+  .dist-ann .end {
+    position: absolute; width: 8px; height: 8px;
+    border: 1.75px solid #0d9488; border-radius: 50%;
+    background: #fff;
+    transform: translate(-50%, -50%);
+  }
+  .dist-ann .readout {
+    position: absolute;
+    transform: translate(-50%, -140%);
+    font-size: 11px; font-weight: 700;
+    color: #0f766e;
+    background: #ecfdf5;
+    border: 1px solid #99f6e4;
+    padding: 2px 7px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(13,148,136,0.12);
+    white-space: nowrap;
+  }
+
+  /* intent sticky */
+  .sticky {
+    position: absolute;
+    width: 148px;
+    background: #fef9c3;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    padding: 10px 12px;
+    box-shadow: 0 2px 6px rgba(161,98,7,0.1);
+    font-size: 11px; line-height: 1.45; color: #78350f;
+  }
+  .sticky .k { font-weight: 700; font-size: 10px; color: #a16207; margin-bottom: 4px; }
+
+  /* mini DAG corner */
+  .dag-mini {
+    position: absolute;
+    right: 14px; top: 14px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 12px 12px;
+    box-shadow: 0 2px 10px rgba(17,24,39,0.06);
+    z-index: 4;
+    min-width: 200px;
+  }
+  .dag-mini .h {
+    font-size: 10px; font-weight: 700; color: #6b7280;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .dag-mini .h .pill {
+    font-size: 9px; font-weight: 650;
+    background: #fef3c7; color: #92400e;
+    border: 1px solid #fcd34d;
+    padding: 1px 6px; border-radius: 999px;
+  }
+  .dag-flow {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .dag-node {
+    font-size: 11px; font-weight: 650;
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1.5px solid #93c5fd;
+    background: #eff6ff; color: #1e40af;
+  }
+  .dag-node.defect {
+    border-color: #fca5a5;
+    background: #fef2f2; color: #991b1b;
+  }
+  .dag-arrow {
+    color: #2563eb; font-size: 14px; font-weight: 700;
+  }
+  .dag-note {
+    margin-top: 8px;
+    font-size: 10px; color: #6b7280; line-height: 1.4;
+  }
+  .dag-note strong { color: #111827; font-weight: 650; }
+  .dag-ban {
+    margin-top: 4px;
+    font-size: 10px; color: #b91c1c; font-weight: 600;
+  }
+
+  /* secondary JSON drawer */
+  .json-drawer {
+    position: absolute;
+    left: 80px; right: 14px; bottom: 12px;
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(17,24,39,0.05);
+    z-index: 4;
+    overflow: hidden;
+  }
+  .json-drawer .head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 12px;
+    background: #f9fafb;
+    border-bottom: 1px solid #eef0f3;
+    font-size: 11px; font-weight: 650; color: #6b7280;
+  }
+  .json-drawer .head .chev {
+    font-size: 10px; color: #9ca3af;
+  }
+  .json-drawer .body {
+    padding: 8px 12px 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10px; line-height: 1.5; color: #6b7280;
+    max-height: 52px; overflow: hidden;
+  }
+  .json-drawer .body .dim { color: #9ca3af; }
+
+  /* board label */
+  .board-label {
+    position: absolute;
+    left: 80px; top: 14px;
+    font-size: 10px; font-weight: 600; color: #9ca3af;
+    letter-spacing: 0.02em;
+  }
+
+  /* footer acceptance */
+  .footer {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+  }
+  .footer .cap {
+    font-size: 11px; font-weight: 650; color: #111827; margin-bottom: 6px;
+  }
+  .footer ul {
+    list-style: none;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px;
+  }
+  .footer li {
+    font-size: 11px; color: #4b5563; line-height: 1.45;
+    padding-left: 14px; position: relative;
+  }
+  .footer li::before {
+    content: "✓";
+    position: absolute; left: 0; color: #059669; font-weight: 700; font-size: 10px;
+  }
+  .footer li.ban::before { content: "✗"; color: #dc2626; }
+
+  /* select-to-ask: gray draft bubble (Canvas 对稿补刀) */
+  .marker-sel {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px rgba(59,130,246,.35);
+    z-index: 5;
+  }
+  .ask-bubble {
+    position: absolute;
+    z-index: 6;
+    min-width: 168px;
+    max-width: 200px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    border: 1px dashed #94a3b8;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.45;
+    box-shadow: 0 4px 12px rgba(15,23,42,.06);
+  }
+  .ask-bubble::before {
+    content: "";
+    position: absolute;
+    left: -6px; top: 12px;
+    border: 6px solid transparent;
+    border-right-color: #94a3b8;
+  }
+  .ask-bubble .lab {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 4px;
+  }
+  .ask-bubble .draft { color: #64748b; }
+  .ask-bubble .acts {
+    display: flex; gap: 6px; margin-top: 8px;
+  }
+  .ask-bubble .acts span {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px dashed #cbd5e1;
+    color: #94a3b8;
+    background: #fff;
+  }
+</style>
+</head>
+<body>
+  <div class="frame" id="capture">
+    <div class="chrome-title">
+      <h1>AgentCV 观感基线 v1 · 浅色无限板</h1>
+      <div class="meta">对照 tldraw / Miro 干净度 · 图像为主画布 · JSON 次级 · 禁橱窗 Offset</div>
+    </div>
+
+    <div class="stage">
+      <div class="board-label">无限画板 · 点阵底 · 图为主</div>
+
+      <!-- floating toolbar -->
+      <div class="toolbar" aria-label="标注工具条">
+        <div class="tool active" title="选择">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 4l7 17 2.5-6.5L20 12z"/></svg></div>
+          <div class="lbl">选</div>
+        </div>
+        <div class="tool" title="线">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+          <div class="lbl">线</div>
+        </div>
+        <div class="tool" title="测距">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 9v6"/><path d="M20 9v6"/><path d="M8 11v2"/><path d="M12 11v2"/><path d="M16 11v2"/></svg></div>
+          <div class="lbl">距</div>
+        </div>
+        <div class="tool" title="圆">
+          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg></div>
+          <div class="lbl">圆</div>
+        </div>
+        <div class="tool sep"></div>
+        <div class="tool" title="便签">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M15 4v3h3"/></svg></div>
+          <div class="lbl">签</div>
+        </div>
+      </div>
+
+      <!-- mini DAG: Locate → Defect only -->
+      <div class="dag-mini">
+        <div class="h">推导预览 <span class="pill">意图：OK / 划痕</span></div>
+        <div class="dag-flow">
+          <div class="dag-node">Locate</div>
+          <div class="dag-arrow">→</div>
+          <div class="dag-node defect">Defect</div>
+        </div>
+        <div class="dag-note">节点须回溯到意图约束</div>
+        <div class="dag-ban">禁止无意图 Offset（橱窗拓扑）</div>
+      </div>
+
+      <!-- Image A: editable ROI owner -->
+      <div class="img-card" style="left: 86px; top: 52px; width: 320px;">
+        <div class="bar">
+          检测图 A · plate_ok
+          <span class="tag">ROI 可编辑</span>
+        </div>
+        <div class="viewport" style="height: 220px;">
+          <img class="plate" src="assets/plate_ok.png" alt="OK 板 plate_ok"/>
+          <div class="roi" style="left: 92px; top: 58px; width: 118px; height: 96px;">
+            <div class="roi-badge">共享定位 · 主 ROI</div>
+
+          <!-- select-to-ask: gray draft (Canvas 补刀) -->
+          <div class="marker-sel" style="left: 148px; top: 78px;" title="选中标记"></div>
+          <div class="ask-bubble" style="left: 168px; top: 58px;">
+            <div class="lab">选择即问 · 灰态草稿</div>
+            <div class="draft">「这块是划痕还是油污？」</div>
+            <div class="acts"><span>确认发送</span><span>编辑</span></div>
+          </div>
+
+            <div class="handle tl"></div>
+            <div class="handle tr"></div>
+            <div class="handle bl"></div>
+            <div class="handle br"></div>
+          </div>
+          <!-- distance annotation example -->
+          <div class="dist-ann" style="left: 0; top: 0; width: 100%; height: 100%;">
+            <div class="end" style="left: 118px; top: 168px;"></div>
+            <div class="end" style="left: 236px; top: 168px;"></div>
+            <div class="line" style="left: 118px; top: 167px; width: 118px;"></div>
+            <div class="readout" style="left: 177px; top: 168px;">118.0 px</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image B: ghost ROI -->
+      <div class="img-card" style="left: 440px; top: 78px; width: 300px;">
+        <div class="bar">
+          检测图 B · plate_ng_scratch
+          <span class="tag ghost">幽灵叠层</span>
+        </div>
+        <div class="viewport" style="height: 200px;">
+          <img class="plate" src="assets/plate_ng_scratch.png" alt="划痕 NG 板 plate_ng_scratch"/>
+          <div class="roi-ghost" style="left: 86px; top: 48px; width: 110px; height: 90px;">
+            <div class="roi-ghost-badge">幽灵 ROI · 只读 · 点回共享源</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- intent sticky -->
+      <div class="sticky" style="left: 430px; top: 340px;">
+        <div class="k">意图标记</div>
+        OK 区域 / 划痕判定<br/>
+        <span style="opacity:0.75">无「相对偏移 / 对齐」约束</span>
+      </div>
+
+      <!-- secondary JSON drawer (collapsed feel) -->
+      <div class="json-drawer">
+        <div class="head">
+          <span>推导 JSON / 次级 · 非主反馈</span>
+          <span class="chev">▾ 收起态示意</span>
+        </div>
+        <div class="body">
+          <span class="dim">{</span>
+          "nodes": [{"kind":"Locate","id":"n1"}, {"kind":"Defect","id":"n2"}],
+          "edges": [{"from":"n1","to":"n2","kind":"requires"}],
+          <span style="color:#b91c1c">"Offset": /* 本意图集 = 0 */</span>
+          <span class="dim"> }</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="cap">验收硬条（观感基线 · 契约绿 ≠ 画板交付）</div>
+      <ul>
+        <li>浅色无限板 + 点阵底，首屏以检测图为主画布</li>
+        <li>工具条可见：选 / 线 / 距 / 圆（入口本刀必过）</li>
+        <li>同板 ≥2 图：实线可编辑 ROI + 虚线幽灵 ROI</li>
+        <li>图上测距读数（px）为主反馈，JSON 退次级抽屉</li>
+        <li>选 1 标记 → 旁出问题草稿示意（可灰态；确认才发）</li>
+        <li>迷你 DAG 仅 Locate→Defect，标注「意图：OK/划痕」</li>
+        <li class="ban">默认 demo 禁止橱窗式 Locate→Offset→Defect</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

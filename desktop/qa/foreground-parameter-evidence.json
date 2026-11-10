@@ -1,0 +1,19 @@
+{
+  "inputSha256": "eb8f1a5cd012e442a751b42868b50b09e2d404891e1f5ad7124889a4c8a1a586",
+  "sampleStep": 4,
+  "records": [
+    {
+      "mode": "otsu",
+      "effectiveThreshold": 64,
+      "autoThreshold": 64,
+      "whiteCells": 48930
+    },
+    {
+      "mode": "manual",
+      "effectiveThreshold": 128,
+      "autoThreshold": 64,
+      "whiteCells": 6371
+    }
+  ],
+  "nativeVisualAcceptance": false
+}

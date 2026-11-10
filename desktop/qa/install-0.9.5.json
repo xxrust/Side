@@ -1,0 +1,11 @@
+{
+  "installedAt": "2026-10-25T04:56:21.089400+00:00",
+  "version": "0.9.5",
+  "path": "/Users/liangshiben/13-cv/AgentCV.app",
+  "backup": "/Users/liangshiben/13-cv/AgentCV-0.9.4.app",
+  "binarySha256": "eeef78efa1706767098e82937227c8ea79a5884438f6c0ef04b34377020166d3",
+  "runningApplicationWasNotStopped": true,
+  "jsTestsPassed": 92,
+  "rustTestsPassed": 5,
+  "nativeWindowVisualQA": false
+}

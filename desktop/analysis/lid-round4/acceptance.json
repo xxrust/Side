@@ -1,0 +1,75 @@
+{
+  "schema": "agentcv-project-acceptance-1",
+  "draft": {},
+  "agreement": null,
+  "questions": [
+    {
+      "id": "ACCEPTANCE_maxMissRate",
+      "code": "ACCEPTANCE_maxMissRate",
+      "path": "acceptanceWorkspace",
+      "question": "請提供漏檢率上限（0–100%）及依據。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_maxFalseRejectRate",
+      "code": "ACCEPTANCE_maxFalseRejectRate",
+      "path": "acceptanceWorkspace",
+      "question": "請提供誤剔率上限（0–100%）及依據。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_maxMismatchRate",
+      "code": "ACCEPTANCE_maxMismatchRate",
+      "path": "acceptanceWorkspace",
+      "question": "請提供分類不一致率上限（0–100%）及依據。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_maxFaultRate",
+      "code": "ACCEPTANCE_maxFaultRate",
+      "path": "acceptanceWorkspace",
+      "question": "請提供執行故障率上限（0–100%）及依據。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_maxCycleMs",
+      "code": "ACCEPTANCE_maxCycleMs",
+      "path": "acceptanceWorkspace",
+      "question": "請提供完整主機週期上限（ms），含結果保存，不含相機／PLC延遲及依據。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_unitDescription",
+      "code": "ACCEPTANCE_unitDescription",
+      "path": "acceptanceWorkspace",
+      "question": "請確認一件工件與多相機輸入的對應。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_missingPolicy",
+      "code": "ACCEPTANCE_missingPolicy",
+      "path": "acceptanceWorkspace",
+      "question": "請確認量測失敗時的產品歸類。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_faultPolicy",
+      "code": "ACCEPTANCE_faultPolicy",
+      "path": "acceptanceWorkspace",
+      "question": "請確認執行故障時的處置與產線去向。",
+      "blocking": false
+    },
+    {
+      "id": "ACCEPTANCE_source",
+      "code": "ACCEPTANCE_source",
+      "path": "acceptanceWorkspace",
+      "question": "請確認驗收要求的來源。",
+      "blocking": false
+    }
+  ],
+  "baselines": [],
+  "case": null,
+  "cases": [],
+  "executions": [],
+  "scope": "保留驗收不是權限沙箱；其他既有圖像工具仍可讀取原圖。已用於調參的圖片不能宣稱盲測。"
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "name": "doc-water_coins.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+    "bytes": 16322,
+    "sha256": "7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-water_thresh.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_thresh.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_thresh.jpg",
+    "bytes": 12627,
+    "sha256": "eb701308f22b483f599d16dd25fa97021b9a7e3bc4d237fdfa6cd3340ec6157f",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-water_dt.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_dt.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_dt.jpg",
+    "bytes": 15120,
+    "sha256": "2634281d8c920a578b72d32a277d1a5289ae44522359d2c02552d6cbadb85cb2",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-water_marker.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_marker.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_marker.jpg",
+    "bytes": 16125,
+    "sha256": "3e061b8c3c28ddc77441a0a92fb1673a40125861f2d71479889b770395859ca8",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-water_result.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_result.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_result.jpg",
+    "bytes": 30960,
+    "sha256": "57ce1b24e5048f4a4cd7ada297f4eaf734257b7722e69fee6c5e1cbec419d101",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-hierarchy.png",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/hierarchy.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/hierarchy.png",
+    "bytes": 5168,
+    "sha256": "abc61365d664f9cf23f367b03e54b654bb7bb4b48b154b3647fac6d377a389a7",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-tree_hierarchy.png",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/tree_hierarchy.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/tree_hierarchy.png",
+    "bytes": 11917,
+    "sha256": "5a4bf4cd644a4fbd5fc18124cb97a954c1ffac94b1ad48b1ab9ea97ed602d5fc",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-homography_findobj.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_feature2d/py_feature_homography/images/homography_findobj.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_feature2d/py_feature_homography/images/homography_findobj.jpg",
+    "bytes": 31937,
+    "sha256": "8350da2ae50e40f5ffc4645984feb0fb4307279d5f1bdb382dc99969b4d30118",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-pca_output.png",
+    "folder": "assets",
+    "path": "doc/tutorials/others/images/pca_output.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/tutorials/others/images/pca_output.png",
+    "bytes": 207994,
+    "sha256": "6c64099848fb229ac414a15fd018288e8147dc58180bd8a6c8b64584d9a69ef6",
+    "status": "downloaded"
+  },
+  {
+    "name": "doc-houghcircles.cpp",
+    "folder": "sources",
+    "path": "samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp",
+    "bytes": 1723,
+    "sha256": "8d42802b352844c2e7c8745ddd025a5b80278d4590b79d930fa8f6ce15962682",
+    "status": "downloaded"
+  }
+]

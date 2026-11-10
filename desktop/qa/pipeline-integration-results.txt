@@ -1,0 +1,38 @@
+✔ capabilities describe typed versioned operators and editable parameter schemas (0.508542ms)
+✔ real annulus pixels traverse full resolution operators; missing tolerance preserves measurement (21.599333ms)
+✔ background connectivity preserves a concavity and an enclosed hole without a convex hull (3.535166ms)
+✔ opening a hole to exterior changes topology from one to zero (5.49025ms)
+✔ multiple foreground components expose ambiguity and require explicit selection (3.5735ms)
+✔ boundary objects are excluded, and explicit bright polarity uses actual pixels (1.535875ms)
+✔ uniform images fail visibly instead of manufacturing geometry (0.559208ms)
+✔ validation rejects unknown versions, operations, parameters, references, types, IDs and cycles (0.486042ms)
+✔ invalid graph is rejected before image decoding or execution (0.465833ms)
+✔ runtime follows references and topological order, with independent operator branches (9.991583ms)
+✔ explicit pixel and count rules evaluate measured values (16.023375ms)
+✔ mm rules require a positive traceable calibration; no scale fabricates no mm (26.324458ms)
+✔ uncertain geometry cannot make candidate measurements a formal pass or fail (3.474583ms)
+✔ workspace dual-axis calibration accepts isotropy and rejects anisotropy or one missing axis (11.782083ms)
+✔ batch runs isolate pixels, identities, parameters and snapshots (5.844584ms)
+✔ result freshness binds graph content, revision, identity and actual pixels (4.660458ms)
+✔ RLE is compact, lossless and rejects malformed or overlapping runs (0.154083ms)
+✔ goal UI reaches real pixel gear measurement without ROI or legacy check, then batch and invalidate (239.086166ms)
+✔ Agent tools build and run an actual graph and switch images without proposing a legacy check (141.693916ms)
+✔ pipeline measurement needs no check, taught ROI or tolerance and retains pixel values with SPEC_MISSING (39.749167ms)
+✔ explicit rules classify observed quantities and preserve size values when millimeter calibration is absent (69.457083ms)
+✔ an uncertain feature keeps its diagnostics and cannot turn a candidate value into a reliable FAIL (10.905333ms)
+✔ all-image validation executes each raster separately and leaves unlabelled accuracy null (28.90925ms)
+✔ parameter and source-identity edits invalidate completed results instead of silently reusing them (19.088084ms)
+✔ in-flight parameter mutation discards the late result without overwriting the current image (9.020708ms)
+✔ in-flight source-identity mutation also discards the late result (6.415042ms)
+✔ current-result binding detects changed pixels even if source metadata was not refreshed (10.104875ms)
+✔ in-flight pixel edits discard results computed from the earlier pixel snapshot (8.692166ms)
+✔ malformed saved graphs reject atomically before image decoding or workspace replacement (29.898166ms)
+✔ save/load preserves the graph and historical evidence but requires a fresh run for current results (25.842959ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 718.34425

@@ -1,0 +1,197 @@
+{
+  "schema": "agentcv-workpiece-execution-contract-1",
+  "canonicalPlan": {
+    "sameStorage": "project.data.purposeScheme; legacy schemes still readable and executable by legacy path",
+    "execution": {
+      "unit": "workpiece",
+      "inputSlots": [
+        {
+          "id": "image",
+          "required": true
+        }
+      ],
+      "referenceInputs": {
+        "template": "actual fixed reference image ID; excluded from workpiece unit/ground-truth count"
+      }
+    },
+    "operatorGraph": "Existing nodes/edges; all branches declared before execution. Nodes have arbitrary Python code, parameters, expected_outputs, justifications; optional parentId up to three engineering levels.",
+    "branches": {
+      "when": {
+        "nodeId": "an actual upstream id",
+        "status": [
+          "VALID",
+          "NOT_FOUND",
+          "FAULT",
+          "COMPLETED"
+        ]
+      },
+      "alternatives": {
+        "prerequisites": {
+          "anyOf": [
+            "declared upstream node IDs"
+          ]
+        }
+      },
+      "parentLifecycle": "Parent own execution facts remain immutable; purpose state aggregates children. External consumers wait for the full parent purpose lifecycle; derived lifecycleDependencies are recorded by compilation and do not pretend to be artifact edges."
+    },
+    "classificationSpec": {
+      "schema": "agentcv-classification-spec-1",
+      "id": "stable specification ID",
+      "provenance": [
+        {
+          "type": [
+            "human",
+            "document",
+            "agent-inference"
+          ],
+          "ref": "actual source",
+          "status": [
+            "confirmed",
+            "inferred"
+          ],
+          "authorization": "required for agent-inference"
+        }
+      ],
+      "categories": [
+        {
+          "id": "category ID",
+          "label": "display name",
+          "quality": [
+            "good",
+            "bad",
+            "undetermined"
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "id": "metric ID",
+          "type": [
+            "number",
+            "boolean",
+            "enum"
+          ],
+          "unit": "required for number",
+          "range": {
+            "min": "finite number minimum",
+            "max": "finite number maximum"
+          },
+          "values": "required finite string list for enum"
+        }
+      ],
+      "rules": [
+        {
+          "id": "rule ID",
+          "categoryId": "declared category",
+          "when": "recursive condition: {metric,equals} | {metric,in:[values]} | {metric,interval:{min,max,includeMin,includeMax}} | {all:[condition]} | {any:[condition]} | {not:condition}",
+          "defectLabels": "optional explicit list of findings/tags; may have multiple values"
+        }
+      ],
+      "coverage": {
+        "policy": [
+          "exhaustive",
+          "fallback"
+        ],
+        "fallbackCategoryId": "required for fallback; required policy for compound conditions"
+      },
+      "missing": {
+        "NOT_FOUND": "declared category",
+        "MISSING": "declared category",
+        "SKIPPED": "declared category"
+      },
+      "conflicts": {
+        "mode": [
+          "priority",
+          "multilabel"
+        ],
+        "priority": "every rule ID once when priority"
+      },
+      "aggregation": {
+        "mode": [
+          "priority",
+          "all-good (legacy single-metric + priority rules only)"
+        ],
+        "priority": "every final category ID once; required to resolve ambiguous multi-condition final outcomes",
+        "exclusiveFinal": "exactly one final product category; aggregation.multilabel is rejected with a question, not silently migrated"
+      },
+      "fault": {
+        "exit": "FAULT"
+      }
+    },
+    "metricBindings": [
+      {
+        "metric": "classification metric ID",
+        "nodeId": "actual producer ID",
+        "path": "dot path inside actual run.result"
+      }
+    ]
+  },
+  "APIs": {
+    "compileScheme(scheme)": "{ok,errors,questions,order,...}; missing rules/provenance/endpoint ownership yields questions, never inferred human truth",
+    "runDatasetScheme(project,execute,options)": "One compilation, sequential explicit units; no conversation agent in production loop",
+    "options": {
+      "units": "array or async iterable of {id,imageIds,views?,expected?}; default paged metadata traversal of sourceId, one image each",
+      "sourceId": "optional real source collection",
+      "signal": "AbortSignal; cancellation between-node boundaries; active native worker finishes or times out",
+      "onProgress": "bounded summary containing only latest unit metadata",
+      "saveUnitResult": "awaited callback ({executionId,unit,record,runs,context}); first context has scheme, later context only fingerprint; durable write errors stop dispatch",
+      "artifactMode": "references for durable production; inline retained for legacy small debugging"
+    },
+    "readDatasetExecution(project,id,{offset,limit})": "bounded actual unit metadata/results page (limit 1–200)",
+    "PythonSDK": {
+      "invoke": "invoke(id,callback,requires=[actual Invocation],any_of=[actual Invocation],when=True,...trace metadata)",
+      "normalResult": "found(value) or not_found(message) -> execution COMPLETED; valid false is expected missing result",
+      "fault": "callback exception -> execution FAULT; dependent invocation skipped, independent invocation continues",
+      "root": "result={valid:true,...actualMetrics} or {valid:false,code:'NOT_FOUND'}",
+      "layers": "save_layers(id, actual layer array) writes evidence and run.structuredLayers; original-image geometry is preserved",
+      "upstream": "upstream[slot].artifact.data for JSON; upstream[slot].image for true hash-verified persisted image bytes",
+      "fixedReferences": "execution.referenceInputs binds fixed source images by slot. images/raw_images/image_records contain only the workpiece; references[slot] and reference_records[slot] provide actual reusable reference pixels/provenance."
+    }
+  },
+  "observations": {
+    "execution": "COMPLETED / FAULT / CANCELLED, independent of category",
+    "normalClassification": "exactly one result.categoryId (legacy categoryIds contains that one ID); multiple defectLabels do not contribute extra product counts",
+    "regression": "only human confirmed expected.categoryIds with nonempty provenance.ref enters labelled count; faults never true positive",
+    "timing": "actual monotonic operator durationMs, node hostExecutionMs, workpiece totalMs; dataset exact completed-unit mean/P50/P95/max; active progress does not invent percentiles",
+    "retention": "project.datasetExecutions metadata references durable per-unit records; only latest unit output artifacts retained in project memory under durable callback",
+    "regressionMetrics": {
+      "path": "datasetExecutions[].counts.regression",
+      "perCategory": {
+        "TP": "completed known-positive actually detected",
+        "FP": "completed known-negative predicted this category",
+        "FN": "completed known-positive did not predict this category",
+        "TN": "completed known-negative did not predict this category",
+        "precision": "TP/(TP+FP), null for zero denominator",
+        "recall": "TP/(TP+FN): completed-case recall only, null for zero denominator",
+        "falsePositiveRate": "FP/(FP+TN), null for zero denominator",
+        "expectedPositive": "all attempted human-confirmed expected-positive units",
+        "completedExpectedPositive": "completed valid expected-positive units",
+        "unavailableExpected": "expected-positive FAULT/CANCELLED/unavailable units, excluded from confusion counts",
+        "endToEndDetectionRate": "TP/(completedExpectedPositive+unavailableExpected), attempted-case denominator distinct from completed-case recall"
+      },
+      "coverage": {
+        "labelled": "attempted human-confirmed units",
+        "completed": "labelled units with normal valid completed classification",
+        "unavailable": "labelled faults/cancellations/unavailable classifications",
+        "ratio": "completed/labelled, null when no labelled units"
+      },
+      "labelledFaults": "fault count independent of product NG; faults never become TP",
+      "unavailableExpectedByCategory": "count of expected-positive unavailable units per category",
+      "ratesAvailable": "derived at terminal emission only; active progress exposes counts and null rates",
+      "complexity": "O(category count) for each unit, no rescanning all unit results",
+      "noLabels": "all precision/recall/FPR/detection ratios null; zero raw counters do not imply 0% or 100% accuracy"
+    },
+    "exitPartition": {
+      "record.finalExit": "PRODUCT:<categoryId> | FAULT | CANCELLED",
+      "counts.categories": "mutually exclusive product categories only",
+      "counts.exits": "partition of all processed units, sum equals processed",
+      "counts.evidence": "ready/notReady per attempted unit; case matches cannot bypass explanation completeness"
+    }
+  },
+  "limits": {
+    "noDeploymentClaim": "regression observations and complete explanations do not establish industrial acceptance",
+    "legacy": "legacy all-images node plans remain compatible but are not presented as scalable production runners",
+    "cancel": "does not yet interrupt in-flight Python on human cancellation; timeout/worker-crash are independently recorded faults",
+    "hierarchy": "maximum three engineering node levels; graph container and internal operators do not add engineering levels"
+  }
+}

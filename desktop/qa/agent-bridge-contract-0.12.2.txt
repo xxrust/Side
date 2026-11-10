@@ -1,0 +1,10 @@
+✔ generic Pi events reject stale and stopped tools; commands bypass the model and secrets stay outside chat (431.086875ms)
+✔ bridge without credentials keeps login, help and reset available with model:null (525.266083ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 556.9365

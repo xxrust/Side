@@ -1,0 +1,545 @@
+{
+  "id": "lid-pkg-physical-development",
+  "version": 1,
+  "execution": {
+    "unit": "workpiece",
+    "inputSlots": [
+      {
+        "id": "image",
+        "required": true
+      }
+    ],
+    "dataContracts": "required"
+  },
+  "classificationSpec": {
+    "schema": "agentcv-classification-spec-1",
+    "id": "lid-pkg-physical-development",
+    "provenance": [
+      {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round4;turn:6b3eddd6-207a-4f2b-870b-6b8322dca531;lid超出pkg才是歪斜；未知不算良品，FAULT獨立"
+      },
+      {
+        "type": "agent-inference",
+        "status": "inferred",
+        "ref": "analysis/lid-round4/parameters.json",
+        "authorization": "使用者允許尺寸先驗與遮擋推估；數值及模型為開發提案，不是人工驗收"
+      }
+    ],
+    "categories": [
+      {
+        "id": "GOOD",
+        "label": "包含成立（僅歪斜檢查）",
+        "quality": "good",
+        "evidence": [
+          {
+            "nodeId": "objects",
+            "artifactId": "overlay",
+            "label": "兩層邊界：實測支持與尺寸推估分開"
+          }
+        ]
+      },
+      {
+        "id": "SKEW",
+        "label": "lid超出pkg（開發幾何）",
+        "quality": "bad",
+        "evidence": [
+          {
+            "nodeId": "objects",
+            "artifactId": "overlay",
+            "label": "兩層邊界：實測支持與尺寸推估分開"
+          }
+        ]
+      },
+      {
+        "id": "UNKNOWN",
+        "label": "兩物體關係證據不足",
+        "quality": "undetermined",
+        "evidence": [
+          {
+            "nodeId": "objects",
+            "artifactId": "overlay",
+            "label": "兩層邊界：實測支持與尺寸推估分開"
+          }
+        ]
+      }
+    ],
+    "metrics": [
+      {
+        "id": "skewSupported",
+        "type": "boolean"
+      },
+      {
+        "id": "containedSupported",
+        "type": "boolean"
+      }
+    ],
+    "rules": [
+      {
+        "id": "overhang",
+        "categoryId": "SKEW",
+        "defectLabels": [
+          "lid超出pkg"
+        ],
+        "when": {
+          "metric": "skewSupported",
+          "equals": true
+        },
+        "evidence": [
+          {
+            "nodeId": "objects",
+            "artifactId": "overlay",
+            "label": "兩層邊界：實測支持與尺寸推估分開"
+          }
+        ]
+      },
+      {
+        "id": "containment",
+        "categoryId": "GOOD",
+        "when": {
+          "all": [
+            {
+              "metric": "skewSupported",
+              "equals": false
+            },
+            {
+              "metric": "containedSupported",
+              "equals": true
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "nodeId": "objects",
+            "artifactId": "overlay",
+            "label": "兩層邊界：實測支持與尺寸推估分開"
+          }
+        ]
+      }
+    ],
+    "coverage": {
+      "policy": "fallback",
+      "fallbackCategoryId": "UNKNOWN"
+    },
+    "missing": {
+      "NOT_FOUND": "UNKNOWN",
+      "MISSING": "UNKNOWN",
+      "SKIPPED": "UNKNOWN"
+    },
+    "conflicts": {
+      "mode": "priority",
+      "priority": [
+        "overhang",
+        "containment"
+      ]
+    },
+    "aggregation": {
+      "mode": "priority",
+      "priority": [
+        "UNKNOWN",
+        "SKEW",
+        "GOOD"
+      ]
+    },
+    "fault": {
+      "exit": "FAULT"
+    }
+  },
+  "operatorGraph": {
+    "nodes": [
+      {
+        "id": "objects",
+        "title": "兩層邊界",
+        "code": "import cv2,numpy as np,itertools,math\nSIDES=['top','bottom','left','right']\n\ndef sel(d,v,c):return {'kind':'artifact','type':'evidence','id':d,'visuals':[{'id':v,'caption':c}]}\ndef why(reason,groups,data='geometry_data',vis='overlay'):\n return {'tool':{'reason':reason,'expectedEvidence':[sel(data,vis,'實線為有像素支持的邊段；虛線為外推或尺寸先驗補出的邊及圓角。')]},'parameters':[{'name':k,'source':'agent-proposal','reason':REASONS[k],'verification':sel(data,'corner_trials' if data=='geometry_data' and 'cornerFit' in groups else ('profiles' if data=='geometry_data' else ('edge_profiles' if data=='edge_data' else vis)),'保存實算剖面/候選分數；未比較的設定不是最優值。')} for k in groups],'boundaries':[{'condition':'各物體必須有獨立支持；同一焊道峰不證明第二物體；隱藏邊依尺寸先驗，無獨立精度真值。','check':sel(data,'uncertainty' if data=='geometry_data' else vis,'線位變動與模型殘差；未知不可當GOOD。'),'onFailure':'UNKNOWN'}]}\nREASONS={\n 'search':'65灰階、sigma1.5、最大連通面積為本批暗夾具定位的開發設定；只定搜尋框不授予物體身份。',\n 'scan':'中央56%直邊，121採樣點，方向掃描±0.06斜率/0.002步長，±70px法向範圍。比較sigma1/1.5/2.5；不把平滑穩定當絕對精度。',\n 'lidPrior':'梯度邊框預期寬683±10、高529±12px，來自標註圖與11_15的局部像素試算；用以排除同焊道內峰及錯混pkg下沿，非分類比例或人工尺寸規格。',\n 'pkgPrior':'11_15的四側最外80灰階支持給約708x550px；暫用寬708±8、高550±8。尺寸先驗只能推估遮住的邊，不能叫實測。',\n 'cornerFit':'圓角半徑40–140px逐2px實際掃描，以跨輪廓±4px灰階下降支持；局部多峰及貼近其他物體邊緣會造成假匹配，隱藏pkg圓角不作實測。80%峰值半徑範圍是形狀敏感區間，非置信區間。',\n 'quality':'線段支持殘差與參數位移另存；3px邊定位、8px尺寸不確定是開發敏感範圍，非校準誤差保證。完整GOOD須額外通過兩物體/圓角證據檢查。'}\n\ndef locate(g):\n cs=cv2.findContours((g>parameters['search']['seedLevel']).astype('uint8'),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)[0]\n if not cs:return None\n c=max(cs,key=cv2.contourArea);return list(cv2.boundingRect(c))\n\ndef scan(g,box):\n x,y,w,h=box;cx=x+w/2;cy=y+h/2;rows={}\n for side in SIDES:\n  hz=side in SIDES[:2];base=(y if side=='top' else y+h) if hz else (x if side=='left' else x+w)\n  normal=np.arange(int(base)-parameters['scan']['normalRange'],int(base)+parameters['scan']['normalRange']);tang=np.linspace((x+.22*w) if hz else (y+.22*h),(x+.78*w) if hz else (y+.78*h),121).astype(np.float32);mid=cx if hz else cy;out=[]\n  for slope in np.arange(-.06,.0601,.002):\n   n=normal[None,:]+slope*(tang[:,None]-mid);t=np.broadcast_to(tang[:,None],n.shape)\n   vals=cv2.remap(g,(t if hz else n).astype('float32'),(n if hz else t).astype('float32'),cv2.INTER_LINEAR)\n   p=np.mean(vals,axis=0);grad=np.gradient(p);z=(1 if side in ['top','left'] else -1)*grad\n   for j in range(9,len(normal)-9):\n    if z[j]>=max(z[j-2:j+3]) and z[j]>3:out.append({'side':side,'pos':float(normal[j]),'slope':float(slope),'strength':float(z[j])})\n  out.sort(key=lambda q:q['strength'],reverse=True);rr=[]\n  for q in out:\n   if all(abs(q['pos']-r['pos'])>4 for r in rr):rr.append(q)\n  rows[side]=rr[:7]\n return rows\n\ndef choose(rows):\n cand=[];P=parameters['lidPrior']\n for ts,bs,ls,rs in itertools.product(*(rows[k] for k in SIDES)):\n  wd=rs['pos']-ls['pos'];ht=bs['pos']-ts['pos'];aa=np.array([ts['slope'],bs['slope'],-ls['slope'],-rs['slope']]);ad=float(np.std(aa));score=sum(math.log(max(q['strength'],1)) for q in [ts,bs,ls,rs])-((wd-P['width'])/P['widthTolerance'])**2-((ht-P['height'])/P['heightTolerance'])**2-(ad/.015)**2\n  cand.append({'score':score,'width':wd,'height':ht,'angleSlope':float(np.mean(aa)),'angleSpread':ad,'lines':dict(zip(SIDES,[ts,bs,ls,rs]))})\n return sorted(cand,key=lambda q:q['score'],reverse=True)[:5]\n\ndef linepoints(side,pos,slope,box):\n x,y,w,h=box;hz=side in SIDES[:2];mid=x+w/2 if hz else y+h/2;a=x+.22*w if hz else y+.22*h;b=x+.78*w if hz else y+.78*h\n return [[float(t),float(pos+slope*(t-mid))] if hz else [float(pos+slope*(t-mid)),float(t)] for t in [a,b]]\ndef sample(g,side,pos,slope,box,normalRadius=18):\n x,y,w,h=box;hz=side in SIDES[:2];mid=x+w/2 if hz else y+h/2;tang=np.linspace(x+.22*w if hz else y+.22*h,x+.78*w if hz else y+.78*h,121).astype('float32');n=np.arange(math.floor(pos-normalRadius),math.ceil(pos+normalRadius)+1,dtype='float32');nn=n[None,:]+slope*(tang[:,None]-mid);tt=np.broadcast_to(tang[:,None],nn.shape);v=cv2.remap(g,(tt if hz else nn).astype('float32'),(nn if hz else tt).astype('float32'),cv2.INTER_LINEAR)\n return n,np.mean(v,axis=0),tang,v\n\ndef exterior(g,side,box):\n x,y,w,h=box;hz=side in SIDES[:2];base=(y if side=='top' else y+h) if hz else (x if side=='left' else x+w);n,p,t,v=sample(g,side,base,0,box,70);out=[]\n for ti,a in zip(t,v):\n  ids=np.where(a>80)[0]\n  if len(ids):\n   j=ids[0] if side in ['top','left'] else ids[-1];out.append([float(ti),float(n[j])])\n a=np.array(out);coef=np.polyfit(a[:,0],a[:,1],1)\n for _ in range(3):\n  err=a[:,1]-np.polyval(coef,a[:,0]);keep=abs(err)<max(2.,3*np.median(abs(err)));coef=np.polyfit(a[keep,0],a[keep,1],1)\n mid=x+w/2 if hz else y+h/2;return {'pos':float(np.polyval(coef,mid)),'slope':float(coef[0]),'rms':float(np.sqrt(np.mean((a[keep,1]-np.polyval(coef,a[keep,0]))**2))),'coverage':float(keep.mean()),'points':[[float(t),float(v)] if hz else [float(v),float(t)] for t,v in a[keep]]}\n\ndef refine(g,side,line,ext,box):\n sign=-1 if side in ['top','left'] else 1;n,p,t,v=sample(g,side,line['pos'],line['slope'],box,18);offset=(n-line['pos'])*sign\n # When original gradient coincides with exterior, use actual low-level outer boundary.\n if abs(ext['pos']-line['pos'])<5:\n  return dict(ext,kind='measured',method='metal/background crossing at 80',edgeIntervalPx=3.,points=ext['points'])\n # dark separator outward of selected weld slope; do not assign other peaks as pkg\n cand=[j for j in range(2,len(n)-2) if 1<=offset[j]<=9 and p[j]<=min(p[j-2:j+3])]\n if cand:\n  j=min(cand,key=lambda j:p[j]);strength=min(max(p[max(0,j-7):j]),max(p[j+1:j+8]))-p[j]\n  if strength>=6:\n   pp=[]\n   for ti,vv in zip(t,v):\n    k0=max(1,j-3);k1=min(len(n)-1,j+4);jj=k0+int(np.argmin(vv[k0:k1]));pp.append([float(ti),float(n[jj]+line['slope']*(ti-(box[0]+box[2]/2 if side in SIDES[:2] else box[1]+box[3]/2)))])\n   if side not in SIDES[:2]:pp=[[b,a] for a,b in pp]\n   return {'pos':float(n[j]),'slope':line['slope'],'kind':'measured-separator','method':'dark seam adjacent to selected lid rim; geometry consistency required','edgeIntervalPx':3.,'separatorContrast':float(strength),'points':pp}\n return dict(line,pos=line['pos']+sign*3,kind='estimated',method='no resolved separator; provisional 3px outward from weld gradient',edgeIntervalPx=6.,points=[])\n\ndef drawseg(im,pts,col,dash=False,width=2):\n a,b=np.array(pts[0]),np.array(pts[1]);N=max(2,int(np.linalg.norm(b-a)/8))\n if not dash:cv2.line(im,tuple(np.rint(a).astype(int)),tuple(np.rint(b).astype(int)),col,width,cv2.LINE_AA)\n else:\n  for j in range(0,N,2):\n   p=a+(b-a)*j/N;q=a+(b-a)*min(j+1,N)/N;cv2.line(im,tuple(np.rint(p).astype(int)),tuple(np.rint(q).astype(int)),col,width)\ndef polygon(lines,box):\n x,y,w,h=box;cx=x+w/2;cy=y+h/2\n def intersect(a,b):\n  # y=ma(x-cx)+pa, x=mb(y-cy)+pb\n  ma=lines[a]['slope'];mb=lines[b]['slope'];pa=lines[a]['pos']-ma*cx;pb=lines[b]['pos']-mb*cy;xx=(mb*pa+pb)/(1-mb*ma);return [float(xx),float(ma*xx+pa)]\n return [intersect('top','left'),intersect('top','right'),intersect('bottom','right'),intersect('bottom','left')]\ndef rounded(poly,r=65):\n a=np.array(poly);o=[]\n for i,v in enumerate(a):\n  pre=a[(i-1)%4];nxt=a[(i+1)%4];u=(pre-v)/np.linalg.norm(pre-v);w=(nxt-v)/np.linalg.norm(nxt-v);center=v+r*(u+w);pa=v+r*u;pb=v+r*w\n  aa=math.atan2(pa[1]-center[1],pa[0]-center[0]);bb=math.atan2(pb[1]-center[1],pb[0]-center[0]);dd=(bb-aa+math.pi)%(2*math.pi)-math.pi\n  for t in np.linspace(0,1,20):o.append((center+r*np.array([math.cos(aa+t*dd),math.sin(aa+t*dd)])).tolist())\n return o\n\ndef plots(g,box,lid,pkg,scanrows):\n im=np.full((820,1200,3),255,np.uint8);data={}\n for k,side in enumerate(SIDES):\n  ox=60+(k%2)*600;oy=40+(k//2)*400;n,p,t,v=sample(g,side,lid[side]['pos'],lid[side]['slope'],box,60);data[side]={'normal':n.tolist(),'mean':p.tolist(),'lid':lid[side]['pos'],'pkg':pkg[side]['pos']}\n  cv2.putText(im,side+' normal position (px)',(ox,oy),0,.6,(0,0,0),1)\n  for z in [0,80,160,240]:\n   yy=oy+330-int(z);cv2.line(im,(ox,yy),(ox+480,yy),(220,220,220),1);cv2.putText(im,str(z),(ox-40,yy),0,.4,(40,40,40),1)\n  xy=np.array([[ox+(a-n[0])*4,oy+330-b] for a,b in zip(n,p)],np.int32);cv2.polylines(im,[xy],False,(30,30,30),2)\n  for obj,col in [(lid,(20,170,20)),(pkg,(230,140,0))]:\n   xx=int(ox+(obj[side]['pos']-n[0])*4);cv2.line(im,(xx,oy+50),(xx,oy+340),col,2)\n  for a in n[::20]:cv2.putText(im,str(round(float(a))),(int(ox+(a-n[0])*4)-12,oy+360),0,.4,(0,0,0),1)\n return im,data\n\ndef corners(g,poly,tag):\n a=np.array(poly);out=[]\n for i,v in enumerate(a):\n  pre=a[(i-1)%4];nxt=a[(i+1)%4];u=(pre-v)/np.linalg.norm(pre-v);w=(nxt-v)/np.linalg.norm(nxt-v);rows=[]\n  for r in np.arange(parameters['cornerFit']['radiusRange'][0],parameters['cornerFit']['radiusRange'][1]+.1,parameters['cornerFit']['radiusStep']):\n   center=v+r*(u+w);pa=v+r*u;pb=v+r*w;aa=math.atan2(pa[1]-center[1],pa[0]-center[0]);bb=math.atan2(pb[1]-center[1],pb[0]-center[0]);dd=(bb-aa+math.pi)%(2*math.pi)-math.pi;ang=aa+np.linspace(.1,.9,41)*dd;norm=np.stack([np.cos(ang),np.sin(ang)],axis=1);pts=center+norm*r\n   vals=[]\n   for d in [-4.,-2.,0.,2.,4.]:\n    p=pts+norm*d;vals.append(cv2.remap(g,p[:,0].astype('float32')[None,:],p[:,1].astype('float32')[None,:],cv2.INTER_LINEAR)[0].astype(float))\n   grad=(vals[0]-vals[4])/8.;score=float(np.mean(np.maximum(grad,0)));coverage=float(np.mean(grad>3))\n   rows.append({'r':r,'score':score,'coverage':coverage,'medianIntensity':float(np.median(vals[2])),'points':pts.tolist(),'normal':norm.tolist()})\n  rows.sort(key=lambda r:r['score'],reverse=True);best=rows[0];out.append({'corner':i,'best':best,'range80':[min(r['r'] for r in rows if r['score']>=best['score']*.8),max(r['r'] for r in rows if r['score']>=best['score']*.8)],'trials':[{k:v for k,v in r.items() if k not in ['points','normal']} for r in rows]})\n return out\n\nwith procedure('objects',name='兩層邊界',inputs={'image':image_records[0]['id']},outputs={'geometry_data':'geometry_data','overlay':'overlay'},parameters=parameters,justification=why('從原圖分開lid焊接外緣與pkg外露外緣，尺寸只補遮擋部分，並保留未成立的身份。',list(parameters))) as pr:\n with step('search',name='工件搜尋',parameters={'search':parameters['search']},inputs={'image':image_records[0]['id']},outputs={'search_data':'search_data'},justification=why('暗背景上的最大金屬連通支持只限定搜尋域，不能命名為pkg。',['search'],'search_data','search_view')) as st:\n  g0=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY);g=cv2.GaussianBlur(g0,(0,0),parameters['search']['sigma']);box=locate(g);sv=image.copy()\n  if box is not None:x,y,w,h=box;cv2.rectangle(sv,(x,y),(x+w,y+h),(0,200,255),1)\n  save_image('search_view',sv);save_json('search_data',{'bbox':box});st.set_output('bbox',box)\n if box is None:\n  data={'valid':False,'code':'NOT_FOUND','reason':'No metal support above seed level','skewSupported':False,'containedSupported':False}\n  save_json('geometry_data',data)\n else:\n  with step('edges',name='邊緣歸屬',depends_on=['search'],inputs={'bbox':'search_data'},outputs={'geometry_data':'geometry_data','overlay':'overlay'},parameters={k:v for k,v in parameters.items() if k not in ['search','cornerFit']},justification=why('先找多個連續梯度線，聯合四邊方向及lid尺寸排除內部焊道峰；再用暗縫或金屬/背景交界定位。pkg以可見外露邊加獨立尺寸先驗完成。',['scan','lidPrior','pkgPrior','quality'],'edge_data','edge_view')) as st:\n   alltrials=[];selected=None\n   for sigma in parameters['scan']['sigmas']:\n    gg=cv2.GaussianBlur(g0,(0,0),sigma);rows=scan(gg,box);joint=choose(rows);lid={k:refine(gg,k,joint[0]['lines'][k],exterior(gg,k,box),box) for k in SIDES};ext={k:exterior(gg,k,box) for k in SIDES}\n    # Determine independently visible pkg sides from separated exterior bands.\n    gaps={k:(lid[k]['pos']-ext[k]['pos'])*(1 if k in ['top','left'] else -1) for k in SIDES}\n    visible={k:gaps[k]>parameters['quality']['minIndependentSeparationPx'] for k in SIDES}\n    # One horizontal and one vertical exterior constrain pkg pose; retain absent sides as estimates.\n    hs=[k for k in ['top','bottom'] if visible[k]];vs=[k for k in ['left','right'] if visible[k]]\n    ah=max(hs,key=lambda k:gaps[k]) if hs else 'bottom';av=max(vs,key=lambda k:gaps[k]) if vs else 'left'\n    a=(ext[ah]['slope']-ext[av]['slope'])/2;ww=parameters['pkgPrior']['width'];hh=parameters['pkgPrior']['height'];pkg={}\n    for k in SIDES:\n     if visible[k]:pkg[k]=dict(ext[k],kind='measured',method='separate exposed pkg to background, independently from lid rim',edgeIntervalPx=3.)\n    for k in ['top','bottom']:\n     if k not in pkg:pkg[k]={'pos':ext[ah]['pos']+(0 if k==ah else (hh if k=='bottom' else -hh)),'slope':a,'kind':'estimated','method':'pkg '+ah+' plus good-image height prior','edgeIntervalPx':11.,'points':[]}\n    for k in ['left','right']:\n     if k not in pkg:pkg[k]={'pos':ext[av]['pos']+(0 if k==av else (ww if k=='right' else -ww)),'slope':-a,'kind':'estimated','method':'pkg '+av+' plus good-image width prior','edgeIntervalPx':11.,'points':[]}\n    # When an exterior is outside the pkg reconstructed from independent exposed bands,\n    # it cannot be that pkg edge under the saved dimensional hypothesis. Recheck lid proximity.\n    for k in SIDES:\n     outside=(ext[k]['pos']-pkg[k]['pos'])*(1 if k in ['top','left'] else -1)\n     if hs and vs and outside < -parameters['pkgPrior']['heightTolerance'] and abs(ext[k]['pos']-lid[k]['pos'])<12:\n      lid[k]=dict(ext[k],kind='measured',method='outer metal edge; pkg excluded by independent visible sides and size prior',edgeIntervalPx=3.)\n    pp=polygon(pkg,box);lp=polygon(lid,box);lc=rounded(lp,parameters['quality']['cornerRadius']);pc=rounded(pp,parameters['quality']['cornerRadius'])\n    # Signed straight-side clearance at rounded lid model points, positive inside.\n    margins={}\n    for k in SIDES:\n     hz=k in SIDES[:2];q=pkg[k];xy=np.array(linepoints(k,lid[k]['pos'],lid[k]['slope'],box));mid=box[0]+box[2]/2 if hz else box[1]+box[3]/2;normal=xy[:,1] if hz else xy[:,0];tan=xy[:,0] if hz else xy[:,1];dd=(normal-(q['pos']+q['slope']*(tan-mid)))*(1 if k in ['top','left'] else -1)/math.sqrt(1+q['slope']**2);margins[k]=float(dd.min())\n    entry={'sigma':sigma,'joint':joint,'lid':lid,'pkg':pkg,'margins':margins,'lidPolygon':lp,'pkgPolygon':pp,'lidCurve':lc,'pkgCurve':pc,'candidateLines':rows,'visiblePkgSides':[k for k in SIDES if visible[k]],'pkgAnchorValid':bool(hs and vs),'pkgAnchors':[ah,av]};alltrials.append(entry)\n    if sigma==parameters['search']['sigma']:selected=entry\n   edgeview=image.copy()\n   for tag,col in [('lid',(20,240,20)),('pkg',(255,180,0))]:\n    for k,q in selected[tag].items():drawseg(edgeview,linepoints(k,q['pos'],q['slope'],box),col,q['kind']=='estimated',2)\n   ep,_=plots(g,box,selected['lid'],selected['pkg'],selected['candidateLines'])\n   save_image('edge_view',edgeview);save_image('edge_profiles',ep,section='parameters');save_json('edge_data',{'selected':selected,'trials':alltrials});st.set_output('selected',selected)\n  with step('shape',name='圓角核對',depends_on=['edges'],inputs={'edges':'selected'},outputs={'geometry_data':'geometry_data','overlay':'overlay'},parameters={'cornerFit':parameters['cornerFit'],'quality':parameters['quality']},justification=why('在已分物體直邊上，另試圓角梯度擬合；保留多峰，遮住的pkg圓角不能因貼到lid焊道而變成實測。',['cornerFit','quality'])) as st:\n   lid=selected['lid'];pkg=selected['pkg'];ov=image.copy();objects=[]\n   cornerdata={tag:corners(g,selected[tag+'Polygon'],tag) for tag in ['lid','pkg']}\n   corner_view=image.copy()\n   for tag,col in [('lid',(20,240,20)),('pkg',(255,180,0))]:\n    for co in cornerdata[tag]:\n     # Circle fit is a hypothesis, even if edge score is high.\n     co['kind']='estimated-fit'\n     for j in range(len(co['best']['points'])-1):drawseg(corner_view,co['best']['points'][j:j+2],col,j%2==0,1)\n     objects.append({'id':tag+'-corner-'+str(co['corner']),'type':'polyline','label':tag+' 圓角梯度候選，非獨立物體證明','geometry':{'points':[{'x':a,'y':b} for a,b in co['best']['points']]}})\n   save_image('corner_view',corner_view,section='boundary')\n   cpv=np.full((720,1100,3),255,np.uint8)\n   for ci in range(4):\n    ox=70+(ci%2)*550;oy=30+(ci//2)*350\n    for z in [0,10,20,30]:\n     yy=oy+270-z*7;cv2.line(cpv,(ox,yy),(ox+430,yy),(225,225,225),1);cv2.putText(cpv,str(z),(ox-35,yy),0,.4,(30,30,30),1)\n    for tag,col in [('lid',(20,180,20)),('pkg',(220,130,0))]:\n     rr=sorted(cornerdata[tag][ci]['trials'],key=lambda r:r['r']);pts=np.array([[ox+(q['r']-40)*4,oy+270-q['score']*7] for q in rr],np.int32);cv2.polylines(cpv,[pts],False,col,2)\n    cv2.putText(cpv,['top-left','top-right','bottom-right','bottom-left'][ci],(ox,oy+18),0,.6,(0,0,0),1)\n    for rad in [40,60,80,100,120,140]:cv2.putText(cpv,str(rad),(ox+(rad-40)*4-8,oy+295),0,.4,(0,0,0),1)\n    cv2.putText(cpv,'radius px / gradient gray per px',(ox,oy+320),0,.5,(0,0,0),1)\n   save_image('corner_trials',cpv,section='parameters')\n   for obj,col,tag in [(lid,(20,240,20),'lid'),(pkg,(255,180,0),'pkg')]:\n    poly=selected[tag+'Curve'];\n    for j in range(len(poly)):drawseg(ov,[poly[j],poly[(j+1)%len(poly)]],col,True,1)\n    for k in SIDES:\n     q=obj[k];pts=linepoints(k,q['pos'],q['slope'],box);drawseg(ov,pts,col,q['kind']=='estimated',3)\n     objects.append({'id':tag+'-'+k,'type':'line','label':tag+' '+k+' '+q['kind']+'; '+q['method'],'geometry':{'points':[{'x':a,'y':b} for a,b in pts]},'evidenceKind':q['kind']})\n     if q['points']:objects.append({'id':tag+'-'+k+'-support','type':'polyline','label':'實測支持點，非手繪GT','geometry':{'points':[{'x':a,'y':b} for a,b in q['points']]}})\n    objects.append({'id':tag+'-model','type':'polyline','label':tag+' 圓角模型（推估，radius未獨立辨識）','geometry':{'points':[{'x':a,'y':b} for a,b in poly+[poly[0]]]}})\n   bounds={k:{'nominal':selected['margins'][k],'low':min(q['margins'][k]-q['pkg'][k]['edgeIntervalPx']-q['lid'][k]['edgeIntervalPx'] for q in alltrials),'high':max(q['margins'][k]+q['pkg'][k]['edgeIntervalPx']+q['lid'][k]['edgeIntervalPx'] for q in alltrials)} for k in SIDES}\n   independent=all(q['pkgAnchorValid'] for q in alltrials)\n   skew=independent and any(v['high']<0 and lid[k]['kind']!='estimated' for k,v in bounds.items())\n   corner_clearance=[]\n   for co in cornerdata['lid']:\n    pts=co['best']['points'];cp=np.array([p for c in cornerdata['pkg'] for p in c['best']['points']],np.float32)\n    corner_clearance.append(min(float(cv2.pointPolygonTest(cp,tuple(p),True)) for p in pts))\n   cornerStable=all(co['range80'][1]-co['range80'][0]<=16 and co['best']['coverage']>=.8 for tag in ['lid','pkg'] for co in cornerdata[tag])\n   direct=all(q['kind']!='estimated' for tag in [lid,pkg] for q in tag.values())\n   full=bool(independent and direct and cornerStable and min(corner_clearance)>parameters['quality']['cornerClearancePx'] and all(v['low']>=0 for v in bounds.values()))\n   checks=[{'id':'independent_pkg_support','status':'PASS' if independent else 'FAIL','actual':{'visibleSides':selected['visiblePkgSides'],'anchors':selected['pkgAnchors']},'threshold':'>4px separate pkg band on >=1 horizontal and >=1 vertical side; no shared silhouette counted twice'},{'id':'corner_identity','status':'PASS' if (cornerStable and direct) else 'NOT_EVALUATED','actual':{'stable':cornerStable,'directSides':direct,'minimumNominalClearancePx':min(corner_clearance),'radius80':{tag:[co['range80'] for co in cornerdata[tag]] for tag in cornerdata}},'threshold':'radius 80% range <=16px, support >=80%, direct sides; each corner is still model fit'},{'id':'physical_calibration','status':'NOT_EVALUATED','actual':'good-image size prior, not metrology','threshold':'same-part dimensional tolerance and imaging variation'}]\n   data={'valid':True,'skewSupported':bool(skew),'containedSupported':full,'independentSupports':bool(independent),'clearance':bounds,'selected':selected,'corners':cornerdata,'cornerClearance':corner_clearance,'cornerStable':cornerStable,'directSides':direct,'trials':alltrials,'boundaryChecks':checks,'scope':'development geometry, partial direct support; estimated hidden edges and corners identified; no filename/labels in prediction'}\n   for j,txt in enumerate(['GREEN lid / CYAN pkg','SOLID measured edge segment; DASH estimated/model','Corners dashed: model; alternative fit in corner_view',''+('TOP OVERHANG supported within trial bounds' if skew else ('CONTAINED within trial bounds' if full else 'CONTAINMENT UNKNOWN: see side/corner evidence'))]):cv2.putText(ov,txt,(20,28+j*25),0,.6,(255,255,255),2)\n   prof,pdata=plots(g,box,lid,pkg,selected['candidateLines']);data['profiles']=pdata\n   uv=np.full((600,1000,3),255,np.uint8);lo=min(v['low'] for v in bounds.values())-5;hi=max(v['high'] for v in bounds.values())+5\n   for k,j in zip(SIDES,range(4)):\n    v=bounds[k];yy=100+j*115\n    def xx(q):return int(140+(q-lo)/(hi-lo)*800)\n    cv2.line(uv,(xx(0),50),(xx(0),550),(0,0,255),1);cv2.putText(uv,k,(15,yy),0,.7,(0,0,0),1);cv2.line(uv,(xx(v['low']),yy),(xx(v['high']),yy),(150,60,0),7);cv2.circle(uv,(xx(v['nominal']),yy),6,(0,150,0),-1);cv2.putText(uv,f'{v[\"low\"]:.1f}..{v[\"high\"]:.1f}px',(xx(v['low']),yy-20),0,.55,(0,0,0),1)\n   cv2.putText(uv,'Signed lid clearance to pkg: positive inside; trial bounds NOT 95% CI',(20,580),0,.6,(0,0,0),1)\n   save_image('overlay',ov);save_image('profiles',prof,section='parameters');save_image('uncertainty',uv,section='boundary');save_json('geometry_data',data);save_layers('geometry',[{'id':'two-objects','objects':objects}]);st.set_output('geometry_data',data);st.set_output('boundaryChecks',checks);pr.set_output('geometry_data',data);pr.set_output('overlay','overlay')\nresult=data\n",
+        "parameters": {
+          "search": {
+            "seedLevel": 65,
+            "sigma": 1.5
+          },
+          "scan": {
+            "normalRange": 70,
+            "sigmas": [
+              1,
+              1.5,
+              2.5
+            ],
+            "tangentFraction": [
+              0.22,
+              0.78
+            ],
+            "samples": 121,
+            "slopeRange": [
+              -0.06,
+              0.06
+            ],
+            "slopeStep": 0.002
+          },
+          "lidPrior": {
+            "width": 683,
+            "height": 529,
+            "widthTolerance": 10,
+            "heightTolerance": 12
+          },
+          "pkgPrior": {
+            "width": 708,
+            "height": 550,
+            "widthTolerance": 8,
+            "heightTolerance": 8,
+            "source": "11_15 four independent exposed outer sides; development estimate"
+          },
+          "quality": {
+            "edgeTrialPx": 3,
+            "dimensionTrialPx": 8,
+            "cornerRadius": 65,
+            "cornersConfirmed": false,
+            "cornerClearancePx": 8,
+            "separatorMinContrast": 6,
+            "separatorDistancePx": [
+              1,
+              9
+            ],
+            "slopeScatter": 0.015,
+            "minIndependentSeparationPx": 4,
+            "assumedSeamOffsetPx": 3,
+            "unresolvedEdgeTrialPx": 6,
+            "externalLevel": 80,
+            "gradientMin": 3,
+            "lineNmsDistancePx": 4,
+            "lineCandidateCount": 7,
+            "fitIterations": 3,
+            "residualFloorPx": 2,
+            "residualMadMultiplier": 3,
+            "displayCornerRadius": 65,
+            "maxLidExteriorRecheckPx": 12
+          },
+          "cornerFit": {
+            "radiusRange": [
+              40,
+              140
+            ],
+            "radiusStep": 2,
+            "normalOffsets": [
+              -4,
+              -2,
+              0,
+              2,
+              4
+            ],
+            "arcFraction": [
+              0.1,
+              0.9
+            ],
+            "samples": 41,
+            "relativeScore": 0.8,
+            "maxRadiusSpread": 16,
+            "minCoverage": 0.8
+          }
+        },
+        "expected_outputs": [
+          {
+            "id": "overlay",
+            "type": "image",
+            "role": "result",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "search_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "edge_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "edge_profiles",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "edge_profiles"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "profiles",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "profiles"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "uncertainty",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "uncertainty"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "corner_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "corner_trials",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "corner_trials"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "geometry_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "geometry",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "search_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "edge_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          }
+        ],
+        "justification": {
+          "tool": {
+            "reason": "分別追蹤lid輪廓與pkg外露帶；pkg至少一橫邊及一豎邊有獨立支持才以良品尺寸推估其他邊。不固定假設左側必然外露，第二、三張以右/下外露帶定位pkg。單側超出只用實測lid邊段加有證據的pkg推估。",
+            "expectedEvidence": [
+              {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "overlay",
+                    "caption": "綠lid、青pkg；實線僅在實際支持段，虛線為外推或推估；上青線不再冒充lid。"
+                  }
+                ]
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "search",
+              "source": "agent-proposal",
+              "reason": "低閾值65與sigma1.5只定搜尋域；不把最大亮連通區命名為pkg。未新增成像場景驗證。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "scan",
+              "source": "agent-proposal",
+              "reason": "斜率與梯度候選在相同完整原圖比較；sigma1/1.5/2.5敏感性保留。中央56%避開圓角；實際支持段之外是外推。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "lidPrior",
+              "source": "agent-proposal",
+              "reason": "從標註圖與11_15像素直邊推得梯度框約683x529，±10/12px為定位先驗；不是按外包絡比例分類。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "pkgPrior",
+              "source": "agent-proposal",
+              "reason": "11_15外露邊約708x550px；依本件獨立分離的相鄰pkg邊定位，遮擋側由尺寸先驗補出。第一輪固定左/下在第二、三張把lid左沿誤當pkg，已保留失敗；改以本件可見側決定。±8px是開發敏感範圍非校準保證。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "quality",
+              "source": "agent-proposal",
+              "reason": "3px實測線位、6px未分離邊、8px尺寸擾動為保守開發試驗；不是已校準誤差。含缺測、穩定性與完整包含檢查。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "cornerFit",
+              "source": "agent-proposal",
+              "reason": "40至140px圓角實掃，四角分別保留80%峰區；多峰/無獨立邊不算完整包含。半徑不是分類特徵。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "corner_trials",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            }
+          ],
+          "boundaries": [
+            {
+              "condition": "UNKNOWN包含尚未分清的邊與圓角；尺寸先驗可能不適用其他批次，40張其他缺陷未驗證。",
+              "check": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "uncertainty",
+                    "caption": "三種平滑加逐邊線位與隱藏尺寸擾動，畫出正內負外區間；非95%置信或工業誤差保證。"
+                  }
+                ]
+              },
+              "onFailure": "UNKNOWN"
+            }
+          ]
+        }
+      }
+    ],
+    "edges": []
+  },
+  "metricBindings": [
+    {
+      "metric": "skewSupported",
+      "nodeId": "objects",
+      "path": "skewSupported"
+    },
+    {
+      "metric": "containedSupported",
+      "nodeId": "objects",
+      "path": "containedSupported"
+    }
+  ],
+  "fingerprints": {
+    "basis": "d99c236af6bff616"
+  }
+}

@@ -1,0 +1,9 @@
+// User-facing policy for intermediate/stage image retention. Keeping this
+// decision separate from execution makes the warning auditable and testable.
+export const STAGE_OUTPUT_POLICY_SCHEMA='agentcv-stage-output-policy-1';
+export const DEFAULT_STAGE_OUTPUT_POLICY=Object.freeze({schema:STAGE_OUTPUT_POLICY_SCHEMA,enabled:false,mode:'metadata',reason:'階段圖像只在需要追溯時保存；摘要與結果仍會保存。'});
+const clone=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
+export function normalizeStageOutputPolicy(value={}){if(value===true)value={enabled:true};if(value==='all')value={enabled:true,mode:'all'};if(!value||typeof value!=='object')value={};const mode=['all','diagnostic','metadata'].includes(value.mode)?value.mode:(value.enabled?'diagnostic':'metadata');return {...clone(DEFAULT_STAGE_OUTPUT_POLICY),...clone(value),schema:STAGE_OUTPUT_POLICY_SCHEMA,enabled:value.enabled===true||mode==='all',mode};}
+export function stageOutputWarning(policy,total){const p=normalizeStageOutputPolicy(policy),count=Number.isSafeInteger(total)&&total>=0?total:null;if(p.enabled&&p.mode==='all')return {level:'warning',code:'STAGE_OUTPUT_STORAGE',title:'將保存全部階段圖像',message:`${count===null?'批次執行':`這批 ${count} 張圖片`}會保留每個中間階段像素，專案大小與保存時間可能大幅增加。`};if(!p.enabled)return {level:'info',code:'STAGE_OUTPUT_METADATA_ONLY',title:'階段圖像不保存像素',message:'只保存階段摘要、參數與雜湊；需要回看時可按相同來源與參數重算。'};return {level:'info',code:'STAGE_OUTPUT_DIAGNOSTIC',title:'按診斷條件保存階段圖像',message:'只保存故障、不良／待定、首尾和定期樣本的像素，其餘階段保留可追溯摘要。'};}
+export function stageOutputCacheKey({imageSha256,parameters,algorithmVersion,stage}={}){return JSON.stringify([String(imageSha256||''),clone(parameters||{}),String(algorithmVersion||''),String(stage||'')]);}
+export function findReusableStageOutput(cache,key){if(!cache||!key)return null;const value=cache instanceof Map?cache.get(key):cache[key];return value?clone(value):null;}

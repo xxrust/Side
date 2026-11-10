@@ -1,0 +1,85 @@
+[
+  {
+    "action": "open actual earlier project",
+    "title": "#8 手繪意圖已記錄，接著取得真實邊緣",
+    "cta": "依標註建立搜尋",
+    "disabled": false,
+    "step": "images",
+    "selected": null,
+    "tools": [],
+    "measurements": []
+  },
+  {
+    "action": "select upper hand drawn line #3",
+    "title": "#3 手繪意圖已記錄，接著取得真實邊緣",
+    "cta": "依標註建立搜尋",
+    "disabled": false,
+    "step": "annotate",
+    "selected": "object-3",
+    "tools": [],
+    "measurements": []
+  },
+  {
+    "action": "promote upper line via main CTA",
+    "title": "#8 手繪意圖已記錄，接著取得真實邊緣",
+    "cta": "依標註建立搜尋",
+    "disabled": false,
+    "step": "annotate",
+    "selected": "object-9",
+    "tools": [
+      {
+        "id": "object-9",
+        "source": "object-3",
+        "status": "AWAITING_SELECTION",
+        "count": 1,
+        "selected": []
+      }
+    ],
+    "measurements": []
+  },
+  {
+    "action": "adopt upper candidate via visible list",
+    "title": "#8 手繪意圖已記錄，接著取得真實邊緣",
+    "cta": "依標註建立搜尋",
+    "disabled": false,
+    "step": "annotate",
+    "selected": "object-9",
+    "tools": [
+      {
+        "id": "object-9",
+        "source": "object-3",
+        "status": "SELECTED",
+        "count": 1,
+        "selected": [
+          "97543ddb-36c7-4f96-bfca-7515f91184fe:r1:c1"
+        ]
+      }
+    ],
+    "measurements": []
+  },
+  {
+    "action": "click next main CTA after adopting upper edge",
+    "title": "#7 手繪意圖已記錄，接著取得真實邊緣",
+    "cta": "依標註建立搜尋",
+    "disabled": false,
+    "step": "annotate",
+    "selected": "object-10",
+    "tools": [
+      {
+        "id": "object-9",
+        "source": "object-3",
+        "status": "SELECTED",
+        "count": 1,
+        "selected": [
+          "97543ddb-36c7-4f96-bfca-7515f91184fe:r1:c1"
+        ]
+      },
+      {
+        "id": "object-10",
+        "source": "object-8",
+        "status": "UNKNOWN"
+      }
+    ],
+    "measurements": []
+  }
+]

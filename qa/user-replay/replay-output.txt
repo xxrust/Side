@@ -1,0 +1,16 @@
+開啟使用者較新專案，原圖指紋一致 {"width":1280,"height":1024}
+原搜尋框與參數重算，得到候選而不自動採用 {"roi":{"x":305.1099826610215,"y":69.73168934074313,"width":751.2050237248314,"height":33.048051923829874},"candidates":[{"geometry":{"type":"line","from":{"x":319.1139294410043,"y":91.28565597580176},"to":{"x":1051.1123963585483,"y":86.07047384422941},"angle_deg":-0.4082014968530646,"rms_px":0.44422002963209517},"coverage":0.9518716577540107,"quality":{"isolated_outliers_removed":1,"continuity":0.9411764705882353,"raw_continuity":0.9411764705882353,"continuity_gap_tolerance_scans":1,"bridged_short_gaps":[],"largest_gap_ratio":0.016042780748663103,"local_coverage":[0.8108108108108109,0.972972972972973,0.9736842105263158,1,1],"residual_p95_px":0.8232522922390464,"inlier_ratio":0.994413407821229,"edge_polarity":"falling","median_contrast":39,"exclusion_count":0}}]}
+ROI橫移8px，清除舊候選並重新計算 {"status":"AWAITING_SELECTION","count":1}
+ROI移到工件內部，UNKNOWN且圖上不殘留舊結果 {"reason":"沒有通過局部覆蓋、連續性、方向及殘差條件的候選線"}
+ROI移回上邊，重新產生待採用候選 {}
+明確採用與原手繪意圖相符的上邊 {"angle":-0.4097048340771724}
+驗證副本移除舊版默認的支持跨度量測，原專案保持原樣 {}
+採用後主要操作 {"label":"選擇量測項目 →","disabled":false,"title":"下一步：把採用的幾何建立為量測"}
+量測頁導向 {"label":"確認並建立量測 →","step":"measure"}
+選擇單線傾角量測，未把支持跨度當工件邊長 {}
+未填工藝公差時拒絕保存，不產生默認OK {}
+測試公差−1°至1°：OK（僅流程驗證，非工藝公差） {"value":-0.4097048340771724,"unit":"deg"}
+測試公差1°至2°：NG {}
+來源移開失效後再判定：UNKNOWN，不沿用OK／NG {}
+較早專案選取上邊手繪線，正確建立對應搜尋框 {"status":"AWAITING_SELECTION","count":1}
+全部閉環斷言通過 {}

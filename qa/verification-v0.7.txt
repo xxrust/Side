@@ -1,0 +1,95 @@
+AgentCV v0.7 — actual-project closed-loop repair, 2026-10-23
+
+User objective
+  Measure the workpiece outer-frame width and height from the user's own image.
+  Preserve the two supplied projects. Do not treat ROI support span as part length.
+
+Direct deliverable
+  ../review-workpiece.html opens the exact image with four adopted line searches,
+  the two frame measurements and the dimension overlay already prepared.
+  ../assets/review-project.js loads the embedded local project through the normal
+  validated project-opening flow. It starts at the measurement list.
+  No production tolerances are invented; the prepared result is UNKNOWN until
+  engineering limits are supplied. No physical calibration was supplied.
+
+Measured image geometry (nearest valid edges to the four supplied intentions)
+  Average width  995.7127039188649 px
+  Average height 747.4396992940051 px
+  Top width      997.6171981048433 px
+  Bottom width   993.8082097328864 px
+  Left height    746.7102544412194 px
+  Right height   748.1691441467908 px
+  These are extended-straight-edge corner measurements of a near-rectangular
+  image contour. Rounded corners use virtual intersections. The engineer must
+  check the adopted contour against the intended physical boundary; the metal
+  image contains multiple bright bands. These are not calibrated physical
+  dimensions or a production accuracy claim.
+
+Reproduction evidence
+  user-replay/input.agentcv.json and input-earlier.agentcv.json are unchanged
+  copies of the user's two supplied projects. Original files were byte-compared
+  and remain unchanged.
+  Pixel decoding matches the original stored RGBA SHA256. The JPEG-named data
+  is actually indexed 8-bit BMP. The QA image adapter decodes palette/stride
+  exactly; it does not replace or rescale the source image.
+  user-replay/frame-replay.cjs drives actual application event handlers for
+  goal selection -> four ROI creation -> ROI resizing -> explicit tangential
+  averaging -> candidate adoption -> four-source width/height measurement ->
+  missing-tolerance refusal -> test-only OK/NG -> failed-right-edge UNKNOWN ->
+  restore -> frozen four-source recipe -> batch recomputation -> save/reopen.
+  frame-replay-output.txt and frame-closed-loop-trace.json record results.
+  frame-measurement-overlay.png is a computed evidence image, NOT a screenshot.
+
+Important fixes
+  Dragging invalidates displayed candidates and measurements immediately;
+  releasing recomputes and displays feedback. A dedicated ROI handle distinguishes
+  movement from clicking a candidate. Original intent strokes are collapsed.
+  Candidate single-select replaces the old selection; multiple selection is explicit.
+  One prominent task action commits the current form rather than reopening it.
+  Selected tools retain task focus; other unconverted intentions do not hijack it.
+  Frame goal maps the user's four intentions to explicit top/bottom/left/right roles.
+  Four dependencies are captured by recipes. Missing/stale/ambiguous/reversed/
+  degenerate geometry fails closed. Every measurement requires its own tolerance.
+  Line support span requires explicit acknowledgment and is never the default.
+  Algorithm demo-0.7 removes only evidenced isolated scan spikes and permits
+  tightly bounded sparse two-scan gaps. All original residual, coverage, local
+  support and persistent jump checks remain. These gates are heuristics, not
+  mathematical guarantees about arbitrary images.
+  profileWidth (odd 1..15; default 1) performs tangential profile averaging.
+  ROI and masks cover the entire sampling kernel. The two vertical ROIs use
+  y=260..680 and profileWidth=15; the horizontal searches use profileWidth=1.
+
+Verification
+  npm test --prefix 13-cv/qa: 104 checks passed
+    20 numeric/static/keyboard
+    28 line quality and adversarial contract
+    13 measurement/classification pipeline
+     5 viewport/real-raster
+     7 four-edge frame geometry/dependency
+    23 DOM + raster full-flow
+     8 focused interaction/intent
+  Additional: check-prepared-page.cjs passes the direct entry load/geometry/
+  missing-production-tolerance check. Actual-user frame replay also passes.
+  Upper original ROI micro-shift grid: 91/91 unique detections.
+  Vertical central ROIs micro-shift grids: 98/98 unique detections.
+  These local perturbations on this image do not establish dataset-wide accuracy.
+
+Independent agent
+  qa/usability/first-use-review.txt captures the original first-use failure paths.
+  qa/usability/frame-followup-trace.json captures an independent actual-project
+  four-edge UI-handler replay with the same 995.713 x 747.440 px result.
+
+Not verified
+  Native computer-use service startup failed. Existing-browser access was not
+  available. These checks use JSDOM with real raster pixels and dispatched UI
+  events, not native browser layout, mouse hit-testing or file picker acceptance.
+  Native browser visual/interaction acceptance is still required.
+  Finding the correct physical contour remains a human intent decision. Displayed
+  numeric precision is not an uncertainty bound. No lens/perspective calibration.
+
+Prepared project variants
+  user-replay/frame-measurement-ready.agentcv.json: real measurements, no invented
+    production tolerance; UNKNOWN classification pending engineering specification.
+  user-replay/frame-closed-loop-demo.agentcv.json: explicit TEST ONLY width
+    990..1010px / height 730..770px rules, four-source frozen recipe and run history.
+    These limits demonstrate mechanics; they are NOT the user's specifications.

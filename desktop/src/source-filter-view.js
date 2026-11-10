@@ -1,0 +1,14 @@
+import {sourceFilter,sourceDimensions,sourceFilterOptions,setSourceFilter} from './source-classification-filter.js';
+export function sourceFilterBar(project,source,onChange){
+ const root=document.createElement('div');root.className='source-filter-bar';root.setAttribute('aria-label','依分類篩選圖片');root.onpointerdown=e=>e.stopPropagation();
+ const filter=sourceFilter(project,source.id),dimensions=Object.keys(sourceDimensions).filter(k=>k==='labels'||sourceFilterOptions(project,source,k).some(o=>o.value));
+ if(dimensions.length>1){const choices=document.createElement('div');choices.className='source-dimension-buttons';choices.setAttribute('role','group');choices.setAttribute('aria-label','分類維度');for(const k of dimensions){const b=document.createElement('button');b.type='button';b.textContent=sourceDimensions[k];b.setAttribute('aria-pressed',String(k===filter.dimension));b.onclick=()=>{setSourceFilter(project,source.id,{dimension:k});onChange();};choices.append(b);}root.append(choices);}
+ const strip=document.createElement('div');strip.className='source-filter-strip';strip.setAttribute('role','group');strip.setAttribute('aria-label','分類色條');
+ let dragged=false,start;strip.onpointerdown=e=>{if(e.button!==0)return;dragged=false;start={x:e.clientX,left:strip.scrollLeft};};strip.onpointermove=e=>{if(!start||!(e.buttons&1))return;const dx=e.clientX-start.x;if(Math.abs(dx)>5){dragged=true;strip.scrollLeft=start.left-dx;}};strip.onpointerup=()=>{start=null;};strip.onpointerleave=()=>{start=null;};strip.onwheel=e=>{strip.scrollLeft+=e.deltaX||e.deltaY;e.preventDefault();e.stopPropagation();};
+ const items=[{value:null,label:'全部',count:source.imageIds.length},...sourceFilterOptions(project,source,filter.dimension)];
+ const palette=['#f2867b','#f4bd57','#74d395','#7caef5','#d49af1','#5dd4d0','#ef94c1','#bdcf69','#c79e78','#a9a1fa'];
+ for(const [index,item] of items.entries()){const b=document.createElement('button');b.type='button';b.textContent=`${item.label} ${item.count}`;b.title=item.label;b.setAttribute('aria-pressed',String(filter.value===item.value));b.style.setProperty('--category-color',index===0?'#c1ced3':palette[(index-1)%palette.length]);b.onclick=e=>{e.stopPropagation();if(dragged){dragged=false;return;}setSourceFilter(project,source.id,{dimension:filter.dimension,value:item.value});onChange();};strip.append(b);}
+ for(const [label,delta,text]of [['向左移動分類',-180,'‹'],['向右移動分類',180,'›']]){const b=document.createElement('button');b.type='button';b.textContent=text;b.setAttribute('aria-label',label);b.onclick=()=>{strip.scrollLeft+=delta;};if(delta<0)root.append(b);else{root.append(strip,b);}}
+ requestAnimationFrame(()=>{const active=strip.querySelector('[aria-pressed=true]');if(active)strip.scrollLeft=Math.max(0,active.offsetLeft-strip.offsetLeft-strip.clientWidth/2+active.offsetWidth/2);});
+ return root;
+}

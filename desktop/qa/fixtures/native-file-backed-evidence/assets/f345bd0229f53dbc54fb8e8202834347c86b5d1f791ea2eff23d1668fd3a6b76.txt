@@ -1,0 +1,96 @@
+import json
+WHY = json.loads("{\"tool\":{\"reason\":\"相似的局部外觀可能誤配。此步把同一張參考圖的點投影到場景，檢查許多分散位置是否同時支持一個平面變換。圖上綠線是真內點，紅線是被排除點；投影框僅在共同檢查成立時畫出。\",\"expectedEvidence\":[{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"reference-scene-correspondence\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}]},\"parameters\":[{\"name\":\"ransac_px_candidates\",\"source\":\"agent-proposal\",\"reason\":\"在同一對真圖上實算每個候選，圖表列出每組的支持點、殘差與分佈；僅在這組候選中選擇符合限制者，不聲稱全局最優。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"minimum_inliers\",\"source\":\"agent-proposal\",\"reason\":\"已授權的範例試驗限制，用來拒絕支持不足、集中局部或幾何殘差過大的映射；未由獨立工業答案校準，改變此值需重新回歸。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"minimum_inlier_ratio\",\"source\":\"agent-proposal\",\"reason\":\"已授權的範例試驗限制，用來拒絕支持不足、集中局部或幾何殘差過大的映射；未由獨立工業答案校準，改變此值需重新回歸。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"maximum_median_error_px\",\"source\":\"agent-proposal\",\"reason\":\"已授權的範例試驗限制，用來拒絕支持不足、集中局部或幾何殘差過大的映射；未由獨立工業答案校準，改變此值需重新回歸。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"minimum_template_coverage\",\"source\":\"agent-proposal\",\"reason\":\"已授權的範例試驗限制，用來拒絕支持不足、集中局部或幾何殘差過大的映射；未由獨立工業答案校準，改變此值需重新回歸。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"minimum_scene_area_fraction\",\"source\":\"agent-proposal\",\"reason\":\"已授權的範例試驗限制，用來拒絕支持不足、集中局部或幾何殘差過大的映射；未由獨立工業答案校準，改變此值需重新回歸。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"maximum_scene_area_fraction\",\"source\":\"agent-proposal\",\"reason\":\"已授權的範例試驗限制，用來拒絕支持不足、集中局部或幾何殘差過大的映射；未由獨立工業答案校準，改變此值需重新回歸。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}},{\"name\":\"seed\",\"source\":\"agent-proposal\",\"reason\":\"明示的計算預算或可重現設定；此輪未比較該設定，不能稱最優。\",\"verification\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]}}],\"boundaries\":[{\"condition\":\"只適用可由單一平面映射描述的可見外觀。三維形變、鏡頭畸變、嚴重遮擋、只在小角落有支持或過大殘差都超出此範例；未測成像變化與獨立產品精度。檢查不成立歸入「未建立映射」，程序崩潰另走FAULT。\",\"check\":{\"kind\":\"artifact\",\"type\":\"evidence\",\"id\":\"mapping-evidence\",\"visuals\":[{\"id\":\"parameter-comparison\",\"caption\":\"只畫本次實算的點對、內點及投影框；不是示意線，也不是物理尺寸精度證明。\"}]},\"onFailure\":\"UNKNOWN\"}]}")
+def calculate(step):
+    data=upstream['candidate_pairs']['artifact']['data']
+    reference=references['template']; target=image; h,w=reference.shape[:2]
+    corners=np.float32([[0,0],[w-1,0],[w-1,h-1],[0,h-1]]).reshape(-1,1,2)
+    trials=[]
+    for c in data['candidates']:
+        pairs=c['pairs']
+        for threshold in parameters['ransac_px_candidates']:
+            row={'method':c['method'],'ratio':c['ratio'],'ransacPx':threshold,'candidateCount':len(pairs),'inliers':0,'inlierRatio':0.,'medianErrorPx':None,'templateCoverage':0.,'accepted':False,'reasons':[]}
+            if len(pairs)<4:
+                row['reasons']=['Fewer than four candidate pairs'];trials.append(row);continue
+            src=np.float32([p['reference'] for p in pairs]).reshape(-1,1,2);dst=np.float32([p['scene'] for p in pairs]).reshape(-1,1,2)
+            cv2.setRNGSeed(parameters['seed'])
+            H,mask=cv2.findHomography(src,dst,cv2.RANSAC,threshold,maxIters=2000,confidence=.995)
+            if H is None or mask is None or not np.isfinite(H).all():
+                row['reasons']=['No finite homography'];trials.append(row);continue
+            selected=mask.ravel().astype(bool);n=int(selected.sum())
+            err=np.linalg.norm(cv2.perspectiveTransform(src,H)-dst,axis=2).ravel()
+            quad=cv2.perspectiveTransform(corners,H).reshape(-1,2)
+            coverage=float(cv2.contourArea(cv2.convexHull(src[selected]))/(w*h)) if n>=3 else 0.
+            area=float(abs(cv2.contourArea(quad))/(target.shape[0]*target.shape[1])) if np.isfinite(quad).all() else 0.
+            median=float(np.median(err[selected])) if n else None
+            reasons=[]
+            if n<parameters['minimum_inliers']:reasons.append('Insufficient geometric support')
+            if n/max(1,len(pairs))<parameters['minimum_inlier_ratio']:reasons.append('Too many inconsistent pairs')
+            if median is None or median>parameters['maximum_median_error_px']:reasons.append('Reprojection residual too large')
+            if coverage<parameters['minimum_template_coverage']:reasons.append('Support occupies too small a template patch')
+            if not np.isfinite(quad).all() or not cv2.isContourConvex(quad.astype(np.float32)):reasons.append('Projected frame is invalid')
+            if not parameters['minimum_scene_area_fraction']<=area<=parameters['maximum_scene_area_fraction']:reasons.append('Projected area outside explicit trial scale range')
+            row.update({'inliers':n,'inlierRatio':n/max(1,len(pairs)),'medianErrorPx':median,'templateCoverage':coverage,'areaFraction':area,'accepted':not reasons,'reasons':reasons,'matrix':H.tolist(),'quad':quad.tolist(),'points':[{'reference':pairs[i]['reference'],'scene':pairs[i]['scene'],'inlier':bool(selected[i]),'errorPx':float(err[i])} for i in range(len(pairs))]})
+            trials.append(row)
+    passing=[r for r in trials if r['accepted']]
+    chosen=max(passing or trials,key=lambda r:(r['accepted'],r['inliers'],r['templateCoverage'],-(r['medianErrorPx'] if r['medianErrorPx'] is not None else 1e9)))
+    mapped=bool(passing);overlay=target.copy()
+    if mapped:
+        quad=np.array(chosen['quad'],np.float32);cv2.polylines(overlay,[np.round(quad).astype(np.int32)],True,(80,235,120),2,cv2.LINE_AA)
+        for p in chosen['points']:cv2.circle(overlay,tuple(np.round(p['scene']).astype(int)),2,(80,235,120) if p['inlier'] else (70,70,240),-1)
+        save_layers('scene-mapping',[{'id':'mapped-frame','imageId':image_records[0]['id'],'sourceId':image_records[0]['id'],'objects':[{'id':'frame','type':'roi','label':'Reference frame projected into this scene','geometry':{'points':[{'x':float(x),'y':float(y)} for x,y in quad]},'coordinateSpace':{'kind':'original-image-pixels','imageId':image_records[0]['id'],'unit':'px'}}]}])
+    cv2.putText(overlay,('Mapping SUPPORTED' if mapped else 'Mapping NOT SUPPORTED')+' | inliers '+str(chosen['inliers']),(8,22),cv2.FONT_HERSHEY_SIMPLEX,.45,(80,235,120) if mapped else (70,150,255),1,cv2.LINE_AA)
+    save_image('mapping-overlay',overlay,section='tool')
+    canvas=np.full((max(h,target.shape[0]),w+target.shape[1],3),30,np.uint8);canvas[:h,:w]=reference;canvas[:target.shape[0],w:]=target
+    for p in chosen.get('points',[]):
+        a=tuple(np.round(p['reference']).astype(int));b=tuple(np.round(np.array(p['scene'])+[w,0]).astype(int));cv2.line(canvas,a,b,(90,210,120) if p['inlier'] else (70,70,130),1,cv2.LINE_AA)
+    save_image('reference-scene-correspondence',canvas,section='tool')
+    chart=np.full((760,1440,3),25,np.uint8)
+    cv2.putText(chart,'ACTUAL method / parameter comparison',(25,35),cv2.FONT_HERSHEY_SIMPLEX,.8,(235,235,235),1,cv2.LINE_AA)
+    cv2.putText(chart,'A. Geometric inliers: higher bars = more support',(25,80),cv2.FONT_HERSHEY_SIMPLEX,.58,(225,225,225),1,cv2.LINE_AA)
+    colors=[(105,215,145),(215,165,95),(195,130,205)]
+    maximum=max([t['inliers'] for t in trials]+[1])
+    cv2.line(chart,(65,540),(720,540),(180,180,180),1)
+    cv2.line(chart,(65,140),(65,540),(180,180,180),1)
+    for tick in range(5):
+        y=540-int(tick*maximum/4/maximum*360)
+        cv2.line(chart,(65,y),(720,y),(55,55,55),1)
+        cv2.putText(chart,str(round(tick*maximum/4)),(20,y+5),cv2.FONT_HERSHEY_SIMPLEX,.45,(180,180,180),1)
+    for index,t in enumerate(trials):
+        group=index//3;sub=index%3;x=80+group*79+sub*18;height=int(360*t['inliers']/maximum)
+        cv2.rectangle(chart,(x,540-height),(x+13,540),colors[sub],-1)
+        if not t['accepted']:cv2.line(chart,(x,535-height),(x+13,548-height),(100,100,245),2)
+    for group in range(8):
+        t=trials[group*3];x=80+group*79
+        cv2.putText(chart,t['method'],(x,565),cv2.FONT_HERSHEY_SIMPLEX,.38,(225,225,225),1)
+        cv2.putText(chart,str(t['ratio']),(x,585),cv2.FONT_HERSHEY_SIMPLEX,.42,(225,225,225),1)
+    for j,threshold in enumerate(parameters['ransac_px_candidates']):
+        x=70+j*205;cv2.rectangle(chart,(x,620),(x+18,636),colors[j],-1)
+        cv2.putText(chart,'RANSAC '+str(threshold)+' px',(x+25,635),cv2.FONT_HERSHEY_SIMPLEX,.46,(220,220,220),1)
+    cv2.putText(chart,'Red slash: a declared geometry gate failed',(65,675),cv2.FONT_HERSHEY_SIMPLEX,.5,(130,150,245),1,cv2.LINE_AA)
+    cv2.putText(chart,'B. Residual vs reference support spread',(795,80),cv2.FONT_HERSHEY_SIMPLEX,.58,(225,225,225),1,cv2.LINE_AA)
+    left,top,right,bottom=830,140,1370,540
+    xmax=.65;ymax=3.
+    gate_x=left+int(parameters['minimum_template_coverage']/xmax*(right-left))
+    gate_y=bottom-int(parameters['maximum_median_error_px']/ymax*(bottom-top))
+    cv2.rectangle(chart,(gate_x,gate_y),(right,bottom),(45,70,45),-1)
+    cv2.line(chart,(left,bottom),(right,bottom),(180,180,180),1);cv2.line(chart,(left,top),(left,bottom),(180,180,180),1)
+    cv2.line(chart,(gate_x,top),(gate_x,bottom),(120,180,120),1);cv2.line(chart,(left,gate_y),(right,gate_y),(120,180,120),1)
+    for tick in [0.,.15,.3,.45,.6]:
+        x=left+int(tick/xmax*(right-left));cv2.putText(chart,str(tick),(x-12,565),cv2.FONT_HERSHEY_SIMPLEX,.42,(200,200,200),1)
+    for tick in [0,1,2,3]:
+        y=bottom-int(tick/ymax*(bottom-top));cv2.putText(chart,str(tick),(left-22,y+5),cv2.FONT_HERSHEY_SIMPLEX,.42,(200,200,200),1)
+    for t in trials:
+        if t['medianErrorPx'] is None:continue
+        x=left+int(min(xmax,t['templateCoverage'])/xmax*(right-left));y=bottom-int(min(ymax,t['medianErrorPx'])/ymax*(bottom-top))
+        cv2.circle(chart,(x,y),5,(100,235,140) if t['accepted'] else (100,100,235),-1,cv2.LINE_AA)
+    cv2.putText(chart,'Template area covered by inliers (fraction)',(815,595),cv2.FONT_HERSHEY_SIMPLEX,.47,(220,220,220),1)
+    cv2.putText(chart,'Y: median reprojection error (scene pixels)',(795,115),cv2.FONT_HERSHEY_SIMPLEX,.47,(220,220,220),1)
+    cv2.putText(chart,'Green zone is necessary, not sufficient: other gates also apply.',(795,635),cv2.FONT_HERSHEY_SIMPLEX,.43,(175,220,175),1)
+    cv2.putText(chart,'No gate-passing candidate = no qualified mapping.',(795,675),cv2.FONT_HERSHEY_SIMPLEX,.49,(220,220,220),1)
+    cv2.putText(chart,'Observed pair only. Trial limits are not independent industrial accuracy certification.',(25,730),cv2.FONT_HERSHEY_SIMPLEX,.55,(205,205,205),1,cv2.LINE_AA)
+    save_image('parameter-comparison',chart,section='parameters')
+    value={'mapped':mapped,'selected':{k:v for k,v in chosen.items() if k!='points'},'trials':[{k:v for k,v in t.items() if k!='points'} for t in trials],'referenceImageId':data['referenceImageId'],'sceneImageId':data['sceneImageId'],'scope':'Observed planar correspondence under explicit trial gates, without independent industrial labels.'}
+    save_json('mapping-evidence',value,section='boundary')
+    return found(value)
+r=invoke('verify-planar-mapping',calculate,name='Verify homography support and real alternatives',parameters=parameters,justification=WHY)
+result={'valid':r.valid,'mapped':r.value['mapped'],'selected':r.value['selected']}

@@ -1,0 +1,19 @@
+{
+  "task": "Illustrated user story PRD alignment",
+  "productChanges": "None in this draft; experimental entry changes parked and reversed",
+  "stories": 12,
+  "opencvCases": 10,
+  "crystalStories": 2,
+  "draft": true,
+  "cvExecutedDuringDraft": false,
+  "sourceFilesUnchangedAfterRestoration": [
+    {
+      "path": "desktop/src/pipeline-view.js",
+      "restored": true
+    },
+    {
+      "path": "desktop/src/pipeline-view.css",
+      "restored": true
+    }
+  ]
+}

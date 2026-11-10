@@ -1,0 +1,110 @@
+[
+  {
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/py_watershed.markdown",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/py_watershed.markdown",
+    "status": "verified",
+    "sha256": "560a3634b1744f021f9d0f2c387c97b2526fc7ae855f295a2ea7dd755ba767e3",
+    "imageReferences": [
+      "images/water_coins.jpg",
+      "images/water_thresh.jpg",
+      "images/water_fgbg.jpg",
+      "images/water_dt.jpg",
+      "images/water_marker.jpg",
+      "images/water_result.jpg"
+    ]
+  },
+  {
+    "path": "doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/py_contours_hierarchy.markdown",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/py_contours_hierarchy.markdown",
+    "status": "verified",
+    "sha256": "c890630a6b3c21ae9266442866e1d8e8d1b5abf30a8e4f408bc07b04cf91de24",
+    "imageReferences": [
+      "images/hierarchy.png",
+      "images/ccomp_hierarchy.png",
+      "images/tree_hierarchy.png"
+    ]
+  },
+  {
+    "path": "doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.markdown",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.markdown",
+    "status": "verified",
+    "sha256": "626e91e5cb7c37978db23abc5fd2c7f02ba968ab1a4cdf195792d44474ad71a1",
+    "imageReferences": [
+      "images/homography_findobj.jpg"
+    ]
+  },
+  {
+    "path": "doc/tutorials/others/introduction_to_pca.markdown",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/tutorials/others/introduction_to_pca.markdown",
+    "status": "verified",
+    "sha256": "fcee8ab875bbefc67a1a3d6eaaf2edaeed4da787d3fb9be2a588f11838bdccc2",
+    "imageReferences": [
+      "images/pca_line.png",
+      "images/pca_eigen.png",
+      "images/pca_test1.jpg",
+      "images/pca_output.png"
+    ]
+  },
+  {
+    "path": "samples/cpp/contours2.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/contours2.cpp",
+    "status": "verified",
+    "sha256": "0ce8f60c21bc0154b580b542a32a8f6bb5794775759684a10d42131fbfac01b7",
+    "imageReferences": []
+  },
+  {
+    "path": "samples/cpp/houghcircles.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/houghcircles.cpp",
+    "status": "failed",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "path": "samples/cpp/polar_transforms.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/polar_transforms.cpp",
+    "status": "verified",
+    "sha256": "322dd1066d5ddede4429e7b6f4b75755954c588ee444b66bcb680ca44d649507",
+    "imageReferences": []
+  },
+  {
+    "path": "samples/cpp/image_alignment.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/image_alignment.cpp",
+    "status": "verified",
+    "sha256": "c176306dbb96fcba68415365926370a0a9c68c92168c89854e2200ae9c6bbdbd",
+    "imageReferences": []
+  },
+  {
+    "path": "samples/cpp/qrcode.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/qrcode.cpp",
+    "status": "verified",
+    "sha256": "ebe47a738ad5d0c9efb79dce4d75f0adfe3bf26b97fe91b362938a7ae7ae90c7",
+    "imageReferences": []
+  },
+  {
+    "path": "samples/cpp/tutorial_code/ml/introduction_to_pca/introduction_to_pca.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/tutorial_code/ml/introduction_to_pca/introduction_to_pca.cpp",
+    "status": "verified",
+    "sha256": "dc3d01d17f384a6d4865574f6b82f917ea455472451289d78585c2cd9e04bdce",
+    "imageReferences": []
+  },
+  {
+    "path": "samples/cpp/tutorial_code/ImgProc/morph_lines_detection/Morphology_3.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/tutorial_code/ImgProc/morph_lines_detection/Morphology_3.cpp",
+    "status": "verified",
+    "sha256": "7412572912dba70859487901fab0116f5b6e170078348e703486797ab496c3c8",
+    "imageReferences": []
+  },
+  {
+    "path": "samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp",
+    "status": "verified",
+    "sha256": "3d6a9700cb6c88679de71b3de519bb95b504b9087f80d094d814fb74e99e8607",
+    "imageReferences": []
+  },
+  {
+    "path": "LICENSE",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/LICENSE",
+    "status": "verified",
+    "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "imageReferences": []
+  }
+]

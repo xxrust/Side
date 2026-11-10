@@ -1,0 +1,265 @@
+{
+  "schema": "agentcv-product-consensus-1",
+  "date": "2026-10-29",
+  "status": "implementation_authorized_evidence_in_checklist",
+  "implementationScope": "2026-10-29 使用者已授權逐漸迭代實作；本檔共識不等於驗收，完成狀態與證據見當日checklist。",
+  "agreements": [
+    {
+      "id": "execution-unit-is-one-workpiece",
+      "definition": "單次檢測以一件工件為單位，通常輸入一張圖。同一工件多相機或多次拍攝時，可有多張相關圖聯合判定。",
+      "datasetRegression": "圖片集回歸為同一套方案逐件重複執行並彙總；導入圖片數量不決定單次輸入張數，也不改變方案結構。"
+    },
+    {
+      "id": "scheme-structure-and-execution-trace",
+      "definition": "完整方案圖表達已定義的節點、資料傳遞、條件及所有分支；單次執行紀錄表達該工件實際走過的路與狀態。未走分支仍屬於方案，顯示其定義不得冒充已執行。",
+      "node": "節點可以是有目的及輸入輸出界面的算子組合，不等同於單一算子。"
+    },
+    {
+      "id": "classification-specification-is-first-class",
+      "canvas": "畫板中以特殊的分類與判定規格框，關聯對應圖像源卡片；關係及規格實質內容必須可被 Agent 讀取。",
+      "sources": [
+        "人類輸入",
+        "資料提取",
+        "Agent 推理"
+      ],
+      "provenance": "保留來源、引用及推定或確認狀態；Agent 推理不能被悄悄改成獨立人工真值。",
+      "categories": "一般可採 OK、NG、UNKNOWN，亦可依量測值分檔；多個檔位可以同為良品。類別及品質屬性由專案規格定義，不硬編碼為唯一分類法。",
+      "measurementFailure": "量測失敗須依該案規則映射到定義類別，例如 NG／定位失敗；內部未量測不得偽填為零，亦不自動新增對外 UNKNOWN。",
+      "aggregation": "可定義全部步驟非 NG 即 OK 等規則，但須明確處理未執行、跳過、失敗，以及多個 NG 同時命中的情況。",
+      "compilationChecklist": [
+        "類別、檔位及品質屬性的定義與對應關係",
+        "量測規則所需的量、單位與有效範圍",
+        "區間端點的歸屬、重疊與空缺",
+        "各流程出口與量測失敗／異常的分類去向",
+        "UNKNOWN 是否存在及其觸發條件",
+        "多個分類條件同時命中的優先級或多標籤規則",
+        "各檢測結果的彙總、提前結束與跳過規則",
+        "來源衝突、推定內容與缺失資訊"
+      ],
+      "ontology": "本體定義類別、檔位、品質屬性、規則、來源及關係；工程實例保存該案具體類別和門檻；執行紀錄保存本工件的實際命中規則、量測與圖像證據。",
+      "exampleStatus": "討論中的 ±1、−3 至 −1、+1 至 +3 分檔為概念示例，不是已核定的專案公差或端點規則。",
+      "executionFaultBoundary": "類別覆蓋正常業務結果與預期未找到／無法量測的情況；線程／程序崩潰等執行故障與產品NG分開表示，不視為正常NG檢出。"
+    },
+    {
+      "id": "agent-clarification-notice",
+      "userInstruction": "Agent 整理類別時須帶著完整性問題逐項核對；發現資訊缺失時，主動發起對人類的詢問。平台以醒目的『？』提示 Agent 需要諮詢。",
+      "agentBehavior": "不得默默補上影響分類、規則或分支的缺失資訊並當成已確認規格；人類已有明確授權的推定，須保留授權與推定來源。",
+      "uiStatus": "功能已提出並同意記錄，尚未實作。",
+      "pendingInteractionDetails": [
+        "問號的位置與所關聯的分類框／規則／對象",
+        "點開後如何顯示缺漏、問題、相關圖像與資料來源",
+        "回答如何更新規格、保留歷史及解除待諮詢狀態",
+        "多個待回答問題如何呈現，以及哪些執行範圍需要等待"
+      ]
+    },
+    {
+      "id": "cohesive-nodes-and-bounded-nesting",
+      "status": "agreed_principles_not_implementation",
+      "principle": "節點按高內聚、低耦合劃分，而非按算子數、函數數或產物圖片數劃分。",
+      "dedicatedPreparation": "濾波等前處理若僅服務後續找線，四條線再共同構造矩形，可以聚合為一個矩形定位節點；不因濾波或每條邊各自有一個函數就拆成流程節點。",
+      "sharedPreparation": "若前處理的計算結果被多個後續目的引用，應抽成獨立的共用圖像預處理節點，由下游引用實際輸出，明確表示資料依賴。",
+      "classificationBoundary": "中間處理不必各自產生產品分類。技術執行失敗、品質檢查失敗與最終分類規則的關係須保留；不能因內部步驟可失敗就自動拆為獨立工程節點。",
+      "nesting": {
+        "allowed": true,
+        "maxNodeLevels": 3,
+        "reason": "防止過度嵌套使流程難以理解。",
+        "countingConvention": "已確認：方案總圖為容器不計層，工程節點最多三層；節點內的算子序列不增加嵌套層數。"
+      },
+      "existingEvidenceRequirements": "折疊或組合節點不取消各實際算法步驟的三項依據、參數、中間圖及可追溯紀錄。"
+    },
+    {
+      "id": "uniform-operator-failure-handling",
+      "status": "agreed_direction_with_fault_semantics_clarified",
+      "requirement": "以統一算子介面與執行器處理算子失敗及依賴傳播，避免逐算子手寫重複if/else或try/except。算法異常不得拖垮主平台。",
+      "failurePropagation": "先區分正常執行但目標未找到，與執行故障。所需直線未找到屬正常算法結果，資料不可用時由依賴執行器阻擋後續，依規格可分類為NG／定位失敗；線程或工作進程崩潰等執行故障獨立記錄與處置，不能冒充正常NG檢出。",
+      "contractNeeds": "成功條件、必要輸出及依賴須聲明；單一布林值不能代替具體失敗原因，也不能代替最終類別定義。",
+      "observedImplementation": {
+        "present": [
+          "獨立Python工作進程",
+          "進程逾時終止及程序異常紀錄",
+          "整圖節點上游失敗會阻擋依賴節點",
+          "run_step可跳過未成功的前提"
+        ],
+        "incomplete": [
+          "任意內部step尚未統一吸收失敗並繼續獨立支路",
+          "ProcedureUnit.__exit__仍傳播Python異常，可中止當前整段程式",
+          "尚未統一所有算子的成功條件與有效輸出契約",
+          "方案失敗仍有固定UNKNOWN處理，尚未依新分類規格編譯失敗到NG／其他類別的映射"
+        ]
+      },
+      "implementationScope": "僅檢查與記錄，未依本輪討論修改執行器。",
+      "faultDistinction": {
+        "notFound": "未找到直線／目標不是執行故障，須保留正常執行事實、未找到結果及規格分類。",
+        "fault": "線程／工作進程崩潰等是真正故障，須保留原因及受影響路徑，不能計作正常NG命中或默默當作未找到目標。",
+        "pending": "故障出口的重試、告警及產線處置策略尚待逐項定義，不由平台默認成正常NG。"
+      }
+    },
+    {
+      "id": "structured-result-layers-and-visible-locks",
+      "status": "user_requested_direction_not_implementation",
+      "requirement": "畫板算法輸出應支援多個結構化圖層，保留可被分別查看、選取及詢問的ROI、輪廓、幾何、標記等對象，而非僅交付將它們烘焙進像素的渲染圖。",
+      "defaultVisibility": "算法或Agent實際構建的ROI、搜索框等相關對象，預設應可見；不可只顯示最後渲染結果而默默隱藏過程對象。",
+      "lockedObjects": "自動生成或不允許直接修改的ROI／對象，應在對象旁顯示小鎖，清楚表達唯讀狀態。",
+      "existingPrinciples": "圖層及對象應保留原圖座標與算法步驟的關係、來源及版本；鎖定不應阻止查看、選取、引用及向Agent詢問。",
+      "discussionProposalsNotYetConfirmed": [
+        "將可見性、是否可編輯、是否隨算法重算分開表示，避免自動生成被誤解成不可重新計算。",
+        "鎖定對象的更改可透過修改生成參數重算，或另建明確標示的人工覆寫；不直接篡改歷史實算結果。",
+        "圖層分為原圖／處理圖像、ROI、幾何、量測與說明等類型；具體分類與控制方式尚待討論。",
+        "統一輸出契約可包含結構化圖層與對象；渲染圖保留作為預覽或匯出，不能取代需要交互的結構。"
+      ]
+    },
+    {
+      "id": "image-references-and-structured-visual-context",
+      "status": "under_discussion_not_implementation",
+      "userProposal": "同一原圖的多個標記視圖，向Agent提供原圖引用以及標記屬性、幾何及關係，類似CAD，而非反覆把標記烘焙成不同圖片。",
+      "proposedRepresentation": [
+        "不可變原圖／處理圖像資產的內容雜湊與引用",
+        "視圖所引用的底圖及可見圖層",
+        "有穩定ID、版本、原圖座標或明確變換的ROI／線／圓／遮罩／量測／註解",
+        "對象間關係與本輪選中對象",
+        "手繪意圖或算法實算的來源區分",
+        "相對明確基準版本的變更集合"
+      ],
+      "visionBoundary": "平台自訂ID或本地指針不能讓模型憑空看到像素；需保留已提供的視覺上下文，或由工具解析引用並按需取原圖、局部圖與疊加預覽。更換模型／上下文壓縮後需按需重新提供視覺證據。",
+      "cacheBoundary": "本地資產去重、供應商file_id引用與模型prompt前綴快取是不同層。file_id不等於免費圖像輸入；前綴快取命中有條件，不能由本地相同hash或同一session直接推斷。Pi各provider的實際支援與費用須實測確認。",
+      "truePixelChanges": "濾波、分割等真正改變像素的產物是新的圖像資產；只改標記／可見性的視圖則共用底圖。",
+      "sources": [
+        {
+          "title": "OpenAI Images and vision",
+          "url": "https://developers.openai.com/api/docs/guides/images-vision"
+        },
+        {
+          "title": "OpenAI Prompt caching",
+          "url": "https://developers.openai.com/api/docs/guides/prompt-caching"
+        }
+      ],
+      "limitations": "本輪僅閱讀官方文件和整理概念；未呼叫模型驗證快取、未上傳原圖、未修改平台傳輸或圖層實作。",
+      "userPreferredDefault": "渲染圖＋補充說明，讓Agent直觀看到標記對應位置；原圖與結構化對象仍保留在平台供計算及按需取得。",
+      "exploratoryExperiment": {
+        "directory": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-visual-context-comparison",
+        "model": {
+          "provider": "openai-codex",
+          "id": "gpt-6.1-sol"
+        },
+        "scope": "一張真實原圖、三種受控標記情境；Pi SDK無工具／無產品skill的表示理解測試，不是平台全流程或工業檢測驗收。",
+        "singleTurn": {
+          "requests": 18,
+          "repeatsPerTaskPerArm": 2,
+          "groups": {
+            "A": {
+              "representation": "渲染圖與圖內完整圖例",
+              "correctTasks": 6,
+              "meanReportedInputTokens": 1477
+            },
+            "B": {
+              "representation": "原圖＋相同結構化資料",
+              "correctTasks": 6,
+              "meanReportedInputTokens": 854.3333333333334
+            },
+            "C": {
+              "representation": "同A渲染圖＋同B結構化資料",
+              "correctTasks": 6,
+              "meanReportedInputTokens": 1766.3333333333333
+            }
+          },
+          "cacheReadTokens": 0
+        },
+        "multiTurn": {
+          "requests": 6,
+          "B": "同一會話首輪原圖，以後僅新增標記資料；三輪皆正確。",
+          "C": "同一會話每輪新增渲染圖＋標記資料；三輪皆正確。",
+          "cacheObservation": "C報告整體前綴cacheRead合計4992；不能歸因為圖片特有快取。B為0。",
+          "transportLimitation": "僅記SDK本輪新增圖片數，未截取底層HTTP／WebSocket；不能宣稱B後兩輪沒有重傳歷史像素或只用指針完成視覺輸入。"
+        },
+        "conclusion": "本輪三種表示均能正確理解；不足以證明哪種普遍最準。渲染圖＋資料可作交互預設候選，更新標記時是否需新渲染應按問題與上下文決定。未證明模型費用節省比例或實付價格。",
+        "implementation": "未修改產品程式。"
+      }
+    },
+    {
+      "id": "external-tools-for-code-and-raw-diagnostics",
+      "status": "user_requested_direction_not_implementation",
+      "userIntent": "平台聚焦圖像交互、檢測方案及可解釋依據；程式編輯、完整日誌、執行環境與完整原始資料的瀏覽不作為平台重點。",
+      "fileEntry": "在對應節點／運算附近顯示可識別的實際檔名。點擊後提供打開方式，允許使用Cursor、VS Code或適當第三方／系統應用。",
+      "externalContent": [
+        "算法程式檔",
+        "詳細輸出／錯誤日誌",
+        "執行環境紀錄",
+        "完整原始數據檔"
+      ],
+      "keepInPlatform": [
+        "原圖、結構化圖層及圖像交互",
+        "目的、節點、實際依賴與分類結果",
+        "三項依據使用的圖、關鍵數字與解釋",
+        "能讓工程師理解本件NG或未完成原因的簡明訊息"
+      ],
+      "retention": "完整程式、日誌、環境及數據仍作工程檔案和可追溯證據保存，透過對應檔案入口訪問；不將移出主要介面解釋成刪除追溯資料。",
+      "pendingImplementationDetails": [
+        "第三方應用選擇與檔案類型對應方式",
+        "歷史實算來源檔與可編輯工作副本的區分",
+        "外部修改如何被偵測、納入方案版本與重新編譯，且不覆寫歷史執行快照"
+      ],
+      "scope": "本輪僅記錄產品範圍與交互方向，未修改UI或外部應用開啟功能。"
+    },
+    {
+      "id": "per-operator-timing-and-dataset-statistics-card",
+      "status": "user_requested_direction_not_implementation",
+      "confirmedRequirements": {
+        "perOperator": "每個算子須記錄每次實際執行的耗時，支援定位瓶頸、算子優化與工程落地評估。",
+        "wholeFlow": "記錄每次完整檢測流程的總耗時，與單算子計時並存。",
+        "statisticsCard": "圖像源在畫板中關聯統計卡片，集中呈現整體算法速度、當前回歸情況及工程落地能力。"
+      },
+      "proposedMeasurementConventionsNotYetConfirmed": {
+        "clock": "耗時使用單調時鐘；保留算子／節點／流程實例、檢測單位、方案版本與測試條件。",
+        "hierarchy": "記錄開始、結束與耗時；嵌套節點區分包含子步驟的耗時與自身耗時，避免重複累加。",
+        "pipeline": "流程總時間量測實際端到端經過時間，不以算子耗時簡單相加；並行、重試、等待與被跳過的步驟須可辨認。",
+        "boundaries": "明確區分算法計算、圖像讀取／解碼、排隊／等待、證據保存及畫面渲染；是否包含相機採集需明確設定。",
+        "failedAndSkipped": "失敗／超時記錄實際已消耗時間及狀態，跳過標為未執行；不能將其當作零耗時成功樣本。",
+        "conditions": "區分首次冷啟動、暖機後及快取命中；保留硬體、執行環境與併發條件，以便可比。"
+      },
+      "proposedCardContentsNotYetConfirmed": [
+        "關聯的圖像源／資料集版本、方案版本及本次回歸任務",
+        "單件端到端耗時：樣本數、平均、P50、P95、最大值；吞吐量另列",
+        "產線節拍要求與超時／超節拍比例（需求缺失時主動諮詢，不能自行宣稱可落地）",
+        "主要耗時節點／算子與可展開的時間分佈",
+        "回歸進度：待執行／執行中／完成／執行失敗",
+        "OK／NG／其他已定義分類的數量與分佈，與執行狀態分開",
+        "有人工答案的案例通過率、各類混淆及漏檢／誤判；未標答案與未覆蓋條件明示，不冒充準確率",
+        "資料或方案改變後標示歷史統計與待重新驗證範圍"
+      ],
+      "evidenceBoundary": "統計來自真實執行與已知答案，不能僅因速度快、全部判OK或少量案例通過就宣稱工程可落地。",
+      "scope": "本輪僅記錄需求與待討論口徑，未新增計時或統計卡片實作，亦未宣稱現有計時已符合本規格。"
+    },
+    {
+      "id": "agent-development-and-acceptance-not-production-loop",
+      "status": "confirmed_not_implementation",
+      "definition": "正常產線檢測不由對話Agent參與逐件執行。Agent參與需求溝通、方案開發與驗收；正常檢測執行已確定的方案。",
+      "scope": "這項確認不限制方案內可使用深度學習等算法。"
+    },
+    {
+      "id": "algorithm-effectiveness-beyond-three-elements",
+      "status": "confirmed_with_term_clarified",
+      "definition": "三要素完整是必要要求，但不等於算法有效；有效性重點在圖片集回歸、召回率及Agent目檢。",
+      "termClarification": "用戶已確認「回召」包含圖片集回歸測試及召回率兩者。",
+      "traceability": "已知答案、未標註資料與Agent推斷保持區分；三要素及目檢紀錄不能自行充當獨立人工真值。",
+      "metricScope": "召回率及相關漏檢／誤判統計須標明有答案的樣本、類別與測試範圍；具體允收門檻未在本輪設定。"
+    },
+    {
+      "id": "current-step-layer-visibility-and-cross-step-composition",
+      "status": "user_confirmed_direction_not_implementation",
+      "defaultVisibility": "當前步驟相關ROI預設可見，不要求把所有步驟與歷史迭代對象同時疊在畫面。",
+      "capabilities": [
+        "允許圖像重疊顯示",
+        "允許構造渲染視圖",
+        "渲染視圖可引用前緒步驟的真實測量線、ROI、blob曲線等產物"
+      ],
+      "userExample": "在後續視圖中引用「晶振抽取」步驟產生的blob曲線，與本步圖像／量測共同呈現。",
+      "proposalDetailsNotYetConfirmed": {
+        "referenceIdentity": "引用應指向原始節點／步驟／產物／對象與版本，避免另畫一條無來源的線冒充。",
+        "coordinates": "同源圖層沿原圖座標對齊；跨圖對位／量測需要明確座標變換，純討論示意重疊則標明非配準。",
+        "referenceKinds": "參與算法計算的引用與僅供渲染／說明的引用分開記錄；只有前者形成計算依賴與相應重算，後者不憑空改寫算法流程。",
+        "versioning": "可明確查看當前結果或固定歷史結果，不默默混用不同運算的產物。"
+      }
+    }
+  ],
+  "nextDiscussionCandidate": "節點輸入輸出、計算依賴與視覺引用的區分，以及故障出口的具體處置策略；尚待討論。"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "PDF document presentation only; not product or algorithm acceptance",
+  "pages": 16,
+  "bytes": 4702186,
+  "sha256": "cf9972d0aabb70d22092f0c21d9df8d2f513a214eb16427bbf5f66c99334874d",
+  "checks": [
+    "16 pages reopened and text extracted",
+    "Page footer collision checks passed",
+    "All 16 pages rendered with Poppler",
+    "Both eight-page contact sheets visually reviewed",
+    "No product code changed; no CV execution"
+  ],
+  "limitations": [
+    "Concept draft pending user review",
+    "Illustrated annotations are not measured CV outputs"
+  ]
+}

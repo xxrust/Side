@@ -1,0 +1,41 @@
+{
+  "accepted": 91,
+  "total": 91,
+  "dx": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "dy": [
+    -3,
+    -2,
+    -1,
+    0,
+    1,
+    2,
+    3
+  ],
+  "candidate_counts": [
+    1
+  ],
+  "rms_range": [
+    0.4428013985876206,
+    0.4739463213253088
+  ],
+  "coverage_range": [
+    0.9518716577540107,
+    0.983957219251337
+  ],
+  "rejections": [],
+  "caution": "One real image with translated ROIs; not a production accuracy or cross-image stability guarantee."
+}

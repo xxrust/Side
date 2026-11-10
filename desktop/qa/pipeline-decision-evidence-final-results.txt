@@ -1,0 +1,13 @@
+✔ all seven operators adapt saved real evidence, complete gates and independent provenance (4815.1905ms)
+✔ fractional saved peak indices plot on the saved curve without losing markers (0.869ms)
+✔ shared crystal explanation renders actual five curves, source formulas, compact bindings and quoted evidence (963.630667ms)
+✔ not-run, stale, old contracts and early return never expose prior actual evidence (233.60725ms)
+✔ uncertain feature and its downstream rule evidence both remain diagnostic candidates (188.502542ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6504.303625

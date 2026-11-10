@@ -1,0 +1,1622 @@
+{
+  "inputProjectSha256": "a4dbd94854afbfdffd4148899156b6e8d2208e91d70014a6962fd8a305c00e28",
+  "inputImageSha256": "eb8f1a5cd012e442a751b42868b50b09e2d404891e1f5ad7124889a4c8a1a586",
+  "savedRunId": "f382a0e2-a96b-46db-ba1e-f02254b33ebf",
+  "replayRunId": "a2eeceb6-eb25-48f8-b34a-2d7b018897a5",
+  "toolContract": "agentcv-tool-explanation-1",
+  "originalWidth": 994.9264263458608,
+  "replayWidth": 994.9264263458608,
+  "widthDifference": 0,
+  "parameterSources": {
+    "schema": "agentcv-parameter-sources-1",
+    "matching": {
+      "minScore": {
+        "kind": "recipe_setting"
+      },
+      "maxError": {
+        "kind": "recipe_setting"
+      },
+      "minMargin": {
+        "kind": "recipe_setting"
+      }
+    },
+    "edges": {
+      "threshold": {
+        "kind": "recipe_setting"
+      },
+      "maxAngle": {
+        "kind": "recipe_setting"
+      }
+    }
+  },
+  "originalSourceWasNotModified": true,
+  "nativeWindowVisualQA": false,
+  "records": [
+    {
+      "name": "four-edges",
+      "section": "evidence",
+      "side": "left",
+      "caption": "同一原圖左右對照；本次實際採用 4 條邊，空缺側不畫成功線。",
+      "facts": {
+        "targetId": "3ccea20d-e2a8-485f-8a35-073c60ea3fd6",
+        "status": "CURRENT",
+        "selectedEdgeCount": 4,
+        "sides": {
+          "top": {
+            "status": "FOUND",
+            "roi": {
+              "x": 389.1023875243974,
+              "y": 45.11420923749995,
+              "width": 605.5652674097613,
+              "height": 90
+            },
+            "geometry": {
+              "type": "line",
+              "from": {
+                "x": 391.10297867878495,
+                "y": 91.19908403837997
+              },
+              "to": {
+                "x": 991.1086966110336,
+                "y": 87.02003432022153
+              },
+              "angle_deg": -0.39905959608494707,
+              "rms_px": 0.4052926921323328
+            }
+          },
+          "bottom": {
+            "status": "FOUND",
+            "roi": {
+              "x": 389.1023875243974,
+              "y": 792.1299781749481,
+              "width": 605.5652674097613,
+              "height": 90
+            },
+            "geometry": {
+              "type": "line",
+              "from": {
+                "x": 391.0945253370511,
+                "y": 837.9431820211031
+              },
+              "to": {
+                "x": 991.1013165020651,
+                "y": 833.9683074936526
+              },
+              "angle_deg": -0.379562708803533,
+              "rms_px": 0.37133094125878596
+            }
+          },
+          "left": {
+            "status": "FOUND",
+            "roi": {
+              "x": 142.24729838781025,
+              "y": 276.868151471862,
+              "width": 90,
+              "height": 373.50788446872406
+            },
+            "geometry": {
+              "type": "line",
+              "from": {
+                "x": 193.36821373615453,
+                "y": 284.87677359282
+              },
+              "to": {
+                "x": 196.85983821209902,
+                "y": 640.8719517071352
+              },
+              "angle_deg": 89.43805718785359,
+              "rms_px": 0.5468039214862586
+            }
+          },
+          "right": {
+            "status": "FOUND",
+            "roi": {
+              "x": 1151.5227440707458,
+              "y": 239.51736302498958,
+              "width": 90,
+              "height": 448.20946136246886
+            },
+            "geometry": {
+              "type": "line",
+              "from": {
+                "x": 1189.288334897458,
+                "y": 244.52172755744778
+              },
+              "to": {
+                "x": 1190.8298921087764,
+                "y": 680.5162770337231
+              },
+              "angle_deg": 89.79741867384415,
+              "rms_px": 0.7457235735420181
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "left-supports",
+      "section": "evidence",
+      "side": "left",
+      "caption": "點的座標、線段與 ROI 使用同一次運算的記錄；殘差由這些點至記錄線段的距離推導。",
+      "facts": {
+        "side": "left",
+        "roi": {
+          "x": 142.24729838781025,
+          "y": 276.868151471862,
+          "width": 90,
+          "height": 373.50788446872406
+        },
+        "pointCount": 90,
+        "rms": 0.5468039214862588,
+        "recordedRms": 0.5468039214862586,
+        "p95": 1.1608528350809713,
+        "sampleCount": 90,
+        "profileWidth": 15
+      }
+    },
+    {
+      "name": "top-comparison",
+      "section": "evidence",
+      "side": "top",
+      "caption": "較大窗口可能降低 RMS，也會改變平均範圍；只靠最低 RMS 不能證明最準。表中沒有通過者不補造品質值。",
+      "facts": {
+        "side": "top",
+        "attempts": [
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": true
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 3,
+            "eligibleCount": 3,
+            "selected": false
+          },
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 3,
+            "eligibleCount": 3,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 4,
+            "eligibleCount": 4,
+            "selected": false
+          }
+        ],
+        "selectedWidth": 1,
+        "selectedTrim": 0.2,
+        "assessment": {
+          "schema": "agentcv-edge-parameter-search-1",
+          "status": "CONSISTENT",
+          "testedCount": 8,
+          "grid": {
+            "widths": [
+              1,
+              5,
+              9,
+              15
+            ],
+            "trims": [
+              0.2,
+              0.25
+            ]
+          },
+          "usableCount": 8,
+          "ambiguousCount": 0,
+          "chosenTrialIndex": 0,
+          "referenceTrialIndex": 0,
+          "commonTangentSpan": {
+            "from": 447.56420367080864,
+            "to": 935.5688877538612
+          },
+          "maxNormalSpreadPx": 0.14336609477913953,
+          "agreementTolerancePx": 3,
+          "comparisons": [
+            {
+              "trialIndex": 0,
+              "profileWidth": 1,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": true,
+              "rms": 0.4052926921323328,
+              "coverage": 0.9801324503311258,
+              "continuity": 0.9801324503311258,
+              "maxDeltaToChoicePx": 0
+            },
+            {
+              "trialIndex": 1,
+              "profileWidth": 5,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.32560743905358935,
+              "coverage": 0.9933333333333333,
+              "continuity": 0.9933333333333333,
+              "maxDeltaToChoicePx": 0.10672893986831866
+            },
+            {
+              "trialIndex": 2,
+              "profileWidth": 9,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3237150307075019,
+              "coverage": 0.9932885906040269,
+              "continuity": 0.9932885906040269,
+              "maxDeltaToChoicePx": 0.13874157450548807
+            },
+            {
+              "trialIndex": 3,
+              "profileWidth": 15,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.31784618725196206,
+              "coverage": 0.9932432432432432,
+              "continuity": 0.9932432432432432,
+              "maxDeltaToChoicePx": 0.14336609477913953
+            },
+            {
+              "trialIndex": 4,
+              "profileWidth": 1,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3885724619099834,
+              "coverage": 0.9841269841269841,
+              "continuity": 0.9841269841269841,
+              "maxDeltaToChoicePx": 0.05798758509364177
+            },
+            {
+              "trialIndex": 5,
+              "profileWidth": 5,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3381050303668926,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.1178491174091647
+            },
+            {
+              "trialIndex": 6,
+              "profileWidth": 9,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.32335411945276393,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.13345307514676108
+            },
+            {
+              "trialIndex": 7,
+              "profileWidth": 15,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.31897753129012624,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.10962028184833628
+            }
+          ],
+          "selectionRule": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+          "scope": "同一原圖、固定閾值與搜尋帶的有限參數比較；不是噪聲穩健性或獨立圖片驗證。"
+        }
+      }
+    },
+    {
+      "name": "top-sensitivity",
+      "section": "evidence",
+      "side": "top",
+      "caption": "曲線只連接相鄰已測合格設定作導讀，不推定中間寬度的表現。3 px 是跨組線位分歧的工程拒絕尺度，不是已校準精度；只有一組通過時無法計算跨組極差。",
+      "facts": {
+        "side": "top",
+        "attempts": [
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": true
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 3,
+            "eligibleCount": 3,
+            "selected": false
+          },
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 3,
+            "eligibleCount": 3,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 4,
+            "eligibleCount": 4,
+            "selected": false
+          }
+        ],
+        "selectedWidth": 1,
+        "selectedTrim": 0.2,
+        "assessment": {
+          "schema": "agentcv-edge-parameter-search-1",
+          "status": "CONSISTENT",
+          "testedCount": 8,
+          "grid": {
+            "widths": [
+              1,
+              5,
+              9,
+              15
+            ],
+            "trims": [
+              0.2,
+              0.25
+            ]
+          },
+          "usableCount": 8,
+          "ambiguousCount": 0,
+          "chosenTrialIndex": 0,
+          "referenceTrialIndex": 0,
+          "commonTangentSpan": {
+            "from": 447.56420367080864,
+            "to": 935.5688877538612
+          },
+          "maxNormalSpreadPx": 0.14336609477913953,
+          "agreementTolerancePx": 3,
+          "comparisons": [
+            {
+              "trialIndex": 0,
+              "profileWidth": 1,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": true,
+              "rms": 0.4052926921323328,
+              "coverage": 0.9801324503311258,
+              "continuity": 0.9801324503311258,
+              "maxDeltaToChoicePx": 0
+            },
+            {
+              "trialIndex": 1,
+              "profileWidth": 5,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.32560743905358935,
+              "coverage": 0.9933333333333333,
+              "continuity": 0.9933333333333333,
+              "maxDeltaToChoicePx": 0.10672893986831866
+            },
+            {
+              "trialIndex": 2,
+              "profileWidth": 9,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3237150307075019,
+              "coverage": 0.9932885906040269,
+              "continuity": 0.9932885906040269,
+              "maxDeltaToChoicePx": 0.13874157450548807
+            },
+            {
+              "trialIndex": 3,
+              "profileWidth": 15,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.31784618725196206,
+              "coverage": 0.9932432432432432,
+              "continuity": 0.9932432432432432,
+              "maxDeltaToChoicePx": 0.14336609477913953
+            },
+            {
+              "trialIndex": 4,
+              "profileWidth": 1,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3885724619099834,
+              "coverage": 0.9841269841269841,
+              "continuity": 0.9841269841269841,
+              "maxDeltaToChoicePx": 0.05798758509364177
+            },
+            {
+              "trialIndex": 5,
+              "profileWidth": 5,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3381050303668926,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.1178491174091647
+            },
+            {
+              "trialIndex": 6,
+              "profileWidth": 9,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.32335411945276393,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.13345307514676108
+            },
+            {
+              "trialIndex": 7,
+              "profileWidth": 15,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.31897753129012624,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.10962028184833628
+            }
+          ],
+          "selectionRule": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+          "scope": "同一原圖、固定閾值與搜尋帶的有限參數比較；不是噪聲穩健性或獨立圖片驗證。"
+        }
+      }
+    },
+    {
+      "name": "top-all-eight",
+      "section": "evidence",
+      "side": "top",
+      "caption": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+      "facts": {
+        "side": "top",
+        "attempts": [
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": true
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 3,
+            "eligibleCount": 3,
+            "selected": false
+          },
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 3,
+            "eligibleCount": 3,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 4,
+            "eligibleCount": 4,
+            "selected": false
+          }
+        ],
+        "selectedWidth": 1,
+        "selectedTrim": 0.2,
+        "assessment": {
+          "schema": "agentcv-edge-parameter-search-1",
+          "status": "CONSISTENT",
+          "testedCount": 8,
+          "grid": {
+            "widths": [
+              1,
+              5,
+              9,
+              15
+            ],
+            "trims": [
+              0.2,
+              0.25
+            ]
+          },
+          "usableCount": 8,
+          "ambiguousCount": 0,
+          "chosenTrialIndex": 0,
+          "referenceTrialIndex": 0,
+          "commonTangentSpan": {
+            "from": 447.56420367080864,
+            "to": 935.5688877538612
+          },
+          "maxNormalSpreadPx": 0.14336609477913953,
+          "agreementTolerancePx": 3,
+          "comparisons": [
+            {
+              "trialIndex": 0,
+              "profileWidth": 1,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": true,
+              "rms": 0.4052926921323328,
+              "coverage": 0.9801324503311258,
+              "continuity": 0.9801324503311258,
+              "maxDeltaToChoicePx": 0
+            },
+            {
+              "trialIndex": 1,
+              "profileWidth": 5,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.32560743905358935,
+              "coverage": 0.9933333333333333,
+              "continuity": 0.9933333333333333,
+              "maxDeltaToChoicePx": 0.10672893986831866
+            },
+            {
+              "trialIndex": 2,
+              "profileWidth": 9,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3237150307075019,
+              "coverage": 0.9932885906040269,
+              "continuity": 0.9932885906040269,
+              "maxDeltaToChoicePx": 0.13874157450548807
+            },
+            {
+              "trialIndex": 3,
+              "profileWidth": 15,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.31784618725196206,
+              "coverage": 0.9932432432432432,
+              "continuity": 0.9932432432432432,
+              "maxDeltaToChoicePx": 0.14336609477913953
+            },
+            {
+              "trialIndex": 4,
+              "profileWidth": 1,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3885724619099834,
+              "coverage": 0.9841269841269841,
+              "continuity": 0.9841269841269841,
+              "maxDeltaToChoicePx": 0.05798758509364177
+            },
+            {
+              "trialIndex": 5,
+              "profileWidth": 5,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.3381050303668926,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.1178491174091647
+            },
+            {
+              "trialIndex": 6,
+              "profileWidth": 9,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.32335411945276393,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.13345307514676108
+            },
+            {
+              "trialIndex": 7,
+              "profileWidth": 15,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.31897753129012624,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.10962028184833628
+            }
+          ],
+          "selectionRule": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+          "scope": "同一原圖、固定閾值與搜尋帶的有限參數比較；不是噪聲穩健性或獨立圖片驗證。"
+        }
+      }
+    },
+    {
+      "name": "left-all-eight",
+      "section": "evidence",
+      "side": "left",
+      "caption": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+      "facts": {
+        "side": "left",
+        "attempts": [
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": true
+          }
+        ],
+        "selectedWidth": 15,
+        "selectedTrim": 0.25,
+        "assessment": {
+          "schema": "agentcv-edge-parameter-search-1",
+          "status": "SINGLE_PASS",
+          "testedCount": 8,
+          "grid": {
+            "widths": [
+              1,
+              5,
+              9,
+              15
+            ],
+            "trims": [
+              0.2,
+              0.25
+            ]
+          },
+          "usableCount": 1,
+          "ambiguousCount": 0,
+          "chosenTrialIndex": 7,
+          "referenceTrialIndex": 7,
+          "commonTangentSpan": {
+            "from": 284.87677359282,
+            "to": 640.8719517071352
+          },
+          "maxNormalSpreadPx": null,
+          "agreementTolerancePx": 3,
+          "comparisons": [
+            {
+              "trialIndex": 0,
+              "profileWidth": 1,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 1,
+              "profileWidth": 5,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 2,
+              "profileWidth": 9,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 3,
+              "profileWidth": 15,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 4,
+              "profileWidth": 1,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 5,
+              "profileWidth": 5,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 6,
+              "profileWidth": 9,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 7,
+              "profileWidth": 15,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": true,
+              "rms": 0.5468039214862586,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0
+            }
+          ],
+          "selectionRule": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+          "scope": "同一原圖、固定閾值與搜尋帶的有限參數比較；不是噪聲穩健性或獨立圖片驗證。"
+        }
+      }
+    },
+    {
+      "name": "left-candidates",
+      "section": "evidence",
+      "side": "left",
+      "caption": "只畫本輪保存的合格候選；相近線可能觸發 UNKNOWN，沒有保存的被拒假設不補畫。",
+      "facts": {
+        "side": "left",
+        "status": "FOUND",
+        "selectedId": "c1",
+        "candidates": [
+          {
+            "id": "c1",
+            "distanceToIntent": 7.866727586316529,
+            "coverage": 1,
+            "rms": 0.5468039214862586
+          }
+        ]
+      }
+    },
+    {
+      "name": "left-residuals",
+      "section": "evidence",
+      "side": "left",
+      "caption": "RMS、P95 與直方圖由記錄的全部支持點計算；不把 1.5 px 的 RMS 門檻畫成每個點的允許範圍。",
+      "facts": {
+        "side": "left",
+        "rms": 0.5468039214862588,
+        "recordedRms": 0.5468039214862586,
+        "p95": 1.1608528350809713,
+        "histogram": [
+          3,
+          0,
+          0,
+          0,
+          8,
+          1,
+          7,
+          4,
+          9,
+          11,
+          10,
+          5,
+          16,
+          5,
+          6,
+          2,
+          0,
+          1,
+          2,
+          0
+        ],
+        "histogramRange": [
+          -1.4658914764687185,
+          1.4658914764687185
+        ],
+        "pointCount": 90
+      }
+    },
+    {
+      "name": "left-coverage",
+      "section": "evidence",
+      "side": "left",
+      "caption": "掃描位置由記錄點及當次 ROI／採樣規則對應；連續性、局部覆蓋和橋接範圍使用當次品質記錄。",
+      "facts": {
+        "side": "left",
+        "supportCount": 90,
+        "missing": 0,
+        "scanCount": 90,
+        "localCoverage": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "coverage": 1,
+        "continuity": 1,
+        "bridgedGaps": [],
+        "largestGapRatio": 0
+      }
+    },
+    {
+      "name": "left-contrast",
+      "section": "evidence",
+      "side": "left",
+      "caption": "剖面從原圖按當次設定唯讀重建，不重選邊線；直方圖只含已採用支持點，並非所有被拒點的分布。",
+      "facts": {
+        "side": "left",
+        "threshold": 18,
+        "profileWidth": 15,
+        "tangent": 464.868151471862,
+        "supportPoint": {
+          "x": 195.24729838781025,
+          "y": 464.868151471862
+        },
+        "medianContrast": 48.80000000000001,
+        "recordedMedian": 48.80000000000001,
+        "contrastHistogram": [
+          2,
+          4,
+          7,
+          7,
+          14,
+          18,
+          18,
+          5,
+          7,
+          0,
+          3,
+          2,
+          0,
+          2,
+          1
+        ],
+        "contrastRange": [
+          30.733333333333334,
+          79.26666666766668
+        ],
+        "profileSampleCount": 86
+      }
+    },
+    {
+      "name": "why-left-15px",
+      "section": "parameters",
+      "side": "left",
+      "parameterId": "profileWidth",
+      "caption": "較大窗口可能降低 RMS，也會改變平均範圍；只靠最低 RMS 不能證明最準。表中沒有通過者不補造品質值。",
+      "facts": {
+        "side": "left",
+        "attempts": [
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": true
+          }
+        ],
+        "selectedWidth": 15,
+        "selectedTrim": 0.25,
+        "assessment": {
+          "schema": "agentcv-edge-parameter-search-1",
+          "status": "SINGLE_PASS",
+          "testedCount": 8,
+          "grid": {
+            "widths": [
+              1,
+              5,
+              9,
+              15
+            ],
+            "trims": [
+              0.2,
+              0.25
+            ]
+          },
+          "usableCount": 1,
+          "ambiguousCount": 0,
+          "chosenTrialIndex": 7,
+          "referenceTrialIndex": 7,
+          "commonTangentSpan": {
+            "from": 284.87677359282,
+            "to": 640.8719517071352
+          },
+          "maxNormalSpreadPx": null,
+          "agreementTolerancePx": 3,
+          "comparisons": [
+            {
+              "trialIndex": 0,
+              "profileWidth": 1,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 1,
+              "profileWidth": 5,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 2,
+              "profileWidth": 9,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 3,
+              "profileWidth": 15,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 4,
+              "profileWidth": 1,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 5,
+              "profileWidth": 5,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 6,
+              "profileWidth": 9,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 7,
+              "profileWidth": 15,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": true,
+              "rms": 0.5468039214862586,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0
+            }
+          ],
+          "selectionRule": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+          "scope": "同一原圖、固定閾值與搜尋帶的有限參數比較；不是噪聲穩健性或獨立圖片驗證。"
+        }
+      }
+    },
+    {
+      "name": "why-right-9px",
+      "section": "parameters",
+      "side": "right",
+      "parameterId": "profileWidth",
+      "caption": "較大窗口可能降低 RMS，也會改變平均範圍；只靠最低 RMS 不能證明最準。表中沒有通過者不補造品質值。",
+      "facts": {
+        "side": "right",
+        "attempts": [
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.2,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": true
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.2,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 1,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 5,
+            "tangentTrim": 0.25,
+            "status": "UNKNOWN",
+            "candidateCount": 0,
+            "eligibleCount": 0,
+            "selected": false
+          },
+          {
+            "profileWidth": 9,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          },
+          {
+            "profileWidth": 15,
+            "tangentTrim": 0.25,
+            "status": "AWAITING_SELECTION",
+            "candidateCount": 1,
+            "eligibleCount": 1,
+            "selected": false
+          }
+        ],
+        "selectedWidth": 9,
+        "selectedTrim": 0.2,
+        "assessment": {
+          "schema": "agentcv-edge-parameter-search-1",
+          "status": "CONSISTENT",
+          "testedCount": 8,
+          "grid": {
+            "widths": [
+              1,
+              5,
+              9,
+              15
+            ],
+            "trims": [
+              0.2,
+              0.25
+            ]
+          },
+          "usableCount": 4,
+          "ambiguousCount": 0,
+          "chosenTrialIndex": 2,
+          "referenceTrialIndex": 2,
+          "commonTangentSpan": {
+            "from": 284.869886476523,
+            "to": 640.8661979635034
+          },
+          "maxNormalSpreadPx": 0.354736387524099,
+          "agreementTolerancePx": 3,
+          "comparisons": [
+            {
+              "trialIndex": 0,
+              "profileWidth": 1,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 1,
+              "profileWidth": 5,
+              "tangentTrim": 0.2,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 2,
+              "profileWidth": 9,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": true,
+              "rms": 0.7457235735420181,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0
+            },
+            {
+              "trialIndex": 3,
+              "profileWidth": 15,
+              "tangentTrim": 0.2,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.69392995144938,
+              "coverage": 0.9908256880733946,
+              "continuity": 0.9908256880733946,
+              "maxDeltaToChoicePx": 0.006328299111828528
+            },
+            {
+              "trialIndex": 4,
+              "profileWidth": 1,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 5,
+              "profileWidth": 5,
+              "tangentTrim": 0.25,
+              "status": "REJECTED",
+              "selected": false,
+              "rms": null,
+              "coverage": null,
+              "continuity": null,
+              "maxDeltaToChoicePx": null
+            },
+            {
+              "trialIndex": 6,
+              "profileWidth": 9,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.701971911327575,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.34840808841227044
+            },
+            {
+              "trialIndex": 7,
+              "profileWidth": 15,
+              "tangentTrim": 0.25,
+              "status": "PASS",
+              "selected": false,
+              "rms": 0.6746583311812463,
+              "coverage": 1,
+              "continuity": 1,
+              "maxDeltaToChoicePx": 0.2611485658130732
+            }
+          ],
+          "selectionRule": "先比較全部八組；排除品質／意圖不合格者；各組有歧義或線位差大於 3 px 時保留 UNKNOWN。其餘優先較窄平均窗口，同寬優先較長搜尋段，以減少額外平滑並保留搜尋跨度。這是工程取捨，不宣稱最佳精度。",
+          "scope": "同一原圖、固定閾值與搜尋帶的有限參數比較；不是噪聲穩健性或獨立圖片驗證。"
+        }
+      }
+    },
+    {
+      "name": "why-find-lines",
+      "section": "tool",
+      "side": "left",
+      "caption": "這是目前流程的選擇規則與任務關聯；沒有紀錄比較過的替代算法，便不宣稱它是最佳方法。",
+      "facts": {
+        "choice": {
+          "goal": "lid寬 · lid",
+          "need": "由原圖找到量測所需的真實四邊",
+          "output": "搜尋帶、支持點與擬合直線",
+          "assumption": "近矩形平面假設；背景線也可能通過品質條件",
+          "source": "依檢查項與人工示教編譯的內建流程；未自主比較替代算法"
+        }
+      }
+    },
+    {
+      "name": "template",
+      "section": "evidence",
+      "side": "left",
+      "caption": "灰階格直接使用方案保存的 484 個模板值；來源是參考圖，並非目前圖片的生成圖。",
+      "facts": {
+        "referenceImageId": "4fef9e9c-73ba-40fd-a39f-f8be905209d0",
+        "referenceSha256": "eb8f1a5cd012e442a751b42868b50b09e2d404891e1f5ad7124889a4c8a1a586",
+        "sampleCount": 484,
+        "variance": 3054.801085137616,
+        "bounds": {
+          "x": 97,
+          "y": 0,
+          "width": 1182,
+          "height": 927
+        }
+      }
+    },
+    {
+      "name": "locate",
+      "section": "evidence",
+      "side": "left",
+      "caption": "位置與數值來自當次運算；未保存的匹配位置峰不補畫成一條搜尋曲線。",
+      "facts": {
+        "location": {
+          "x": 187.24729838781025,
+          "y": 90.11420923749995,
+          "width": 1009.2754456829356,
+          "height": 747.0157689374481
+        },
+        "dx": 0,
+        "dy": 0,
+        "metrics": [
+          {
+            "key": "score",
+            "label": "ZNCC 相似度",
+            "operator": ">=",
+            "threshold": 0.9,
+            "value": 1.0000000000000024,
+            "pass": true,
+            "unit": ""
+          },
+          {
+            "key": "mean_absolute_error",
+            "label": "平均灰階絕對誤差（MAE）",
+            "operator": "<=",
+            "threshold": 24,
+            "value": 0,
+            "pass": true,
+            "unit": "gray"
+          },
+          {
+            "key": "uniqueness_margin",
+            "label": "最佳與次佳位置差距",
+            "operator": ">=",
+            "threshold": 0.035,
+            "value": 1,
+            "pass": true,
+            "unit": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "matching-statistics",
+      "section": "evidence",
+      "side": "left",
+      "caption": "由方案模板值和定位後原圖最近像素推導；沒有把未採樣像素當成已檢查。",
+      "facts": {
+        "sampleCount": 484,
+        "meanAbsoluteError": 0,
+        "recordedMAE": 0,
+        "histogram": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          484,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "range": [
+          -0.05,
+          0.05
+        ]
+      }
+    },
+    {
+      "name": "measure",
+      "section": "evidence",
+      "side": "left",
+      "caption": "角點、原始像素邊長與最終檢查單位分開；不以漂亮線段或低殘差冒充尺寸誤差保證。",
+      "facts": {
+        "corners": [
+          {
+            "x": 191.48224678585623,
+            "y": 92.58944572731627
+          },
+          {
+            "x": 1188.726585469814,
+            "y": 85.64362246604048
+          },
+          {
+            "x": 1191.3677655469592,
+            "y": 832.6415991651253
+          },
+          {
+            "x": 198.80522012073794,
+            "y": 839.2170440381003
+          }
+        ],
+        "edgeLengths": [
+          997.2685272773734,
+          747.0026459288657,
+          992.5843254143483,
+          746.6635095528593
+        ],
+        "width": 994.9264263458608,
+        "height": 746.8330777408626,
+        "value": 994.9264263458608,
+        "unit": "px",
+        "scale": null
+      }
+    },
+    {
+      "name": "decide",
+      "section": "evidence",
+      "side": "left",
+      "caption": "已有人指定的範圍，但尚未填寫規格來源；不冒稱正式公差已經驗證。",
+      "facts": {
+        "value": 994.9264263458608,
+        "min": 800,
+        "max": 1200,
+        "unit": "px",
+        "status": "OK"
+      }
+    }
+  ]
+}

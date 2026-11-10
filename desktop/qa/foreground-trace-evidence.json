@@ -1,0 +1,109 @@
+{
+  "inputSha256": "eb8f1a5cd012e442a751b42868b50b09e2d404891e1f5ad7124889a4c8a1a586",
+  "sourceImage": "original-workpiece.png",
+  "algorithmVersion": "agentcv-inspection-0.9.0",
+  "threshold": 64,
+  "sampleStep": 4,
+  "candidateId": "fg-b-6610",
+  "stages": [
+    {
+      "id": "original",
+      "title": "原圖",
+      "step": 1,
+      "width": 1280,
+      "height": 1024,
+      "metrics": [
+        [
+          "原圖",
+          "1280 × 1024 px"
+        ]
+      ],
+      "note": "未修改的原圖；滾輪縮放，拖曳平移。"
+    },
+    {
+      "step": 4,
+      "width": 1280,
+      "height": 1024,
+      "id": "gray",
+      "title": "灰階／取樣",
+      "metrics": [
+        [
+          "計算網格",
+          "320 × 256"
+        ],
+        [
+          "採樣間隔",
+          "4 px"
+        ]
+      ],
+      "note": "實際計算的灰階採樣格；取樣點取整，不是縮圖平均。"
+    },
+    {
+      "step": 4,
+      "width": 1280,
+      "height": 1024,
+      "id": "binary",
+      "title": "閾值分割",
+      "metrics": [
+        [
+          "Otsu 閾值",
+          64
+        ],
+        [
+          "白色條件",
+          "> 64"
+        ],
+        [
+          "白色格數",
+          48930
+        ]
+      ],
+      "note": "白色是本候選極性的前景，黑色是背景；尚未挑選工件。"
+    },
+    {
+      "step": 4,
+      "width": 1280,
+      "height": 1024,
+      "id": "components",
+      "title": "連通區",
+      "metrics": [
+        [
+          "連通區",
+          31
+        ],
+        [
+          "通過篩選",
+          1
+        ],
+        [
+          "本候選格數",
+          48653
+        ]
+      ],
+      "note": "綠色為所選候選；其他顏色為其他四鄰接連通區（含被篩除區塊）。"
+    },
+    {
+      "step": 4,
+      "width": 1280,
+      "height": 1024,
+      "id": "hull",
+      "title": "凸包",
+      "metrics": [
+        [
+          "凸包頂點",
+          33
+        ],
+        [
+          "新增包絡格數",
+          1167
+        ],
+        [
+          "原連通區格數",
+          48653
+        ]
+      ],
+      "note": "綠色保留連通區；橙色是凸包填入的凹陷或孔洞。包絡線不是精密物體輪廓。"
+    }
+  ],
+  "nativeVisualAcceptance": false
+}

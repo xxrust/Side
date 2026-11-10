@@ -1,0 +1,128 @@
+{
+  "search": {
+    "seedLevel": 65,
+    "sigma": 1.5
+  },
+  "scan": {
+    "normalRange": 70,
+    "sigmas": [
+      1,
+      1.5,
+      2.5
+    ],
+    "tangentFraction": [
+      0.22,
+      0.78
+    ],
+    "samples": 121,
+    "slopeRange": [
+      -0.06,
+      0.06
+    ],
+    "slopeStep": 0.002
+  },
+  "lidPrior": {
+    "width": 683,
+    "height": 529,
+    "widthTolerance": 10,
+    "heightTolerance": 12
+  },
+  "pkgPrior": {
+    "width": 708,
+    "height": 550,
+    "widthTolerance": 8,
+    "heightTolerance": 8,
+    "source": "11_15 four independent exposed outer sides; development estimate"
+  },
+  "quality": {
+    "edgeTrialPx": 3,
+    "dimensionTrialPx": 8,
+    "cornerRadius": 65,
+    "separatorMinContrast": 6,
+    "separatorDistancePx": [
+      1,
+      9
+    ],
+    "slopeScatter": 0.015,
+    "minIndependentSeparationPx": 4,
+    "assumedSeamOffsetPx": 3,
+    "unresolvedEdgeTrialPx": 6,
+    "externalLevel": 80,
+    "gradientMin": 3,
+    "lineNmsDistancePx": 4,
+    "lineCandidateCount": 7,
+    "fitIterations": 3,
+    "residualFloorPx": 2,
+    "residualMadMultiplier": 3,
+    "maxLidExteriorRecheckPx": 12
+  },
+  "poseModel": {
+    "lidWidth": 687,
+    "lidHeight": 532,
+    "lidWidthScale": 6,
+    "lidHeightScale": 6,
+    "lidWidthLimit": 10,
+    "lidHeightLimit": 10,
+    "pkgWidth": 708,
+    "pkgHeight": 550,
+    "pkgWidthLimit": 10,
+    "pkgHeightLimit": 10,
+    "arcScoreWeight": 0.15,
+    "residualQuantile": 0.9,
+    "maxNormalResidualPx": 5,
+    "minRadiusScore": 0.7,
+    "minArcCoverage": 0.7,
+    "minArcCorners": 3,
+    "sideSamples": 61
+  },
+  "radiusModel": {
+    "radiusRange": [
+      40,
+      140
+    ],
+    "radiusStep": 2,
+    "angleRangeDeg": [
+      5,
+      85
+    ],
+    "samples": 41,
+    "normalOffsets": [
+      -6,
+      -3,
+      0,
+      3,
+      6
+    ],
+    "lidBrightFloor": 100,
+    "lidBrightScale": 80,
+    "pkgDarkCeiling": 110,
+    "pkgDarkScale": 60,
+    "independentArcDistancePx": 4,
+    "minVisibleSamples": 9,
+    "gradientClip": 20,
+    "gradientMin": 3,
+    "minimumCornerPeak": 2,
+    "minSupportedCorners": 2,
+    "relativeFamilyScore": 0.8
+  },
+  "decision": {
+    "pixelTolerancePx": 3,
+    "candidateScoreDelta": 2,
+    "deltaTrials": [
+      0.5,
+      1,
+      2,
+      3
+    ],
+    "toleranceTrialsPx": [
+      0,
+      2,
+      3,
+      5
+    ]
+  },
+  "display": {
+    "cropHalfSize": 110,
+    "description": "crop/render settings only, no classification effect"
+  }
+}

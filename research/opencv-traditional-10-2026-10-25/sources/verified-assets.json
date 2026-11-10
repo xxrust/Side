@@ -1,0 +1,345 @@
+[
+  {
+    "name": "doc-water_coins.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+    "bytes": 16322,
+    "sha256": "7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+    "status": "downloaded",
+    "local": "assets/doc-water_coins.jpg"
+  },
+  {
+    "name": "doc-water_thresh.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_thresh.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_thresh.jpg",
+    "bytes": 12627,
+    "sha256": "eb701308f22b483f599d16dd25fa97021b9a7e3bc4d237fdfa6cd3340ec6157f",
+    "status": "downloaded",
+    "local": "assets/doc-water_thresh.jpg"
+  },
+  {
+    "name": "doc-water_dt.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_dt.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_dt.jpg",
+    "bytes": 15120,
+    "sha256": "2634281d8c920a578b72d32a277d1a5289ae44522359d2c02552d6cbadb85cb2",
+    "status": "downloaded",
+    "local": "assets/doc-water_dt.jpg"
+  },
+  {
+    "name": "doc-water_marker.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_marker.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_marker.jpg",
+    "bytes": 16125,
+    "sha256": "3e061b8c3c28ddc77441a0a92fb1673a40125861f2d71479889b770395859ca8",
+    "status": "downloaded",
+    "local": "assets/doc-water_marker.jpg"
+  },
+  {
+    "name": "doc-water_result.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_watershed/images/water_result.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_result.jpg",
+    "bytes": 30960,
+    "sha256": "57ce1b24e5048f4a4cd7ada297f4eaf734257b7722e69fee6c5e1cbec419d101",
+    "status": "downloaded",
+    "local": "assets/doc-water_result.jpg"
+  },
+  {
+    "name": "doc-hierarchy.png",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/hierarchy.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/hierarchy.png",
+    "bytes": 5168,
+    "sha256": "abc61365d664f9cf23f367b03e54b654bb7bb4b48b154b3647fac6d377a389a7",
+    "status": "downloaded",
+    "local": "assets/doc-hierarchy.png"
+  },
+  {
+    "name": "doc-tree_hierarchy.png",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/tree_hierarchy.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/tree_hierarchy.png",
+    "bytes": 11917,
+    "sha256": "5a4bf4cd644a4fbd5fc18124cb97a954c1ffac94b1ad48b1ab9ea97ed602d5fc",
+    "status": "downloaded",
+    "local": "assets/doc-tree_hierarchy.png"
+  },
+  {
+    "name": "doc-homography_findobj.jpg",
+    "folder": "assets",
+    "path": "doc/py_tutorials/py_feature2d/py_feature_homography/images/homography_findobj.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_feature2d/py_feature_homography/images/homography_findobj.jpg",
+    "bytes": 31937,
+    "sha256": "8350da2ae50e40f5ffc4645984feb0fb4307279d5f1bdb382dc99969b4d30118",
+    "status": "downloaded",
+    "local": "assets/doc-homography_findobj.jpg"
+  },
+  {
+    "name": "doc-pca_output.png",
+    "folder": "assets",
+    "path": "doc/tutorials/others/images/pca_output.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/tutorials/others/images/pca_output.png",
+    "bytes": 207994,
+    "sha256": "6c64099848fb229ac414a15fd018288e8147dc58180bd8a6c8b64584d9a69ef6",
+    "status": "downloaded",
+    "local": "assets/doc-pca_output.png"
+  },
+  {
+    "name": "doc-houghcircles.cpp",
+    "folder": "sources",
+    "path": "samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp",
+    "bytes": 1723,
+    "sha256": "8d42802b352844c2e7c8745ddd025a5b80278d4590b79d930fa8f6ce15962682",
+    "status": "downloaded",
+    "local": "sources/doc-houghcircles.cpp"
+  },
+  {
+    "name": "extra-device7-1.png",
+    "path": "testdata/cv/shape/mpeg_test/device7-1.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-1.png",
+    "bytes": 3144,
+    "sha256": "727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+    "status": "downloaded",
+    "local": "assets/extra-device7-1.png"
+  },
+  {
+    "name": "extra-device7-2.png",
+    "path": "testdata/cv/shape/mpeg_test/device7-2.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-2.png",
+    "bytes": 3112,
+    "sha256": "f1619e99328b4c43eee94a219a9e2aa78b47602433535f1822f0e8f419957f64",
+    "status": "downloaded",
+    "local": "assets/extra-device7-2.png"
+  },
+  {
+    "name": "extra-beads.jpg",
+    "path": "testdata/cv/imgproc/beads.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/imgproc/beads.jpg",
+    "bytes": 683094,
+    "sha256": "30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+    "status": "downloaded",
+    "local": "assets/extra-beads.jpg"
+  },
+  {
+    "name": "extra-fruits.png",
+    "path": "testdata/cv/shared/fruits.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits.png",
+    "bytes": 428398,
+    "sha256": "172bceeb74155ae1fd815ccb9e9bd1c8e52844a885e519af8b69741f8c8910c9",
+    "status": "downloaded",
+    "local": "assets/extra-fruits.png"
+  },
+  {
+    "name": "extra-fruits_ecc.png",
+    "path": "testdata/cv/shared/fruits_ecc.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits_ecc.png",
+    "bytes": 31382,
+    "sha256": "973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+    "status": "downloaded",
+    "local": "assets/extra-fruits_ecc.png"
+  },
+  {
+    "name": "extra-link_ocv.jpg",
+    "path": "testdata/cv/qrcode/link_ocv.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/link_ocv.jpg",
+    "bytes": 57542,
+    "sha256": "c2b78b1ebb4c06111b8fa2c92da639519daacfe577009d2b31f45f6f8341f5e1",
+    "status": "downloaded",
+    "local": "assets/extra-link_ocv.jpg"
+  },
+  {
+    "name": "extra-dataset_config.json",
+    "path": "testdata/cv/qrcode/dataset_config.json",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/dataset_config.json",
+    "bytes": 5648,
+    "sha256": "faa055bec147c11ad48d0f5470675263159a95114f9c913edb9ae964a6ab7e56",
+    "status": "downloaded",
+    "local": "assets/extra-dataset_config.json"
+  },
+  {
+    "name": "extra-wshed_exp.png",
+    "path": "testdata/cv/watershed/wshed_exp.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/watershed/wshed_exp.png",
+    "bytes": 33503,
+    "sha256": "9df70ea3568780ad709cf99eea5154135f9c52a6fae996dbda087be768e5cbdf",
+    "status": "downloaded",
+    "local": "assets/extra-wshed_exp.png"
+  },
+  {
+    "name": "box.png",
+    "path": "samples/data/box.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box.png",
+    "bytes": 50728,
+    "sha256": "1094629c1e2ebbc8a9ae2c9c63e18c1dff0f5f1481146e02f3b11a3d30feb20a",
+    "status": "downloaded",
+    "local": "assets/box.png"
+  },
+  {
+    "name": "box_in_scene.png",
+    "path": "samples/data/box_in_scene.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box_in_scene.png",
+    "bytes": 122490,
+    "sha256": "8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+    "status": "downloaded",
+    "local": "assets/box_in_scene.png"
+  },
+  {
+    "name": "cards.png",
+    "path": "samples/data/cards.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/cards.png",
+    "bytes": 77914,
+    "sha256": "acf2d347e8de7fbb0edbf457c8fb467cb6d16d4166c92f40e68f3831e06149ac",
+    "status": "downloaded",
+    "local": "assets/cards.png"
+  },
+  {
+    "name": "detect_blob.png",
+    "path": "samples/data/detect_blob.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/detect_blob.png",
+    "bytes": 34115,
+    "sha256": "f31a972c7aa0fbf5c0559a9c76cb0ef88a56567362d05194aa0e7f2592b4cff0",
+    "status": "downloaded",
+    "local": "assets/detect_blob.png"
+  },
+  {
+    "name": "ellipses.jpg",
+    "path": "samples/data/ellipses.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/ellipses.jpg",
+    "bytes": 165414,
+    "sha256": "775f8bd606ba5184907a0851474dc39893e11a296e0af233e8b00f7afbde1866",
+    "status": "downloaded",
+    "local": "assets/ellipses.jpg"
+  },
+  {
+    "name": "gauge-1.jpg",
+    "path": "samples/data/gauge-1.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/gauge-1.jpg",
+    "bytes": 17297,
+    "sha256": "e247a7e8bc6a335843da432408a076f7aac48c3573f97d030d07db4e95a56016",
+    "status": "downloaded",
+    "local": "assets/gauge-1.jpg"
+  },
+  {
+    "name": "leuvenA.jpg",
+    "path": "samples/data/leuvenA.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/leuvenA.jpg",
+    "bytes": 324949,
+    "sha256": "b2977cdbd9fb3f94dadd6f76cf586d145676deb8a22b5f0f42149d21c058c09f",
+    "status": "downloaded",
+    "local": "assets/leuvenA.jpg"
+  },
+  {
+    "name": "leuvenB.jpg",
+    "path": "samples/data/leuvenB.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/leuvenB.jpg",
+    "bytes": 312454,
+    "sha256": "5bb41a60038a2baa5d8ea0eaba55e6e3050d721b254cf79d8d8998d7e49d664a",
+    "status": "downloaded",
+    "local": "assets/leuvenB.jpg"
+  },
+  {
+    "name": "notes.png",
+    "path": "samples/data/notes.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/notes.png",
+    "bytes": 14650,
+    "sha256": "b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+    "status": "downloaded",
+    "local": "assets/notes.png"
+  },
+  {
+    "name": "pca_test1.jpg",
+    "path": "samples/data/pca_test1.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pca_test1.jpg",
+    "bytes": 33227,
+    "sha256": "9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+    "status": "downloaded",
+    "local": "assets/pca_test1.jpg"
+  },
+  {
+    "name": "pic1.png",
+    "path": "samples/data/pic1.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pic1.png",
+    "bytes": 13160,
+    "sha256": "0244e20a34fa2d30c60e60928d6d71f89d32e0e0266b4644980798cc2368765a",
+    "status": "downloaded",
+    "local": "assets/pic1.png"
+  },
+  {
+    "name": "pic2.png",
+    "path": "samples/data/pic2.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pic2.png",
+    "bytes": 259603,
+    "sha256": "8c32d76f17c2eca78a1402fd1bb48144785e5397ff5a24de68c36b0f76b1f055",
+    "status": "downloaded",
+    "local": "assets/pic2.png"
+  },
+  {
+    "name": "smarties.png",
+    "path": "samples/data/smarties.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+    "bytes": 90815,
+    "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+    "status": "downloaded",
+    "local": "assets/smarties.png"
+  },
+  {
+    "name": "stuff.jpg",
+    "path": "samples/data/stuff.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/stuff.jpg",
+    "bytes": 29365,
+    "sha256": "21cd00afbdd0727f445dd91c0a09633e6345ed5b05a3d2355453a1f3c314c6c5",
+    "status": "downloaded",
+    "local": "assets/stuff.jpg"
+  },
+  {
+    "name": "qr-version_1_down.jpg",
+    "path": "testdata/cv/qrcode/version_1_down.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_down.jpg",
+    "bytes": 57555,
+    "sha256": "4b29417c673225aff71672519684f2db9798e9d27356580d90438467bfbb595d",
+    "status": "downloaded",
+    "local": "assets/qr-version_1_down.jpg"
+  },
+  {
+    "name": "qr-version_1_top.jpg",
+    "path": "testdata/cv/qrcode/version_1_top.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_top.jpg",
+    "bytes": 52787,
+    "sha256": "2f58406d668f34286e95bc3e3797beae1e231f15200247deccd6489dbe3c8865",
+    "status": "downloaded",
+    "local": "assets/qr-version_1_top.jpg"
+  },
+  {
+    "name": "qr-version_1_left.jpg",
+    "path": "testdata/cv/qrcode/version_1_left.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_left.jpg",
+    "bytes": 52827,
+    "sha256": "94cd751c5d2255ea2e02e7129bda5f73a53feaa887ebd1ba93ffcab2763ca625",
+    "status": "downloaded",
+    "local": "assets/qr-version_1_left.jpg"
+  },
+  {
+    "name": "qr-version_1_right.jpg",
+    "path": "testdata/cv/qrcode/version_1_right.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_right.jpg",
+    "bytes": 50634,
+    "sha256": "72eefeefaeaaa87d0169c9debf8fb3e30c6fae2a31cb123e3fbd1fd61a2d7679",
+    "status": "downloaded",
+    "local": "assets/qr-version_1_right.jpg"
+  },
+  {
+    "name": "qr-version_1_up.jpg",
+    "path": "testdata/cv/qrcode/version_1_up.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_up.jpg",
+    "bytes": 51333,
+    "sha256": "1e46c71e861317256129ff9c36e2d57a8d0fb251970ff7b52f38736c151ed917",
+    "status": "downloaded",
+    "local": "assets/qr-version_1_up.jpg"
+  }
+]

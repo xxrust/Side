@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AgentCV PRD v0.2</title>
+<style>
+  :root {
+    --fg: #111;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg: #f7f8fa;
+    --card: #fff;
+    --accent: #2563eb;
+    --teal: #0d9488;
+    --code-bg: #f3f4f6;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: "Inter", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    line-height: 1.65;
+    font-size: 15px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 880px);
+    gap: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+  .toc {
+    position: sticky;
+    top: 20px;
+    align-self: start;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 14px;
+    max-height: calc(100vh - 40px);
+    overflow: auto;
+    font-size: 12.5px;
+  }
+  .toc-title {
+    font-weight: 650;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc a { color: #374151; text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+  .toc-h2 { margin: 6px 0; font-weight: 600; }
+  .toc-h3 { margin: 3px 0 3px 12px; color: var(--muted); font-weight: 400; }
+  .toc-h3 a { color: var(--muted); }
+  main {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 40px 48px;
+    box-shadow: 0 1px 2px rgba(17,17,17,0.04);
+  }
+  h1 { font-size: 26px; line-height: 1.3; margin: 0 0 16px; letter-spacing: -0.01em; }
+  h2 { font-size: 20px; margin: 36px 0 12px; padding-top: 8px; border-top: 1px solid var(--border); }
+  h2:first-of-type { border-top: none; }
+  h3 { font-size: 16px; margin: 24px 0 8px; }
+  h4 { font-size: 14.5px; margin: 18px 0 6px; }
+  p { margin: 8px 0; }
+  .caption, figure figcaption, p.caption {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 6px 0 16px;
+  }
+  a { color: var(--accent); }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  pre {
+    background: #0b1220;
+    color: #e5e7eb;
+    padding: 14px 16px;
+    border-radius: 10px;
+    overflow: auto;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+  blockquote {
+    margin: 12px 0;
+    padding: 10px 16px;
+    border-left: 3px solid var(--accent);
+    background: #eff6ff;
+    border-radius: 0 8px 8px 0;
+    color: #1e3a8a;
+  }
+  blockquote p { margin: 4px 0; }
+  ul, ol { margin: 8px 0 8px 1.2em; padding: 0; }
+  li { margin: 4px 0; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+  .table-wrap { overflow-x: auto; margin: 12px 0 18px; border: 1px solid var(--border); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border-bottom: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f9fafb; font-weight: 650; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  figure.fig {
+    margin: 16px 0 8px;
+    padding: 12px;
+    background: #fafbfc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  figure.fig img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  .banner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+  }
+  .pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+  .pill.teal { background: #f0fdfa; color: #0f766e; border-color: #99f6e4; }
+  .pill.muted { background: #f3f4f6; color: #4b5563; border-color: var(--border); }
+  .footer-note {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { position: static; max-height: none; }
+    main { padding: 24px 18px 36px; }
+  }
+  @media print {
+    .toc { display: none; }
+    .layout { display: block; }
+    main { box-shadow: none; border: none; }
+    body { background: #fff; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc"><div class="toc-title">目录</div><ul><li class="toc-h2"><a href="#0-阅读路线与相对-v0-1-的变更说明">0. 阅读路线与相对 v0.1 的变更说明</a></li><li class="toc-h3"><a href="#0-1-建议阅读顺序">0.1 建议阅读顺序</a></li><li class="toc-h3"><a href="#0-2-v0-1-v0-2-明确废弃项">0.2 v0.1 → v0.2：明确废弃项</a></li><li class="toc-h3"><a href="#0-2-1-勘误-2026-10-27">0.2.1 勘误（2026-10-27）</a></li><li class="toc-h3"><a href="#0-3-v0-2-锁定方向-一句话">0.3 v0.2 锁定方向（一句话）</a></li><li class="toc-h2"><a href="#1-产品核心与原则">1. 产品核心与原则</a></li><li class="toc-h3"><a href="#1-1-产品定义">1.1 产品定义</a></li><li class="toc-h3"><a href="#1-2-对比痛点-海康-vm-等传统工具">1.2 对比痛点（海康 VM 等传统工具）</a></li><li class="toc-h3"><a href="#1-3-五条不可退让的原则">1.3 五条不可退让的原则</a></li><li class="toc-h3"><a href="#1-4-意图-推导-视觉与权限">1.4 意图 ≠ 推导（视觉与权限）</a></li><li class="toc-h2"><a href="#2-从资料开始">2. 从资料开始</a></li><li class="toc-h3"><a href="#2-1-可导入对象">2.1 可导入对象</a></li><li class="toc-h3"><a href="#2-2-成像与量纲">2.2 成像与量纲</a></li><li class="toc-h3"><a href="#2-3-空项目入口-产品行为">2.3 空项目入口（产品行为）</a></li><li class="toc-h2"><a href="#3-依赖图模型-默认-ui">3. 依赖图模型（默认 UI）</a></li><li class="toc-h3"><a href="#3-1-节点粒度">3.1 节点粒度</a></li><li class="toc-h3"><a href="#3-2-边类型-契约">3.2 边类型（契约）</a></li><li class="toc-h3"><a href="#3-3-失败传播-blockedby">3.3 失败传播：`blocked_by`</a></li><li class="toc-h3"><a href="#3-4-fork-merge-共享定位">3.4 Fork / Merge / 共享定位</a></li><li class="toc-h3"><a href="#3-5-次级视图">3.5 次级视图</a></li><li class="toc-h2"><a href="#4-画板与节点工作区">4. 画板与节点工作区</a></li><li class="toc-h3"><a href="#4-0-本轮范围钉死-第-4-章">4.0 本轮范围钉死（第 4 章）</a></li><li class="toc-h3"><a href="#4-1-同板内容">4.1 同板内容</a></li><li class="toc-h3"><a href="#4-2-共享定位与幽灵-roi">4.2 共享定位与幽灵 ROI</a></li><li class="toc-h3"><a href="#4-3-原位问题气泡与关系钉-对象模型本轮-ui-打磨-v0-3">4.3 原位问题气泡与关系钉（对象模型本轮 · UI 打磨 v0.3）</a></li><li class="toc-h3"><a href="#4-4-右侧对话面板">4.4 右侧对话面板</a></li><li class="toc-h2"><a href="#5-解释契约与-schema-闸">5. 解释契约与 schema 闸</a></li><li class="toc-h3"><a href="#5-1-仅允许三种节点种类">5.1 仅允许三种节点种类</a></li><li class="toc-h3"><a href="#5-2-每个节点的三件套-非空-json-schema">5.2 每个节点的「三件套」（非空 + JSON Schema）</a></li><li class="toc-h3"><a href="#5-3-边界触发与-oob">5.3 边界触发与 OOB</a></li><li class="toc-h3"><a href="#5-4-schema-闸验收-必须可测-须无界面">5.4 Schema 闸验收（必须可测 · 须无界面）</a></li><li class="toc-h3"><a href="#5-5-解释原则-承接-v0-1-仍有效部分">5.5 解释原则（承接 v0.1 仍有效部分）</a></li><li class="toc-h2"><a href="#6-工程与版本">6. 工程与版本</a></li><li class="toc-h3"><a href="#6-1-桌面壳">6.1 桌面壳</a></li><li class="toc-h3"><a href="#6-2-agent-路径-抽象接口-vs-现状">6.2 Agent 路径：抽象接口 vs 现状</a></li><li class="toc-h3"><a href="#6-3-可解释性与-git-换模型">6.3 可解释性与 Git &gt; 换模型</a></li><li class="toc-h3"><a href="#6-4-版本与失效">6.4 版本与失效</a></li><li class="toc-h3"><a href="#6-5-agentops-agent-原生操作面">6.5 AgentOps（Agent 原生操作面）</a></li><li class="toc-h2"><a href="#7-验收表-可勾选-可测">7. 验收表（可勾选 · 可测）</a></li><li class="toc-h3"><a href="#7-1-产品核心与默认-ui">7.1 产品核心与默认 UI</a></li><li class="toc-h3"><a href="#7-2-依赖图与执行器">7.2 依赖图与执行器</a></li><li class="toc-h3"><a href="#7-3-画板工作区-对照-4-0-范围">7.3 画板工作区（对照 §4.0 范围）</a></li><li class="toc-h3"><a href="#7-4-schema-闸与节点契约">7.4 Schema 闸与节点契约</a></li><li class="toc-h3"><a href="#7-5-工程与-agentruntime">7.5 工程与 AgentRuntime</a></li><li class="toc-h3"><a href="#7-6-资料与诚实性-承接仍有效的-v0-1">7.6 资料与诚实性（承接仍有效的 v0.1）</a></li><li class="toc-h3"><a href="#7-7-agent-原生主验收-产品-g1-g3">7.7 Agent 原生主验收（产品 G1–G3）</a></li><li class="toc-h3"><a href="#7-8-cv-无界面路径">7.8 CV 无界面路径</a></li><li class="toc-h3"><a href="#7-9-依赖图无界面路径">7.9 依赖图无界面路径</a></li><li class="toc-h2"><a href="#8-待确认-非目标">8. 待确认 / 非目标</a></li><li class="toc-h3"><a href="#8-1-待确认-本版合理默认仍可在实作前微调">8.1 待确认（本版合理默认，仍可在实作前微调）</a></li><li class="toc-h3"><a href="#8-2-非目标-本-prd-明确不做">8.2 非目标（本 PRD 明确不做）</a></li><li class="toc-h2"><a href="#9-附录">9. 附录</a></li><li class="toc-h3"><a href="#9-1-术语表">9.1 术语表</a></li><li class="toc-h3"><a href="#9-2-边类型图例-与-fig1-一致">9.2 边类型图例（与 Fig1 一致）</a></li><li class="toc-h3"><a href="#9-3-示意图索引">9.3 示意图索引</a></li><li class="toc-h3"><a href="#9-4-修订记录">9.4 修订记录</a></li><li class="toc-h3"><a href="#9-5-来源">9.5 来源</a></li></ul></nav>
+<main>
+<h1 id="agentcv-产品需求文档-prdv0-2">AgentCV 产品需求文档（PRD）v0.2</h1>
+<div class="banner"><span class="pill">v0.2</span><span class="pill teal">方案 B · blocked_by 只沿 requires</span><span class="pill teal">Agent 原生 · AgentOps</span><span class="pill muted">等用户确认后再调度</span></div>
+<div class="table-wrap"><table>
+<thead><tr><th>字段</th><th>内容</th></tr></thead>
+<tbody><tr><td>产品</td><td>AgentCV · Agent 驱动的视觉检测协作平台</td></tr><tr><td>版本</td><td><strong>v0.2</strong>（相对 v0.1 的结构性重构）</td></tr><tr><td>状态</td><td>群共识锁定稿 · 可供工程拆分与验收</td></tr><tr><td>日期</td><td>2026-10-27（Asia/Shanghai）</td></tr><tr><td>语言</td><td>简体中文（群共识用语）</td></tr><tr><td>文档边界</td><td>本轮只定产品契约与验收；<strong>不写代码、不调 Codex、不改产品实现</strong></td></tr><tr><td>示意图</td><td><code>figs/fig1-dependency-dag.<em></code> · <code>figs/fig2-node-workspace.</em></code></td></tr></tbody>
+</table></div>
+<hr/>
+<h2 id="0-阅读路线与相对-v0-1-的变更说明">0. 阅读路线与相对 v0.1 的变更说明</h2>
+<h3 id="0-1-建议阅读顺序">0.1 建议阅读顺序</h3>
+<ol><li><strong>产品核心与原则</strong>（为何存在）  </li><li><strong>从资料开始</strong>（输入是什么）  </li><li><strong>依赖图模型</strong> + Fig1（默认 UI 与图执行）  </li><li><strong>画板与节点工作区</strong> + Fig2（人如何在板上核验）  </li><li><strong>解释契约与 schema 闸</strong>（Agent 输出如何入图）  </li><li><strong>工程与版本</strong>（Tauri / AgentRuntime / <strong>AgentOps</strong> / Git）  </li><li><strong>验收表</strong>（含 Agent 原生 G1–G3 · 无界面路径 · 可勾选、可测）  </li><li><strong>待确认 / 非目标</strong> · <strong>附录</strong></li></ol>
+<h3 id="0-2-v0-1-v0-2-明确废弃项">0.2 v0.1 → v0.2：明确废弃项</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>v0.1 概念</th><th>v0.2 处置</th></tr></thead>
+<tbody><tr><td>左侧线性导航 / 七步流程条（1 › 2 › 3 …）</td><td><strong>废案</strong>。不得作为默认产品 UI，也不得作为方案推荐形态。仅允许在文档中作为反例出现（见 Fig1 红色「废」标注）。</td></tr><tr><td>「先走完固定阶段再进依赖图」</td><td>废案。<strong>默认首屏即为依赖 DAG</strong>。列表折叠仅为次级视图。</td></tr><tr><td>右侧常驻对话面板作为主操作路径</td><td>废案。对话面板默认收起；<strong>核心流程须可全程不打开右侧对话</strong>完成。</td></tr><tr><td>Electron 桌面壳</td><td>废案。桌面壳锁定为 <strong>Tauri only</strong>。</td></tr><tr><td>把具体 Agent 品牌写进对象模型</td><td>废案。对象模型只认抽象 <strong><code>AgentRuntime</code></strong>；品牌名仅出现在「现状」小节。</td></tr></tbody>
+</table></div>
+<h3 id="0-2-1-勘误-2026-10-27">0.2.1 勘误（2026-10-27）</h3>
+<ul><li><strong>边语义（依赖图/CV/产品已锁方案 B）</strong>：删「软扇出」；<code>shares</code> = <strong>共享实例扇出</strong>。凡 <code>shares</code> 消费方必须同时存在<strong>同源</strong> <code>requires</code>，否则 schema 闸拒收（裸 <code>shares</code> 不入库）。<code>blocked_by</code> <strong>只沿 <code>requires</code> 传</strong>。不采用方案 A（沿 shares 传播）。  </li><li><strong>§8.1 调度</strong>：改为「<strong>等用户确认后再调度</strong>」；本 PRD 不预支仓库策略，也不把「已授权开工」写进待确认默认。  </li><li><strong>Agent 原生（已锁，收进主验收）</strong>：实质操作不依赖图形界面、不需要点鼠标。<code>AgentOps</code>/CLI 与 UI 消费同一对象模型；G1–G3 与无界面夹具见 §7.7–§7.9，<strong>不得只躺在 addendum</strong>。第 4 章范围钉死见 §4.0。</li></ul>
+<h3 id="0-3-v0-2-锁定方向-一句话">0.3 v0.2 锁定方向（一句话）</h3>
+<blockquote><p>工程师在画板上表达意图（图像 + 标记 + 关系）；Agent 反推前提、提议方案、跑试验；人在同一块板上核验。默认 UI 是<strong>意图画布 + 依赖 DAG</strong>，不是线性步骤。<strong>Agent 原生</strong>：无窗口亦可经 <code>AgentOps</code>/CLI 建图、过闸、跑回归、读报告。</p></blockquote>
+<hr/>
+<h2 id="1-产品核心与原则">1. 产品核心与原则</h2>
+<h3 id="1-1-产品定义">1.1 产品定义</h3>
+<p>AgentCV 是面向视觉检测方案设计的<strong>桌面协作平台</strong>：人用画板表达「要测什么、对象与关系是什么」；Agent 把意图翻译成可追溯的依赖图（节点 + 边 + 解释契约）；本地图执行器按依赖跑通试验；人在板上用叠层、气泡与关系钉完成核验与否决。</p>
+<h3 id="1-2-对比痛点-海康-vm-等传统工具">1.2 对比痛点（海康 VM 等传统工具）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>痛点</th><th>AgentCV 原则</th></tr></thead>
+<tbody><tr><td>Windows 绑定 / 加密狗</td><td>离线可打开历史推导；无加密狗也可复盘</td></tr><tr><td>「拖岛」式孤立算子、难复用</td><td><strong>共享定位 / fork / merge</strong>；边有契约才算连</td></tr><tr><td>无 Git、难审、难回退</td><td><strong>解释落盘 + Git 可 diff</strong>；节点 ID / 边集 / 边界字段稳定</td></tr><tr><td>聊天式黑箱调参</td><td><strong>弱化右侧对话</strong>；意图与证据留在画板</td></tr></tbody>
+</table></div>
+<h3 id="1-3-五条不可退让的原则">1.3 五条不可退让的原则</h3>
+<ol><li><strong>画板意图优先</strong>：未预置的检测诉求也可用图像、标记、关系提出；例子不是能力边界。  </li><li><strong>Agent 推导依赖</strong>：人定义目的与取舍；Agent 负责提前提、提议边/节点、跑试验；人可否决 Agent 边。  </li><li><strong>节点可追溯</strong>：每个正式节点必须带非空的 <code>rationale</code> / <code>params</code> / <code>applicability</code>，经 JSON Schema 闸后才能入图。  </li><li><strong>尽量不用右侧对话</strong>：核心路径（表达意图 → 看依赖图 → 在板上核验 → 接受/否决）不依赖打开聊天面板。  </li><li><strong>Agent 原生（AgentOps）</strong>：建图 / schema 闸 / 跑回归 / 读 <code>blocked_by</code> 与结果报告，<strong>必须可无窗口、不点鼠标</strong>完成；UI 只消费同一 <code>AgentOps</code>，禁止旁路写盘。主验收见 §7.7（G1–G3）。</li></ol>
+<h3 id="1-4-意图-推导-视觉与权限">1.4 意图 ≠ 推导（视觉与权限）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>来源</th><th>含义</th><th>UI</th></tr></thead>
+<tbody><tr><td>人类意图标记</td><td>人画的框、钉、问题气泡、关系</td><td>与 Agent 提议视觉区分；权威高于 Agent 提议</td></tr><tr><td>Agent 提议的边/节点</td><td>待 schema 闸与人确认后才入正式图</td><td>可单独否决边；未过闸 → <code>invalid_proposal</code>，<strong>0 节点写入</strong></td></tr></tbody>
+</table></div>
+<hr/>
+<h2 id="2-从资料开始">2. 从资料开始</h2>
+<p>先弄清图像代表什么，再谈能测什么。资料不足可以探索，但不可冒充正式量测。</p>
+<h3 id="2-1-可导入对象">2.1 可导入对象</h3>
+<ul><li><strong>检测图像</strong>：单张 / 多选 / 文件夹；记录像素尺度与成像配置。  </li><li><strong>参考资料</strong>：介绍、图纸、3D、规格、PDF/文档；可钉到同一画板。  </li><li><strong>已知结果</strong>：OK / NG 类型 / 未知；可附标注。已知标签只作验证依据，<strong>不得偷用来生成待验证结果</strong>。</li></ul>
+<h3 id="2-2-成像与量纲">2.2 成像与量纲</h3>
+<ul><li>记录像元尺寸、镜头倍率、分辨率、裁切/缩放、畸变与实测校准；标明来源与不确定性。  </li><li>无有效校准时只报 <strong>px</strong>；不同成像配置的图不可默认共用物理尺度。  </li><li>改倍率、缩放或配置时，提示尺度需重核，并沿依赖标记受影响下游。</li></ul>
+<h3 id="2-3-空项目入口-产品行为">2.3 空项目入口（产品行为）</h3>
+<p>中央入口提供「导入图片」「导入图片文件夹」；导入后列表可居左，支持选图、重命名、标已知判定。画板随即成为意图表达面，而非强制进入线性向导。</p>
+<hr/>
+<h2 id="3-依赖图模型-默认-ui">3. 依赖图模型（默认 UI）</h2>
+<blockquote><p><strong>默认视图 = 依赖 DAG。</strong> 线性步骤条是废案。列表折叠仅为次级导航。</p></blockquote>
+<figure class="fig"><img src="figs/fig1-dependency-dag.png" alt="图1 · 默认依赖图 UI"/></figure>
+<p class="caption"><em>Fig1：可导航 DAG；<code>requires</code> 实线硬前提、<code>shares</code> 共享实例扇出（虚线）+「共享」徽标/版本；红色「废」标注为线性步骤反例；<code>blocked_by</code> <strong>只沿</strong> <code>requires</code> 传递（Fig1 双线：shares 扇出须并行同源 requires）。</em></p>
+<h3 id="3-1-节点粒度">3.1 节点粒度</h3>
+<ul><li>节点回答<strong>可独立审核的结论</strong>（例如「lid 定位可用」「相对偏移判定」「表面瑕疵判定」），不是「一个函数一个节点」。  </li><li>节点可分组、拆合；证据与结果身份不随版面折叠而改变。  </li><li>存在性与定位可同组出现，但<strong>不得混为同一结论字段</strong>。</li></ul>
+<h3 id="3-2-边类型-契约">3.2 边类型（契约）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>边类型</th><th>语义</th><th>视觉（已锁）</th><th>方向</th></tr></thead>
+<tbody><tr><td><code>requires</code></td><td>硬前提：生产者失败或越界 → 消费者不可当有效结果</td><td><strong>蓝色实线箭头</strong></td><td>产出 → 消费</td></tr><tr><td><code>shares</code></td><td><strong>共享实例扇出</strong>（典型：共享定位）；多消费者引用同一共享成果的版本化扇出，<strong>不是</strong>失败传播边</td><td><strong>青色虚线</strong>；共享节点带「共享」徽标 + 版本号</td><td>共享源 → 消费者</td></tr></tbody>
+</table></div>
+<ul><li>边必须过契约才算「连上」；无契约的自由连线不算正式依赖。  </li><li>Agent 提议的边与人确认/否决后的边在状态上可区分；人可否决 Agent 边而不删意图标记。  </li><li><strong>方案 B（已锁）</strong>：凡 <code>shares</code> 消费方必须同时存在<strong>同源</strong> <code>requires</code>（与 Fig1 双线扇出一致）；裸 <code>shares</code> → schema 闸 <code>invalid_proposal</code>，<strong>0 边/节点写入</strong>。<code>blocked_by</code> <strong>只沿 <code>requires</code></strong>。不采用方案 A。</li></ul>
+<h3 id="3-3-失败传播-blockedby">3.3 失败传播：<code>blocked_by</code></h3>
+<ul><li>本地<strong>图执行器</strong>（须能在 <strong>离线 / 无 Codex</strong> 条件下工作）在以下情况<strong>只沿 <code>requires</code></strong> 写入 <code>blocked_by</code>：  </li></ul>
+<p>  - 共享定位失败（消费者侧须已有同源 <code>requires</code>；裸 <code>shares</code> 工程不得进入执行）；     - 结果落在适用边界外（OOB / out of applicability bounds）；     - 上游版本失效且下游未用当前版本重算。  </p>
+<ul><li><code>blocked_by</code> 必须可追查到：哪个上游节点、哪条 <code>requires</code> 边、哪个边界字段。  </li><li>被阻塞节点不得继续冒充当前有效结果；旧结果可保留对照。</li></ul>
+<h3 id="3-4-fork-merge-共享定位">3.4 Fork / Merge / 共享定位</h3>
+<ul><li><strong>Fork</strong>：同一上游可扇出多个下游（偏移 + 瑕疵同时依赖定位）。  </li><li><strong>Merge</strong>：多前提汇入同一判定节点。  </li><li><strong>共享定位</strong>：一份可编辑 ROI / pose；下游节点只读引用，并在各自画板上显示<strong>只读幽灵 ROI</strong> 叠层（见第 4 章）。  </li><li>上游定位升版（如 v3 → v4）→ 受影响下游标「待重算」；不得继续把旧版当当前有效。</li></ul>
+<h3 id="3-5-次级视图">3.5 次级视图</h3>
+<ul><li>列表折叠、按状态筛选、搜索节点：允许，但<strong>不得替代</strong> DAG 作为默认首屏。  </li><li>禁止产品文案或默认 onboarding 把用户导向「完成第 1 步 → 第 2 步 → …」式线性向导。</li></ul>
+<hr/>
+<h2 id="4-画板与节点工作区">4. 画板与节点工作区</h2>
+<p>同一块板承载多图、文档、标记、幽灵叠层与原位交互；风格对标 Miro / FigJam / tldraw / Heptabase / AFFiNE 一类无限画布，但<strong>语义绑定依赖图节点</strong>。</p>
+<figure class="fig"><img src="figs/fig2-node-workspace.png" alt="图2 · 节点工作区"/></figure>
+<p class="caption"><em>Fig2：同板 ≥2 检测图 + PDF；共享定位一份可编辑 ROI + 下游只读幽灵叠层；原位问题气泡与测距/关系钉；验收要求核心流不打开右侧对话。</em></p>
+<h3 id="4-0-本轮范围钉死-第-4-章">4.0 本轮范围钉死（第 4 章）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>能力</th><th>本轮（v0.2 必做）</th><th>标 v0.3</th></tr></thead>
+<tbody><tr><td>同板 ≥2 检测图 / PDF</td><td><strong>必做</strong>（骨架可用）</td><td>—</td></tr><tr><td>幽灵 ROI 叠层骨架</td><td><strong>必做</strong>（共享源可编、下游只读幽灵可见）</td><td>—</td></tr><tr><td>意图约束（标记 / 测距 / 关系）经 <strong>AgentOps</strong> 写入<strong>同一对象模型</strong></td><td><strong>必做</strong>（无界面可写可读；UI 非唯一入口）</td><td>—</td></tr><tr><td>原位问题气泡完整人核验交互（草稿→确认发送、拖动/收合等打磨）</td><td>—</td><td><strong>v0.3</strong></td></tr><tr><td>测距 / 关系钉完整人核验交互打磨</td><td>—</td><td><strong>v0.3</strong></td></tr></tbody>
+</table></div>
+<blockquote><p>钉死说明：原位气泡与测距钉是<strong>人核验 UI</strong>，不是 Agent 唯一入口。本轮必须保证意图约束可走 API/CLI 写入同一对象模型；无界面回归不依赖点气泡。完整交互打磨标 v0.3，<strong>不得口头「或」</strong>。</p></blockquote>
+<h3 id="4-1-同板内容">4.1 同板内容</h3>
+<ul><li>同一节点工作区至少可同时展示 <strong>≥2 张检测图像</strong>，并钉 <strong>PDF/文档</strong>。  </li><li>切换节点时保留：图片集、缩放、视野、选中标记、气泡位置与草稿；返回时恢复，不重新「找位置」。  </li><li>图像操作：滚轮以指针为中心缩放；工具用图示 + 提示；避免靠纵向滚动找主操作。</li></ul>
+<h3 id="4-2-共享定位与幽灵-roi">4.2 共享定位与幽灵 ROI</h3>
+<ul><li>共享定位节点上的 ROI / pose：<strong>唯一可编辑</strong>实例。  </li><li>所有通过 <code>shares</code> / <code>requires</code> 引用该定位的下游节点：显示<strong>只读幽灵 ROI</strong> 叠层（不可在下游直接改几何；改必须回到共享源）。  </li><li>共享源变更 → 下游幽灵更新或标失效，并触发依赖传播。</li></ul>
+<h3 id="4-3-原位问题气泡与关系钉-对象模型本轮-ui-打磨-v0-3">4.3 原位问题气泡与关系钉（对象模型本轮 · UI 打磨 v0.3）</h3>
+<ul><li><strong>本轮（对象模型 + AgentOps）</strong>：标记、测距、关系钉作为意图约束对象，必须可经 <code>AgentOps</code>/CLI 写入 / 查询 / 删除，与 UI 写入同一持久化模型；无界面回归可断言这些约束存在且生效。  </li><li><strong>v0.3（人核验 UI 打磨）</strong>：选中标记后唤起<strong>问题气泡</strong>（草稿可由 Agent 辅助，<strong>人确认后才发送</strong>；不自动发送）；回答在相连气泡中展示叠图/数值，可拖动/收合。  </li><li><strong>v0.3</strong>：板上<strong>距离 / 关系钉</strong>交互打磨——选中两对象生成尺寸或关系控件；定义可见可改；未校准则报 px。  </li><li>询问默认<strong>不授权</strong>改正式方案；Agent 可提议，正式入图须过 schema 闸与可核验状态。</li></ul>
+<h3 id="4-4-右侧对话面板">4.4 右侧对话面板</h3>
+<ul><li>默认收起。  </li><li><strong>验收硬条件</strong>：表达意图 → 看 DAG → 在板上核验共享定位/幽灵 ROI → 接受或否决提议，<strong>全程可不打开右侧对话面板</strong>。  </li><li>对话仅作补充通道（长文说明、跨项目提问等），不得成为唯一可达路径。</li></ul>
+<hr/>
+<h2 id="5-解释契约与-schema-闸">5. 解释契约与 schema 闸</h2>
+<p>Agent（经 <code>AgentRuntime</code>）输出的提案在进入项目图之前，必须通过 <strong>schema 闸</strong>。不过闸 → 状态 <code>invalid_proposal</code>，<strong>0 个节点写入图</strong>；字段级错误写入日志。</p>
+<h3 id="5-1-仅允许三种节点种类">5.1 仅允许三种节点种类</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Kind</th><th>必备语义（示意）</th><th>说明</th></tr></thead>
+<tbody><tr><td><code>Locate</code></td><td>`{ pose \</td><td>roi, method, params, bounds, … }`</td><td>定位 / ROI；可被共享</td></tr><tr><td><code>Offset</code></td><td><code>{ transform, refNodeId, … }</code></td><td>相对位姿 / 偏移；须引用定位类前提</td></tr><tr><td><code>Defect</code></td><td><code>{ metric, threshold, … }</code></td><td>瑕疵 / 度量判定</td></tr></tbody>
+</table></div>
+<ul><li><strong>禁止</strong>在同一提案包中混合无法拆清的复合 kind（例如「找 ROI 并判划痕」捆成一个节点）。此类包 → <code>invalid_proposal</code>，0 写入。  </li><li>种类集合在本 PRD 冻结为上述三种；扩展新 kind 须另开 PRD 修订，不得静默加入。</li></ul>
+<h3 id="5-2-每个节点的三件套-非空-json-schema">5.2 每个节点的「三件套」（非空 + JSON Schema）</h3>
+<p>无论何种 kind，每个拟写入节点必须同时具备非空：</p>
+<ol><li><strong><code>rationale</code></strong>：为何用该方法 / 为何选该结构（须能指向证据或试验，不得仅写「适合找边」）。  </li><li><strong><code>params</code></strong>：实际生效参数及来源（含可改值与生效值）。  </li><li><strong><code>applicability</code></strong>：适用边界（反例、误差、失效条件与处置）。</li></ol>
+<p>缺任一字段、类型不符、或未通过项目 JSON Schema → 整包拒绝写入。</p>
+<h3 id="5-3-边界触发与-oob">5.3 边界触发与 OOB</h3>
+<ul><li>执行期若结果触及 / 超出 <code>applicability</code> 边界，图执行器标记 <strong>OOB</strong>，并<strong>只沿</strong> <code>requires</code> 向下游写 <code>blocked_by</code>。  </li><li>局部失效不得被节点级「总 PASS」掩盖。</li></ul>
+<h3 id="5-4-schema-闸验收-必须可测-须无界面">5.4 Schema 闸验收（必须可测 · 须无界面）</h3>
+<blockquote><p>S1–S5 <strong>必须</strong>有无界面单测 / CLI；不得「只有点画板才能触发闸」。判据以退出码与落盘日志为准。</p></blockquote>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>场景</th><th>期望</th></tr></thead>
+<tbody><tr><td>S1</td><td>故意提交混合包「找 ROI 并判划痕」</td><td><code>invalid_proposal</code>；<strong>0 节点</strong>写入</td></tr><tr><td>S2</td><td>缺 <code>rationale</code> / <code>params</code> / <code>applicability</code> 任一的 mock 提案</td><td>单元测试失败（闸拒绝）</td></tr><tr><td>S3</td><td>边界夹具集触发 OOB</td><td>下游 <strong>100%</strong> 获得 <code>blocked_by</code></td></tr><tr><td>S4</td><td>字段级错误</td><td>日志含字段路径与原因；图结构不变</td></tr><tr><td>S5</td><td>仅有 <code>shares</code>、无同源 <code>requires</code> 的边提案</td><td><code>invalid_proposal</code>；<strong>0 写入</strong></td></tr></tbody>
+</table></div>
+<h3 id="5-5-解释原则-承接-v0-1-仍有效部分">5.5 解释原则（承接 v0.1 仍有效部分）</h3>
+<ul><li>规划前：假设与比较计划可见。  </li><li>执行中：真实产物落盘。  </li><li>执行后：以观察做决定；<strong>不得用预先写好的理由替代事后核对</strong>。  </li><li>执行成功、证据充分、符合规格：<strong>三个状态分开</strong>，不用一个 PASS 混合。</li></ul>
+<hr/>
+<h2 id="6-工程与版本">6. 工程与版本</h2>
+<h3 id="6-1-桌面壳">6.1 桌面壳</h3>
+<ul><li><strong>仅 Tauri</strong>。不引入 Electron，不把 Electron 列为备选实现。</li></ul>
+<h3 id="6-2-agent-路径-抽象接口-vs-现状">6.2 Agent 路径：抽象接口 vs 现状</h3>
+<h4 id="产品契约-agentruntime-写入对象模型">产品契约：<code>AgentRuntime</code>（写入对象模型）</h4>
+<pre><code>输入：
+  - 意图约束（画板标记、关系、人类否决记录、成像/规格约束）
+  - 当前图快照（节点、边、版本、blocked_by）
+
+输出：
+  - 提议边：requires | shares
+  - 每节点：kind ∈ {Locate, Offset, Defect}
+           + rationale / params / applicability
+           + 步骤边界字段（供闸与回归报告）</code></pre>
+<ul><li>提供方可替换：pi+Codex / 直连 Responses API / 其他本地 shell 等。  </li><li><strong>验收</strong>：换成 mock runtime 后，同一项目的边集 + 节点 schema 单元测试仍通过；<strong>节点 ID、边集、步骤边界字段、回归报告格式不变</strong>。</li></ul>
+<h4 id="现状-事实陈述非产品品牌">现状（事实陈述，非产品品牌）</h4>
+<ul><li>当前实现路径：<strong>pi-agent 驱动 Codex</strong>。  </li><li>品牌名（pi、Codex 等）<strong>只写在本「现状」小节</strong>，不进入对象模型字段名、UI 主文案或 schema kind。</li></ul>
+<h3 id="6-3-可解释性与-git-换模型">6.3 可解释性与 Git &gt; 换模型</h3>
+<ul><li>任一 runtime 必须把 rationale / params / bounds（applicability）<strong>持久化到节点</strong>。  </li><li>项目落盘须 <strong><code>git diff</code> 可审</strong>：节点与边的结构化变更对人类可读。  </li><li><strong>离线 / 无加密狗</strong> 可打开历史推导做复盘与审查。  </li><li>换模型不得破坏：节点 ID 稳定性、边集语义、边界字段、回归报告格式。</li></ul>
+<h3 id="6-4-版本与失效">6.4 版本与失效</h3>
+<ul><li>共享节点展示版本号；升版触发下游「待重算」。  </li><li>正式采用与讨论层、试验层分开；讨论标注不得自动升格为正式节点。</li></ul>
+<h3 id="6-5-agentops-agent-原生操作面">6.5 AgentOps（Agent 原生操作面）</h3>
+<p>产品是 <strong>Agent 原生</strong>：实质操作不依赖图形界面、不需要点鼠标。界面只是同一 API 的可选视图。</p>
+<p><strong>本轮须暴露的可编程面</strong>（至少模块 + CLI，可单测；不绑死具体 RPC）：</p>
+<ol><li><strong>图读写</strong>：load / save；list/get nodes &amp; edges；validate（含方案 B 闸，裸 <code>shares</code> 拒）。  </li><li><strong>图编辑</strong>：add/remove/revise node；propose/accept/reject；意图约束（标记 / 测距 / 关系）写入同一对象模型。  </li><li><strong>执行</strong>：run graph / run node；读 runs、<code>blocked_by</code>、stale、OOB。  </li><li><strong>回归与报告</strong>：图集×节点回归 → 矩阵 + 落盘 <code>report.{json,html,png,csv…}</code>。  </li><li><strong>闭环</strong>：<code>AgentRuntime.propose</code> <strong>不直接写图</strong>；经 <code>applyProposal</code> / <code>reject*</code> 确认后写入。</li></ol>
+<p><strong>硬约束</strong>：UI 只调用上述 API；禁止「只有点按钮才能跑 / 才能写盘」的旁路。主验收见 §7.7–§7.9。</p>
+<hr/>
+<h2 id="7-验收表-可勾选-可测">7. 验收表（可勾选 · 可测）</h2>
+<blockquote><p>下列条目来自群共识锁定项；工程拆分时每条应对应可自动化或可脚本化检查。勾选表示「已定义且可测」，不代表当前软件已实现。   <strong>Agent 原生 G1–G3、CV / 依赖图无界面路径为本轮主验收</strong>（§7.7–§7.9），须收进本表，不得只躺在 addendum。</p></blockquote>
+<h3 id="7-1-产品核心与默认-ui">7.1 产品核心与默认 UI</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>A1</td><td>默认首屏为依赖 DAG，而非线性 1›2›3 步骤条</td><td>UI 规格 + 截图对比 Fig1；代码中无默认线性向导路由</td><td>☐</td></tr><tr><td>A2</td><td>线性步骤条仅作为废案反例出现，不出现在产品推荐路径</td><td>文案/引导审查</td><td>☐</td></tr><tr><td>A3</td><td>列表折叠为次级视图，可切回 DAG</td><td>交互走查</td><td>☐</td></tr><tr><td>A4</td><td>人类意图标记与 Agent 提议边/节点视觉可区分</td><td>设计评审 + 截图</td><td>☐</td></tr><tr><td>A5</td><td>人可否决单条 Agent 边且保留意图标记</td><td>交互用例</td><td>☐</td></tr><tr><td>A6</td><td>核心流全程不打开右侧对话即可完成</td><td>脚本化走查 / 录屏清单（对照 Fig2）</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-2-依赖图与执行器">7.2 依赖图与执行器</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>B1</td><td>存在 <code>requires</code>（蓝实线）与 <code>shares</code>（青虚线 + 共享徽标/版本）</td><td>UI + 序列化 schema</td><td>☐</td></tr><tr><td>B2</td><td>fork / merge / 共享定位可用</td><td>固定样例项目跑通</td><td>☐</td></tr><tr><td>B3</td><td>共享定位失败 → <strong>只沿</strong> 同源 <code>requires</code> 写 <code>blocked_by</code>；裸 <code>shares</code> 不得入库</td><td>单元 / 集成测试</td><td>☐</td></tr><tr><td>B4</td><td>适用边界 OOB → 下游 <code>blocked_by</code> 100%</td><td>边界夹具集</td><td>☐</td></tr><tr><td>B5</td><td>图执行器在离线、无 Codex 条件下可完成 blocked_by 传播</td><td>断网 / mock runtime 环境测试</td><td>☐</td></tr><tr><td>B6</td><td>上游共享定位升版 → 下游标待重算，旧结果不得充当前有效</td><td>版本夹具</td><td>☐</td></tr><tr><td>B7</td><td>凡 <code>shares</code> 必有同源 <code>requires</code>；否则闸拒</td><td>schema 单测</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-3-画板工作区-对照-4-0-范围">7.3 画板工作区（对照 §4.0 范围）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>C1</td><td><strong>本轮</strong>：同板 ≥2 检测图 + 可钉 PDF/文档</td><td>功能用例</td><td>☐</td></tr><tr><td>C2</td><td><strong>本轮</strong>：共享 ROI 唯一可编辑；下游只读幽灵叠层骨架</td><td>交互用例 + 截图对照 Fig2</td><td>☐</td></tr><tr><td>C3</td><td><strong>本轮</strong>：意图约束（标记 / 测距 / 关系）可经 AgentOps 写入同一对象模型；无界面可断言</td><td>CLI/API 单测</td><td>☐</td></tr><tr><td>C4</td><td><strong>v0.3</strong>：原位问题气泡完整人核验（人选中 → 草稿 → 人确认发送；不自动发送）</td><td>交互用例（本轮不挡 G1–G3）</td><td>☐</td></tr><tr><td>C5</td><td><strong>v0.3</strong>：距离/关系钉完整人核验（定义可见可改；无校准报 px）</td><td>交互用例（本轮不挡 G1–G3）</td><td>☐</td></tr><tr><td>C6</td><td>切换节点不丢失视野/选中/（若有）气泡草稿</td><td>回归用例</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-4-schema-闸与节点契约">7.4 Schema 闸与节点契约</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>D1</td><td>仅 Locate / Offset / Defect 三种 kind 可入图</td><td>schema 单测</td><td>☐</td></tr><tr><td>D2</td><td>混合「找 ROI 并判划痕」包 → <code>invalid_proposal</code>，0 节点写入</td><td>故意恶意包单测</td><td>☐</td></tr><tr><td>D3</td><td>缺 rationale/params/applicability → 闸拒绝，单测失败</td><td>mock 缺字段包</td><td>☐</td></tr><tr><td>D4</td><td>字段级错误日志含路径</td><td>日志断言</td><td>☐</td></tr><tr><td>D5</td><td>边界夹具 → 下游 blocked_by 覆盖率 100%</td><td>夹具报告</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-5-工程与-agentruntime">7.5 工程与 AgentRuntime</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>E1</td><td>桌面壳为 Tauri；仓库无 Electron 作为壳依赖</td><td>依赖审计</td><td>☐</td></tr><tr><td>E2</td><td>存在抽象 <code>AgentRuntime</code> 接口；输入/输出符合第 6.2 节</td><td>接口单测 + 类型检查</td><td>☐</td></tr><tr><td>E3</td><td>切换 mock runtime：边集 + 节点 schema 单测仍通过</td><td>CI job</td><td>☐</td></tr><tr><td>E4</td><td>节点 ID、边集、步骤边界字段、回归报告格式在换 runtime 后不变</td><td>金样对比</td><td>☐</td></tr><tr><td>E5</td><td>节点持久化含 rationale/params/applicability；<code>git diff</code> 人类可读</td><td>落盘抽检</td><td>☐</td></tr><tr><td>E6</td><td>离线打开历史推导可审，无需加密狗 / 无需在线 Agent</td><td>离线安装包走查</td><td>☐</td></tr><tr><td>E7</td><td>对象模型与主 UI 不出现 pi/Codex 等品牌字段名</td><td>文案/模型审查（现状小节除外）</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-6-资料与诚实性-承接仍有效的-v0-1">7.6 资料与诚实性（承接仍有效的 v0.1）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>F1</td><td>已知标签不可用于生成待验证结果</td><td>数据流审计</td><td>☐</td></tr><tr><td>F2</td><td>无校准只报 px；改配置提示尺度重核</td><td>用例</td><td>☐</td></tr><tr><td>F3</td><td>执行成功 / 证据充分 / 符合规格三态分离</td><td>状态机单测</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-7-agent-原生主验收-产品-g1-g3">7.7 Agent 原生主验收（产品 G1–G3）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>G1</td><td><strong>无窗口脚本</strong>完成：建图 → schema 闸（含裸 <code>shares</code> 拒收）→ 跑回归 → 读 <code>blocked_by</code> / 结果</td><td>断显 / 无 Tauri 窗口下 CLI 或脚本；退出码 + 结构化输出</td><td>☐</td></tr><tr><td>G2</td><td>报告落盘（<code>json</code> / <code>html</code> / <code>png</code> / <code>csv</code> 等）；Agent <strong>读文件</strong>可验，不必开桌面</td><td>检查 <code>runs/&lt;id&gt;/</code> 或约定路径产物存在且可解析</td><td>☐</td></tr><tr><td>G3</td><td>UI 只消费同一 <code>AgentOps</code>；<strong>无旁路写盘</strong>（改图 / 跑测 / 写报告皆经同一 API）</td><td>代码审计 +「旁路写盘」负向用例不存在</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-8-cv-无界面路径">7.8 CV 无界面路径</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>H1</td><td>图集×节点回归：CLI/API 输入工程路径 + 图集 → 输出矩阵（节点 ID × 图 ID → <code>pass</code> / <code>fail</code> / <code>blocked_by</code> / <code>invalid_proposal</code>）+ 落盘报告</td><td>无 UI 跑通；对比矩阵文件与退出码</td><td>☐</td></tr><tr><td>H2</td><td>断显 / 无 Tauri 下跑通<strong>共享定位 fail</strong> 夹具；下游 <code>blocked_by</code> <strong>覆盖率与有 UI 一致</strong></td><td>同夹具有 UI / 无 UI 两次跑，覆盖率 diff = 0</td><td>☐</td></tr><tr><td>H3</td><td>schema 闸与三件套 <strong>S1–S5</strong> 均有无界面单测 / CLI；不以截图为判据</td><td>CI job；CV 判据 = 文件 + 退出码</td><td>☐</td></tr></tbody>
+</table></div>
+<h3 id="7-9-依赖图无界面路径">7.9 依赖图无界面路径</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>验收项</th><th>判定方式</th><th>状态</th></tr></thead>
+<tbody><tr><td>I1</td><td>API/CLI 提交裸 <code>shares</code>（无同源 <code>requires</code>）→ <code>invalid_proposal</code>；<strong>0 写入</strong>；全程不启 UI</td><td>单测 / CLI</td><td>☐</td></tr><tr><td>I2</td><td>同源双线工程上 fail 共享定位 → 下游 <code>blocked_by</code> <strong>全量可出</strong>；全程不启 UI</td><td>夹具报告；覆盖率 100%</td><td>☐</td></tr></tbody>
+</table></div>
+<hr/>
+<h2 id="8-待确认-非目标">8. 待确认 / 非目标</h2>
+<h3 id="8-1-待确认-本版合理默认仍可在实作前微调">8.1 待确认（本版合理默认，仍可在实作前微调）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>项</th><th>本版默认假设</th><th>不能先假定</th></tr></thead>
+<tbody><tr><td>节点内「步骤」默认展开深度</td><td>默认看节点结论；步骤按需展开</td><td>具体像素级版式尺寸</td></tr><tr><td>试验预算与停止准则</td><td>先验关键方法/参数与已知反例，不穷举</td><td>固定试验次数或自动停准则的数值</td></tr><tr><td>正式采用确认粒度</td><td>讨论 / 试验 / 正式版本三层；低风险试算是否次次确认</td><td>权限模型与多用户角色</td></tr><tr><td>问题气泡辅助草稿的交互名</td><td>不产品化独立「Luna」品牌；统称 Agent 辅助草稿</td><td>独立模型身份与延迟预算</td></tr><tr><td>DAG 自动布局算法</td><td>初版可用简单分层布局 + 手动拖拽</td><td>特定布局库或美学标准</td></tr><tr><td>多显示器 / 小屏</td><td>以单主屏画板优先；小屏允许更激进收起次级面板</td><td>已完成的操作验收分辨率列表</td></tr><tr><td>新 kind 扩展流程</td><td>本版冻结三种；扩展走 PRD 修订</td><td>插件式任意 kind</td></tr><tr><td>从现有工程改造 vs 新开</td><td><strong>等用户确认后再调度</strong>；本 PRD <strong>不预支</strong>仓库策略，也不视为已批准开工</td><td>具体分支名或是否保留旧 UI 代码</td></tr></tbody>
+</table></div>
+<h3 id="8-2-非目标-本-prd-明确不做">8.2 非目标（本 PRD 明确不做）</h3>
+<ul><li>不把线性七步 / 左侧线性导航救回为默认或推荐 UI。  </li><li>不把右侧对话做成主操作路径。  </li><li>不把「必须打开桌面窗口 / 点鼠标」做成唯一操作路径（与 G1–G3 冲突的设计一律拒）。  </li><li>不规定具体 CV 算法（传统 / DL / 自研均可被 runtime 提议，但须过闸与证据）。  </li><li>不在本文件中承诺现场产线接入、PLC、MES、或正式发布流程。  </li><li>不把 OpenCV 教学素材或示意截图当作工业真值或算法效果证明。  </li><li>不在本轮编写应用代码、不调用 Codex、不修改产品实现。  </li><li>不引入 Electron。  </li><li>不把加密狗或必须在线 Agent 作为打开历史项目的前提。</li></ul>
+<hr/>
+<h2 id="9-附录">9. 附录</h2>
+<h3 id="9-1-术语表">9.1 术语表</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>术语</th><th>定义</th></tr></thead>
+<tbody><tr><td>意图画布 / 画板</td><td>承载图像、标记、关系、气泡与文档的无限工作区</td></tr><tr><td>依赖 DAG</td><td>以节点与有向边表达前提关系的有向无环图；产品默认 UI</td></tr><tr><td><code>requires</code></td><td>硬前提边；失败/越界沿边阻塞下游</td></tr><tr><td><code>shares</code></td><td>共享实例扇出边；多消费者引用同一成果；<strong>必须</strong>并行同源 <code>requires</code>；本身不传播 <code>blocked_by</code></td></tr><tr><td><code>blocked_by</code></td><td>下游因上游失败或 OOB 被阻塞的结构化原因记录；<strong>只沿</strong> <code>requires</code> 产生</td></tr><tr><td>共享定位</td><td>唯一可编辑的定位/ROI 源；下游只读幽灵叠层</td></tr><tr><td>幽灵 ROI</td><td>下游画板上只读显示的共享定位几何叠层</td></tr><tr><td>Schema 闸</td><td>Agent 提案入图前的 JSON Schema / kind / 三件套校验</td></tr><tr><td><code>invalid_proposal</code></td><td>未过闸的提案状态；保证 0 节点写入</td></tr><tr><td>三件套</td><td><code>rationale</code> + <code>params</code> + <code>applicability</code></td></tr><tr><td>OOB</td><td>Out of applicability bounds；触达适用边界外</td></tr><tr><td><code>AgentRuntime</code></td><td>可替换的 Agent 运行时抽象接口</td></tr><tr><td><code>AgentOps</code></td><td>Agent 原生操作面（API/CLI）：建图、过闸、跑回归、写意图约束、读报告；UI 只是其消费者</td></tr><tr><td>图执行器</td><td>本地按 DAG 执行与传播 blocked_by 的组件；须可离线</td></tr></tbody>
+</table></div>
+<h3 id="9-2-边类型图例-与-fig1-一致">9.2 边类型图例（与 Fig1 一致）</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>图例</th><th>含义</th></tr></thead>
+<tbody><tr><td>蓝色实线箭头</td><td><code>requires</code>：产出 → 消费的硬前提</td></tr><tr><td>青色虚线 +「共享」徽标 + 版本</td><td><code>shares</code>：共享实例扇出（须并行同源 requires）</td></tr><tr><td>红色「废」线性 1 › 2 › 3</td><td><strong>废案</strong>反例，非产品 UI</td></tr><tr><td>节点上的 blocked / 待重算标记</td><td>依赖传播或版本失效后的状态</td></tr></tbody>
+</table></div>
+<h3 id="9-3-示意图索引">9.3 示意图索引</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>文件</th><th>用途</th></tr></thead>
+<tbody><tr><td><code>figs/fig1-dependency-dag.png</code> / <code>.html</code></td><td>第 3 章 · 默认依赖图 UI</td></tr><tr><td><code>figs/fig2-node-workspace.png</code> / <code>.html</code></td><td>第 4 章 · 节点工作区</td></tr><tr><td><code>figs/README.md</code></td><td>示意图视觉语言说明</td></tr></tbody>
+</table></div>
+<h3 id="9-4-修订记录">9.4 修订记录</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>版本</th><th>日期</th><th>说明</th></tr></thead>
+<tbody><tr><td>v0.1</td><td>2026-10-26</td><td>概念草案；含左侧线性导航等，已在群内否决为默认 UI</td></tr><tr><td><strong>v0.2</strong></td><td><strong>2026-10-27</strong></td><td><strong>意图画布 + 依赖 DAG</strong>；schema 闸三 kind；Tauri + AgentRuntime；验收表落地</td></tr><tr><td>v0.2 · 修订</td><td>2026-10-27</td><td>方案 B +「等用户确认后再调度」；<strong>Agent 原生 G1–G3 / CV·依赖图无界面</strong>收进主验收 §7.7–§7.9；§4.0 钉死第 4 章本轮 vs v0.3；新增 §6.5 AgentOps</td></tr></tbody>
+</table></div>
+<h3 id="9-5-来源">9.5 来源</h3>
+<ul><li>AgentCV 产品重构群锁定共识（依赖图默认 UI、边类型方案 B、schema 闸、Tauri、AgentRuntime、Agent 原生 / AgentOps、弱化右侧对话、第 4 章范围钉死等）。  </li><li>v0.1 概念 PRD 中仍有效的部分：资料入口、解释三问、共享引用与版本失效、三态分离等，已按 DAG 模型改写并入本文。  </li><li>示意图：<code>agentcv-prd-figs</code> 已锁视觉语言，本文直接嵌入，不另改设计。</li></ul>
+<hr/>
+
+<p class="footer-note"><strong>文件结束 · AgentCV PRD v0.2 · 2026-10-27</strong></p>
+</main>
+</div>
+</body>
+</html>

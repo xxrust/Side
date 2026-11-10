@@ -1,0 +1,26 @@
+import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';
+import {chromium} from '/Users/liangshiben/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const here=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(here,'..'),data=JSON.parse(fs.readFileSync(root+'/prd.json')),errors=[],checks=[];
+const browser=await chromium.launch({headless:true,executablePath:'/Users/liangshiben/Library/Caches/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-mac-arm64/chrome-headless-shell'});
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:960},deviceScaleFactor:1});page.on('pageerror',error=>errors.push(error.message));
+ await page.goto('file://'+root+'/index.html');await page.locator('#storyNav button').last().waitFor();assert.equal(await page.locator('#storyNav button').count(),12);
+ checks.push('12 stories appear as a PRD catalog, not product task categories');
+ assert.ok((await page.locator('.catalog').innerText()).includes('產品裡不會要求先選'));
+ for(const story of data.stories){
+  await page.locator(`[data-story-id="${story.id}"]`).click();assert.equal(await page.locator('#storyTitle').innerText(),story.title);
+  for(let scene=0;scene<6;scene++){await page.locator(`[data-phase="${scene}"]`).click();assert.equal(await page.locator('#phaseCount').innerText(),`${scene+1} / 6`);assert.ok((await page.locator('#humanMessage').innerText()).length>3);assert.ok((await page.locator('#agentMessage').innerText()).length>3);assert.equal(await page.locator('#boardSvg image').count(),1);const href=await page.locator('#boardSvg image').getAttribute('href');assert.ok(fs.existsSync(path.resolve(root,href)));assert.ok(!(await page.locator('#boardSvg').innerHTML()).match(/NaN|Infinity/));}
+  checks.push(story.id+': all six illustrated frames have source image and human/Agent behavior');
+ }
+ await page.locator('[data-story-id="crystal-relative-offset"]').click();
+ for(const scene of [0,1,2,3,4,5]){await page.locator(`[data-phase="${scene}"]`).click();await page.screenshot({path:path.join(here,`crystal-scene-${scene+1}.png`)});}
+ const views=[];for(const section of ['tool','parameters','boundary']){await page.locator(`[data-evidence="${section}"]`).click();views.push(await page.locator('#evidenceBlueprint').innerText());assert.equal(await page.locator(`[data-evidence="${section}"]`).getAttribute('aria-pressed'),'true');}
+ assert.equal(new Set(views).size,3);checks.push('method, parameter and boundary have three different visual explanations');
+ await page.locator('[data-phase="3"]').click();assert.ok(await page.locator('#localMenu').isVisible());assert.ok((await page.locator('#phaseBadge').innerText()).includes('分支'));
+ await page.locator('#changeButton').click();await page.locator('#reviewNote').fill('測試意見：仍需就圖核對，不代表批准實作');await page.locator('[data-phase="2"]').click();await page.locator('[data-phase="3"]').click();assert.equal(await page.locator('#reviewNote').inputValue(),'測試意見：仍需就圖核對，不代表批准實作');checks.push('local per-story/per-scene review notes survive navigation without approving implementation');
+ await page.locator('#coreButton').click();assert.ok((await page.locator('#modalBody').innerText()).includes('七步保留'));await page.locator('#closeModal').click();await page.locator('#criteriaButton').click();assert.ok((await page.locator('#modalBody').innerText()).includes('退回重做'));await page.locator('#closeModal').click();await page.locator('#decisionsButton').click();assert.ok((await page.locator('#modalBody').innerText()).includes('畫稿 A'));await page.locator('#closeModal').click();checks.push('core, acceptance criteria and undecided layout choices can be inspected');
+ const clipping=[];for(const viewport of [{width:1440,height:960},{width:1280,height:800},{width:1440,height:740}]){await page.setViewportSize(viewport);for(const scene of [0,2,4,5]){await page.locator(`[data-phase="${scene}"]`).click();const geometry=await page.evaluate(()=>{const names=['.doc-header','.catalog','.story-title','.phase-nav','.product','.dialogue','.scene-caption','.story-footer','#nextButton'];return names.map(selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {selector,x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom}})});for(const r of geometry)if(r.x<-.5||r.y<-.5||r.right>viewport.width+.5||r.bottom>viewport.height+.5||r.height<1)clipping.push({viewport,scene,...r});}await page.screenshot({path:path.join(here,`layout-${viewport.width}x${viewport.height}.png`)});}
+ assert.deepEqual(clipping,[]);checks.push('key controls and full diagram remain inside 1440x960,1280x800,1440x740 viewports');
+ assert.deepEqual(errors,[]);checks.push('no browser script errors');
+ fs.writeFileSync(path.join(here,'verification.json'),JSON.stringify({status:'PASS',scope:'Standalone PRD story artifact rendering and interactions only; no product code or CV execution is tested or claimed.',stories:12,frames:72,checks,errors,clipping},null,2));console.log(JSON.stringify({status:'PASS',checks:checks.length,stories:12,frames:72},null,2));
+}finally{await browser.close()}

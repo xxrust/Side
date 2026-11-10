@@ -1,0 +1,18 @@
+/* Keep compact image controls inside their existing fixed-height rows. */
+.image-arrow.icon-button{width:34px;height:44px;padding:4px}
+.pipeline-board-toolbar .icon-button{width:26px;height:22px;padding:3px}
+.pipeline-board-toolbar .icon-button svg,.pipeline-board-footer .icon-button svg{width:17px;height:17px}
+.pipeline-board-footer .icon-button{width:26px;height:20px;padding:2px}
+.pipeline-image-flow .pipeline-step-arrow.icon-button{width:26px;height:100%;flex:0 0 26px;padding:4px}
+.pipeline-image-flow .pipeline-step-arrow.icon-button svg{width:18px;height:18px}
+.pipeline-dialog-pager .icon-button{width:30px;height:28px;padding:4px}
+.pipeline-dialog-close.icon-button{width:32px;height:32px;padding:5px}
+.pipeline-inspector-actions .icon-label-button{gap:4px;justify-content:flex-start;white-space:nowrap}
+.pipeline-inspector-actions .icon-label-button svg{width:14px;height:14px;flex-basis:14px}
+.pipeline-image-modes .icon-label-button{gap:4px}
+.pipeline-image-modes .icon-label-button svg{width:13px;height:13px;flex-basis:13px}
+#sourceDialog .tool-help-button.icon-button{width:22px;height:22px;padding:2px}
+#sourceDialog .tool-help-button.icon-button svg{width:17px;height:17px}
+#toolHelpBody .row .icon-button{width:28px;height:25px;padding:3px}
+#toolHelpBody .row .icon-button svg{width:17px;height:17px}
+@media(max-height:800px){.image-arrow.icon-button{height:37px}}

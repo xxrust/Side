@@ -1,0 +1,3303 @@
+{
+  "batch1": {
+    "schema": "agentcv-dataset-execution-1",
+    "evidenceContract": "per-operator-triad-and-timing-1",
+    "timingRequirement": null,
+    "id": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+    "schemeFingerprint": "adfed96e981b5144",
+    "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+    "status": "COMPLETED",
+    "processed": 16,
+    "total": 16,
+    "counts": {
+      "execution": {
+        "COMPLETED": 16,
+        "FAULT": 0,
+        "CANCELLED": 0
+      },
+      "categories": {
+        "GOOD": 0,
+        "SKEW": 2,
+        "UNKNOWN": 14
+      },
+      "exits": {
+        "FAULT": 0,
+        "CANCELLED": 0,
+        "PRODUCT:GOOD": 0,
+        "PRODUCT:SKEW": 2,
+        "PRODUCT:UNKNOWN": 14
+      },
+      "evidence": {
+        "ready": 16,
+        "notReady": 0
+      },
+      "regression": {
+        "labelled": 16,
+        "matched": 2,
+        "mismatched": 14,
+        "faults": 0,
+        "unlabelled": 0,
+        "labelledFaults": 0,
+        "unavailable": 0,
+        "completedCases": 16,
+        "coverage": {
+          "labelled": 16,
+          "completed": 16,
+          "unavailable": 0,
+          "ratio": 1,
+          "scope": "Attempted units with human-confirmed expected categories; unattempted pending units are not in this denominator."
+        },
+        "unavailableExpectedByCategory": {
+          "GOOD": 0,
+          "SKEW": 0,
+          "UNKNOWN": 0
+        },
+        "perCategory": {
+          "GOOD": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 12,
+            "TN": 4,
+            "expectedPositive": 12,
+            "completedExpectedPositive": 12,
+            "unavailableExpected": 0,
+            "precision": null,
+            "recall": 0,
+            "falsePositiveRate": 0,
+            "endToEndDetectionRate": 0
+          },
+          "SKEW": {
+            "TP": 2,
+            "FP": 0,
+            "FN": 2,
+            "TN": 12,
+            "expectedPositive": 4,
+            "completedExpectedPositive": 4,
+            "unavailableExpected": 0,
+            "precision": 1,
+            "recall": 0.5,
+            "falsePositiveRate": 0,
+            "endToEndDetectionRate": 0.5
+          },
+          "UNKNOWN": {
+            "TP": 0,
+            "FP": 14,
+            "FN": 0,
+            "TN": 2,
+            "expectedPositive": 0,
+            "completedExpectedPositive": 0,
+            "unavailableExpected": 0,
+            "precision": 0,
+            "recall": null,
+            "falsePositiveRate": 0.875,
+            "endToEndDetectionRate": null
+          }
+        },
+        "metricsScope": "precision/recall/falsePositiveRate use completed, valid classifications with human-confirmed expected categories only; FAULT/CANCELLED/unavailable classifications are excluded from the confusion matrix. endToEndDetectionRate uses attempted expected-positive units including unavailable outcomes. Neither is independent industrial accuracy or acceptance."
+      }
+    },
+    "startedAt": "2026-11-05T19:41:39.163Z",
+    "retention": "durable-unit-records",
+    "cancellationPolicy": "between-node; active worker finishes or its configured timeout terminates it",
+    "humanConfirmed": false,
+    "delivered": false,
+    "viewTiming": {
+      "updates": 32,
+      "totalMs": 391.11045699950773,
+      "maxMs": 25.339832999976352,
+      "scope": "UI refresh wall time, may overlap native execution; do not add to unit time"
+    },
+    "timing": {
+      "clock": "monotonic",
+      "elapsedMs": 11717.251290999935,
+      "unitMs": {
+        "count": 16,
+        "mean": 603.2374426874958,
+        "p50": 600.9017079999903,
+        "p95": 633.0532499999972,
+        "max": 633.0532499999972
+      },
+      "cycleMs": {
+        "count": 16,
+        "mean": 728.4527005624914,
+        "p50": 727.5617909999564,
+        "p95": 766.3115419999231,
+        "max": 766.3115419999231
+      },
+      "cycleIncludesDurableSave": true,
+      "cycleScope": "unit-start to durable-save completion (or classification completion without durable save); includes host dispatch and persistence, excludes subsequent UI presentation and inter-unit delay",
+      "scope": "batch wall elapsed including host callbacks and inter-unit UI work; not a sum of operator durations",
+      "includes": [
+        "image-read",
+        "node-dispatch",
+        "algorithm",
+        "artifact-verification",
+        "unit-save",
+        "host-callbacks-and-inter-unit-UI"
+      ],
+      "excludes": [
+        "Agent-planning"
+      ]
+    },
+    "finishedAt": "2026-11-05T19:41:50.998Z",
+    "units": [
+      {
+        "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+        "imageIds": [
+          "1d10cefc-de74-480e-be71-fee8f021cae7"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "SKEW",
+        "categoryIds": [
+          "SKEW"
+        ],
+        "defectLabels": [
+          "lid超出pkg"
+        ],
+        "finalExit": "PRODUCT:SKEW",
+        "evidenceReady": true,
+        "quality": "bad",
+        "regression": "MATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "SKEW"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032050457.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 657.9241250000196,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 81.37137499998789
+        },
+        "runIds": [
+          "py-65f8caf2d4555-72955-5"
+        ],
+        "recordRef": {
+          "$asset": "assets/96605e9316145d268e87c0c78549e7363acd3bb88b1dc5e2eb5f22a5816eee23.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "96605e9316145d268e87c0c78549e7363acd3bb88b1dc5e2eb5f22a5816eee23",
+          "size": 1173311,
+          "storage": "workspace",
+          "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 576.5527500000317,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 576.5527500000317,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 0.05137500003911555
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.808375000022352
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 552.4129170000087
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.104333000024781
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.436791000072844
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.1321250000037253
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.6068339998601004
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf2d4555-72955-5",
+                "programMs": 443.1987917050719,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.808375000022352,
+                  "dispatchMs": 552.4129170000087,
+                  "auditMs": 6.104333000024781,
+                  "publishMs": 2.0455000000074506,
+                  "totalMs": 566.3711250000633,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.566458,
+                  "processMs": 507.52645799999993,
+                  "resultReadMs": 3.952333,
+                  "resultWriteMs": 3.9915000000000003,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 532.790125,
+                  "verificationMs": 9.744208
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "c01e5fd2-8c1a-4d25-87c0-eac5da734756",
+        "imageIds": [
+          "c01e5fd2-8c1a-4d25-87c0-eac5da734756"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "SKEW"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032051647.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "c01e5fd2-8c1a-4d25-87c0-eac5da734756"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 736.6155420000432,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 123.85808400006499
+        },
+        "runIds": [
+          "py-65f8caf37a4ed-72955-6"
+        ],
+        "recordRef": {
+          "$asset": "assets/6c7115557b7034bb756252398f808df61343d03f5cb4ced3b994e6c4dbac722b.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "6c7115557b7034bb756252398f808df61343d03f5cb4ced3b994e6c4dbac722b",
+          "size": 1104029,
+          "storage": "workspace",
+          "unitId": "c01e5fd2-8c1a-4d25-87c0-eac5da734756"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 612.7574579999782,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 612.7574579999782,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 25.27912500000093
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.863957999972627
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 563.5347499999916
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.974792000022717
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.430999000091106
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.07250000000931323
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.601333999889903
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf37a4ed-72955-6",
+                "programMs": 461.7382502183318,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.863957999972627,
+                  "dispatchMs": 563.5347499999916,
+                  "auditMs": 5.974792000022717,
+                  "publishMs": 1.8847910000476986,
+                  "totalMs": 577.2582910000347,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.333583,
+                  "processMs": 525.226583,
+                  "resultReadMs": 3.817666,
+                  "resultWriteMs": 4.01525,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 551.006833,
+                  "verificationMs": 9.603125
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+        "imageIds": [
+          "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "SKEW"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 707.6319590000203,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 118.43945900001563
+        },
+        "runIds": [
+          "py-65f8caf42e750-72955-7"
+        ],
+        "recordRef": {
+          "$asset": "assets/116b21f8b1e0dac7d0e5a0c7e362b91519f2d3efbc43bf478aecade27fbdd6b0.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "116b21f8b1e0dac7d0e5a0c7e362b91519f2d3efbc43bf478aecade27fbdd6b0",
+          "size": 1100934,
+          "storage": "workspace",
+          "unitId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 589.1925000000047,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 589.1925000000047,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 22.100417000008747
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.930333999916911
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 542.1517500000773
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.050457999925129
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 7.193790000048466
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.07679199986159801
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.688959000166506
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf42e750-72955-7",
+                "programMs": 440.0522499345243,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.930333999916911,
+                  "dispatchMs": 542.1517500000773,
+                  "auditMs": 6.050457999925129,
+                  "publishMs": 2.2042079999810085,
+                  "totalMs": 556.3367499999003,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.236375,
+                  "processMs": 503.963291,
+                  "resultReadMs": 3.9242920000000003,
+                  "resultWriteMs": 3.885916,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 529.459166,
+                  "verificationMs": 9.439542000000001
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "b18dd0d1-ac04-4619-8ccc-7cc31337f831",
+        "imageIds": [
+          "b18dd0d1-ac04-4619-8ccc-7cc31337f831"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "SKEW",
+        "categoryIds": [
+          "SKEW"
+        ],
+        "defectLabels": [
+          "lid超出pkg"
+        ],
+        "finalExit": "PRODUCT:SKEW",
+        "evidenceReady": true,
+        "quality": "bad",
+        "regression": "MATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "SKEW"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032057035.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "b18dd0d1-ac04-4619-8ccc-7cc31337f831"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 727.5617909999564,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 122.12987499998417
+        },
+        "runIds": [
+          "py-65f8caf4ddce4-72955-8"
+        ],
+        "recordRef": {
+          "$asset": "assets/b3db878c830eac8f30a4b254fb02a4ccff83e5ec6f6418993ab482a54c066d8e.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "b3db878c830eac8f30a4b254fb02a4ccff83e5ec6f6418993ab482a54c066d8e",
+          "size": 1142072,
+          "storage": "workspace",
+          "unitId": "b18dd0d1-ac04-4619-8ccc-7cc31337f831"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 605.4319159999723,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 605.4319159999723,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 25.117124999989755
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 7.112916000070982
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 552.2257499999832
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.847959000035189
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 7.343582999892533
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.10254200000781566
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 7.682040999992751
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf4ddce4-72955-8",
+                "programMs": 448.06970888748765,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.112916000070982,
+                  "dispatchMs": 552.2257499999832,
+                  "auditMs": 5.847959000035189,
+                  "publishMs": 2.0757079999893904,
+                  "totalMs": 567.2623330000788,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 9.052916,
+                  "processMs": 512.53175,
+                  "resultReadMs": 3.808083,
+                  "resultWriteMs": 3.954042,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 538.8156250000001,
+                  "verificationMs": 9.459624999999999
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "226b40d8-d738-49c7-95b4-c681b05eabfc",
+        "imageIds": [
+          "226b40d8-d738-49c7-95b4-c681b05eabfc"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/10_2.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "226b40d8-d738-49c7-95b4-c681b05eabfc"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 727.9131660000421,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 127.01145800005179
+        },
+        "runIds": [
+          "py-65f8caf58f57a-72955-9"
+        ],
+        "recordRef": {
+          "$asset": "assets/872ccf0c968b2f25edc1bc70240133d4a4ad7417ee8d3079c91863f07779b10d.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "872ccf0c968b2f25edc1bc70240133d4a4ad7417ee8d3079c91863f07779b10d",
+          "size": 1244429,
+          "storage": "workspace",
+          "unitId": "226b40d8-d738-49c7-95b4-c681b05eabfc"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 600.9017079999903,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 600.9017079999903,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 24.372166999964975
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.916207999922335
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 551.9812500000698
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.109500000020489
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.711040999973193
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.09258399996906519
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.718958000070415
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf58f57a-72955-9",
+                "programMs": 440.91204181313515,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.916207999922335,
+                  "dispatchMs": 551.9812500000698,
+                  "auditMs": 6.109500000020489,
+                  "publishMs": 1.8960419999202713,
+                  "totalMs": 565.902999999933,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.652709,
+                  "processMs": 511.71579099999997,
+                  "resultReadMs": 4.29475,
+                  "resultWriteMs": 4.243584,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 538.278917,
+                  "verificationMs": 9.362250000000001
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "8116174b-8cba-4604-bdfd-d5b4becfc6e2",
+        "imageIds": [
+          "8116174b-8cba-4604-bdfd-d5b4becfc6e2"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/11_15.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "8116174b-8cba-4604-bdfd-d5b4becfc6e2"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 715.7583749999758,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 126.20508300000802
+        },
+        "runIds": [
+          "py-65f8caf63c44d-72955-10"
+        ],
+        "recordRef": {
+          "$asset": "assets/570710cb661a47995ee3fc1b157b69e11189d33450816e4c3f19c4621c524c10.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "570710cb661a47995ee3fc1b157b69e11189d33450816e4c3f19c4621c524c10",
+          "size": 1281433,
+          "storage": "workspace",
+          "unitId": "8116174b-8cba-4604-bdfd-d5b4becfc6e2"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 589.5532919999678,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 589.5532919999678,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 0.013457999913953245
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 7.936916999984533
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 564.3370410000207
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.8589589999755844
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 5.463458999991417
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.06841600011102855
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.875041999970563
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf63c44d-72955-10",
+                "programMs": 450.64650010317564,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.936916999984533,
+                  "dispatchMs": 564.3370410000207,
+                  "auditMs": 5.8589589999755844,
+                  "publishMs": 1.9643330000108108,
+                  "totalMs": 580.0972499999916,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.961583000000001,
+                  "processMs": 523.309208,
+                  "resultReadMs": 4.301416,
+                  "resultWriteMs": 4.333042,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 550.357083,
+                  "verificationMs": 9.440375000000001
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "51f0084e-06cd-41ab-b887-8382b738d4fa",
+        "imageIds": [
+          "51f0084e-06cd-41ab-b887-8382b738d4fa"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/12_18.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "51f0084e-06cd-41ab-b887-8382b738d4fa"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 725.5368749999907,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 129.96654200006742
+        },
+        "runIds": [
+          "py-65f8caf6f172d-72955-11"
+        ],
+        "recordRef": {
+          "$asset": "assets/7b7cce0469c338eab293b5d6d506f093a0653a6cd38a611c668c07048b5b2af8.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "7b7cce0469c338eab293b5d6d506f093a0653a6cd38a611c668c07048b5b2af8",
+          "size": 1238768,
+          "storage": "workspace",
+          "unitId": "51f0084e-06cd-41ab-b887-8382b738d4fa"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 595.5703329999233,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 595.5703329999233,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 24.07058300008066
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.820209000026807
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 547.7295409999788
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.895667000091635
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.436207000049762
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.07437499996740371
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.543750999728218
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf6f172d-72955-11",
+                "programMs": 438.5221251286566,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.820209000026807,
+                  "dispatchMs": 547.7295409999788,
+                  "auditMs": 5.895667000091635,
+                  "publishMs": 1.8389579999493435,
+                  "totalMs": 561.2843750000466,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.492750000000001,
+                  "processMs": 507.81679199999996,
+                  "resultReadMs": 4.331375,
+                  "resultWriteMs": 4.1005,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 534.181958,
+                  "verificationMs": 9.430667
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "c4e25db0-ad7b-4179-9655-64ed26109fac",
+        "imageIds": [
+          "c4e25db0-ad7b-4179-9655-64ed26109fac"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/16_12.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "c4e25db0-ad7b-4179-9655-64ed26109fac"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 746.5578749999404,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 124.25245799997356
+        },
+        "runIds": [
+          "py-65f8caf7a4597-72955-12"
+        ],
+        "recordRef": {
+          "$asset": "assets/a2ca0baac52eb3e0c2a88de3117e965bfe451db3c78d94e769f96ff7fda8bd06.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "a2ca0baac52eb3e0c2a88de3117e965bfe451db3c78d94e769f96ff7fda8bd06",
+          "size": 1292450,
+          "storage": "workspace",
+          "unitId": "c4e25db0-ad7b-4179-9655-64ed26109fac"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 622.3054169999668,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 622.3054169999668,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 23.46550000004936
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 7.210709000006318
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 570.9903749999357
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.071708000032231
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.844207999994978
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.06616700009908527
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 7.656749999849126
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf7a4597-72955-12",
+                "programMs": 453.38320825248957,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.210709000006318,
+                  "dispatchMs": 570.9903749999357,
+                  "auditMs": 6.071708000032231,
+                  "publishMs": 1.9505829999689013,
+                  "totalMs": 586.2233749999432,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 13.088875,
+                  "processMs": 525.537417,
+                  "resultReadMs": 4.160667,
+                  "resultWriteMs": 4.339625,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 556.8848330000001,
+                  "verificationMs": 9.748792
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "c91b9abf-b470-4472-835f-29b42734de72",
+        "imageIds": [
+          "c91b9abf-b470-4472-835f-29b42734de72"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/17_19.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "c91b9abf-b470-4472-835f-29b42734de72"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 713.9150420000078,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 121.38816700002644
+        },
+        "runIds": [
+          "py-65f8caf85b1d0-72955-13"
+        ],
+        "recordRef": {
+          "$asset": "assets/1321865fe2247e7badd2342cdab9164e9044edb2f51d6fab0f95570ff55db1ca.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "1321865fe2247e7badd2342cdab9164e9044edb2f51d6fab0f95570ff55db1ca",
+          "size": 1131060,
+          "storage": "workspace",
+          "unitId": "c91b9abf-b470-4472-835f-29b42734de72"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 592.5268749999814,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 592.5268749999814,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 24.037624999997206
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.978375000064261
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 544.1060419999994
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.968374999938533
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.686750000109896
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.05837399989832193
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.691333999973722
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf85b1d0-72955-13",
+                "programMs": 435.6477502733469,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.978375000064261,
+                  "dispatchMs": 544.1060419999994,
+                  "auditMs": 5.968374999938533,
+                  "publishMs": 1.9842910000588745,
+                  "totalMs": 558.0370830000611,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.444458000000001,
+                  "processMs": 503.83079200000003,
+                  "resultReadMs": 3.984209,
+                  "resultWriteMs": 4.0876660000000005,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 529.490542,
+                  "verificationMs": 9.133333
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "945f1f81-d0b1-4bf1-b24e-0b30a553d910",
+        "imageIds": [
+          "945f1f81-d0b1-4bf1-b24e-0b30a553d910"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/17_22.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "945f1f81-d0b1-4bf1-b24e-0b30a553d910"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 743.905875000055,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 140.75129200005904
+        },
+        "runIds": [
+          "py-65f8caf909adb-72955-14"
+        ],
+        "recordRef": {
+          "$asset": "assets/ded7768f98329a03f2974100138467e8d88cce01eaa6609a2c0d50aaf996055c.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "ded7768f98329a03f2974100138467e8d88cce01eaa6609a2c0d50aaf996055c",
+          "size": 1230662,
+          "storage": "workspace",
+          "unitId": "945f1f81-d0b1-4bf1-b24e-0b30a553d910"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 603.1545829999959,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 603.1545829999959,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 23.37383299996145
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.709917000029236
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 555.8062500000233
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.007082999916747
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.658793000038713
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.04887499997857958
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.5498320000479
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf909adb-72955-14",
+                "programMs": 436.5182090550661,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.709917000029236,
+                  "dispatchMs": 555.8062500000233,
+                  "auditMs": 6.007082999916747,
+                  "publishMs": 1.9253340000286698,
+                  "totalMs": 569.4485839999979,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.123,
+                  "processMs": 513.740333,
+                  "resultReadMs": 4.3214999999999995,
+                  "resultWriteMs": 4.935208,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 540.8200410000001,
+                  "verificationMs": 9.689083
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "afabaa2d-b640-40db-b750-e323cec5077a",
+        "imageIds": [
+          "afabaa2d-b640-40db-b750-e323cec5077a"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/18_5.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "afabaa2d-b640-40db-b750-e323cec5077a"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 766.3115419999231,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 133.25829199992586
+        },
+        "runIds": [
+          "py-65f8caf9c1df1-72955-15"
+        ],
+        "recordRef": {
+          "$asset": "assets/61aa692878098eb59bbc2db57260975ad843357e4d31600f762f79513a2f5c5e.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "61aa692878098eb59bbc2db57260975ad843357e4d31600f762f79513a2f5c5e",
+          "size": 1166059,
+          "storage": "workspace",
+          "unitId": "afabaa2d-b640-40db-b750-e323cec5077a"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 633.0532499999972,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 633.0532499999972,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 24.45712499995716
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 7.146208000020124
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 579.172292000032
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.110374999931082
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 7.880165999988094
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.03358299995306879
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 8.253501000115648
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8caf9c1df1-72955-15",
+                "programMs": 461.6341250948608,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.146208000020124,
+                  "dispatchMs": 579.172292000032,
+                  "auditMs": 6.110374999931082,
+                  "publishMs": 2.0124580000992864,
+                  "totalMs": 594.4413330000825,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 15.291625,
+                  "processMs": 532.29675,
+                  "resultReadMs": 3.9445419999999998,
+                  "resultWriteMs": 4.245125,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 565.126083,
+                  "verificationMs": 9.339125000000001
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "7a289184-c991-4b0a-9816-2462a5d727fa",
+        "imageIds": [
+          "7a289184-c991-4b0a-9816-2462a5d727fa"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/20_17.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "7a289184-c991-4b0a-9816-2462a5d727fa"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 740.6655000000028,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 133.77966599992942
+        },
+        "runIds": [
+          "py-65f8cafa7ce63-72955-16"
+        ],
+        "recordRef": {
+          "$asset": "assets/7c37634488e3569ea01b3b3a2d5c9e41a61e1c7d6205deb5d6fec72aba3346a5.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "7c37634488e3569ea01b3b3a2d5c9e41a61e1c7d6205deb5d6fec72aba3346a5",
+          "size": 1315574,
+          "storage": "workspace",
+          "unitId": "7a289184-c991-4b0a-9816-2462a5d727fa"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 606.8858340000734,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 606.8858340000734,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 24.14199999999255
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.721416000043973
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 558.8720419999445
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.814458000008017
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.738917000009678
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.041375000146217644
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.555625999928452
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8cafa7ce63-72955-16",
+                "programMs": 436.27145793288946,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.721416000043973,
+                  "dispatchMs": 558.8720419999445,
+                  "auditMs": 5.814458000008017,
+                  "publishMs": 1.881374999997206,
+                  "totalMs": 572.2892909999937,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 9.718708,
+                  "processMs": 514.378708,
+                  "resultReadMs": 4.327333,
+                  "resultWriteMs": 4.431125,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 542.7525410000001,
+                  "verificationMs": 9.88675
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "b64a1160-d274-4261-ae0d-a1e8647fbdf2",
+        "imageIds": [
+          "b64a1160-d274-4261-ae0d-a1e8647fbdf2"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/23_7.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "b64a1160-d274-4261-ae0d-a1e8647fbdf2"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 739.35699999996,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 133.21079199993983
+        },
+        "runIds": [
+          "py-65f8cafb321f9-72955-17"
+        ],
+        "recordRef": {
+          "$asset": "assets/4fb535c77f4379f9feecd3ddcd98f90c3621515de84e2bb5320c738f7922fddd.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "4fb535c77f4379f9feecd3ddcd98f90c3621515de84e2bb5320c738f7922fddd",
+          "size": 1332796,
+          "storage": "workspace",
+          "unitId": "b64a1160-d274-4261-ae0d-a1e8647fbdf2"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 606.1462080000201,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 606.1462080000201,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 23.591708999942057
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.713667000061832
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 558.706583000021
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.8167919999687
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.724831999861635
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.048457999946549535
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.544167000218295
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8cafb321f9-72955-17",
+                "programMs": 434.97479194775224,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.713667000061832,
+                  "dispatchMs": 558.706583000021,
+                  "auditMs": 5.8167919999687,
+                  "publishMs": 2.1099159999284893,
+                  "totalMs": 572.3469579999801,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.184667,
+                  "processMs": 517.236875,
+                  "resultReadMs": 4.325208,
+                  "resultWriteMs": 4.522709,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 544.1447499999999,
+                  "verificationMs": 9.865250000000001
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "49f1bb73-3db2-47a4-a0da-089f0327d728",
+        "imageIds": [
+          "49f1bb73-3db2-47a4-a0da-089f0327d728"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/26_5.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "49f1bb73-3db2-47a4-a0da-089f0327d728"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 756.9960000000428,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 130.95866699994076
+        },
+        "runIds": [
+          "py-65f8cafbe8a7a-72955-18"
+        ],
+        "recordRef": {
+          "$asset": "assets/d58930dbc30024109f8633744e4a12a1db50013813cb81ba4e890eb175dca58e.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "d58930dbc30024109f8633744e4a12a1db50013813cb81ba4e890eb175dca58e",
+          "size": 1306280,
+          "storage": "workspace",
+          "unitId": "49f1bb73-3db2-47a4-a0da-089f0327d728"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 626.0373330001021,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 626.0373330001021,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 24.10108300007414
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 7.196790999965742
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 574.109875000082
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 6.122417000005953
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 7.629331999924034
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.03991699987091124
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 6.837918000179343
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8cafbe8a7a-72955-18",
+                "programMs": 442.93958274647593,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.196790999965742,
+                  "dispatchMs": 574.109875000082,
+                  "auditMs": 6.122417000005953,
+                  "publishMs": 1.9153749999823049,
+                  "totalMs": 589.344458000036,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 9.901416999999999,
+                  "processMs": 525.086042,
+                  "resultReadMs": 9.847750000000001,
+                  "resultWriteMs": 4.518959000000001,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 559.2383749999999,
+                  "verificationMs": 9.87475
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "692a79a7-7770-4e4b-99e7-b561281445c2",
+        "imageIds": [
+          "692a79a7-7770-4e4b-99e7-b561281445c2"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/2_12.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "692a79a7-7770-4e4b-99e7-b561281445c2"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 727.1609999999637,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 127.02829100005329
+        },
+        "runIds": [
+          "py-65f8cafca16dc-72955-19"
+        ],
+        "recordRef": {
+          "$asset": "assets/e70d3122ae6977ee2346ceac42b38a297bd6e60240a02a6b5bb74e5b78b1e862.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "e70d3122ae6977ee2346ceac42b38a297bd6e60240a02a6b5bb74e5b78b1e862",
+          "size": 1288994,
+          "storage": "workspace",
+          "unitId": "692a79a7-7770-4e4b-99e7-b561281445c2"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 600.1327089999104,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 600.1327089999104,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 23.83987500006333
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.79812499997206
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 552.2757500000298
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.8869590000249445
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.6993319999892265
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.03441700013354421
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.598250999697484
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8cafca16dc-72955-19",
+                "programMs": 433.6389172822237,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.79812499997206,
+                  "dispatchMs": 552.2757500000298,
+                  "auditMs": 5.8869590000249445,
+                  "publishMs": 2.1178329999092966,
+                  "totalMs": 566.0786669999361,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.293958,
+                  "processMs": 511.71545799999996,
+                  "resultReadMs": 4.353417,
+                  "resultWriteMs": 4.4365000000000006,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 538.22825,
+                  "verificationMs": 9.418833
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      },
+      {
+        "unitId": "a610f892-23ff-49cc-a4b4-85d3c53e6853",
+        "imageIds": [
+          "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "UNKNOWN",
+        "categoryIds": [
+          "UNKNOWN"
+        ],
+        "defectLabels": [],
+        "finalExit": "PRODUCT:UNKNOWN",
+        "evidenceReady": true,
+        "quality": "undetermined",
+        "regression": "MISMATCH",
+        "expectedClassification": {
+          "categoryIds": [
+            "GOOD"
+          ],
+          "provenance": {
+            "type": "human",
+            "status": "confirmed",
+            "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/7_21.bmp"
+          }
+        },
+        "expectedLabelSource": {
+          "kind": "explicit-workpiece-expected",
+          "unitId": "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+        },
+        "regressionReason": null,
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 721.4315419999184,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 129.83462499990128
+        },
+        "runIds": [
+          "py-65f8cafd5361f-72955-20"
+        ],
+        "recordRef": {
+          "$asset": "assets/0a590ab4ce2f5b89eaeb42f1ed34dc5948b8161753a8d005bfd0d3f78a6b62a7.json",
+          "executionId": "c45dfecd-2ed4-4fcc-9af8-7f0335619f1e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+          "sha256": "0a590ab4ce2f5b89eaeb42f1ed34dc5948b8161753a8d005bfd0d3f78a6b62a7",
+          "size": 1233699,
+          "storage": "workspace",
+          "unitId": "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 591.5969170000171,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 591.5969170000171,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 21.638291999930516
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 5.761375000001863
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 546.2811669999501
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 5.753125000046566
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.497623999952339
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.03433300007600337
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 5.631001000059769
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8cafd5361f-72955-20",
+                "programMs": 431.5163749270141,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 5.761375000001863,
+                  "dispatchMs": 546.2811669999501,
+                  "auditMs": 5.753125000046566,
+                  "publishMs": 1.9403330000350252,
+                  "totalMs": 559.7360000000335,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 7.838667000000001,
+                  "processMs": 507.36533299999996,
+                  "resultReadMs": 4.0785,
+                  "resultWriteMs": 4.112083,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 532.8360829999999,
+                  "verificationMs": 9.432583
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      }
+    ],
+    "unitCount": 16,
+    "offset": 0,
+    "limit": 32,
+    "truncatedUnits": false,
+    "readWith": "get_dataset_execution(execution_id,offset,limit)"
+  },
+  "compile1": {
+    "ok": true,
+    "mode": "scheme",
+    "isDraft": false,
+    "schema": "agentcv-workpiece-plan-1",
+    "errors": [],
+    "questions": [],
+    "warnings": [],
+    "order": [
+      "objects"
+    ],
+    "lifecycleDependencies": [],
+    "version": "agentcv-purpose-compiler-2",
+    "schemeFingerprint": "adfed96e981b5144",
+    "validationScope": "結構、引用與明示規則檢查；不證明算法精度或效能。"
+  },
+  "single": {
+    "compilation": {
+      "ok": true,
+      "mode": "scheme",
+      "isDraft": false,
+      "schema": "agentcv-workpiece-plan-1",
+      "errors": [],
+      "questions": [],
+      "warnings": [],
+      "order": [
+        "objects"
+      ],
+      "lifecycleDependencies": [],
+      "version": "agentcv-purpose-compiler-2",
+      "schemeFingerprint": "adfed96e981b5144",
+      "validationScope": "結構、引用與明示規則檢查；不證明算法精度或效能。"
+    },
+    "execution": {
+      "schema": "agentcv-dataset-execution-1",
+      "evidenceContract": "per-operator-triad-and-timing-1",
+      "timingRequirement": null,
+      "id": "7198a55e-32ae-4e16-b7e5-f02e70eb66be",
+      "schemeFingerprint": "adfed96e981b5144",
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "status": "COMPLETED",
+      "processed": 1,
+      "total": 1,
+      "counts": {
+        "execution": {
+          "COMPLETED": 1,
+          "FAULT": 0,
+          "CANCELLED": 0
+        },
+        "categories": {
+          "GOOD": 0,
+          "SKEW": 1,
+          "UNKNOWN": 0
+        },
+        "exits": {
+          "FAULT": 0,
+          "CANCELLED": 0,
+          "PRODUCT:GOOD": 0,
+          "PRODUCT:SKEW": 1,
+          "PRODUCT:UNKNOWN": 0
+        },
+        "evidence": {
+          "ready": 1,
+          "notReady": 0
+        },
+        "regression": {
+          "labelled": 0,
+          "matched": 0,
+          "mismatched": 0,
+          "faults": 0,
+          "unlabelled": 1,
+          "labelledFaults": 0,
+          "unavailable": 0,
+          "completedCases": 0,
+          "coverage": {
+            "labelled": 0,
+            "completed": 0,
+            "unavailable": 0,
+            "ratio": null,
+            "scope": "Attempted units with human-confirmed expected categories; unattempted pending units are not in this denominator."
+          },
+          "unavailableExpectedByCategory": {
+            "GOOD": 0,
+            "SKEW": 0,
+            "UNKNOWN": 0
+          },
+          "perCategory": {
+            "GOOD": {
+              "TP": 0,
+              "FP": 0,
+              "FN": 0,
+              "TN": 0,
+              "expectedPositive": 0,
+              "completedExpectedPositive": 0,
+              "unavailableExpected": 0,
+              "precision": null,
+              "recall": null,
+              "falsePositiveRate": null,
+              "endToEndDetectionRate": null
+            },
+            "SKEW": {
+              "TP": 0,
+              "FP": 0,
+              "FN": 0,
+              "TN": 0,
+              "expectedPositive": 0,
+              "completedExpectedPositive": 0,
+              "unavailableExpected": 0,
+              "precision": null,
+              "recall": null,
+              "falsePositiveRate": null,
+              "endToEndDetectionRate": null
+            },
+            "UNKNOWN": {
+              "TP": 0,
+              "FP": 0,
+              "FN": 0,
+              "TN": 0,
+              "expectedPositive": 0,
+              "completedExpectedPositive": 0,
+              "unavailableExpected": 0,
+              "precision": null,
+              "recall": null,
+              "falsePositiveRate": null,
+              "endToEndDetectionRate": null
+            }
+          },
+          "metricsScope": "precision/recall/falsePositiveRate use completed, valid classifications with human-confirmed expected categories only; FAULT/CANCELLED/unavailable classifications are excluded from the confusion matrix. endToEndDetectionRate uses attempted expected-positive units including unavailable outcomes. Neither is independent industrial accuracy or acceptance."
+        }
+      },
+      "startedAt": "2026-11-05T19:41:22.143Z",
+      "retention": "durable-unit-records",
+      "cancellationPolicy": "between-node; active worker finishes or its configured timeout terminates it",
+      "humanConfirmed": false,
+      "delivered": false,
+      "viewTiming": {
+        "updates": 2,
+        "totalMs": 29.38974999997299,
+        "maxMs": 22.511667000013404,
+        "scope": "UI refresh wall time, may overlap native execution; do not add to unit time"
+      },
+      "timing": {
+        "clock": "monotonic",
+        "elapsedMs": 1994.3757909999695,
+        "unitMs": {
+          "count": 1,
+          "mean": 1734.9897920000367,
+          "p50": 1734.9897920000367,
+          "p95": 1734.9897920000367,
+          "max": 1734.9897920000367
+        },
+        "cycleMs": {
+          "count": 1,
+          "mean": 1981.986292000045,
+          "p50": 1981.986292000045,
+          "p95": 1981.986292000045,
+          "max": 1981.986292000045
+        },
+        "cycleIncludesDurableSave": true,
+        "cycleScope": "unit-start to durable-save completion (or classification completion without durable save); includes host dispatch and persistence, excludes subsequent UI presentation and inter-unit delay",
+        "scope": "batch wall elapsed including host callbacks and inter-unit UI work; not a sum of operator durations",
+        "includes": [
+          "image-read",
+          "node-dispatch",
+          "algorithm",
+          "artifact-verification",
+          "unit-save",
+          "host-callbacks-and-inter-unit-UI"
+        ],
+        "excludes": [
+          "Agent-planning"
+        ]
+      },
+      "finishedAt": "2026-11-05T19:41:24.330Z",
+      "units": [
+        {
+          "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+          "imageIds": [
+            "1d10cefc-de74-480e-be71-fee8f021cae7"
+          ],
+          "execution": "COMPLETED",
+          "categoryId": "SKEW",
+          "categoryIds": [
+            "SKEW"
+          ],
+          "defectLabels": [
+            "lid超出pkg"
+          ],
+          "finalExit": "PRODUCT:SKEW",
+          "evidenceReady": true,
+          "quality": "bad",
+          "regression": "UNLABELLED",
+          "expectedClassification": null,
+          "expectedLabelSource": {
+            "kind": "image-expected",
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "stored": {}
+          },
+          "regressionReason": "NO_IMAGE_EXPECTED_LABEL",
+          "cycleTiming": {
+            "clock": "monotonic",
+            "totalMs": 1981.986292000045,
+            "scope": "unit-start through successful durable-save completion",
+            "includes": [
+              "image-read",
+              "node-dispatch",
+              "algorithm",
+              "artifact-verification",
+              "synchronous-host-listeners",
+              "durable-save"
+            ],
+            "excludes": [
+              "post-unit-presentation",
+              "inter-unit-delay",
+              "Agent-planning"
+            ],
+            "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+            "afterDecisionMs": 246.99650000000838
+          },
+          "runIds": [
+            "py-65f8cae2b00d0-72955-4"
+          ],
+          "recordRef": {
+            "$asset": "assets/3f6233255a9a020a181bffc5155590444e267d5504e8a637d92dc1a67893ffbe.json",
+            "executionId": "7198a55e-32ae-4e16-b7e5-f02e70eb66be",
+            "kind": "inspection-unit",
+            "mime": "application/json",
+            "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+            "sha256": "3f6233255a9a020a181bffc5155590444e267d5504e8a637d92dc1a67893ffbe",
+            "size": 1172734,
+            "storage": "workspace",
+            "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7"
+          },
+          "timing": {
+            "clock": "monotonic",
+            "totalMs": 1734.9897920000367,
+            "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+            "includes": [
+              "image-read",
+              "node-dispatch",
+              "algorithm",
+              "artifact-verification",
+              "host-scheduling-and-synchronous-listeners"
+            ],
+            "excludes": [
+              "durable-save",
+              "post-unit-presentation",
+              "Agent-planning"
+            ],
+            "breakdown": {
+              "schema": "agentcv-workpiece-timing-1",
+              "clock": "monotonic",
+              "totalMs": 1734.9897920000367,
+              "parts": [
+                {
+                  "key": "input",
+                  "label": "原圖讀取與準備",
+                  "ms": 0.02549999998882413
+                },
+                {
+                  "key": "preparation",
+                  "label": "節點輸入與契約核對",
+                  "ms": 18.05766599997878
+                },
+                {
+                  "key": "dispatch",
+                  "label": "派發與 Python 執行",
+                  "ms": 1684.2566250000382
+                },
+                {
+                  "key": "audit",
+                  "label": "結果與依據檢查",
+                  "ms": 6.814124999917112
+                },
+                {
+                  "key": "listeners",
+                  "label": "同步事件與畫面更新",
+                  "ms": 10.23816600011196
+                },
+                {
+                  "key": "classification",
+                  "label": "分類及證據整理",
+                  "ms": 1.7845419999212027
+                },
+                {
+                  "key": "scheduling",
+                  "label": "流程編排與其餘主機處理",
+                  "ms": 13.813168000080623
+                }
+              ],
+              "nodes": [
+                {
+                  "nodeId": "objects",
+                  "runId": "py-65f8cae2b00d0-72955-4",
+                  "programMs": 1391.3990412838757,
+                  "host": {
+                    "clock": "monotonic",
+                    "preparationMs": 18.05766599997878,
+                    "dispatchMs": 1684.2566250000382,
+                    "auditMs": 6.814124999917112,
+                    "publishMs": 2.441209000069648,
+                    "totalMs": 1711.5696250000037,
+                    "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                  },
+                  "native": {
+                    "clock": "monotonic",
+                    "preparationMs": 10.522916,
+                    "processMs": 1624.6231249999998,
+                    "resultReadMs": 10.734832999999998,
+                    "resultWriteMs": 4.415541999999999,
+                    "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                    "totalMs": 1660.9667909999998,
+                    "verificationMs": 10.656334
+                  }
+                }
+              ],
+              "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+            }
+          }
+        }
+      ],
+      "unitCount": 1,
+      "offset": 0,
+      "limit": 32,
+      "truncatedUnits": false,
+      "readWith": "get_dataset_execution(execution_id,offset,limit)"
+    },
+    "visual": [
+      {
+        "status": "SAVED_NOT_PUBLISHED",
+        "run_id": "py-65f8cae2b00d0-72955-4",
+        "pipeline_run_id": null,
+        "scope": "實算結果已保存；不自動新增畫板圖片。先讀產物摘要，需要展示時才用 show_algorithm_run 指定 artifact_id。"
+      }
+    ],
+    "scope": "逐件正常分類與執行故障分開；有人工真值才計回歸，未發布。",
+    "delivered": false
+  },
+  "errors": [
+    {
+      "tool": "get_visual_image",
+      "arguments": {
+        "source_id": "8116174b-8cba-4604-bdfd-d5b4becfc6e2"
+      },
+      "error": "圖像來源不在平台目錄中，請先 get_visual_context 分頁重新選取",
+      "resolution": "Caller used imageId instead of visual catalog source_id; corrected after get_visual_context; not a platform bug."
+    },
+    {
+      "tool": "run_algorithm",
+      "arguments": {
+        "title": "兩層邊界與圓角核對",
+        "code": "import cv2,numpy as np,itertools,math\nSIDES=['top','bottom','left','right']\n\ndef sel(d,v,c):return {'kind':'artifact','type':'evidence','id':d,'visuals':[{'id':v,'caption':c}]}\ndef why(reason,groups,data='geometry_data',vis='overlay'):\n return {'tool':{'reason':reason,'expectedEvidence':[sel(data,vis,'實線為有像素支持的邊段；虛線為外推或尺寸先驗補出的邊及圓角。')]},'parameters':[{'name':k,'source':'agent-proposal','reason':REASONS[k],'verification':sel(data,'corner_trials' if data=='geometry_data' and 'cornerFit' in groups else ('profiles' if data=='geometry_data' else ('edge_profiles' if data=='edge_data' else vis)),'保存實算剖面/候選分數；未比較的設定不是最優值。')} for k in groups],'boundaries':[{'condition':'各物體必須有獨立支持；同一焊道峰不證明第二物體；隱藏邊依尺寸先驗，無獨立精度真值。','check':sel(data,'uncertainty' if data=='geometry_data' else vis,'線位變動與模型殘差；未知不可當GOOD。'),'onFailure':'UNKNOWN'}]}\nREASONS={\n 'search':'65灰階、sigma1.5、最大連通面積為本批暗夾具定位的開發設定；只定搜尋框不授予物體身份。',\n 'scan':'中央56%直邊，121採樣點，方向掃描±0.06斜率/0.002步長，±70px法向範圍。比較sigma1/1.5/2.5；不把平滑穩定當絕對精度。',\n 'lidPrior':'梯度邊框預期寬683±10、高529±12px，來自標註圖與11_15的局部像素試算；用以排除同焊道內峰及錯混pkg下沿，非分類比例或人工尺寸規格。',\n 'pkgPrior':'11_15的四側最外80灰階支持給約708x550px；暫用寬708±8、高550±8。尺寸先驗只能推估遮住的邊，不能叫實測。',\n 'cornerFit':'圓角半徑40–140px逐2px實際掃描，以跨輪廓±4px灰階下降支持；局部多峰及貼近其他物體邊緣會造成假匹配，隱藏pkg圓角不作實測。80%峰值半徑範圍是形狀敏感區間，非置信區間。',\n 'quality':'線段支持殘差與參數位移另存；3px邊定位、8px尺寸不確定是開發敏感範圍，非校準誤差保證。完整GOOD須額外通過兩物體/圓角證據檢查。'}\n\ndef locate(g):\n cs=cv2.findContours((g>parameters['search']['seedLevel']).astype('uint8'),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)[0]\n if not cs:return None\n c=max(cs,key=cv2.contourArea);return list(cv2.boundingRect(c))\n\ndef scan(g,box):\n x,y,w,h=box;cx=x+w/2;cy=y+h/2;rows={}\n for side in SIDES:\n  hz=side in SIDES[:2];base=(y if side=='top' else y+h) if hz else (x if side=='left' else x+w)\n  normal=np.arange(int(base)-parameters['scan']['normalRange'],int(base)+parameters['scan']['normalRange']);tang=np.linspace((x+.22*w) if hz else (y+.22*h),(x+.78*w) if hz else (y+.78*h),121).astype(np.float32);mid=cx if hz else cy;out=[]\n  for slope in np.arange(-.06,.0601,.002):\n   n=normal[None,:]+slope*(tang[:,None]-mid);t=np.broadcast_to(tang[:,None],n.shape)\n   vals=cv2.remap(g,(t if hz else n).astype('float32'),(n if hz else t).astype('float32'),cv2.INTER_LINEAR)\n   p=np.mean(vals,axis=0);grad=np.gradient(p);z=(1 if side in ['top','left'] else -1)*grad\n   for j in range(9,len(normal)-9):\n    if z[j]>=max(z[j-2:j+3]) and z[j]>3:out.append({'side':side,'pos':float(normal[j]),'slope':float(slope),'strength':float(z[j])})\n  out.sort(key=lambda q:q['strength'],reverse=True);rr=[]\n  for q in out:\n   if all(abs(q['pos']-r['pos'])>4 for r in rr):rr.append(q)\n  rows[side]=rr[:7]\n return rows\n\ndef choose(rows):\n cand=[];P=parameters['lidPrior']\n for ts,bs,ls,rs in itertools.product(*(rows[k] for k in SIDES)):\n  wd=rs['pos']-ls['pos'];ht=bs['pos']-ts['pos'];aa=np.array([ts['slope'],bs['slope'],-ls['slope'],-rs['slope']]);ad=float(np.std(aa));score=sum(math.log(max(q['strength'],1)) for q in [ts,bs,ls,rs])-((wd-P['width'])/P['widthTolerance'])**2-((ht-P['height'])/P['heightTolerance'])**2-(ad/.015)**2\n  cand.append({'score':score,'width':wd,'height':ht,'angleSlope':float(np.mean(aa)),'angleSpread':ad,'lines':dict(zip(SIDES,[ts,bs,ls,rs]))})\n return sorted(cand,key=lambda q:q['score'],reverse=True)[:5]\n\ndef linepoints(side,pos,slope,box):\n x,y,w,h=box;hz=side in SIDES[:2];mid=x+w/2 if hz else y+h/2;a=x+.22*w if hz else y+.22*h;b=x+.78*w if hz else y+.78*h\n return [[float(t),float(pos+slope*(t-mid))] if hz else [float(pos+slope*(t-mid)),float(t)] for t in [a,b]]\ndef sample(g,side,pos,slope,box,normalRadius=18):\n x,y,w,h=box;hz=side in SIDES[:2];mid=x+w/2 if hz else y+h/2;tang=np.linspace(x+.22*w if hz else y+.22*h,x+.78*w if hz else y+.78*h,121).astype('float32');n=np.arange(math.floor(pos-normalRadius),math.ceil(pos+normalRadius)+1,dtype='float32');nn=n[None,:]+slope*(tang[:,None]-mid);tt=np.broadcast_to(tang[:,None],nn.shape);v=cv2.remap(g,(tt if hz else nn).astype('float32'),(nn if hz else tt).astype('float32'),cv2.INTER_LINEAR)\n return n,np.mean(v,axis=0),tang,v\n\ndef exterior(g,side,box):\n x,y,w,h=box;hz=side in SIDES[:2];base=(y if side=='top' else y+h) if hz else (x if side=='left' else x+w);n,p,t,v=sample(g,side,base,0,box,70);out=[]\n for ti,a in zip(t,v):\n  ids=np.where(a>80)[0]\n  if len(ids):\n   j=ids[0] if side in ['top','left'] else ids[-1];out.append([float(ti),float(n[j])])\n a=np.array(out);coef=np.polyfit(a[:,0],a[:,1],1)\n for _ in range(3):\n  err=a[:,1]-np.polyval(coef,a[:,0]);keep=abs(err)<max(2.,3*np.median(abs(err)));coef=np.polyfit(a[keep,0],a[keep,1],1)\n mid=x+w/2 if hz else y+h/2;return {'pos':float(np.polyval(coef,mid)),'slope':float(coef[0]),'rms':float(np.sqrt(np.mean((a[keep,1]-np.polyval(coef,a[keep,0]))**2))),'coverage':float(keep.mean()),'points':[[float(t),float(v)] if hz else [float(v),float(t)] for t,v in a[keep]]}\n\ndef refine(g,side,line,ext,box):\n sign=-1 if side in ['top','left'] else 1;n,p,t,v=sample(g,side,line['pos'],line['slope'],box,18);offset=(n-line['pos'])*sign\n # When original gradient coincides with exterior, use actual low-level outer boundary.\n if abs(ext['pos']-line['pos'])<5:\n  return dict(ext,kind='measured',method='metal/background crossing at 80',edgeIntervalPx=3.,points=ext['points'])\n # dark separator outward of selected weld slope; do not assign other peaks as pkg\n cand=[j for j in range(2,len(n)-2) if 1<=offset[j]<=9 and p[j]<=min(p[j-2:j+3])]\n if cand:\n  j=min(cand,key=lambda j:p[j]);strength=min(max(p[max(0,j-7):j]),max(p[j+1:j+8]))-p[j]\n  if strength>=6:\n   pp=[]\n   for ti,vv in zip(t,v):\n    k0=max(1,j-3);k1=min(len(n)-1,j+4);jj=k0+int(np.argmin(vv[k0:k1]));pp.append([float(ti),float(n[jj]+line['slope']*(ti-(box[0]+box[2]/2 if side in SIDES[:2] else box[1]+box[3]/2)))])\n   if side not in SIDES[:2]:pp=[[b,a] for a,b in pp]\n   return {'pos':float(n[j]),'slope':line['slope'],'kind':'measured-separator','method':'dark seam adjacent to selected lid rim; geometry consistency required','edgeIntervalPx':3.,'separatorContrast':float(strength),'points':pp}\n return dict(line,pos=line['pos']+sign*3,kind='estimated',method='no resolved separator; provisional 3px outward from weld gradient',edgeIntervalPx=6.,points=[])\n\ndef drawseg(im,pts,col,dash=False,width=2):\n a,b=np.array(pts[0]),np.array(pts[1]);N=max(2,int(np.linalg.norm(b-a)/8))\n if not dash:cv2.line(im,tuple(np.rint(a).astype(int)),tuple(np.rint(b).astype(int)),col,width,cv2.LINE_AA)\n else:\n  for j in range(0,N,2):\n   p=a+(b-a)*j/N;q=a+(b-a)*min(j+1,N)/N;cv2.line(im,tuple(np.rint(p).astype(int)),tuple(np.rint(q).astype(int)),col,width)\ndef polygon(lines,box):\n x,y,w,h=box;cx=x+w/2;cy=y+h/2\n def intersect(a,b):\n  # y=ma(x-cx)+pa, x=mb(y-cy)+pb\n  ma=lines[a]['slope'];mb=lines[b]['slope'];pa=lines[a]['pos']-ma*cx;pb=lines[b]['pos']-mb*cy;xx=(mb*pa+pb)/(1-mb*ma);return [float(xx),float(ma*xx+pa)]\n return [intersect('top','left'),intersect('top','right'),intersect('bottom','right'),intersect('bottom','left')]\ndef rounded(poly,r=65):\n a=np.array(poly);o=[]\n for i,v in enumerate(a):\n  pre=a[(i-1)%4];nxt=a[(i+1)%4];u=(pre-v)/np.linalg.norm(pre-v);w=(nxt-v)/np.linalg.norm(nxt-v);center=v+r*(u+w);pa=v+r*u;pb=v+r*w\n  aa=math.atan2(pa[1]-center[1],pa[0]-center[0]);bb=math.atan2(pb[1]-center[1],pb[0]-center[0]);dd=(bb-aa+math.pi)%(2*math.pi)-math.pi\n  for t in np.linspace(0,1,20):o.append((center+r*np.array([math.cos(aa+t*dd),math.sin(aa+t*dd)])).tolist())\n return o\n\ndef plots(g,box,lid,pkg,scanrows):\n im=np.full((820,1200,3),255,np.uint8);data={}\n for k,side in enumerate(SIDES):\n  ox=60+(k%2)*600;oy=40+(k//2)*400;n,p,t,v=sample(g,side,lid[side]['pos'],lid[side]['slope'],box,60);data[side]={'normal':n.tolist(),'mean':p.tolist(),'lid':lid[side]['pos'],'pkg':pkg[side]['pos']}\n  cv2.putText(im,side+' normal position (px)',(ox,oy),0,.6,(0,0,0),1)\n  for z in [0,80,160,240]:\n   yy=oy+330-int(z);cv2.line(im,(ox,yy),(ox+480,yy),(220,220,220),1);cv2.putText(im,str(z),(ox-40,yy),0,.4,(40,40,40),1)\n  xy=np.array([[ox+(a-n[0])*4,oy+330-b] for a,b in zip(n,p)],np.int32);cv2.polylines(im,[xy],False,(30,30,30),2)\n  for obj,col in [(lid,(20,170,20)),(pkg,(230,140,0))]:\n   xx=int(ox+(obj[side]['pos']-n[0])*4);cv2.line(im,(xx,oy+50),(xx,oy+340),col,2)\n  for a in n[::20]:cv2.putText(im,str(round(float(a))),(int(ox+(a-n[0])*4)-12,oy+360),0,.4,(0,0,0),1)\n return im,data\n\ndef corners(g,poly,tag):\n a=np.array(poly);out=[]\n for i,v in enumerate(a):\n  pre=a[(i-1)%4];nxt=a[(i+1)%4];u=(pre-v)/np.linalg.norm(pre-v);w=(nxt-v)/np.linalg.norm(nxt-v);rows=[]\n  for r in np.arange(parameters['cornerFit']['radiusRange'][0],parameters['cornerFit']['radiusRange'][1]+.1,parameters['cornerFit']['radiusStep']):\n   center=v+r*(u+w);pa=v+r*u;pb=v+r*w;aa=math.atan2(pa[1]-center[1],pa[0]-center[0]);bb=math.atan2(pb[1]-center[1],pb[0]-center[0]);dd=(bb-aa+math.pi)%(2*math.pi)-math.pi;ang=aa+np.linspace(.1,.9,41)*dd;norm=np.stack([np.cos(ang),np.sin(ang)],axis=1);pts=center+norm*r\n   vals=[]\n   for d in [-4.,-2.,0.,2.,4.]:\n    p=pts+norm*d;vals.append(cv2.remap(g,p[:,0].astype('float32')[None,:],p[:,1].astype('float32')[None,:],cv2.INTER_LINEAR)[0].astype(float))\n   grad=(vals[0]-vals[4])/8.;score=float(np.mean(np.maximum(grad,0)));coverage=float(np.mean(grad>3))\n   rows.append({'r':r,'score':score,'coverage':coverage,'medianIntensity':float(np.median(vals[2])),'points':pts.tolist(),'normal':norm.tolist()})\n  rows.sort(key=lambda r:r['score'],reverse=True);best=rows[0];out.append({'corner':i,'best':best,'range80':[min(r['r'] for r in rows if r['score']>=best['score']*.8),max(r['r'] for r in rows if r['score']>=best['score']*.8)],'trials':[{k:v for k,v in r.items() if k not in ['points','normal']} for r in rows]})\n return out\n\nwith procedure('objects',name='兩層邊界',inputs={'image':image_records[0]['id']},outputs={'geometry_data':'geometry_data','overlay':'overlay'},parameters=parameters,justification=why('從原圖分開lid焊接外緣與pkg外露外緣，尺寸只補遮擋部分，並保留未成立的身份。',list(parameters))) as pr:\n with step('search',name='工件搜尋',parameters={'search':parameters['search']},inputs={'image':image_records[0]['id']},outputs={'search_data':'search_data'},justification=why('暗背景上的最大金屬連通支持只限定搜尋域，不能命名為pkg。',['search'],'search_data','search_view')) as st:\n  g0=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY);g=cv2.GaussianBlur(g0,(0,0),parameters['search']['sigma']);box=locate(g);sv=image.copy()\n  if box is not None:x,y,w,h=box;cv2.rectangle(sv,(x,y),(x+w,y+h),(0,200,255),1)\n  save_image('search_view',sv);save_json('search_data',{'bbox':box});st.set_output('bbox',box)\n if box is None:\n  data={'valid':False,'code':'NOT_FOUND','reason':'No metal support above seed level','skewSupported':False,'containedSupported':False}\n  save_json('geometry_data',data)\n else:\n  with step('edges',name='邊緣歸屬',depends_on=['search'],inputs={'bbox':'search_data'},outputs={'geometry_data':'geometry_data','overlay':'overlay'},parameters={k:v for k,v in parameters.items() if k not in ['search','cornerFit']},justification=why('先找多個連續梯度線，聯合四邊方向及lid尺寸排除內部焊道峰；再用暗縫或金屬/背景交界定位。pkg以可見外露邊加獨立尺寸先驗完成。',['scan','lidPrior','pkgPrior','quality'],'edge_data','edge_view')) as st:\n   alltrials=[];selected=None\n   for sigma in parameters['scan']['sigmas']:\n    gg=cv2.GaussianBlur(g0,(0,0),sigma);rows=scan(gg,box);joint=choose(rows);lid={k:refine(gg,k,joint[0]['lines'][k],exterior(gg,k,box),box) for k in SIDES};ext={k:exterior(gg,k,box) for k in SIDES}\n    # pkg independent left+bottom revealed bands. Visibility evaluated by separation from lid.\n    a=(ext['bottom']['slope']-ext['left']['slope'])/2;ww=parameters['pkgPrior']['width'];hh=parameters['pkgPrior']['height'];pkg={}\n    for k in ['left','bottom']:pkg[k]=dict(ext[k],kind='measured',method='exposed pkg to background',edgeIntervalPx=3.)\n    pkg['top']={'pos':pkg['bottom']['pos']-hh,'slope':a,'kind':'estimated','method':'pkg bottom plus good-image height prior','edgeIntervalPx':11.,'points':[]}\n    pkg['right']={'pos':pkg['left']['pos']+ww,'slope':-a,'kind':'estimated','method':'pkg left plus good-image width prior','edgeIntervalPx':11.,'points':[]}\n    # If observed exterior agrees with independent prediction and is separated from lid, retain measured side.\n    for k in ['top','right']:\n     separation=(lid[k]['pos']-ext[k]['pos'])*(1 if k=='top' else -1)\n     if abs(ext[k]['pos']-pkg[k]['pos'])<=parameters['pkgPrior']['heightTolerance'] and separation>=4:\n      pkg[k]=dict(ext[k],kind='measured',method='outer edge agrees with independent pkg size and separate lid edge',edgeIntervalPx=3.)\n    pp=polygon(pkg,box);lp=polygon(lid,box);lc=rounded(lp,parameters['quality']['cornerRadius']);pc=rounded(pp,parameters['quality']['cornerRadius'])\n    # Signed straight-side clearance at rounded lid model points, positive inside.\n    margins={}\n    for k in SIDES:\n     hz=k in SIDES[:2];q=pkg[k];xy=np.array(linepoints(k,lid[k]['pos'],lid[k]['slope'],box));mid=box[0]+box[2]/2 if hz else box[1]+box[3]/2;normal=xy[:,1] if hz else xy[:,0];tan=xy[:,0] if hz else xy[:,1];dd=(normal-(q['pos']+q['slope']*(tan-mid)))*(1 if k in ['top','left'] else -1)/math.sqrt(1+q['slope']**2);margins[k]=float(dd.min())\n    entry={'sigma':sigma,'joint':joint,'lid':lid,'pkg':pkg,'margins':margins,'lidPolygon':lp,'pkgPolygon':pp,'lidCurve':lc,'pkgCurve':pc,'candidateLines':rows};alltrials.append(entry)\n    if sigma==parameters['search']['sigma']:selected=entry\n   edgeview=image.copy()\n   for tag,col in [('lid',(20,240,20)),('pkg',(255,180,0))]:\n    for k,q in selected[tag].items():drawseg(edgeview,linepoints(k,q['pos'],q['slope'],box),col,q['kind']=='estimated',2)\n   ep,_=plots(g,box,selected['lid'],selected['pkg'],selected['candidateLines'])\n   save_image('edge_view',edgeview);save_image('edge_profiles',ep,section='parameters');save_json('edge_data',{'selected':selected,'trials':alltrials});st.set_output('selected',selected)\n  with step('shape',name='圓角核對',depends_on=['edges'],inputs={'edges':'selected'},outputs={'geometry_data':'geometry_data','overlay':'overlay'},parameters={'cornerFit':parameters['cornerFit'],'quality':parameters['quality']},justification=why('在已分物體直邊上，另試圓角梯度擬合；保留多峰，遮住的pkg圓角不能因貼到lid焊道而變成實測。',['cornerFit','quality'])) as st:\n   lid=selected['lid'];pkg=selected['pkg'];ov=image.copy();objects=[]\n   cornerdata={tag:corners(g,selected[tag+'Polygon'],tag) for tag in ['lid','pkg']}\n   corner_view=image.copy()\n   for tag,col in [('lid',(20,240,20)),('pkg',(255,180,0))]:\n    for co in cornerdata[tag]:\n     # Circle fit is a hypothesis, even if edge score is high.\n     co['kind']='estimated-fit'\n     for j in range(len(co['best']['points'])-1):drawseg(corner_view,co['best']['points'][j:j+2],col,j%2==0,1)\n     objects.append({'id':tag+'-corner-'+str(co['corner']),'type':'polyline','label':tag+' 圓角梯度候選，非獨立物體證明','geometry':{'points':[{'x':a,'y':b} for a,b in co['best']['points']]}})\n   save_image('corner_view',corner_view,section='boundary')\n   cpv=np.full((720,1100,3),255,np.uint8)\n   for ci in range(4):\n    ox=70+(ci%2)*550;oy=30+(ci//2)*350\n    for z in [0,10,20,30]:\n     yy=oy+270-z*7;cv2.line(cpv,(ox,yy),(ox+430,yy),(225,225,225),1);cv2.putText(cpv,str(z),(ox-35,yy),0,.4,(30,30,30),1)\n    for tag,col in [('lid',(20,180,20)),('pkg',(220,130,0))]:\n     rr=sorted(cornerdata[tag][ci]['trials'],key=lambda r:r['r']);pts=np.array([[ox+(q['r']-40)*4,oy+270-q['score']*7] for q in rr],np.int32);cv2.polylines(cpv,[pts],False,col,2)\n    cv2.putText(cpv,['top-left','top-right','bottom-right','bottom-left'][ci],(ox,oy+18),0,.6,(0,0,0),1)\n    for rad in [40,60,80,100,120,140]:cv2.putText(cpv,str(rad),(ox+(rad-40)*4-8,oy+295),0,.4,(0,0,0),1)\n    cv2.putText(cpv,'radius px / gradient gray per px',(ox,oy+320),0,.5,(0,0,0),1)\n   save_image('corner_trials',cpv,section='parameters')\n   for obj,col,tag in [(lid,(20,240,20),'lid'),(pkg,(255,180,0),'pkg')]:\n    poly=selected[tag+'Curve'];\n    for j in range(len(poly)):drawseg(ov,[poly[j],poly[(j+1)%len(poly)]],col,True,1)\n    for k in SIDES:\n     q=obj[k];pts=linepoints(k,q['pos'],q['slope'],box);drawseg(ov,pts,col,q['kind']=='estimated',3)\n     objects.append({'id':tag+'-'+k,'type':'line','label':tag+' '+k+' '+q['kind']+'; '+q['method'],'geometry':{'points':[{'x':a,'y':b} for a,b in pts]},'evidenceKind':q['kind']})\n     if q['points']:objects.append({'id':tag+'-'+k+'-support','type':'polyline','label':'實測支持點，非手繪GT','geometry':{'points':[{'x':a,'y':b} for a,b in q['points']]}})\n    objects.append({'id':tag+'-model','type':'polyline','label':tag+' 圓角模型（推估，radius未獨立辨識）','geometry':{'points':[{'x':a,'y':b} for a,b in poly+[poly[0]]]}})\n   bounds={k:{'nominal':selected['margins'][k],'low':min(q['margins'][k]-q['pkg'][k]['edgeIntervalPx']-q['lid'][k]['edgeIntervalPx'] for q in alltrials),'high':max(q['margins'][k]+q['pkg'][k]['edgeIntervalPx']+q['lid'][k]['edgeIntervalPx'] for q in alltrials)} for k in SIDES}\n   independent=all((lid[k]['pos']-pkg[k]['pos'])*(1 if k=='left' else -1)>4 for k in ['left','bottom'])\n   skew=independent and any(v['high']<0 and lid[k]['kind']!='estimated' for k,v in bounds.items())\n   corner_clearance=[]\n   for co in cornerdata['lid']:\n    pts=co['best']['points'];cp=np.array([p for c in cornerdata['pkg'] for p in c['best']['points']],np.float32)\n    corner_clearance.append(min(float(cv2.pointPolygonTest(cp,tuple(p),True)) for p in pts))\n   cornerStable=all(co['range80'][1]-co['range80'][0]<=16 and co['best']['coverage']>=.8 for tag in ['lid','pkg'] for co in cornerdata[tag])\n   direct=all(q['kind']!='estimated' for tag in [lid,pkg] for q in tag.values())\n   full=bool(independent and direct and cornerStable and min(corner_clearance)>parameters['quality']['cornerClearancePx'] and all(v['low']>=0 for v in bounds.values()))\n   checks=[{'id':'independent_pkg_support','status':'PASS' if independent else 'FAIL','actual':{k:abs(lid[k]['pos']-pkg[k]['pos']) for k in ['left','bottom']},'threshold':'>4px on left and bottom, material assignment reviewed'},{'id':'corner_identity','status':'PASS' if (cornerStable and direct) else 'NOT_EVALUATED','actual':{'stable':cornerStable,'directSides':direct,'minimumNominalClearancePx':min(corner_clearance),'radius80':{tag:[co['range80'] for co in cornerdata[tag]] for tag in cornerdata}},'threshold':'radius 80% range <=16px, support >=80%, direct sides; each corner is still model fit'},{'id':'physical_calibration','status':'NOT_EVALUATED','actual':'good-image size prior, not metrology','threshold':'same-part dimensional tolerance and imaging variation'}]\n   data={'valid':True,'skewSupported':bool(skew),'containedSupported':full,'independentSupports':bool(independent),'clearance':bounds,'selected':selected,'corners':cornerdata,'cornerClearance':corner_clearance,'cornerStable':cornerStable,'directSides':direct,'trials':alltrials,'boundaryChecks':checks,'scope':'development geometry, partial direct support; estimated hidden edges and corners identified; no filename/labels in prediction'}\n   for j,txt in enumerate(['GREEN lid / CYAN pkg','SOLID measured edge segment; DASH estimated/model','Corners dashed: model; alternative fit in corner_view',''+('TOP OVERHANG supported within trial bounds' if skew else ('CONTAINED within trial bounds' if full else 'CONTAINMENT UNKNOWN: see side/corner evidence'))]):cv2.putText(ov,txt,(20,28+j*25),0,.6,(255,255,255),2)\n   prof,pdata=plots(g,box,lid,pkg,selected['candidateLines']);data['profiles']=pdata\n   uv=np.full((600,1000,3),255,np.uint8);lo=min(v['low'] for v in bounds.values())-5;hi=max(v['high'] for v in bounds.values())+5\n   for k,j in zip(SIDES,range(4)):\n    v=bounds[k];yy=100+j*115\n    def xx(q):return int(140+(q-lo)/(hi-lo)*800)\n    cv2.line(uv,(xx(0),50),(xx(0),550),(0,0,255),1);cv2.putText(uv,k,(15,yy),0,.7,(0,0,0),1);cv2.line(uv,(xx(v['low']),yy),(xx(v['high']),yy),(150,60,0),7);cv2.circle(uv,(xx(v['nominal']),yy),6,(0,150,0),-1);cv2.putText(uv,f'{v[\"low\"]:.1f}..{v[\"high\"]:.1f}px',(xx(v['low']),yy-20),0,.55,(0,0,0),1)\n   cv2.putText(uv,'Signed lid clearance to pkg: positive inside; trial bounds NOT 95% CI',(20,580),0,.6,(0,0,0),1)\n   save_image('overlay',ov);save_image('profiles',prof,section='parameters');save_image('uncertainty',uv,section='boundary');save_json('geometry_data',data);save_layers('geometry',[{'id':'two-objects','objects':objects}]);st.set_output('geometry_data',data);st.set_output('boundaryChecks',checks);pr.set_output('geometry_data',data);pr.set_output('overlay','overlay')\nresult=data\n",
+        "parameters_json": "{\"search\":{\"seedLevel\":65,\"sigma\":1.5},\"scan\":{\"normalRange\":70,\"sigmas\":[1,1.5,2.5],\"tangentFraction\":[0.22,0.78],\"samples\":121,\"slopeRange\":[-0.06,0.06],\"slopeStep\":0.002},\"lidPrior\":{\"width\":683,\"height\":529,\"widthTolerance\":10,\"heightTolerance\":12},\"pkgPrior\":{\"width\":708,\"height\":550,\"widthTolerance\":8,\"heightTolerance\":8,\"source\":\"11_15 four independent exposed outer sides; development estimate\"},\"quality\":{\"edgeTrialPx\":3,\"dimensionTrialPx\":8,\"cornerRadius\":65,\"cornersConfirmed\":false,\"cornerClearancePx\":8,\"separatorMinContrast\":6,\"separatorDistancePx\":[1,9],\"slopeScatter\":0.015,\"minIndependentSeparationPx\":4,\"assumedSeamOffsetPx\":3,\"unresolvedEdgeTrialPx\":6,\"externalLevel\":80,\"gradientMin\":3,\"lineNmsDistancePx\":4,\"lineCandidateCount\":7,\"fitIterations\":3,\"residualFloorPx\":2,\"residualMadMultiplier\":3,\"displayCornerRadius\":65},\"cornerFit\":{\"radiusRange\":[40,140],\"radiusStep\":2,\"normalOffsets\":[-4,-2,0,2,4],\"arcFraction\":[0.1,0.9],\"samples\":41,\"relativeScore\":0.8,\"maxRadiusSpread\":16,\"minCoverage\":0.8}}",
+        "image_ids": [
+          "1d10cefc-de74-480e-be71-fee8f021cae7"
+        ],
+        "source": {
+          "projectEpoch": 2,
+          "workflowRevision": 3,
+          "schemeFingerprint": "84ececf1be487a3f",
+          "images": [
+            {
+              "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+              "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+              "width": 1280,
+              "height": 1024,
+              "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd"
+            }
+          ]
+        },
+        "mode": "draft",
+        "justification": {
+          "tool": {
+            "reason": "由人類綠線確認lid身份；原圖左下露出帶是pkg。先量兩物體各自支持，遮擋邊以良品尺寸先驗推估，再計有正負號的lid到pkg邊距。完整包含與單側超出分開要求證據。",
+            "expectedEvidence": [
+              {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "overlay",
+                    "caption": "綠lid、青pkg；實線僅在實際支持段，虛線為外推或推估；上青線不再冒充lid。"
+                  }
+                ]
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "search",
+              "source": "agent-proposal",
+              "reason": "低閾值65與sigma1.5只定搜尋域；不把最大亮連通區命名為pkg。未新增成像場景驗證。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "scan",
+              "source": "agent-proposal",
+              "reason": "斜率與梯度候選在相同完整原圖比較；sigma1/1.5/2.5敏感性保留。中央56%避開圓角；實際支持段之外是外推。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "lidPrior",
+              "source": "agent-proposal",
+              "reason": "從標註圖與11_15像素直邊推得梯度框約683x529，±10/12px為定位先驗；不是按外包絡比例分類。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "pkgPrior",
+              "source": "agent-proposal",
+              "reason": "11_15外露四邊約708x550px；±8px為暫用尺寸敏感範圍。僅用可見pkg左下邊定位，隱藏上/右邊標推估，不把焊道第二峰叫pkg。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "quality",
+              "source": "agent-proposal",
+              "reason": "3px實測線位、6px未分離邊、8px尺寸擾動為保守開發試驗；不是已校準誤差。含缺測、穩定性與完整包含檢查。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "profiles",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "cornerFit",
+              "source": "agent-proposal",
+              "reason": "40至140px圓角實掃，四角分別保留80%峰區；多峰/無獨立邊不算完整包含。半徑不是分類特徵。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "corner_trials",
+                    "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+                  }
+                ]
+              }
+            }
+          ],
+          "boundaries": [
+            {
+              "condition": "UNKNOWN包含尚未分清的邊與圓角；尺寸先驗可能不適用其他批次，40張其他缺陷未驗證。",
+              "check": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "geometry_data",
+                "visuals": [
+                  {
+                    "id": "uncertainty",
+                    "caption": "三種平滑加逐邊線位與隱藏尺寸擾動，畫出正內負外區間；非95%置信或工業誤差保證。"
+                  }
+                ]
+              },
+              "onFailure": "UNKNOWN"
+            }
+          ],
+          "meta": {
+            "sourceFingerprint": "{\"images\":[{\"contentSha256\":\"2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd\",\"height\":1024,\"imageId\":\"1d10cefc-de74-480e-be71-fee8f021cae7\",\"imageSha256\":\"a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3\",\"width\":1280}],\"projectEpoch\":2,\"schemeFingerprint\":\"84ececf1be487a3f\",\"workflowRevision\":3}"
+          }
+        },
+        "expected_outputs": [
+          {
+            "id": "overlay",
+            "type": "image",
+            "role": "result",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "search_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "edge_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "edge_profiles",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "edge_profiles"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "profiles",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "profiles"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "uncertainty",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "uncertainty"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "corner_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "corner_trials",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "objects",
+                  "artifactId": "corner_trials"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "geometry_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "geometry",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "search_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "edge_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          }
+        ],
+        "timeout_seconds": 120
+      },
+      "error": {
+        "schema": "agentcv-algorithm-evidence-audit-1",
+        "procedureStatus": "READY_FOR_REVIEW",
+        "procedureAudit": {
+          "schema": "agentcv-procedure-evidence-audit-1",
+          "status": "READY_FOR_REVIEW",
+          "delivered": false,
+          "nodes": [
+            {
+              "nodeId": "objects#1",
+              "status": "READY_FOR_REVIEW",
+              "delivered": false,
+              "errors": []
+            },
+            {
+              "nodeId": "search#1",
+              "status": "READY_FOR_REVIEW",
+              "delivered": false,
+              "errors": []
+            },
+            {
+              "nodeId": "edges#1",
+              "status": "READY_FOR_REVIEW",
+              "delivered": false,
+              "errors": []
+            },
+            {
+              "nodeId": "shape#1",
+              "status": "READY_FOR_REVIEW",
+              "delivered": false,
+              "errors": []
+            }
+          ],
+          "errors": [],
+          "scope": "逐程序三項依據及實際產物／邊界引用核對；不是獨立精度驗證或工業驗收。"
+        },
+        "status": "DIAGNOSTIC_ONLY",
+        "delivered": false,
+        "errors": [
+          {
+            "code": "DATA_FRAME_UNRESOLVED",
+            "path": "expected_outputs.3",
+            "message": "edge_profiles 的座標系未能綁定本次真實圖像。",
+            "hint": "讀取 dataContract 與 canonicalSchema；修正來源、型別、座標系或單位，validate_purpose_scheme 通過後重新執行。不可只改標籤冒充座標轉換。"
+          },
+          {
+            "code": "DATA_FRAME_UNRESOLVED",
+            "path": "expected_outputs.4",
+            "message": "profiles 的座標系未能綁定本次真實圖像。",
+            "hint": "讀取 dataContract 與 canonicalSchema；修正來源、型別、座標系或單位，validate_purpose_scheme 通過後重新執行。不可只改標籤冒充座標轉換。"
+          },
+          {
+            "code": "DATA_FRAME_UNRESOLVED",
+            "path": "expected_outputs.5",
+            "message": "uncertainty 的座標系未能綁定本次真實圖像。",
+            "hint": "讀取 dataContract 與 canonicalSchema；修正來源、型別、座標系或單位，validate_purpose_scheme 通過後重新執行。不可只改標籤冒充座標轉換。"
+          },
+          {
+            "code": "DATA_FRAME_UNRESOLVED",
+            "path": "expected_outputs.7",
+            "message": "corner_trials 的座標系未能綁定本次真實圖像。",
+            "hint": "讀取 dataContract 與 canonicalSchema；修正來源、型別、座標系或單位，validate_purpose_scheme 通過後重新執行。不可只改標籤冒充座標轉換。"
+          }
+        ],
+        "scope": "保存的程式自檢及產物引用核對；不是獨立精度驗證、人工採用或正式發布。"
+      },
+      "resolution": "Draft carried artifact-frame contracts with nodeId objects but no scheme node; draft contracts removed. Formal scheme compiled and frame audit passed; no platform source changes."
+    }
+  ]
+}

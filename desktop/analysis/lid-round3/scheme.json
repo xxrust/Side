@@ -1,0 +1,715 @@
+{
+  "id": "lid-skew-envelope-development",
+  "version": 1,
+  "execution": {
+    "unit": "workpiece",
+    "inputSlots": [
+      {
+        "id": "image",
+        "required": true
+      }
+    ],
+    "dataContracts": "required"
+  },
+  "classificationSpec": {
+    "schema": "agentcv-classification-spec-1",
+    "id": "lid-skew-development-proxy",
+    "provenance": [
+      {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;16張開發與代理特徵授權，UNKNOWN及FAULT獨立；不代表人類確認暫用數值"
+      },
+      {
+        "type": "agent-inference",
+        "status": "inferred",
+        "ref": "analysis/lid-round3/draft_calibration.json",
+        "authorization": "本輪使用者允許提出暫用參數及可驗證開發代理；非量產或物理越界規格"
+      }
+    ],
+    "categories": [
+      {
+        "id": "GOOD",
+        "label": "良品（開發代理）",
+        "quality": "good",
+        "evidence": [
+          {
+            "nodeId": "comparison",
+            "artifactId": "result_view",
+            "label": "開發代理包絡，不是物理越界"
+          }
+        ]
+      },
+      {
+        "id": "SKEW",
+        "label": "歪斜（開發代理）",
+        "quality": "bad",
+        "evidence": [
+          {
+            "nodeId": "comparison",
+            "artifactId": "result_view",
+            "label": "開發代理包絡，不是物理越界"
+          }
+        ]
+      },
+      {
+        "id": "UNKNOWN",
+        "label": "UNKNOWN／待審",
+        "quality": "undetermined",
+        "evidence": [
+          {
+            "nodeId": "comparison",
+            "artifactId": "result_view",
+            "label": "開發代理包絡，不是物理越界"
+          }
+        ]
+      }
+    ],
+    "metrics": [
+      {
+        "id": "usable",
+        "type": "boolean"
+      },
+      {
+        "id": "lower",
+        "type": "number",
+        "unit": "ratio",
+        "range": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      {
+        "id": "upper",
+        "type": "number",
+        "unit": "ratio",
+        "range": {
+          "min": 0,
+          "max": 1
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "good_band",
+        "categoryId": "GOOD",
+        "when": {
+          "all": [
+            {
+              "metric": "usable",
+              "equals": true
+            },
+            {
+              "metric": "lower",
+              "interval": {
+                "min": 0.755,
+                "max": 0.795,
+                "includeMin": true,
+                "includeMax": true
+              }
+            },
+            {
+              "metric": "upper",
+              "interval": {
+                "min": 0.755,
+                "max": 0.795,
+                "includeMin": true,
+                "includeMax": true
+              }
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "nodeId": "comparison",
+            "artifactId": "result_view",
+            "label": "開發代理包絡，不是物理越界"
+          }
+        ]
+      },
+      {
+        "id": "skew_band",
+        "categoryId": "SKEW",
+        "defectLabels": [
+          "歪斜代理"
+        ],
+        "when": {
+          "all": [
+            {
+              "metric": "usable",
+              "equals": true
+            },
+            {
+              "metric": "lower",
+              "interval": {
+                "min": 0.805,
+                "max": 0.875,
+                "includeMin": true,
+                "includeMax": true
+              }
+            },
+            {
+              "metric": "upper",
+              "interval": {
+                "min": 0.805,
+                "max": 0.875,
+                "includeMin": true,
+                "includeMax": true
+              }
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "nodeId": "comparison",
+            "artifactId": "result_view",
+            "label": "開發代理包絡，不是物理越界"
+          }
+        ]
+      }
+    ],
+    "coverage": {
+      "policy": "fallback",
+      "fallbackCategoryId": "UNKNOWN"
+    },
+    "missing": {
+      "NOT_FOUND": "UNKNOWN",
+      "MISSING": "UNKNOWN",
+      "SKIPPED": "UNKNOWN"
+    },
+    "conflicts": {
+      "mode": "priority",
+      "priority": [
+        "skew_band",
+        "good_band"
+      ]
+    },
+    "aggregation": {
+      "mode": "priority",
+      "priority": [
+        "UNKNOWN",
+        "SKEW",
+        "GOOD"
+      ]
+    },
+    "fault": {
+      "exit": "FAULT"
+    }
+  },
+  "operatorGraph": {
+    "nodes": [
+      {
+        "id": "geometry",
+        "title": "包絡特徵",
+        "code": "import cv2, numpy as np\n\ndef selector(data,visual,caption):\n return {'kind':'artifact','type':'evidence','id':data,'visuals':[{'id':visual,'caption':caption}]}\ndef why(data,visual,reason,groups,boundary):\n return {'tool':{'reason':reason,'expectedEvidence':[selector(data,'overlay' if data=='features' else visual,'青色是原圖實測包絡；黃色是統計框，兩者均不是隱藏pkg。')]},'parameters':[{'name':k,'source':'agent-proposal','reason':PARAM_REASON[k],'verification':selector(data,'sensitivity' if data=='features' else visual,'三條曲線對應sigma，橫軸65/80/95灰階；候選差異已保存。其餘品質限制本次未調優。')} for k in groups],'boundaries':[{'condition':boundary,'check':selector(data,'optical_view' if data=='features' else visual,'洋紅200灰階紋路位於亮帶內部，不能當另一物體；物理包含尚未建立。'),'onFailure':'UNKNOWN'}]}\nPARAM_REASON={\n 'search':'sigma=1/1.5/2.5 px與seed=65灰階為這批開發提出。65低於外帶灰階且高於暗背景；以三種平滑觀察定位變動。面積至少影像10%、邊界距5 px、填充率0.85、競爭物件比例0.4均是未獨立調優的防錯設定。',\n 'envelope':'閾值65/80/95與sigma逐一交叉實算，選80/1.5作展示，分類使用所有9組的範圍。保留seed範圍內所有真實亮點，避免只留最大分量而丟失斷開外帶。200灰階等亮線僅解說焊道光學峰，不參與分類。',\n 'quality':'長邊650–780 px、短邊500–650 px限定本成像尺度；ratio跨度上限0.015、長寬各±2 px擾動是Agent暫提，非人類尺寸公差或95%置信界。未涵蓋系統性照明誤差。'}\nS=parameters['search'];E=parameters['envelope'];Q=parameters['quality']\ndef label(v,t,y=30,col=(255,255,255)):\n cv2.putText(v,t,(20,y),cv2.FONT_HERSHEY_SIMPLEX,.62,col,2,cv2.LINE_AA)\ndef plot(rows):\n v=np.full((600,960,3),255,np.uint8);valid=[r for r in rows if r.get('ratio') is not None]\n low=min([r['ratio'] for r in valid]+[.76])-.005;high=max([r['ratio'] for r in valid]+[.85])+.005\n for yy in np.linspace(low,high,6):\n  y=int(510-(yy-low)/(high-low)*430);cv2.line(v,(100,y),(900,y),(225,225,225),1);cv2.putText(v,f'{yy:.3f}',(25,y+5),0,.5,(30,30,30),1)\n for j,t in enumerate(E['levels']):\n  x=180+j*300;cv2.putText(v,str(t),(x-15,540),0,.6,(0,0,0),1)\n for j,sg in enumerate(S['sigmas']):\n  pts=[];col=[(190,90,10),(10,150,10),(160,10,160)][j]\n  for r in valid:\n   if r['sigma']==sg:\n    x=180+E['levels'].index(r['level'])*300;y=int(510-(r['ratio']-low)/(high-low)*430);pts.append((x,y));cv2.circle(v,(x,y),5,col,-1)\n  if len(pts)>1:cv2.polylines(v,[np.array(pts,np.int32)],False,col,2)\n  cv2.putText(v,f'sigma={sg}px',(180+j*250,40),0,.55,col,2)\n cv2.putText(v,'threshold (gray 0-255); y = short / long optical envelope',(110,580),0,.6,(0,0,0),1)\n return v\n\nwith procedure('envelope_features',name='包絡特徵',inputs={'image':image_records[0]['id']},outputs={'features':'features','overlay':'overlay'},parameters=parameters,justification=why('features','overlay','從可見金屬組件提取平移與旋轉不變的形狀代理；不把lid/pkg合併包絡稱作pkg，更不生成隱藏矩形。',['search','envelope','quality'],'只針對本批16張開發圖；其他40張未驗證，物理越界及mm未量測。')) as pr:\n with step('search',name='搜尋範圍',parameters={'search':S},inputs={'image':image_records[0]['id']},outputs={'search':'search_data'},justification=why('search_data','search_view','原圖為亮金屬組件、暗夾具背景；由低灰階連通區取得完整搜尋支持。填洞僅限制候選來源，後續尺寸仍只使用真實前景像素。',['search'],'亮背景連上工件或兩件相連會錯定位；面積、填充、競爭物件與截邊檢查失敗走UNKNOWN。')) as st:\n  loc=[];working=[];g0=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY);sv=image.copy()\n  for sg in S['sigmas']:\n   g=cv2.GaussianBlur(g0,(0,0),sg);cs,_=cv2.findContours((g>S['seedLevel']).astype(np.uint8),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE);cs=sorted(cs,key=cv2.contourArea,reverse=True)\n   if not cs:\n    loc.append({'sigma':sg,'found':False});working.append(None);continue\n   c=cs[0];area=float(cv2.contourArea(c));x,y,w,h=cv2.boundingRect(c);rect=cv2.minAreaRect(c);rw,rh=rect[1];fill=area/max(rw*rh,1);rival=float(cv2.contourArea(cs[1])/max(area,1)) if len(cs)>1 else 0\n   okay=area>=g.size*S['minAreaRatio'] and min(x,y,g.shape[1]-x-w,g.shape[0]-y-h)>=S['borderPx'] and fill>=S['minFill'] and rival<=S['maxRivalRatio']\n   support=np.zeros_like(g);cv2.drawContours(support,[c],-1,1,-1)\n   row={'sigma':sg,'found':True,'valid':bool(okay),'areaPx2':area,'bbox':[x,y,w,h],'fill':fill,'rivalRatio':rival};loc.append(row);working.append((g,support,c))\n   if sg==E['selectedSigma']:cv2.drawContours(sv,[c],-1,(255,220,0),2)\n  label(sv,'CYAN: search envelope of visible metal, NOT a PKG boundary',30,(255,220,0))\n  save_image('search_view',sv);save_json('search_data',{'candidates':loc,'parameters':S});st.set_output('search',loc)\n with step('geometry',name='包絡比例',depends_on=['search'],inputs={'search':'search_data'},outputs={'features':'features','overlay':'overlay'},parameters={'envelope':E,'quality':Q},justification=why('features','sensitivity','在搜尋支持內保留每個門檻的全部真實亮點，連通區斷開也保留。最小包圍框僅計算可見組件形狀比，沒有推估pkg。替代完整lid/pkg重建仍有邊身份歧義。',['envelope','quality'],'外形代理可被其他缺陷或光照改變；只有本批良品/歪斜開發區分，不是物理外溢測量。')) as st:\n  rows=[];selected=None;overlay=image.copy();objects=[];bright=image.copy();allbounds=[]\n  for sg,work in zip(S['sigmas'],working):\n   if work is None:continue\n   g,support,c=work\n   for t in E['levels']:\n    mask=((g>t)&(support>0)).astype(np.uint8);pts=cv2.findNonZero(mask)\n    if pts is None:continue\n    rect=cv2.minAreaRect(pts);short,long=sorted(rect[1]);ratio=float(short/long) if long>0 else 0.;cs,_=cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)\n    e=Q['dimensionErrorPx'];lo=max(0,(short-e)/(long+e));hi=(short+e)/max(long-e,1)\n    row={'sigma':sg,'level':t,'shortPx':float(short),'longPx':float(long),'ratio':ratio,'lower':float(lo),'upper':float(hi),'componentCount':len(cs),'areaPx2':int(mask.sum()),'center':[float(q) for q in rect[0]],'boxAngleDeg':float(rect[2])};rows.append(row);allbounds.append((lo,hi))\n    if sg==E['selectedSigma'] and t==E['selectedLevel']:\n     selected=row;box=cv2.boxPoints(rect);cv2.drawContours(overlay,cs,-1,(255,220,0),1)\n     cv2.polylines(overlay,[box.astype(np.int32)],True,(0,210,255),1)\n     for j,co in enumerate(cs):\n      if len(co)>=3:objects.append({'id':'envelope-'+str(j),'type':'blob','label':'實測等亮輪廓；混合lid/pkg可見外形','geometry':{'points':[{'x':float(x),'y':float(y)} for x,y in co[:,0,:]]}})\n     objects.append({'id':'proxy-box','type':'polyline','label':'包絡統計框，非物體或遮擋重建','geometry':{'points':[{'x':float(x),'y':float(y)} for x,y in np.vstack([box,box[0]])]}})\n     bc,_=cv2.findContours(((g>E['opticalLevel'])&(support>0)).astype(np.uint8),cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE);cv2.drawContours(bright,bc,-1,(255,0,255),1);cv2.drawContours(bright,cs,-1,(255,220,0),1)\n  ratios=[r['ratio'] for r in rows];low=float(min(v[0] for v in allbounds)) if allbounds else None;high=float(max(v[1] for v in allbounds)) if allbounds else None;spread=float(max(ratios)-min(ratios)) if ratios else None\n  complete=len(rows)==len(S['sigmas'])*len(E['levels']) and all(r.get('valid',False) for r in loc)\n  scale=bool(rows) and all(Q['longRangePx'][0]<=r['longPx']<=Q['longRangePx'][1] and Q['shortRangePx'][0]<=r['shortPx']<=Q['shortRangePx'][1] for r in rows)\n  stable=spread is not None and spread<=Q['maxRatioSpread'];usable=bool(complete and scale and stable)\n  checks=[{'id':'localization','status':'PASS' if complete else 'FAIL','actual':[r.get('valid',False) for r in loc],'threshold':'all 3 supports valid and 9 candidates'}, {'id':'scale','status':'PASS' if scale else 'FAIL','actual':[[r['shortPx'],r['longPx']] for r in rows],'threshold':Q}, {'id':'stability','status':'PASS' if stable else 'FAIL','actual':spread,'threshold':Q['maxRatioSpread']},{'id':'physical_containment','status':'NOT_EVALUATED','actual':'mixed visible-metal envelope only','threshold':'separate physical lid/pkg with calibrated uncertainty'}]\n  data={'valid':True,'usable':usable,'proxyRatio':selected['ratio'] if selected else None,'lower':low,'upper':high,'spread':spread,'selected':selected,'candidates':rows,'localization':loc,'boundaryChecks':checks,'meaning':'development optical-envelope proxy, not lid/pkg physical overhang','uncertainty':'range over 9 extraction settings plus independent +/-2px dimension perturbations; not statistical confidence or a bound on systematic image error','scope':'12 good + 4 skew development images; other40 untested; no filename, path, expected label or annotation used to predict'}\n  label(overlay,'CYAN: observed envelope; YELLOW: its statistic box (NOT pkg)',30,(255,220,0));label(overlay,'DEVELOPMENT PROXY ONLY - no physical containment claim',60,(0,210,255))\n  if selected:label(overlay,f'short/long={selected[\"ratio\"]:.5f}  sensitivity=[{low:.5f},{high:.5f}]',90)\n  label(bright,'MAGENTA: optical isophote at 200; CYAN: envelope at 80',30,(255,0,255));label(bright,'Multiple bright ridges are NOT separate physical objects',60,(255,0,255))\n  save_image('overlay',overlay);save_image('optical_view',bright);save_image('sensitivity',plot(rows),section='parameters');save_json('features',data);save_layers('geometry',[{'id':'optical-envelope','objects':objects}]);st.set_output('features',data);st.set_output('boundaryChecks',checks);pr.set_output('features',data);pr.set_output('overlay','overlay')\nresult=data\n",
+        "parameters": {
+          "search": {
+            "sigmas": [
+              1.0,
+              1.5,
+              2.5
+            ],
+            "seedLevel": 65,
+            "minAreaRatio": 0.1,
+            "borderPx": 5,
+            "minFill": 0.85,
+            "maxRivalRatio": 0.4
+          },
+          "envelope": {
+            "levels": [
+              65,
+              80,
+              95
+            ],
+            "selectedSigma": 1.5,
+            "selectedLevel": 80,
+            "opticalLevel": 200
+          },
+          "quality": {
+            "dimensionErrorPx": 2.0,
+            "longRangePx": [
+              650,
+              780
+            ],
+            "shortRangePx": [
+              500,
+              650
+            ],
+            "maxRatioSpread": 0.015
+          }
+        },
+        "expected_outputs": [
+          {
+            "id": "overlay",
+            "type": "image",
+            "role": "result",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "search_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "optical_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "sensitivity",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "geometry",
+                  "artifactId": "sensitivity"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "search_data",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "features",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          {
+            "id": "geometry",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          }
+        ],
+        "justification": {
+          "tool": {
+            "reason": "從暗背景上的可見金屬整體外形量測短長比；它是混合lid/pkg光學包絡，不能拿來證明物理包含。原圖中舊上側綠線與200灰階等亮線在亮帶內，而65/80灰階外沿接近人類上沿；左下外包絡則包含露出的pkg。",
+            "expectedEvidence": [
+              {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "features",
+                "visuals": [
+                  {
+                    "id": "overlay",
+                    "caption": "青色測得光學外形，黃色只為形狀統計框；並非補出的pkg。"
+                  }
+                ]
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "search",
+              "source": "agent-proposal",
+              "reason": "65灰階起始、sigma1/1.5/2.5用於這批暗背景圖；面積/競爭/截邊門檻為暫用防錯。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "features",
+                "visuals": [
+                  {
+                    "id": "sensitivity",
+                    "caption": "三種sigma和三種閾值逐件實算；完整設定與候選原值保存，並非最優參數。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "envelope",
+              "source": "agent-proposal",
+              "reason": "65/80/95都保留搜尋範圍內所有實際亮點，200僅畫光學峰。斷開分量不刪除也不填成物體。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "features",
+                "visuals": [
+                  {
+                    "id": "sensitivity",
+                    "caption": "三種sigma和三種閾值逐件實算；完整設定與候選原值保存，並非最優參數。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "quality",
+              "source": "agent-proposal",
+              "reason": "短長尺寸範圍限制本成像尺度；比例跨度0.015，長短邊各±2px是開發敏感性設定，非統計置信或物理公差。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "features",
+                "visuals": [
+                  {
+                    "id": "sensitivity",
+                    "caption": "三種sigma和三種閾值逐件實算；完整設定與候選原值保存，並非最優參數。"
+                  }
+                ]
+              }
+            }
+          ],
+          "boundaries": [
+            {
+              "condition": "包絡與焊道等亮線不對應兩個獨立物體；其他缺陷、其他批次、光照偏差未測。",
+              "check": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "features",
+                "visuals": [
+                  {
+                    "id": "optical_view",
+                    "caption": "洋紅為200灰階等亮線，落入亮帶，不能宣稱lid/pkg；青色為整體可見外形。"
+                  }
+                ]
+              },
+              "onFailure": "UNKNOWN"
+            }
+          ]
+        }
+      },
+      {
+        "id": "comparison",
+        "title": "基準比較",
+        "code": "import cv2,numpy as np\nD=upstream['features']['artifact']['data'];P=parameters['baseline'];G=parameters['decision']\ndef ref(data,vis,caption):return {'kind':'artifact','type':'evidence','id':data,'visuals':[{'id':vis,'caption':caption}]}\nW={'tool':{'reason':'將本件光學包絡比與12張良品的開發分布對照。此比例描述可見組件變長，不代表lid對pkg的物理超出。最終分類由唯一classificationSpec處理。','expectedEvidence':[ref('comparison','distribution','每列一張開發良品區間；黑列是本件實算區間。位置越右代表短/長邊比越大。')]},'parameters':[{'name':'baseline','source':'development-data','reason':'12張人類確認良品的像素實算分布；只作開發基準，已看過與用於選參，不能叫獨立驗證。baseline只含訓練得到的數字，不按本件名稱或ID選類。','verification':ref('comparison','distribution','開發良品編號G01至G12對應已保存manifest；本件區間由上游計算，不由表查答案。')},{'name':'decision','source':'agent-proposal','reason':'暫用良品上界0.795、歪斜下界0.805，中間未知；觀察域0.755–0.875。開發的良品上界約0.789，歪斜下界約0.808，取中間0.800並留0.010未知帶。這不是人類量產規格。','verification':ref('comparison','threshold_view','橫軸為當前區間與試驗切點；顯示0.790/0.795/0.800/0.805/0.810的位置，不把切點比較說成新獨立準確率。')}],'boundaries':[{'condition':'區間跨界、上游定位/尺度/穩定性不過、超出開發觀察域時UNKNOWN；其他40張缺陷未驗證。比例無法排除光照/批次混淆。','check':ref('comparison','limits_view','上下游9組設定的區間逐一列出；此敏感性圖沒有涵蓋未見光照與隱藏物體。'),'onFailure':'UNKNOWN'}]}\ndef chart(intervals,labels,cuts,title):\n v=np.full((650,1000,3),255,np.uint8);lo=.75;hi=.88\n def xx(x):return int(170+(x-lo)/(hi-lo)*780)\n for t in np.arange(.75,.881,.01):\n  cv2.line(v,(xx(t),65),(xx(t),580),(230,230,230),1);cv2.putText(v,f'{t:.2f}',(xx(t)-15,610),0,.43,(0,0,0),1)\n for t in cuts:cv2.line(v,(xx(t),65),(xx(t),580),(60,60,220),2)\n for i,((a,b),lab) in enumerate(zip(intervals,labels)):\n  y=100+i*int(440/max(len(intervals)-1,1));cv2.putText(v,lab,(15,y+5),0,.48,(0,0,0),1)\n  if a is None or b is None:continue\n  cv2.line(v,(xx(a),y),(xx(b),y),(0,130,0) if lab.startswith('G') else (30,30,30),4);cv2.circle(v,(xx((a+b)/2),y),4,(0,0,0),-1)\n cv2.putText(v,title,(20,35),0,.65,(0,0,0),2);cv2.putText(v,'Optical envelope short / long ratio (unitless)',(240,640),0,.6,(0,0,0),1);return v\nwith procedure('comparison',name='基準比較',inputs={'features':'upstream:features','overlay':'upstream:view'},outputs={'comparison':'comparison','result_view':'result_view'},parameters=parameters,justification=W) as pr:\n with step('compare',name='開發基準對照',parameters=parameters,inputs={'features':'upstream:features'},outputs={'comparison':'comparison'},justification=W) as st:\n  current=[D.get('lower'),D.get('upper')];ratios=P['ratios'];center=float(np.median(ratios));deviation=D['proxyRatio']-center if D.get('proxyRatio') is not None else None\n  intervals=P['intervals']+[current];labels=[f'G{i+1:02}' for i in range(len(ratios))]+['current']\n  distribution=chart(intervals,labels,[G['goodUpper'],G['skewLower']],'12 GOOD development references + current interval')\n  threshold_view=chart([current],['current'],G['trialCuts'],'Cut positions - current interval vs development guard band')\n  limit_intervals=[[r['lower'],r['upper']] for r in D['candidates']];limit_labels=[f's{r[\"sigma\"]}/t{r[\"level\"]}' for r in D['candidates']]\n  limits_view=chart(limit_intervals,limit_labels,[G['goodUpper'],G['skewLower']],'9 extraction settings + +/-2px dimension perturbation')\n  usable=bool(D['usable'] and D.get('lower') is not None and D.get('upper') is not None)\n  data={'valid':True,'usable':usable,'lower':D.get('lower'),'upper':D.get('upper'),'ratio':D.get('proxyRatio'),'baselineMedian':center,'deviation':deviation,'baseline':P,'decisionProposal':G,'boundaryChecks':D['boundaryChecks'],'limits':'DEVELOPMENT PROXY ONLY; no measured physical containment; other 40 defects untested; not blinded validation'}\n  view=upstream['view']['image'].copy();cv2.putText(view,f'vs GOOD median {center:.5f}; delta {deviation:.5f}' if deviation is not None else 'UNKNOWN - no usable envelope',(20,125),0,.62,(255,255,255),2)\n  save_image('result_view',view);save_image('distribution',distribution);save_image('threshold_view',threshold_view,section='parameters');save_image('limits_view',limits_view,section='boundary');save_json('comparison',data);st.set_output('comparison',data);st.set_output('boundaryChecks',D['boundaryChecks']);pr.set_output('comparison',data);pr.set_output('result_view','result_view')\nresult=data\n",
+        "parameters": {
+          "baseline": {
+            "ratios": [
+              0.777617419314937,
+              0.7756219391186587,
+              0.7789859408707074,
+              0.7817602693072915,
+              0.7826621136118133,
+              0.7768312063328514,
+              0.7772614717443665,
+              0.7777192607734474,
+              0.7783494042364927,
+              0.7770934020157789,
+              0.7782339857754161,
+              0.7827481799249288
+            ],
+            "intervals": [
+              [
+                0.7711905466020883,
+                0.7838457121166739
+              ],
+              [
+                0.7704583240166201,
+                0.7818378593895743
+              ],
+              [
+                0.7724539812909331,
+                0.7849503121766394
+              ],
+              [
+                0.7755015912307482,
+                0.7874294926507743
+              ],
+              [
+                0.77674130383806,
+                0.7893013548982739
+              ],
+              [
+                0.7704459120447101,
+                0.782142735598038
+              ],
+              [
+                0.771621876022493,
+                0.7835131692209483
+              ],
+              [
+                0.772742383350667,
+                0.784605907077605
+              ],
+              [
+                0.7732402246077633,
+                0.785381862665493
+              ],
+              [
+                0.7719537370960988,
+                0.7833791172533582
+              ],
+              [
+                0.7727300267056438,
+                0.7843805267683124
+              ],
+              [
+                0.7767840476182529,
+                0.7887824814287967
+              ]
+            ],
+            "sourceImageIds": [
+              "226b40d8-d738-49c7-95b4-c681b05eabfc",
+              "8116174b-8cba-4604-bdfd-d5b4becfc6e2",
+              "51f0084e-06cd-41ab-b887-8382b738d4fa",
+              "c4e25db0-ad7b-4179-9655-64ed26109fac",
+              "c91b9abf-b470-4472-835f-29b42734de72",
+              "945f1f81-d0b1-4bf1-b24e-0b30a553d910",
+              "afabaa2d-b640-40db-b750-e323cec5077a",
+              "7a289184-c991-4b0a-9816-2462a5d727fa",
+              "b64a1160-d274-4261-ae0d-a1e8647fbdf2",
+              "49f1bb73-3db2-47a4-a0da-089f0327d728",
+              "692a79a7-7770-4e4b-99e7-b561281445c2",
+              "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+            ],
+            "sourceSha256": [
+              "de48aa610c3a4bfdfa69f1bf2b6e126a0549feb911113a36dc4710cb716f128a",
+              "8183a46c3a9a79069c04f0c49cd226750830a0515b85adae45649c59332d0bd1",
+              "f9631a6411802df6b6cb1b9eecaf5e74612bb7e4237ef959dfe9b559e93187c4",
+              "02de74730a2fe049cda9d3dac5957d0c8c2cfecf7fdbec6a983b9d969614efd6",
+              "37fdc1ac151b2e97ed31d2b9118f16dc82c5dcedabe70b70d170f7b9674ebc23",
+              "ef22db549f78b4ed81e93b5399668488ac6a5e39228ef82c2e6b7e3249ce77b0",
+              "6ef7cdd90ff16eef39e0af9e6bf995d8227846b304c050223c81d6cc5639ab44",
+              "84d8395a467c9e8aec9bd07131be654d69c07b631d4c1b59bff572dc1f71e576",
+              "0108cc9ee31bac397b89761f0eca875ff116a3ab7c4323fa41cc86e6715cee0e",
+              "bc82c87ea5f772839d1f2e39ce868be2d1b208e442aa937e4b2f57ba4caa7fda",
+              "180bc05b39367dfa2cabb8e8b3ccf6f23c8f5470d0803482b53a4b37648fb872",
+              "3f93d8272e667bd39bfa516895149748c943050b451f94d0cb763b21917d53a0"
+            ],
+            "provenance": "human-confirmed folder meanings; local pixel development calibration; host rerun required"
+          },
+          "decision": {
+            "goodUpper": 0.795,
+            "skewLower": 0.805,
+            "domainLower": 0.755,
+            "domainUpper": 0.875,
+            "trialCuts": [
+              0.79,
+              0.795,
+              0.8,
+              0.805,
+              0.81
+            ]
+          }
+        },
+        "inputs": {
+          "features": {
+            "nodeId": "geometry",
+            "artifactId": "features",
+            "dataContract": {
+              "kind": "json"
+            }
+          },
+          "view": {
+            "nodeId": "geometry",
+            "artifactId": "overlay",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          }
+        },
+        "expected_outputs": [
+          {
+            "id": "result_view",
+            "type": "image",
+            "role": "result",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "input",
+                  "slot": "image"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "distribution",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "comparison",
+                  "artifactId": "distribution"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "threshold_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "comparison",
+                  "artifactId": "threshold_view"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "limits_view",
+            "type": "image",
+            "role": "intermediate",
+            "dataContract": {
+              "kind": "image",
+              "coordinates": {
+                "frame": {
+                  "kind": "artifact",
+                  "nodeId": "comparison",
+                  "artifactId": "limits_view"
+                },
+                "unit": "px"
+              }
+            }
+          },
+          {
+            "id": "comparison",
+            "type": "evidence",
+            "dataContract": {
+              "kind": "json"
+            }
+          }
+        ],
+        "justification": {
+          "tool": {
+            "reason": "對照12張良品開發分布與本件包絡敏感區間，輸出數值供唯一分類規格決策；不輸出物理越界。",
+            "expectedEvidence": [
+              {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "comparison",
+                "visuals": [
+                  {
+                    "id": "distribution",
+                    "caption": "12列良品基準加本件區間；這是開發分布，不是盲測。"
+                  }
+                ]
+              }
+            ]
+          },
+          "parameters": [
+            {
+              "name": "baseline",
+              "source": "development-data",
+              "reason": "12張經人確認良品的像素計算；身份/hash保存在模型來源，只讀數字建立基準，不按待檢名稱或ID取類別。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "comparison",
+                "visuals": [
+                  {
+                    "id": "distribution",
+                    "caption": "良品分布與本件相對位置。"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "decision",
+              "source": "agent-proposal",
+              "reason": "本批暫用GOOD上界0.795、SKEW下界0.805，中間UNKNOWN；觀察域0.755–0.875。由開發分離區間提出，非量產規格。",
+              "verification": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "comparison",
+                "visuals": [
+                  {
+                    "id": "threshold_view",
+                    "caption": "顯示五個候選切點與本件區間，不冒稱獨立驗證。"
+                  }
+                ]
+              }
+            }
+          ],
+          "boundaries": [
+            {
+              "condition": "定位失效、區間跨界或域外走UNKNOWN；FAULT為系統獨立出口。其他40張未測，代理可能受光照/批次混淆。",
+              "check": {
+                "kind": "artifact",
+                "type": "evidence",
+                "id": "comparison",
+                "visuals": [
+                  {
+                    "id": "limits_view",
+                    "caption": "9組設定與±2px擾動；不能界定未測照明系統誤差。"
+                  }
+                ]
+              },
+              "onFailure": "UNKNOWN"
+            }
+          ]
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": "geometry",
+        "to": "comparison"
+      }
+    ]
+  },
+  "metricBindings": [
+    {
+      "metric": "usable",
+      "nodeId": "comparison",
+      "path": "usable"
+    },
+    {
+      "metric": "lower",
+      "nodeId": "comparison",
+      "path": "lower"
+    },
+    {
+      "metric": "upper",
+      "nodeId": "comparison",
+      "path": "upper"
+    }
+  ]
+}

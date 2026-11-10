@@ -1,0 +1,103 @@
+{
+  "status": "passed-component-and-api-not-native",
+  "method": "Actual DOM event handlers with native Canvas rasterization and production algorithms; not native desktop visual/hit-testing acceptance.",
+  "fixtures": {
+    "original_rgba_sha256": "eb8f1a5cd012e442a751b42868b50b09e2d404891e1f5ad7124889a4c8a1a586",
+    "synthetic": "workflow-fixtures.cjs: normal, oversize, missing-feature, unobservable; generic body and circular feature only"
+  },
+  "acceptance": [
+    {
+      "stage": "input-and-imaging",
+      "checks": [
+        "Multi-image import preserves original raster fingerprint and resolution",
+        "Pixel pitch/effective magnification produce labeled theoretical scale only; measured calibration stays distinct",
+        "Invalid/unknown scale cannot yield a trusted physical-unit decision",
+        "Zoom changes viewport only",
+        "Attachments distinguish uploaded/readable/parsed/used; no 3D required"
+      ]
+    },
+    {
+      "stage": "target",
+      "checks": [
+        "Automatic target candidate remains editable",
+        "Polygon creation/move/delete and undo affect the actual target definition",
+        "Target identity is not silently changed by later attachment parsing"
+      ]
+    },
+    {
+      "stage": "parts",
+      "checks": [
+        "Generic object and child feature can be named and linked by relation",
+        "Missing relation/identity information prompts once without inventing it",
+        "Second inspection reuses existing product identity"
+      ]
+    },
+    {
+      "stage": "quality-examples",
+      "checks": [
+        "Multiple images can have different answers per inspection item with reasons",
+        "Same image width OK and feature NG coexist",
+        "Unlabeled examples are excluded from comparison; original manual answer never overwritten"
+      ]
+    },
+    {
+      "stage": "inspection-plan",
+      "checks": [
+        "At least width and another independent measurement/rule execute actual raster algorithms",
+        "Method/ROI change invalidates dependent results",
+        "Missing physical calibration blocks only operations needing physical units"
+      ]
+    },
+    {
+      "stage": "verification",
+      "checks": [
+        "Batch computes each raster, rather than copying reference-image result",
+        "False accept, false reject, UNKNOWN and unmatched labels are separately visible",
+        "Failed localization cannot become confident NG or OK"
+      ]
+    },
+    {
+      "stage": "release-and-reopen",
+      "checks": [
+        "Release captures dependencies and later relevant edits mark stale",
+        "Save/reopen retains geometry, example answers/reasons, product knowledge, calibration and source states",
+        "Pi slash commands are handled locally and never sent as ordinary LLM prompts",
+        "Unknown slash command gives actionable local feedback"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "name": "Current canvas import plus retained recipe API closed loop; no removed seven-page wizard assertion",
+      "status": "passed"
+    },
+    {
+      "name": "Pi slash commands are handled locally, including unknown commands; zero LLM prompt calls",
+      "status": "passed"
+    },
+    {
+      "name": "Original image fingerprint preserved; adaptive left/right edge search succeeds, while uncalibrated mm remains UNKNOWN until measured calibration is supplied",
+      "status": "passed",
+      "leftProfile": 15,
+      "widthPx": 995.6528132848366
+    },
+    {
+      "name": "Editing magnification via input automatically revokes prior calibration; saving remains unverified until explicit recheck on the scale tab",
+      "status": "passed"
+    }
+  ],
+  "issues": [],
+  "scope": {
+    "nativeVisualAcceptance": false,
+    "nativeIPCAndDialogs": "unavailable/rejected in DOM harness; native acceptance is separate",
+    "rasterAlgorithms": "production code, unmodified",
+    "pi": "local command routing only; no live login or model-network request",
+    "notVerified": [
+      "Native window layout/hit testing",
+      "Real OAuth browser flow and provider quota",
+      "Camera SDK and arbitrary rotation/perspective",
+      "Subpixel metrology accuracy"
+    ],
+    "numericAllowance": "Synthetic width after candidate anchor adoption: within 1 raster pixel; no subpixel accuracy claim"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "RESTORED_OWN_CHANGES_ONLY",
+  "source": "Exact reverse of this agent’s changes using original tool-read text; no full original filesystem backup existed.",
+  "files": [
+    {
+      "file": "src/pipeline-view.js",
+      "parkedCandidateSha256": "3887240bff4de54cce20f0fb59aa3dd8bfbce2feaab65bd1caec41f49cf836b8",
+      "restoredSha256": "2fb211666d3a340fa13d27eb159a47d5003339e511fb9488bfd05c86610f52a6"
+    },
+    {
+      "file": "src/pipeline-view.css",
+      "parkedCandidateSha256": "0c501e27e71da54b47072085dccb2d4344ae2927d8a4849e3a86f561a1dca2cd",
+      "restoredSha256": "38767fd12b50c470107e6ee1d1f3718975fa88df6df982d0baf01e80837530b0"
+    }
+  ],
+  "unrestoredSegments": [],
+  "tests": "Not run; no packaging or installation."
+}

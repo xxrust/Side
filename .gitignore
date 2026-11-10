@@ -1,0 +1,38 @@
+# OS / editor
+.DS_Store
+**/.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Node / build
+**/node_modules/
+desktop/dist/
+desktop/src-tauri/target/
+desktop/runtime/
+desktop/qa/*.tmp
+qa/node_modules/
+qa/browser-profile/
+
+# Packaged apps & versioned backups (keep source, not .app trees)
+AgentCV.app/
+/AgentCV*.app/
+*.app/
+/*.agentcv/
+
+# Large local evidence / trial dumps (not source)
+*.agentcv.json
+!samples/*.agentcv.json
+!desktop/src/**/*.agentcv.json
+gear-evidence-*/
+edge-trial-*/
+before-update.agentcv.json
+pi-presentation-project-*/
+programmable-project-*/
+
+# Heavy review capture trees
+reviews/
+
+# Logs / caches
+*.log
+.cache/

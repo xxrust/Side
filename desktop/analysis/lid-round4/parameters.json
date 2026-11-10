@@ -1,0 +1,84 @@
+{
+  "search": {
+    "seedLevel": 65,
+    "sigma": 1.5
+  },
+  "scan": {
+    "normalRange": 70,
+    "sigmas": [
+      1,
+      1.5,
+      2.5
+    ],
+    "tangentFraction": [
+      0.22,
+      0.78
+    ],
+    "samples": 121,
+    "slopeRange": [
+      -0.06,
+      0.06
+    ],
+    "slopeStep": 0.002
+  },
+  "lidPrior": {
+    "width": 683,
+    "height": 529,
+    "widthTolerance": 10,
+    "heightTolerance": 12
+  },
+  "pkgPrior": {
+    "width": 708,
+    "height": 550,
+    "widthTolerance": 8,
+    "heightTolerance": 8,
+    "source": "11_15 four independent exposed outer sides; development estimate"
+  },
+  "quality": {
+    "edgeTrialPx": 3,
+    "dimensionTrialPx": 8,
+    "cornerRadius": 65,
+    "cornersConfirmed": false,
+    "cornerClearancePx": 8,
+    "separatorMinContrast": 6,
+    "separatorDistancePx": [
+      1,
+      9
+    ],
+    "slopeScatter": 0.015,
+    "minIndependentSeparationPx": 4,
+    "assumedSeamOffsetPx": 3,
+    "unresolvedEdgeTrialPx": 6,
+    "externalLevel": 80,
+    "gradientMin": 3,
+    "lineNmsDistancePx": 4,
+    "lineCandidateCount": 7,
+    "fitIterations": 3,
+    "residualFloorPx": 2,
+    "residualMadMultiplier": 3,
+    "displayCornerRadius": 65,
+    "maxLidExteriorRecheckPx": 12
+  },
+  "cornerFit": {
+    "radiusRange": [
+      40,
+      140
+    ],
+    "radiusStep": 2,
+    "normalOffsets": [
+      -4,
+      -2,
+      0,
+      2,
+      4
+    ],
+    "arcFraction": [
+      0.1,
+      0.9
+    ],
+    "samples": 41,
+    "relativeScore": 0.8,
+    "maxRadiusSpread": 16,
+    "minCoverage": 0.8
+  }
+}

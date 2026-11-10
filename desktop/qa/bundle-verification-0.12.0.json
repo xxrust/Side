@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-25T16:15:41.193Z",
+  "bundle": "/Users/liangshiben/13-cv/desktop/src-tauri/target/debug/bundle/macos/AgentCV.app",
+  "node": "/Users/liangshiben/.local/bin/node",
+  "architecture": "/Users/liangshiben/13-cv/desktop/src-tauri/target/debug/bundle/macos/AgentCV.app/Contents/MacOS/agentcv-desktop: Mach-O 64-bit executable arm64",
+  "signature": "valid local ad-hoc signature",
+  "resourcesVerified": {
+    "pi-bridge.mjs": "fda4065260f957028149548d3fe15fe4ae8753911981fe8b7ac69ed8a5b62373",
+    "pi-auth.mjs": "a2d5c05e735e870472e57fd60fc9834cac6e2b09a6ec9020cf7907ffe014366e",
+    "agent-contract.json": "bb7e9a5142afe312fb63a04c65359dffc399758f21410c65e2e35ffcdf0d3e1d"
+  },
+  "piBridge": {
+    "model": {
+      "provider": "openai-codex",
+      "id": "gpt-6.1-sol"
+    },
+    "availableModelCount": 24,
+    "tools": [
+      "get_pipeline_capabilities",
+      "get_pipeline_evidence",
+      "select_image",
+      "set_pipeline_view",
+      "create_pipeline",
+      "set_pipeline_graph",
+      "run_pipeline",
+      "run_pipeline_batch",
+      "get_context",
+      "get_visual_context",
+      "get_visual_image",
+      "show_visual_image",
+      "add_visual_image",
+      "annotate_visual_board",
+      "go_to_step",
+      "propose_region",
+      "suggest_foreground",
+      "set_workpiece_info",
+      "add_part",
+      "set_target_note",
+      "add_relation",
+      "read_reference",
+      "propose_label",
+      "propose_check",
+      "build_recipe",
+      "run_current"
+    ]
+  },
+  "nativeUiAcceptance": "Not assessed by this bundle verifier; see the separately recorded native UI run."
+}

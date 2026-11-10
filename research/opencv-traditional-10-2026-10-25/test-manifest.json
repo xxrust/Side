@@ -1,0 +1,817 @@
+{
+  "schema": "agentcv-research-test-collection-1",
+  "state": "collected-not-executed",
+  "productionAcceptanceReady": false,
+  "units": "px unless independently calibrated",
+  "splitRule": "Keep derivatives, shared image hashes and related QR patterns in the same source group. Group real specimens and capture sessions once that metadata is available.",
+  "cases": [
+    {
+      "caseId": "01",
+      "name": "齒輪齒數與缺齒",
+      "origin": "工業延伸",
+      "files": [
+        {
+          "file": "synthetic/gear-ok.png",
+          "role": "candidate-input",
+          "description": "合成：完整齒輪",
+          "note": "設計輸入，非實測輸出",
+          "sha256": "d863b3f6870f5c175a7268799460dad2b381c9d0705113c2e613d99d26020a8c",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/0",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/gear-missing.png",
+          "role": "candidate-input",
+          "description": "合成：缺一齒",
+          "note": "設計缺陷索引見 annotations.json",
+          "sha256": "c18b68db7896f53080efee65b150cae3a76b0f4755951644fb6fd5604bd41ec0",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/1",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/gear-eccentric.png",
+          "role": "candidate-input",
+          "description": "合成：偏心孔",
+          "note": "孔位偏移是設計真值",
+          "sha256": "0a0afb1ae71aad18aaf2af5586234c44ed155385ea3e123f77452c969b1ae4ee",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/2",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/extra-device7-1.png",
+          "role": "candidate-input",
+          "description": "官方周期輪廓",
+          "note": "OpenCV extra，非真實齒輪",
+          "sha256": "727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-1.png",
+          "sourceGroup": "sha256/727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "真實背光齒輪、多種齒數、實際崩齒／毛刺、尺寸標定與人工逐齒標註。",
+      "metricsToMeasure": [
+        "逐件齒數正確率",
+        "逐齒漏檢／誤報",
+        "缺口角度偏差",
+        "偏心量誤差與 UNKNOWN 比例"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "02",
+      "name": "墊圈內外徑與偏心",
+      "origin": "工業延伸",
+      "files": [
+        {
+          "file": "synthetic/washer-ok.png",
+          "role": "candidate-input",
+          "description": "合成：同心環件",
+          "note": "設計輸入，尚未跑檢測",
+          "sha256": "5b46b241c019be291f1bc15f907523a9b9b4e00106a8d6a96e226b544e5da1a8",
+          "upstream": null,
+          "sourceGroup": "synthetic/washer",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/3",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/washer-eccentric.png",
+          "role": "candidate-input",
+          "description": "合成：偏心環件",
+          "note": "設計中心差見標註",
+          "sha256": "9c496f6a0305fa34bbd6519089a839e0e41738306dc29cf75013871d79f402a0",
+          "upstream": null,
+          "sourceGroup": "synthetic/washer",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/4",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/smarties.png",
+          "role": "candidate-input",
+          "description": "官方圓物件照片",
+          "note": "可試圓候選，不是量測標準件",
+          "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+          "sourceGroup": "sha256/ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "真實墊圈、不同內外徑、倒角／反光／橢圓缺陷，以及可追溯的尺寸參考。",
+      "metricsToMeasure": [
+        "內外徑偏差與重複性",
+        "偏心量誤差",
+        "假圓／漏圓",
+        "缺少全周支持時的 UNKNOWN"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "03",
+      "name": "多孔鈑金的孔數與孔位",
+      "origin": "工業延伸",
+      "files": [
+        {
+          "file": "synthetic/panel-ok.png",
+          "role": "candidate-input",
+          "description": "合成：三孔工件",
+          "note": "已提供設計孔 ID",
+          "sha256": "f31d6267fdb7f78b8598bc0a850ac36a20860cabb85fef0d5414dd462fd102be",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/5",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/panel-missing.png",
+          "role": "candidate-input",
+          "description": "合成：少一孔",
+          "note": "設計缺孔為 NG",
+          "sha256": "7fd5de856e7fe2217bd2844605554651c6d1c15f650c321249c19006af3776d5",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/6",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/panel-open.png",
+          "role": "candidate-input",
+          "description": "合成：孔連通外部",
+          "note": "用於孔／開口邊界測試",
+          "sha256": "6db5dd42896b0444ce7694ec0c1e1ea9a7c29c9b76a57c8b090d7cce883ba6b3",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/7",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/doc-hierarchy.png",
+          "role": "upstream-teaching-diagram-not-production-input",
+          "description": "官方層級示意",
+          "note": "教學圖，非實拍產品",
+          "sha256": "abc61365d664f9cf23f367b03e54b654bb7bb4b48b154b3647fac6d377a389a7",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/hierarchy.png",
+          "sourceGroup": "sha256/abc61365d664f9cf23f367b03e54b654bb7bb4b48b154b3647fac6d377a389a7",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "真實鈑金背光圖、毛刺／異物／堵孔、不同批次與真實尺寸公差。",
+      "metricsToMeasure": [
+        "孔級漏檢／誤報",
+        "孔 ID 配對正確率",
+        "孔位／孔距誤差",
+        "槽口誤當孔的比率"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "04",
+      "name": "多個沖壓件的擺放方向",
+      "origin": "官方場景",
+      "files": [
+        {
+          "file": "assets/pca_test1.jpg",
+          "role": "candidate-input",
+          "description": "官方背光原圖",
+          "note": "待人工逐件標註角度",
+          "sha256": "9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pca_test1.jpg",
+          "sourceGroup": "sha256/9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/doc-pca_output.png",
+          "role": "upstream-example-output-not-test-input",
+          "description": "官方結果示例",
+          "note": "官方教學輸出，非本產品實測",
+          "sha256": "6c64099848fb229ac414a15fd018288e8147dc58180bd8a6c8b64584d9a69ef6",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/tutorials/others/images/pca_output.png",
+          "sourceGroup": "sha256/6c64099848fb229ac414a15fd018288e8147dc58180bd8a6c8b64584d9a69ef6",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "逐件角度真值、更多實體件／姿態、靠近對稱的件、黏連與遮擋例。",
+      "metricsToMeasure": [
+        "逐件召回與 ID 正確率",
+        "mod 180° 角度誤差",
+        "近對稱件的拒絕率",
+        "整圖與逐件分類一致性"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "05",
+      "name": "黏連顆粒的分離與計數",
+      "origin": "官方場景",
+      "files": [
+        {
+          "file": "assets/doc-water_coins.jpg",
+          "role": "candidate-input",
+          "description": "官方接觸硬幣原圖",
+          "note": "官方算法起點，未有人工作件答案",
+          "sha256": "7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+          "sourceGroup": "sha256/7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/doc-water_dt.jpg",
+          "role": "upstream-example-output-not-test-input",
+          "description": "官方距離圖",
+          "note": "官方教學中間圖",
+          "sha256": "2634281d8c920a578b72d32a277d1a5289ae44522359d2c02552d6cbadb85cb2",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_dt.jpg",
+          "sourceGroup": "sha256/2634281d8c920a578b72d32a277d1a5289ae44522359d2c02552d6cbadb85cb2",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/doc-water_marker.jpg",
+          "role": "upstream-example-output-not-test-input",
+          "description": "官方種子圖",
+          "note": "官方教學中間圖",
+          "sha256": "3e061b8c3c28ddc77441a0a92fb1673a40125861f2d71479889b770395859ca8",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_marker.jpg",
+          "sourceGroup": "sha256/3e061b8c3c28ddc77441a0a92fb1673a40125861f2d71479889b770395859ca8",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/doc-water_result.jpg",
+          "role": "upstream-example-output-not-test-input",
+          "description": "官方分離結果",
+          "note": "非本產品實測",
+          "sha256": "57ce1b24e5048f4a4cd7ada297f4eaf734257b7722e69fee6c5e1cbec419d101",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_result.jpg",
+          "sourceGroup": "sha256/57ce1b24e5048f4a4cd7ada297f4eaf734257b7722e69fee6c5e1cbec419d101",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/extra-beads.jpg",
+          "role": "candidate-input",
+          "description": "密集圓珠實拍",
+          "note": "更難的多件壓力來源；仍待標註",
+          "sha256": "30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/imgproc/beads.jpg",
+          "sourceGroup": "sha256/30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "逐件實例遮罩真值、不同顆粒尺寸與接觸程度、實拍 NG 與難以辨識的 UNKNOWN。",
+      "metricsToMeasure": [
+        "件數誤差",
+        "逐件匹配召回",
+        "合併／分裂錯誤",
+        "實例 IoU 與 UNKNOWN"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "06",
+      "name": "導線／線柵的斷線與橋接",
+      "origin": "工業延伸",
+      "files": [
+        {
+          "file": "synthetic/traces-ok.png",
+          "role": "candidate-input",
+          "description": "合成：完整線柵",
+          "note": "設計有四條互不連通導線",
+          "sha256": "2d69725201d1d60be5267cd7d3073d1c396a830d4b62e02c8d73c677ae031805",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/8",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/traces-break.png",
+          "role": "candidate-input",
+          "description": "合成：斷線",
+          "note": "設計缺口見 annotations.json",
+          "sha256": "7244e5481d5b5119eb32076e2f54896069d50a0958e4b46c8103c9955b1e8b30",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/9",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/traces-bridge.png",
+          "role": "candidate-input",
+          "description": "合成：短接",
+          "note": "設計多出一條橋接",
+          "sha256": "d9b7b3f49d091edce4850adb799d52c6ab4ccbb7c50a30ad9526cf449c29e20d",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/10",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/notes.png",
+          "role": "candidate-input",
+          "description": "官方方向線條原圖",
+          "note": "樂譜，不是 PCB 實拍",
+          "sha256": "b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/notes.png",
+          "sourceGroup": "sha256/b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "實際 PCB／導線樣品、反光銅箔、線寬標定、製程容許規格及真實缺陷。",
+      "metricsToMeasure": [
+        "斷線／短接分項召回",
+        "每圖誤報區域數",
+        "缺陷定位誤差",
+        "不同線寬與缺口尺寸的檢出邊界"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "07",
+      "name": "彩色零件分揀與混料",
+      "origin": "工業延伸",
+      "files": [
+        {
+          "file": "assets/smarties.png",
+          "role": "candidate-input",
+          "description": "官方彩色物件原圖",
+          "note": "待逐件人工顏色標註",
+          "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+          "sourceGroup": "sha256/ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "工業零件各色多批次、曝光與白平衡漂移、相近顏色、無法判色與混色件。",
+      "metricsToMeasure": [
+        "逐件分類混淆矩陣",
+        "混料漏檢",
+        "各類數量誤差",
+        "光照變動下拒絕比例"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "08",
+      "name": "複雜背景中的平面標籤定位",
+      "origin": "官方場景",
+      "files": [
+        {
+          "file": "assets/box.png",
+          "role": "reference-image",
+          "description": "官方參考物",
+          "note": "參考模板，非驗收集",
+          "sha256": "1094629c1e2ebbc8a9ae2c9c63e18c1dff0f5f1481146e02f3b11a3d30feb20a",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box.png",
+          "sourceGroup": "sha256/1094629c1e2ebbc8a9ae2c9c63e18c1dff0f5f1481146e02f3b11a3d30feb20a",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/box_in_scene.png",
+          "role": "candidate-input",
+          "description": "官方複雜背景",
+          "note": "同一目標的定位起點",
+          "sha256": "8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box_in_scene.png",
+          "sourceGroup": "sha256/8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/doc-homography_findobj.jpg",
+          "role": "upstream-example-output-not-test-input",
+          "description": "官方匹配示例",
+          "note": "官方教學結果，非本產品實測",
+          "sha256": "8350da2ae50e40f5ffc4645984feb0fb4307279d5f1bdb382dc99969b4d30118",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_feature2d/py_feature_homography/images/homography_findobj.jpg",
+          "sourceGroup": "sha256/8350da2ae50e40f5ffc4645984feb0fb4307279d5f1bdb382dc99969b4d30118",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "同一實物多姿態、相似假目標、重複標籤、遮擋與逐圖角點真值。",
+      "metricsToMeasure": [
+        "角點重投影／定位誤差",
+        "假目標誤接受率",
+        "不同可見率的定位召回",
+        "退化模型 UNKNOWN"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "09",
+      "name": "印刷件配準後的缺印／異物",
+      "origin": "工業延伸",
+      "files": [
+        {
+          "file": "synthetic/print-reference.png",
+          "role": "reference-image",
+          "description": "合成：印刷基準",
+          "note": "設計輸入",
+          "sha256": "49efc381b4e6ef2b61a18548c3489adff916319f370e0209cf2d97d3ec48b74b",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/11",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/print-shift.png",
+          "role": "candidate-input",
+          "description": "合成：只有平移",
+          "note": "已知位移，不應誤報缺印",
+          "sha256": "07e74b88265f2414af3078e18716e205b57ffc602f642b6199d56d395c491d01",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/12",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/print-defect.png",
+          "role": "candidate-input",
+          "description": "合成：平移＋缺印",
+          "note": "已知位移與缺陷區域",
+          "sha256": "bfb59022b25f167cfb7c9c4e82b34df5a1017a2e2746fd3c31eaebfb3da14ea8",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/13",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "synthetic/print-defect-mask.png",
+          "role": "annotation-mask-not-test-input",
+          "description": "合成：缺陷真值遮罩",
+          "note": "標註，不是算法輸出",
+          "sha256": "bdf788a423a58770345a77c164a03427ccdcc646b861351b80fa2eaaa8b8646d",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/14",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": null
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/extra-fruits_ecc.png",
+          "role": "candidate-input",
+          "description": "官方 ECC 起點",
+          "note": "水果配準素材，非缺陷集",
+          "sha256": "973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits_ecc.png",
+          "sourceGroup": "sha256/973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": null,
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "工業印刷良品多張、實際缺印／異物／刮傷、照明變化與逐缺陷人工標註。",
+      "metricsToMeasure": [
+        "配準誤差與失敗率",
+        "逐缺陷漏檢／誤報",
+        "缺陷定位或 IoU",
+        "有效像素覆蓋與 UNKNOWN"
+      ],
+      "productionAcceptanceReady": false
+    },
+    {
+      "caseId": "10",
+      "name": "QR 標籤讀碼與料號核對",
+      "origin": "官方場景",
+      "files": [
+        {
+          "file": "assets/qr-version_1_down.jpg",
+          "role": "candidate-input",
+          "description": "官方視角：下傾",
+          "note": "有官方角點與 payload",
+          "sha256": "4b29417c673225aff71672519684f2db9798e9d27356580d90438467bfbb595d",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_down.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                159,
+                167
+              ],
+              [
+                404,
+                170
+              ],
+              [
+                418,
+                391
+              ],
+              [
+                82,
+                381
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/qr-version_1_top.jpg",
+          "role": "candidate-input",
+          "description": "官方視角：正視",
+          "note": "同一編碼圖樣，不是新料號",
+          "sha256": "2f58406d668f34286e95bc3e3797beae1e231f15200247deccd6489dbe3c8865",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_top.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                211,
+                157
+              ],
+              [
+                433,
+                158
+              ],
+              [
+                438,
+                388
+              ],
+              [
+                203,
+                385
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/qr-version_1_left.jpg",
+          "role": "candidate-input",
+          "description": "官方視角：左傾",
+          "note": "有官方角點與 payload",
+          "sha256": "94cd751c5d2255ea2e02e7129bda5f73a53feaa887ebd1ba93ffcab2763ca625",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_left.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                213,
+                265
+              ],
+              [
+                250,
+                98
+              ],
+              [
+                471,
+                108
+              ],
+              [
+                500,
+                284
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/qr-version_1_right.jpg",
+          "role": "candidate-input",
+          "description": "官方視角：右傾",
+          "note": "有官方角點與 payload",
+          "sha256": "72eefeefaeaaa87d0169c9debf8fb3e30c6fae2a31cb123e3fbd1fd61a2d7679",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_right.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                359,
+                126
+              ],
+              [
+                406,
+                274
+              ],
+              [
+                171,
+                288
+              ],
+              [
+                169,
+                129
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "runStatus": "not-executed"
+        },
+        {
+          "file": "assets/qr-version_1_up.jpg",
+          "role": "candidate-input",
+          "description": "官方視角：上傾",
+          "note": "有官方角點與 payload",
+          "sha256": "1e46c71e861317256129ff9c36e2d57a8d0fb251970ff7b52f38736c151ed917",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_up.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "specimenId": null,
+          "cameraCalibrationStatus": "not-provided",
+          "referenceAnswer": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                229,
+                334
+              ],
+              [
+                460,
+                334
+              ],
+              [
+                456,
+                458
+              ],
+              [
+                268,
+                450
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "runStatus": "not-executed"
+        }
+      ],
+      "requiresBeforeAcceptance": "實際標籤材質、印刷品質、其他料號、破損／多碼／反光，以及工單匹配規則。",
+      "metricsToMeasure": [
+        "完整字串正確率",
+        "錯誤解碼率",
+        "角點誤差",
+        "未讀到／多碼與錯料分項結果"
+      ],
+      "productionAcceptanceReady": false
+    }
+  ]
+}

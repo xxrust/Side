@@ -1,0 +1,240 @@
+{
+  "kind": "Exact source raster + application DOM events; not native browser acceptance",
+  "trace": [
+    {
+      "step": "從較早專案的四條手繪線建立上／下／左／右搜尋",
+      "refs": {
+        "top": "object-9",
+        "bottom": "object-10",
+        "left": "object-11",
+        "right": "object-12"
+      }
+    },
+    {
+      "step": "確認左邊：中央直線段＋15px切向平均",
+      "roi": {
+        "x": 175.23190307617188,
+        "y": 260,
+        "width": 33.94978332519531,
+        "height": 420
+      },
+      "geometry": {
+        "type": "line",
+        "from": {
+          "x": 193.30873391435014,
+          "y": 267.99929544055027
+        },
+        "to": {
+          "x": 196.97678531520944,
+          "y": 667.9931692295322
+        },
+        "angle_deg": 89.4745970195714,
+        "rms_px": 0.5512300566620048
+      },
+      "quality": {
+        "profile_width": 15,
+        "isolated_outliers_removed": 0,
+        "continuity": 1,
+        "raw_continuity": 1,
+        "continuity_gap_tolerance_scans": 1,
+        "bridged_short_gaps": [],
+        "largest_gap_ratio": 0,
+        "local_coverage": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "residual_p95_px": 1.1676095263512973,
+        "inlier_ratio": 1,
+        "edge_polarity": "rising",
+        "median_contrast": 48.26666666666668,
+        "exclusion_count": 0
+      }
+    },
+    {
+      "step": "確認右邊：中央直線段＋15px切向平均",
+      "roi": {
+        "x": 1175.3028564453125,
+        "y": 260,
+        "width": 33.323486328125,
+        "height": 420
+      },
+      "geometry": {
+        "type": "line",
+        "from": {
+          "x": 1190.0325935202002,
+          "y": 268.0011010807054
+        },
+        "to": {
+          "x": 1191.6622102041865,
+          "y": 667.9944618441649
+        },
+        "angle_deg": 89.7665720214804,
+        "rms_px": 0.6911805736632951
+      },
+      "quality": {
+        "profile_width": 15,
+        "isolated_outliers_removed": 0,
+        "continuity": 1,
+        "raw_continuity": 1,
+        "continuity_gap_tolerance_scans": 1,
+        "bridged_short_gaps": [],
+        "largest_gap_ratio": 0,
+        "local_coverage": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "residual_p95_px": 1.3413593511061317,
+        "inlier_ratio": 1,
+        "edge_polarity": "falling",
+        "median_contrast": 73.26666666666665,
+        "exclusion_count": 0
+      }
+    },
+    {
+      "step": "四邊延長交點→外框寬高（px；依原手繪所指輪廓，待工程師核對）",
+      "measurements": [
+        {
+          "id": "measurement-mvl3ocut-1",
+          "name": "外框寬度（上下平均）",
+          "status": "VALID",
+          "value": 995.7127039188649,
+          "raw_px": 995.7127039188649,
+          "unit": "px",
+          "overlay": {
+            "from": {
+              "x": 195.1199754115269,
+              "y": 465.5116592676675
+            },
+            "to": {
+              "x": 1190.8101409230212,
+              "y": 458.8519937252903
+            }
+          },
+          "source_ids": [
+            "object-9",
+            "object-10",
+            "object-11",
+            "object-12"
+          ],
+          "source_runs": [
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r1",
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r2",
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r7",
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r10"
+          ],
+          "method": "frame_width",
+          "frame_corners": [
+            {
+              "x": 191.69635243094393,
+              "y": 92.17222948880723
+            },
+            {
+              "x": 1189.2860921251365,
+              "y": 84.77052620972758
+            },
+            {
+              "x": 1192.3341897209061,
+              "y": 832.933461240853
+            },
+            {
+              "x": 198.54359839210986,
+              "y": 838.8510890465277
+            }
+          ],
+          "frame_details": {
+            "top_width_px": 997.6171981048433,
+            "bottom_width_px": 993.8082097328864,
+            "left_height_px": 746.7102544412194,
+            "right_height_px": 748.1691441467908,
+            "opposite_angle_difference_deg": [
+              0.08393363474247661,
+              0.2919750019089946
+            ],
+            "corner_model": "intersections-of-extended-straight-edges"
+          }
+        },
+        {
+          "id": "measurement-mvl3ocut-2",
+          "name": "外框高度（左右平均）",
+          "status": "VALID",
+          "value": 747.4396992940051,
+          "raw_px": 747.4396992940051,
+          "unit": "px",
+          "overlay": {
+            "from": {
+              "x": 690.4912222780403,
+              "y": 88.47137784926741
+            },
+            "to": {
+              "x": 695.4388940565079,
+              "y": 835.8922751436903
+            }
+          },
+          "source_ids": [
+            "object-9",
+            "object-10",
+            "object-11",
+            "object-12"
+          ],
+          "source_runs": [
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r1",
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r2",
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r7",
+            "1bffc8d4-20bc-4500-af95-448a14cb6342:r10"
+          ],
+          "method": "frame_height",
+          "frame_corners": [
+            {
+              "x": 191.69635243094393,
+              "y": 92.17222948880723
+            },
+            {
+              "x": 1189.2860921251365,
+              "y": 84.77052620972758
+            },
+            {
+              "x": 1192.3341897209061,
+              "y": 832.933461240853
+            },
+            {
+              "x": 198.54359839210986,
+              "y": 838.8510890465277
+            }
+          ],
+          "frame_details": {
+            "top_width_px": 997.6171981048433,
+            "bottom_width_px": 993.8082097328864,
+            "left_height_px": 746.7102544412194,
+            "right_height_px": 748.1691441467908,
+            "opposite_angle_difference_deg": [
+              0.08393363474247661,
+              0.2919750019089946
+            ],
+            "corner_model": "intersections-of-extended-straight-edges"
+          }
+        }
+      ]
+    },
+    {
+      "step": "明確測試公差：寬990–1010px、高730–770px → OK"
+    },
+    {
+      "step": "測試寬度改為1–2px → NG"
+    },
+    {
+      "step": "右邊失效 → 寬與高一起UNKNOWN，不沿用前次OK"
+    },
+    {
+      "step": "四來源配方保存並整批重跑，重新找四邊後仍OK"
+    },
+    {
+      "step": "保存／重開專案保留四邊依賴與結果"
+    }
+  ]
+}

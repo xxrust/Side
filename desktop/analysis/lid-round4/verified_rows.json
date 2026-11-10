@@ -1,0 +1,4122 @@
+[
+  {
+    "i": 0,
+    "name": "歪斜_20250828032050457.bmp",
+    "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+    "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+    "runId": "py-65f8cb86190e0-72955-22",
+    "recordRef": {
+      "$asset": "assets/521f84278052d923cf1f6e67a064328b39da97fea1588824158e7b396b17710d.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "521f84278052d923cf1f6e67a064328b39da97fea1588824158e7b396b17710d",
+      "size": 1179509,
+      "storage": "workspace",
+      "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7"
+    },
+    "category": "SKEW",
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032050457.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 293.55131077394117,
+          "slope": 0.03564022154974272,
+          "rms": 0.7454728100157141,
+          "coverage": 0.9421487603305785,
+          "kind": "measured",
+          "method": "outer metal edge; pkg excluded by independent visible sides and size prior",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7454728100157159,
+            "p95AbsPx": 1.5114349514390908,
+            "n": 114
+          }
+        },
+        "bottom": {
+          "pos": 830.0,
+          "slope": 0.030000000000000082,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 52.68595041322314,
+          "supportResidual": {
+            "rmsPx": 1.279204749760602,
+            "p95AbsPx": 2.0000183105469205,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 201.0,
+          "slope": -0.04199999999999998,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 56.553719008264466,
+          "supportResidual": {
+            "rmsPx": 1.282430856706948,
+            "p95AbsPx": 2.0000062255859348,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 888.6611969119901,
+          "slope": -0.03712950512944562,
+          "rms": 0.6725678384540114,
+          "coverage": 0.9669421487603306,
+          "kind": "measured",
+          "method": "metal/background crossing at 80",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6725678384540112,
+            "p95AbsPx": 1.4243129775193886,
+            "n": 117
+          }
+        }
+      },
+      "pkg": {
+        "bottom": {
+          "pos": 865.0909090877537,
+          "slope": -0.012512499076157485,
+          "rms": 0.5341623203445849,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5341623203445787,
+            "p95AbsPx": 1.1266294973898994,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 182.96694215463185,
+          "slope": 0.01164007688964678,
+          "rms": 0.46612938898191125,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.46612938898191075,
+            "p95AbsPx": 0.8792980853191068,
+            "n": 121
+          }
+        },
+        "top": {
+          "pos": 315.09090908775374,
+          "slope": -0.012076287982902133,
+          "kind": "estimated",
+          "method": "pkg bottom plus good-image height prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        },
+        "right": {
+          "pos": 890.9669421546319,
+          "slope": 0.012076287982902133,
+          "kind": "estimated",
+          "method": "pkg left plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": -31.13025550565463,
+        "low": -45.846072174632944,
+        "high": -16.95865159656353
+      },
+      "bottom": {
+        "nominal": 26.542118602812618,
+        "low": 17.919133886390494,
+        "high": 32.54211860281262
+      },
+      "left": {
+        "nominal": 9.231168678558841,
+        "low": 2.3625001348858152,
+        "high": 15.231168678558841
+      },
+      "right": {
+        "nominal": -5.767520748377163,
+        "low": -20.52273162868142,
+        "high": 8.361635397767005
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 90.0,
+          "range80": [
+            84.0,
+            96.0
+          ],
+          "score": 16.753048780487806,
+          "coverage": 0.926829268292683
+        },
+        {
+          "corner": 1,
+          "radius": 96.0,
+          "range80": [
+            88.0,
+            108.0
+          ],
+          "score": 15.978658536585366,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 104.0,
+          "range80": [
+            96.0,
+            112.0
+          ],
+          "score": 15.692073170731707,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 112.0,
+          "range80": [
+            106.0,
+            118.0
+          ],
+          "score": 12.332317073170731,
+          "coverage": 0.8048780487804879
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 82.0,
+          "range80": [
+            76.0,
+            88.0
+          ],
+          "score": 13.701219512195122,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 66.0,
+          "range80": [
+            58.0,
+            78.0
+          ],
+          "score": 12.823170731707316,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 100.0,
+          "range80": [
+            94.0,
+            108.0
+          ],
+          "score": 15.99390243902439,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 96.0,
+          "range80": [
+            90.0,
+            104.0
+          ],
+          "score": 15.195121951219512,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "right clearance crosses zero",
+      "pkg top unresolved/estimated",
+      "pkg right unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/00/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/00/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/00/geometry_data.json"
+    }
+  },
+  {
+    "i": 1,
+    "name": "歪斜_20250828032051647.bmp",
+    "imageId": "c01e5fd2-8c1a-4d25-87c0-eac5da734756",
+    "contentSha256": "c1533f51e40bf912770dc6fd101c0a9e20a24885e02e5e05213f2251bd96f065",
+    "runId": "py-65f8cb86b7aaa-72955-23",
+    "recordRef": {
+      "$asset": "assets/ed8e0f1743db1a0e677f1a4d436ce86231465c961cad679e0192e6559506226e.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "ed8e0f1743db1a0e677f1a4d436ce86231465c961cad679e0192e6559506226e",
+      "size": 1045732,
+      "storage": "workspace",
+      "unitId": "c01e5fd2-8c1a-4d25-87c0-eac5da734756"
+    },
+    "category": "SKEW",
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032051647.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 285.8365148887467,
+          "slope": -0.07610216309974728,
+          "rms": 0.6622780663993201,
+          "coverage": 0.9834710743801653,
+          "kind": "measured",
+          "method": "outer metal edge; pkg excluded by independent visible sides and size prior",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6622780663993195,
+            "p95AbsPx": 1.1859544045569692,
+            "n": 119
+          }
+        },
+        "bottom": {
+          "side": "bottom",
+          "pos": 818.0,
+          "slope": -0.055999999999999994,
+          "strength": 23.768595041322314,
+          "kind": "estimated",
+          "method": "no resolved separator; provisional 3px outward from weld gradient",
+          "edgeIntervalPx": 6.0,
+          "supportResidual": null
+        },
+        "left": {
+          "pos": 153.63844459224097,
+          "slope": 0.07851558104278786,
+          "rms": 0.8333091700061915,
+          "coverage": 0.8925619834710744,
+          "kind": "measured",
+          "method": "metal/background crossing at 80",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.8333091700061909,
+            "p95AbsPx": 1.5730123684122117,
+            "n": 108
+          }
+        },
+        "right": {
+          "pos": 847.0,
+          "slope": 0.06000000000000011,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 59.22314049586777,
+          "supportResidual": {
+            "rmsPx": 2.241605956178276,
+            "p95AbsPx": 3.0000250244140716,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "bottom": {
+          "pos": 855.958677690415,
+          "slope": -0.017702774342947116,
+          "rms": 0.7622545118898795,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7622545118898785,
+            "p95AbsPx": 1.4978052732793685,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 862.5123966942145,
+          "slope": 0.021204652809784053,
+          "rms": 0.7284277128251303,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7284277128251302,
+            "p95AbsPx": 1.5704239679809007,
+            "n": 121
+          }
+        },
+        "top": {
+          "pos": 305.958677690415,
+          "slope": -0.019453713576365585,
+          "kind": "estimated",
+          "method": "pkg bottom plus good-image height prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        },
+        "left": {
+          "pos": 154.51239669421454,
+          "slope": 0.019453713576365585,
+          "kind": "estimated",
+          "method": "pkg right plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": -31.64753329654674,
+        "low": -46.302376809076435,
+        "high": -17.54220305821276
+      },
+      "bottom": {
+        "nominal": 30.158169198371436,
+        "low": 21.05848587264944,
+        "high": 40.219162201006995
+      },
+      "left": {
+        "nominal": -10.695098326636504,
+        "low": -24.939836891388737,
+        "high": 3.477803995469122
+      },
+      "right": {
+        "nominal": 9.05791838940779,
+        "low": 2.7107752385151933,
+        "high": 15.18098392101374
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 98.0,
+          "range80": [
+            90.0,
+            104.0
+          ],
+          "score": 22.070121951219512,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 108.0,
+          "range80": [
+            100.0,
+            116.0
+          ],
+          "score": 13.521341463414634,
+          "coverage": 0.7073170731707317
+        },
+        {
+          "corner": 2,
+          "radius": 106.0,
+          "range80": [
+            102.0,
+            112.0
+          ],
+          "score": 14.353658536585366,
+          "coverage": 0.9024390243902439
+        },
+        {
+          "corner": 3,
+          "radius": 88.0,
+          "range80": [
+            82.0,
+            98.0
+          ],
+          "score": 13.871951219512194,
+          "coverage": 0.9024390243902439
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 68.0,
+          "range80": [
+            62.0,
+            76.0
+          ],
+          "score": 20.807926829268293,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 84.0,
+          "range80": [
+            78.0,
+            96.0
+          ],
+          "score": 12.490853658536585,
+          "coverage": 0.8536585365853658
+        },
+        {
+          "corner": 2,
+          "radius": 96.0,
+          "range80": [
+            90.0,
+            104.0
+          ],
+          "score": 16.6859756097561,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 98.0,
+          "range80": [
+            92.0,
+            104.0
+          ],
+          "score": 15.003048780487806,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "left clearance crosses zero",
+      "lid bottom unresolved/estimated",
+      "pkg top unresolved/estimated",
+      "pkg left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/01/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/01/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/01/geometry_data.json"
+    }
+  },
+  {
+    "i": 2,
+    "name": "歪斜_20250828032053433.bmp",
+    "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+    "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+    "runId": "py-65f8cb875660d-72955-24",
+    "recordRef": {
+      "$asset": "assets/a51a37d64fe19aea3a4b354e4bb84805bbd2751717dd28ae255d40502fffe820.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "a51a37d64fe19aea3a4b354e4bb84805bbd2751717dd28ae255d40502fffe820",
+      "size": 1100900,
+      "storage": "workspace",
+      "unitId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+    },
+    "category": "SKEW",
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 257.89633139830966,
+          "slope": 0.007279419448149838,
+          "rms": 0.843861390663418,
+          "coverage": 0.9173553719008265,
+          "kind": "measured",
+          "method": "outer metal edge; pkg excluded by independent visible sides and size prior",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.8438613906634164,
+            "p95AbsPx": 1.6159043529926578,
+            "n": 111
+          }
+        },
+        "bottom": {
+          "pos": 801.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 60.4297520661157,
+          "supportResidual": {
+            "rmsPx": 0.9534625892455924,
+            "p95AbsPx": 2.0,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 114.39431779044523,
+          "slope": 0.00029999106890895444,
+          "rms": 0.779659829757681,
+          "coverage": 0.9834710743801653,
+          "kind": "measured",
+          "method": "metal/background crossing at 80",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7796598297576803,
+            "p95AbsPx": 1.5563725929659937,
+            "n": 119
+          }
+        },
+        "right": {
+          "pos": 807.0,
+          "slope": -0.007999999999999952,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 57.73553719008264,
+          "supportResidual": {
+            "rmsPx": 1.1677486461759592,
+            "p95AbsPx": 2.000028320312481,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "bottom": {
+          "pos": 849.909090906801,
+          "slope": -0.009079157544084443,
+          "rms": 0.42674730912595205,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.42674730912595366,
+            "p95AbsPx": 0.7885922990602694,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 818.7462716933551,
+          "slope": 0.007623809044959803,
+          "rms": 0.40408992665251015,
+          "coverage": 0.8842975206611571,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.404089926652512,
+            "p95AbsPx": 0.7589401473811537,
+            "n": 107
+          }
+        },
+        "top": {
+          "pos": 299.909090906801,
+          "slope": -0.008351483294522124,
+          "kind": "estimated",
+          "method": "pkg bottom plus good-image height prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        },
+        "left": {
+          "pos": 110.74627169335508,
+          "slope": 0.008351483294522124,
+          "kind": "estimated",
+          "method": "pkg right plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": -45.12298605132183,
+        "low": -59.79746373356141,
+        "high": -30.935353553267987
+      },
+      "bottom": {
+        "nominal": 47.099671024041314,
+        "low": 41.014939695564145,
+        "high": 53.3240112698438
+      },
+      "left": {
+        "nominal": 2.2998240370041714,
+        "low": -12.024175636502981,
+        "high": 16.312287989179396
+      },
+      "right": {
+        "nominal": 9.129955782957488,
+        "low": 2.1720756249476043,
+        "high": 15.129955782957488
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 108.0,
+          "range80": [
+            102.0,
+            116.0
+          ],
+          "score": 19.36280487804878,
+          "coverage": 0.975609756097561
+        },
+        {
+          "corner": 1,
+          "radius": 108.0,
+          "range80": [
+            102.0,
+            116.0
+          ],
+          "score": 20.63109756097561,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 108.0,
+          "range80": [
+            102.0,
+            122.0
+          ],
+          "score": 12.707317073170731,
+          "coverage": 0.8536585365853658
+        },
+        {
+          "corner": 3,
+          "radius": 110.0,
+          "range80": [
+            104.0,
+            118.0
+          ],
+          "score": 10.753048780487806,
+          "coverage": 0.7560975609756098
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 50.0,
+          "range80": [
+            40.0,
+            72.0
+          ],
+          "score": 8.911585365853659,
+          "coverage": 0.6585365853658537
+        },
+        {
+          "corner": 1,
+          "radius": 82.0,
+          "range80": [
+            72.0,
+            94.0
+          ],
+          "score": 11.15548780487805,
+          "coverage": 0.7560975609756098
+        },
+        {
+          "corner": 2,
+          "radius": 98.0,
+          "range80": [
+            92.0,
+            106.0
+          ],
+          "score": 17.39329268292683,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 98.0,
+          "range80": [
+            92.0,
+            106.0
+          ],
+          "score": 15.920731707317072,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "left clearance crosses zero",
+      "pkg top unresolved/estimated",
+      "pkg left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/02/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/02/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/02/geometry_data.json"
+    }
+  },
+  {
+    "i": 3,
+    "name": "歪斜_20250828032057035.bmp",
+    "imageId": "b18dd0d1-ac04-4619-8ccc-7cc31337f831",
+    "contentSha256": "5079a7162cc241abb5ee9a53607ab8047b1f30c9b75faa63736eb5cdfa8ca0fc",
+    "runId": "py-65f8cb8801e4a-72955-25",
+    "recordRef": {
+      "$asset": "assets/06c4a790611cddff09575dac8caccb3b50689640e37c7d037d79a9ee060d113a.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "06c4a790611cddff09575dac8caccb3b50689640e37c7d037d79a9ee060d113a",
+      "size": 1147208,
+      "storage": "workspace",
+      "unitId": "b18dd0d1-ac04-4619-8ccc-7cc31337f831"
+    },
+    "category": "SKEW",
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032057035.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 304.50386061399183,
+          "slope": 0.03217814616739641,
+          "rms": 0.566985046373802,
+          "coverage": 0.9173553719008265,
+          "kind": "measured",
+          "method": "outer metal edge; pkg excluded by independent visible sides and size prior",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5669850463737995,
+            "p95AbsPx": 1.0568323876488819,
+            "n": 111
+          }
+        },
+        "bottom": {
+          "pos": 847.0,
+          "slope": 0.032000000000000084,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 52.471074380165305,
+          "supportResidual": {
+            "rmsPx": 1.502065960187719,
+            "p95AbsPx": 3.00001513671873,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 188.0,
+          "slope": -0.02799999999999997,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 42.115702479338836,
+          "supportResidual": {
+            "rmsPx": 1.3142576463907618,
+            "p95AbsPx": 2.9999952392577995,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 881.231404965217,
+          "slope": -0.008643529270555192,
+          "rms": 2.243559739113513,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "metal/background crossing at 80",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 2.2435597391135103,
+            "p95AbsPx": 4.040048706854236,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "bottom": {
+          "pos": 884.8595041297594,
+          "slope": -0.009799846539410302,
+          "rms": 0.696949432529372,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6969494325293769,
+            "p95AbsPx": 1.1785664734235297,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 174.14049586074887,
+          "slope": 0.009277533365122775,
+          "rms": 0.45732789401698715,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4573278940169876,
+            "p95AbsPx": 0.8595041392511291,
+            "n": 121
+          }
+        },
+        "top": {
+          "pos": 334.85950412975944,
+          "slope": -0.00953868995226654,
+          "kind": "estimated",
+          "method": "pkg bottom plus good-image height prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        },
+        "right": {
+          "pos": 882.1404958607488,
+          "slope": 0.00953868995226654,
+          "kind": "estimated",
+          "method": "pkg left plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": -38.705593301691664,
+        "low": -53.58813835092337,
+        "high": -24.42976819094629
+      },
+      "bottom": {
+        "nominal": 29.48975883269686,
+        "low": 22.583825521869215,
+        "high": 35.489758832696864
+      },
+      "left": {
+        "nominal": 7.669612434569595,
+        "low": 1.4163633380208394,
+        "high": 13.70949008899299
+      },
+      "right": {
+        "nominal": -2.109788805147297,
+        "low": -16.76203641203137,
+        "high": 11.983391274338562
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 104.0,
+          "range80": [
+            98.0,
+            112.0
+          ],
+          "score": 15.487804878048781,
+          "coverage": 0.8292682926829268
+        },
+        {
+          "corner": 1,
+          "radius": 90.0,
+          "range80": [
+            82.0,
+            96.0
+          ],
+          "score": 19.420731707317074,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 116.0,
+          "range80": [
+            40.0,
+            124.0
+          ],
+          "score": 13.704268292682928,
+          "coverage": 0.8780487804878049
+        },
+        {
+          "corner": 3,
+          "radius": 114.0,
+          "range80": [
+            108.0,
+            120.0
+          ],
+          "score": 12.670731707317072,
+          "coverage": 0.9024390243902439
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            106.0
+          ],
+          "score": 7.963414634146342,
+          "coverage": 0.6341463414634146
+        },
+        {
+          "corner": 1,
+          "radius": 48.0,
+          "range80": [
+            44.0,
+            56.0
+          ],
+          "score": 16.51219512195122,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 96.0,
+          "range80": [
+            90.0,
+            104.0
+          ],
+          "score": 16.521341463414632,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 96.0,
+          "range80": [
+            88.0,
+            102.0
+          ],
+          "score": 15.25609756097561,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "right clearance crosses zero",
+      "pkg top unresolved/estimated",
+      "pkg right unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/03/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/03/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/03/geometry_data.json"
+    }
+  },
+  {
+    "i": 4,
+    "name": "10_2.bmp",
+    "imageId": "226b40d8-d738-49c7-95b4-c681b05eabfc",
+    "contentSha256": "de48aa610c3a4bfdfa69f1bf2b6e126a0549feb911113a36dc4710cb716f128a",
+    "runId": "py-65f8cb88a76db-72955-26",
+    "recordRef": {
+      "$asset": "assets/a84b74eb7b2ca7019af90392cfd5f354c0442484fcecaf4c6aea514dd8c226f1.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "a84b74eb7b2ca7019af90392cfd5f354c0442484fcecaf4c6aea514dd8c226f1",
+      "size": 1235317,
+      "storage": "workspace",
+      "unitId": "226b40d8-d738-49c7-95b4-c681b05eabfc"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/10_2.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 279.0,
+          "slope": -0.01799999999999996,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 40.198347107438025,
+          "supportResidual": {
+            "rmsPx": 0.782029365307842,
+            "p95AbsPx": 1.000013671875024,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 811.0,
+          "slope": -0.01599999999999996,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 13.471074380165291,
+          "supportResidual": {
+            "rmsPx": 0.8381411131501574,
+            "p95AbsPx": 1.0000273437500482,
+            "n": 121
+          }
+        },
+        "left": {
+          "side": "left",
+          "pos": 310.0,
+          "slope": 0.014000000000000068,
+          "strength": 15.690082644628106,
+          "kind": "estimated",
+          "method": "no resolved separator; provisional 3px outward from weld gradient",
+          "edgeIntervalPx": 6.0,
+          "supportResidual": null
+        },
+        "right": {
+          "pos": 998.0,
+          "slope": 0.01600000000000007,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 30.206611570247944,
+          "supportResidual": {
+            "rmsPx": 0.9181383950147366,
+            "p95AbsPx": 1.99998486328127,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 268.6033057895911,
+          "slope": -0.017711985776751583,
+          "rms": 0.49445395772509704,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4944539577250966,
+            "p95AbsPx": 0.9907938784199928,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 819.2727272764228,
+          "slope": -0.014653321892323098,
+          "rms": 0.49080396444176605,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4908039644417688,
+            "p95AbsPx": 0.9739328583540328,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 305.008309177805,
+          "slope": 0.014346953547652407,
+          "rms": 0.7992681458724343,
+          "coverage": 0.9338842975206612,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7992681458724338,
+            "p95AbsPx": 1.552107836351399,
+            "n": 113
+          }
+        },
+        "right": {
+          "pos": 1013.8512396663403,
+          "slope": 0.012215525832161315,
+          "rms": 0.49495644166164793,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4949564416616419,
+            "p95AbsPx": 0.9798537651051902,
+            "n": 121
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 10.337089866952219,
+        "low": 4.32363476993201,
+        "high": 17.166159274943205
+      },
+      "bottom": {
+        "nominal": 8.000755125449064,
+        "low": 0.20470874401207695,
+        "high": 18.204708744012077
+      },
+      "left": {
+        "nominal": 4.936197628795245,
+        "low": -15.68289740582385,
+        "high": 13.936197628795245
+      },
+      "right": {
+        "nominal": 15.250338421995675,
+        "low": 8.71655134494361,
+        "high": 21.250338421995675
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 90.0,
+          "range80": [
+            82.0,
+            96.0
+          ],
+          "score": 15.146341463414634,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 94.0,
+          "range80": [
+            88.0,
+            100.0
+          ],
+          "score": 13.393292682926829,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 84.0,
+          "range80": [
+            78.0,
+            92.0
+          ],
+          "score": 14.911585365853659,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 88.0,
+          "range80": [
+            82.0,
+            96.0
+          ],
+          "score": 13.03048780487805,
+          "coverage": 1.0
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 74.0,
+          "range80": [
+            68.0,
+            126.0
+          ],
+          "score": 10.353658536585366,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 84.0,
+          "range80": [
+            76.0,
+            92.0
+          ],
+          "score": 11.5,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 82.0,
+          "range80": [
+            74.0,
+            134.0
+          ],
+          "score": 10.152439024390244,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 76.0,
+          "range80": [
+            70.0,
+            120.0
+          ],
+          "score": 10.076219512195122,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "left clearance crosses zero",
+      "lid left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/04/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/04/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/04/geometry_data.json"
+    }
+  },
+  {
+    "i": 5,
+    "name": "11_15.bmp",
+    "imageId": "8116174b-8cba-4604-bdfd-d5b4becfc6e2",
+    "contentSha256": "8183a46c3a9a79069c04f0c49cd226750830a0515b85adae45649c59332d0bd1",
+    "runId": "py-65f8cb894c8fa-72955-27",
+    "recordRef": {
+      "$asset": "assets/9f39a397298cf7839dc1e03cab8b31c9a3252cb59265ba0e85410e4c8008c1d7.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "9f39a397298cf7839dc1e03cab8b31c9a3252cb59265ba0e85410e4c8008c1d7",
+      "size": 1285755,
+      "storage": "workspace",
+      "unitId": "8116174b-8cba-4604-bdfd-d5b4becfc6e2"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/11_15.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 267.0,
+          "slope": -0.009999999999999953,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 28.07438016528924,
+          "supportResidual": {
+            "rmsPx": 1.0833075195493722,
+            "p95AbsPx": 2.0000128173828102,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 797.0,
+          "slope": -0.013999999999999957,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 40.10743801652893,
+          "supportResidual": {
+            "rmsPx": 0.5677275388352659,
+            "p95AbsPx": 1.0000208740234484,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 332.0,
+          "slope": 0.01600000000000007,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 32.35537190082644,
+          "supportResidual": {
+            "rmsPx": 1.1134019694390207,
+            "p95AbsPx": 1.9999987792969023,
+            "n": 121
+          }
+        },
+        "right": {
+          "side": "right",
+          "pos": 1018.0,
+          "slope": 0.010000000000000064,
+          "strength": 18.070247933884296,
+          "kind": "estimated",
+          "method": "no resolved separator; provisional 3px outward from weld gradient",
+          "edgeIntervalPx": 6.0,
+          "supportResidual": null
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 258.67189476487425,
+          "slope": -0.020019935202737857,
+          "rms": 0.7569422015565122,
+          "coverage": 0.9917355371900827,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7569422015565128,
+            "p95AbsPx": 1.5329841736915653,
+            "n": 120
+          }
+        },
+        "bottom": {
+          "pos": 806.9504132231403,
+          "slope": -0.021925471921062423,
+          "rms": 0.5203459888473254,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5203459888473257,
+            "p95AbsPx": 0.9940389654722139,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 317.0991735476996,
+          "slope": 0.023866523985089472,
+          "rms": 0.4482356157628581,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4482356157628569,
+            "p95AbsPx": 0.8481441278437387,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1023.3668606872375,
+          "slope": 0.020459216297439596,
+          "rms": 0.6378488980631769,
+          "coverage": 0.9669421487603306,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6378488980631731,
+            "p95AbsPx": 1.2154264279525477,
+            "n": 117
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 6.309627564340877,
+        "low": -0.7102234577702982,
+        "high": 12.309627564340877
+      },
+      "bottom": {
+        "nominal": 8.35284973987059,
+        "low": 1.4614946336283916,
+        "high": 14.35284973987059
+      },
+      "left": {
+        "nominal": 13.654656617129683,
+        "low": 7.024412886240988,
+        "high": 19.65465661712968
+      },
+      "right": {
+        "nominal": 3.714363952515913,
+        "low": -5.784784718894787,
+        "high": 12.714363952515914
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 88.0,
+          "range80": [
+            40.0,
+            96.0
+          ],
+          "score": 11.539634146341463,
+          "coverage": 0.9512195121951219
+        },
+        {
+          "corner": 1,
+          "radius": 90.0,
+          "range80": [
+            84.0,
+            94.0
+          ],
+          "score": 13.021341463414634,
+          "coverage": 0.8780487804878049
+        },
+        {
+          "corner": 2,
+          "radius": 84.0,
+          "range80": [
+            44.0,
+            92.0
+          ],
+          "score": 12.689024390243903,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            88.0
+          ],
+          "score": 13.78048780487805,
+          "coverage": 1.0
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            86.0
+          ],
+          "score": 12.923780487804878,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 116.0,
+          "range80": [
+            68.0,
+            122.0
+          ],
+          "score": 9.213414634146341,
+          "coverage": 0.6585365853658537
+        },
+        {
+          "corner": 2,
+          "radius": 74.0,
+          "range80": [
+            68.0,
+            116.0
+          ],
+          "score": 10.295731707317072,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            86.0
+          ],
+          "score": 11.536585365853659,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "top clearance crosses zero",
+      "right clearance crosses zero",
+      "lid right unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/05/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/05/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/05/geometry_data.json"
+    }
+  },
+  {
+    "i": 6,
+    "name": "12_18.bmp",
+    "imageId": "51f0084e-06cd-41ab-b887-8382b738d4fa",
+    "contentSha256": "f9631a6411802df6b6cb1b9eecaf5e74612bb7e4237ef959dfe9b559e93187c4",
+    "runId": "py-65f8cb89f72fe-72955-28",
+    "recordRef": {
+      "$asset": "assets/f468d5c4e2bdf6e90225995c0eb9293950538a0d43efc47a0679b1d554fb031b.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "f468d5c4e2bdf6e90225995c0eb9293950538a0d43efc47a0679b1d554fb031b",
+      "size": 1228621,
+      "storage": "workspace",
+      "unitId": "51f0084e-06cd-41ab-b887-8382b738d4fa"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/12_18.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 281.0,
+          "slope": -0.013999999999999957,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 42.81818181818181,
+          "supportResidual": {
+            "rmsPx": 0.7925268712925467,
+            "p95AbsPx": 1.0000137939452998,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 811.0,
+          "slope": -0.011999999999999955,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 15.652892561983464,
+          "supportResidual": {
+            "rmsPx": 0.6555515612635652,
+            "p95AbsPx": 1.0000205078124509,
+            "n": 121
+          }
+        },
+        "left": {
+          "side": "left",
+          "pos": 331.0,
+          "slope": 0.022000000000000075,
+          "strength": 18.557851239669418,
+          "kind": "estimated",
+          "method": "no resolved separator; provisional 3px outward from weld gradient",
+          "edgeIntervalPx": 6.0,
+          "supportResidual": null
+        },
+        "right": {
+          "pos": 1019.0,
+          "slope": 0.01600000000000007,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 24.14876033057851,
+          "supportResidual": {
+            "rmsPx": 1.431637059719557,
+            "p95AbsPx": 2.9999765625000236,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 269.85950412900957,
+          "slope": -0.012774111102446365,
+          "rms": 0.5014686381955438,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5014686381955438,
+            "p95AbsPx": 0.9840940274035006,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 819.2479338816195,
+          "slope": -0.010618023121254297,
+          "rms": 0.5083544969618667,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5083544969618671,
+            "p95AbsPx": 0.8936461459074962,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 326.13223140495853,
+          "slope": 0.010947617356922254,
+          "rms": 0.7807414828845326,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7807414828845286,
+            "p95AbsPx": 1.6279095349758563,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1032.6937178996636,
+          "slope": 0.013135269778459724,
+          "rms": 0.5627751479549344,
+          "coverage": 0.9752066115702479,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5627751479549277,
+            "p95AbsPx": 0.9741690197609384,
+            "n": 118
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 10.894184104836276,
+        "low": 4.117528672113089,
+        "high": 16.894184104836278
+      },
+      "bottom": {
+        "nominal": 7.970812798816174,
+        "low": -0.8440119411307752,
+        "high": 17.155988058869227
+      },
+      "left": {
+        "nominal": 3.1252837176620014,
+        "low": -14.148165258571167,
+        "high": 19.85183474142883
+      },
+      "right": {
+        "nominal": 13.240979608531074,
+        "low": 5.843942634070427,
+        "high": 20.02717376604911
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 92.0,
+          "range80": [
+            86.0,
+            102.0
+          ],
+          "score": 14.195121951219512,
+          "coverage": 0.9512195121951219
+        },
+        {
+          "corner": 1,
+          "radius": 90.0,
+          "range80": [
+            82.0,
+            98.0
+          ],
+          "score": 14.070121951219512,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 88.0,
+          "range80": [
+            80.0,
+            96.0
+          ],
+          "score": 14.137195121951219,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 84.0,
+          "range80": [
+            78.0,
+            92.0
+          ],
+          "score": 14.359756097560975,
+          "coverage": 1.0
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 72.0,
+          "range80": [
+            66.0,
+            134.0
+          ],
+          "score": 10.292682926829269,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 82.0,
+          "range80": [
+            72.0,
+            88.0
+          ],
+          "score": 10.234756097560975,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 82.0,
+          "range80": [
+            76.0,
+            130.0
+          ],
+          "score": 10.63109756097561,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 74.0,
+          "range80": [
+            68.0,
+            78.0
+          ],
+          "score": 11.948170731707316,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "bottom clearance crosses zero",
+      "left clearance crosses zero",
+      "lid left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/06/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/06/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/06/geometry_data.json"
+    }
+  },
+  {
+    "i": 7,
+    "name": "16_12.bmp",
+    "imageId": "c4e25db0-ad7b-4179-9655-64ed26109fac",
+    "contentSha256": "02de74730a2fe049cda9d3dac5957d0c8c2cfecf7fdbec6a983b9d969614efd6",
+    "runId": "py-65f8cb8aa1ac2-72955-29",
+    "recordRef": {
+      "$asset": "assets/94de8433ea3190a2a10fe47d25fbdc0dbbd79d2898bad88e4fafe3a08fb3dd46.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "94de8433ea3190a2a10fe47d25fbdc0dbbd79d2898bad88e4fafe3a08fb3dd46",
+      "size": 1296794,
+      "storage": "workspace",
+      "unitId": "c4e25db0-ad7b-4179-9655-64ed26109fac"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/16_12.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 284.0,
+          "slope": -0.013999999999999957,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 19.85950413223142,
+          "supportResidual": {
+            "rmsPx": 0.9136264235345363,
+            "p95AbsPx": 2.000014526367181,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 815.0,
+          "slope": -0.009999999999999953,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 21.636363636363626,
+          "supportResidual": {
+            "rmsPx": 1.3575612522656095,
+            "p95AbsPx": 3.000003051757858,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 353.0,
+          "slope": 0.012000000000000066,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 50.93388429752066,
+          "supportResidual": {
+            "rmsPx": 0.7713894434518007,
+            "p95AbsPx": 1.000013183593751,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1037.0,
+          "slope": 0.01800000000000007,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 9.289256198347118,
+          "supportResidual": {
+            "rmsPx": 1.0484145201985098,
+            "p95AbsPx": 2.9999616088866787,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 277.7744516975982,
+          "slope": -0.027708718719526355,
+          "rms": 0.5908362091944384,
+          "coverage": 0.859504132231405,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5908362091944382,
+            "p95AbsPx": 1.2286817155236003,
+            "n": 104
+          }
+        },
+        "bottom": {
+          "pos": 823.8429752066112,
+          "slope": -0.026337975819134808,
+          "rms": 0.6025821216286871,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6025821216286877,
+            "p95AbsPx": 1.1478051080458727,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 343.42740760139225,
+          "slope": 0.022882317989713987,
+          "rms": 0.7186902285995462,
+          "coverage": 0.9752066115702479,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7186902285995446,
+            "p95AbsPx": 1.3344133228345039,
+            "n": 118
+          }
+        },
+        "right": {
+          "pos": 1046.0356288169764,
+          "slope": 0.021507375251696863,
+          "rms": 0.5711892601100773,
+          "coverage": 0.9834710743801653,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5711892601100765,
+            "p95AbsPx": 1.151308358163419,
+            "n": 119
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 3.479727250578898,
+        "low": -5.622176885536701,
+        "high": 12.377823114463299
+      },
+      "bottom": {
+        "nominal": 5.570180796063392,
+        "low": -2.94229106393239,
+        "high": 15.057708936067609
+      },
+      "left": {
+        "nominal": 7.845908851597372,
+        "low": 0.8381355638195034,
+        "high": 14.037604409984338
+      },
+      "right": {
+        "nominal": 8.47781943322613,
+        "low": -0.4449561252983383,
+        "high": 17.55504387470166
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 86.0,
+          "range80": [
+            42.0,
+            92.0
+          ],
+          "score": 15.231707317073171,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 46.0,
+          "range80": [
+            40.0,
+            84.0
+          ],
+          "score": 12.646341463414634,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 90.0,
+          "range80": [
+            84.0,
+            98.0
+          ],
+          "score": 11.365853658536585,
+          "coverage": 0.926829268292683
+        },
+        {
+          "corner": 3,
+          "radius": 88.0,
+          "range80": [
+            84.0,
+            96.0
+          ],
+          "score": 15.079268292682928,
+          "coverage": 0.975609756097561
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 74.0,
+          "range80": [
+            68.0,
+            78.0
+          ],
+          "score": 14.975609756097562,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 82.0,
+          "range80": [
+            74.0,
+            88.0
+          ],
+          "score": 14.225609756097562,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 78.0,
+          "range80": [
+            70.0,
+            84.0
+          ],
+          "score": 10.277439024390244,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            128.0
+          ],
+          "score": 10.698170731707316,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "top clearance crosses zero",
+      "bottom clearance crosses zero",
+      "right clearance crosses zero",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/07/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/07/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/07/geometry_data.json"
+    }
+  },
+  {
+    "i": 8,
+    "name": "17_19.bmp",
+    "imageId": "c91b9abf-b470-4472-835f-29b42734de72",
+    "contentSha256": "37fdc1ac151b2e97ed31d2b9118f16dc82c5dcedabe70b70d170f7b9674ebc23",
+    "runId": "py-65f8cb8b49242-72955-30",
+    "recordRef": {
+      "$asset": "assets/8943519c2b78cae8edd895edba848ab24bcc592d7b20a895b5f49246b3a48b61.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "8943519c2b78cae8edd895edba848ab24bcc592d7b20a895b5f49246b3a48b61",
+      "size": 1068937,
+      "storage": "workspace",
+      "unitId": "c91b9abf-b470-4472-835f-29b42734de72"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/17_19.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 278.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 27.785123966942137,
+          "supportResidual": {
+            "rmsPx": 0.4264014327112209,
+            "p95AbsPx": 1.0,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 808.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 49.834710743801665,
+          "supportResidual": {
+            "rmsPx": 0.4895604370122276,
+            "p95AbsPx": 1.0,
+            "n": 121
+          }
+        },
+        "left": {
+          "side": "left",
+          "pos": 328.0,
+          "slope": 5.551115123125783e-17,
+          "strength": 28.95454545454546,
+          "kind": "estimated",
+          "method": "no resolved separator; provisional 3px outward from weld gradient",
+          "edgeIntervalPx": 6.0,
+          "supportResidual": null
+        },
+        "right": {
+          "pos": 1014.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 27.363636363636346,
+          "supportResidual": {
+            "rmsPx": 0.8813963377120598,
+            "p95AbsPx": 2.0,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 269.40495867858033,
+          "slope": -0.00354632261220292,
+          "rms": 0.5941746837504972,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.594174683750494,
+            "p95AbsPx": 1.0756605140440456,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 817.0330578521539,
+          "slope": -0.0036259464171364084,
+          "rms": 0.564082728086788,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5640827280867896,
+            "p95AbsPx": 1.2450887838108429,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1027.6694214840006,
+          "slope": 0.004761363778495187,
+          "rms": 0.630919759812777,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6309197598127767,
+            "p95AbsPx": 0.9617735119945792,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 319.6694214840006,
+          "slope": 0.004193655097815798,
+          "kind": "estimated",
+          "method": "pkg right plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 7.888989808376495,
+        "low": -0.9583273073956171,
+        "high": 17.041672692604383
+      },
+      "bottom": {
+        "nominal": 8.311149804241241,
+        "low": 0.9604569859770118,
+        "high": 14.334711594290946
+      },
+      "left": {
+        "nominal": 7.676468565200615,
+        "low": -9.488954558555562,
+        "high": 24.735296771490667
+      },
+      "right": {
+        "nominal": 12.926692662094304,
+        "low": 5.299744518354636,
+        "high": 18.926692662094304
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 88.0,
+          "range80": [
+            82.0,
+            94.0
+          ],
+          "score": 16.079268292682926,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            86.0
+          ],
+          "score": 14.451219512195122,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 80.0,
+          "range80": [
+            40.0,
+            88.0
+          ],
+          "score": 11.301829268292684,
+          "coverage": 0.8536585365853658
+        },
+        {
+          "corner": 3,
+          "radius": 90.0,
+          "range80": [
+            84.0,
+            96.0
+          ],
+          "score": 17.899390243902438,
+          "coverage": 1.0
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 118.0,
+          "range80": [
+            82.0,
+            126.0
+          ],
+          "score": 11.582317073170731,
+          "coverage": 0.926829268292683
+        },
+        {
+          "corner": 1,
+          "radius": 78.0,
+          "range80": [
+            70.0,
+            86.0
+          ],
+          "score": 11.917682926829269,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            86.0
+          ],
+          "score": 11.981707317073171,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 122.0,
+          "range80": [
+            116.0,
+            128.0
+          ],
+          "score": 12.570121951219512,
+          "coverage": 0.8536585365853658
+        }
+      ]
+    },
+    "unknownReasons": [
+      "top clearance crosses zero",
+      "left clearance crosses zero",
+      "lid left unresolved/estimated",
+      "pkg left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/08/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/08/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/08/geometry_data.json"
+    }
+  },
+  {
+    "i": 9,
+    "name": "17_22.bmp",
+    "imageId": "945f1f81-d0b1-4bf1-b24e-0b30a553d910",
+    "contentSha256": "ef22db549f78b4ed81e93b5399668488ac6a5e39228ef82c2e6b7e3249ce77b0",
+    "runId": "py-65f8cb8bef7ae-72955-31",
+    "recordRef": {
+      "$asset": "assets/2723b5d84d2e433b60bc85ad50c0d526ce9008b43723a82534e42c18126833c0.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "2723b5d84d2e433b60bc85ad50c0d526ce9008b43723a82534e42c18126833c0",
+      "size": 1115032,
+      "storage": "workspace",
+      "unitId": "945f1f81-d0b1-4bf1-b24e-0b30a553d910"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/17_22.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 314.0,
+          "slope": -0.00599999999999995,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 66.27272727272728,
+          "supportResidual": {
+            "rmsPx": 1.216280943015002,
+            "p95AbsPx": 2.0000135498046916,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 850.2105354683192,
+          "slope": -0.0017864041670085347,
+          "rms": 0.6114446777771101,
+          "coverage": 0.9834710743801653,
+          "kind": "measured",
+          "method": "metal/background crossing at 80",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6114446777771091,
+            "p95AbsPx": 1.217101299577257,
+            "n": 119
+          }
+        },
+        "left": {
+          "pos": 326.0357286215887,
+          "slope": 0.010752636653716839,
+          "rms": 1.1584499051556276,
+          "coverage": 0.9338842975206612,
+          "kind": "measured",
+          "method": "metal/background crossing at 80",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 1.158449905155625,
+            "p95AbsPx": 2.1729759476690664,
+            "n": 113
+          }
+        },
+        "right": {
+          "pos": 1015.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 38.21487603305786,
+          "supportResidual": {
+            "rmsPx": 0.9791208740244552,
+            "p95AbsPx": 2.0,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 303.0800236695095,
+          "slope": -0.0028890946830043675,
+          "rms": 0.8880254592409785,
+          "coverage": 0.9504132231404959,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.8880254592409781,
+            "p95AbsPx": 1.7780709261529524,
+            "n": 115
+          }
+        },
+        "right": {
+          "pos": 1031.378206965872,
+          "slope": 0.0014138169799492852,
+          "rms": 0.6994825670799241,
+          "coverage": 0.9752066115702479,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6994825670799261,
+            "p95AbsPx": 1.4238952622306442,
+            "n": 118
+          }
+        },
+        "bottom": {
+          "pos": 853.0800236695095,
+          "slope": -0.0021514558314768262,
+          "kind": "estimated",
+          "method": "pkg top plus good-image height prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        },
+        "left": {
+          "pos": 323.3782069658721,
+          "slope": 0.0021514558314768262,
+          "kind": "estimated",
+          "method": "pkg right plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 10.296259061870822,
+        "low": 3.605147470687392,
+        "high": 16.676550040561686
+      },
+      "bottom": {
+        "nominal": 2.7962961718101966,
+        "low": -11.739100408502114,
+        "high": 16.796296171810198
+      },
+      "left": {
+        "nominal": 1.316078448776517,
+        "low": -12.720339940952101,
+        "high": 15.417253160602142
+      },
+      "right": {
+        "nominal": 16.15769192105626,
+        "low": 9.388513392796817,
+        "high": 22.93599303373512
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 88.0,
+          "range80": [
+            82.0,
+            96.0
+          ],
+          "score": 14.63109756097561,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 90.0,
+          "range80": [
+            84.0,
+            98.0
+          ],
+          "score": 13.53048780487805,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 100.0,
+          "range80": [
+            92.0,
+            108.0
+          ],
+          "score": 14.25,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 98.0,
+          "range80": [
+            68.0,
+            106.0
+          ],
+          "score": 13.524390243902438,
+          "coverage": 0.8780487804878049
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 74.0,
+          "range80": [
+            70.0,
+            80.0
+          ],
+          "score": 14.487804878048781,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            88.0
+          ],
+          "score": 12.786585365853659,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 134.0,
+          "range80": [
+            82.0,
+            140.0
+          ],
+          "score": 10.649390243902438,
+          "coverage": 0.8292682926829268
+        },
+        {
+          "corner": 3,
+          "radius": 112.0,
+          "range80": [
+            100.0,
+            120.0
+          ],
+          "score": 13.338414634146341,
+          "coverage": 0.9024390243902439
+        }
+      ]
+    },
+    "unknownReasons": [
+      "bottom clearance crosses zero",
+      "left clearance crosses zero",
+      "pkg bottom unresolved/estimated",
+      "pkg left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/09/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/09/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/09/geometry_data.json"
+    }
+  },
+  {
+    "i": 10,
+    "name": "18_5.bmp",
+    "imageId": "afabaa2d-b640-40db-b750-e323cec5077a",
+    "contentSha256": "6ef7cdd90ff16eef39e0af9e6bf995d8227846b304c050223c81d6cc5639ab44",
+    "runId": "py-65f8cb8c98b97-72955-32",
+    "recordRef": {
+      "$asset": "assets/3c44066144679417bb43e22705cfc021434be4ab9063a26a9ce1d2087fe91513.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "3c44066144679417bb43e22705cfc021434be4ab9063a26a9ce1d2087fe91513",
+      "size": 1170391,
+      "storage": "workspace",
+      "unitId": "afabaa2d-b640-40db-b750-e323cec5077a"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/18_5.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 284.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 17.52066115702479,
+          "supportResidual": {
+            "rmsPx": 0.9403709484353273,
+            "p95AbsPx": 3.0,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 815.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 21.98347107438019,
+          "supportResidual": {
+            "rmsPx": 1.024493424507695,
+            "p95AbsPx": 2.0,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 352.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 26.140495867768593,
+          "supportResidual": {
+            "rmsPx": 0.9577867048047944,
+            "p95AbsPx": 2.0,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1040.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 8.809917355371894,
+          "supportResidual": {
+            "rmsPx": 1.3142574813455419,
+            "p95AbsPx": 3.0,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 276.8181818181817,
+          "slope": -0.012760748967386102,
+          "rms": 0.47130794039333596,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4713079403933351,
+            "p95AbsPx": 0.9256335288582704,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 826.5950413223139,
+          "slope": -0.007879555074261788,
+          "rms": 0.7303597982656347,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7303597982656337,
+            "p95AbsPx": 1.3013682003247595,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 341.4347394168124,
+          "slope": 0.010313616914819477,
+          "rms": 0.5094734847939133,
+          "coverage": 0.9421487603305785,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5094734847939137,
+            "p95AbsPx": 1.0112120280067187,
+            "n": 114
+          }
+        },
+        "right": {
+          "pos": 1048.264462809917,
+          "slope": 0.011077209903596895,
+          "rms": 0.5093149806840676,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5093149806840724,
+            "p95AbsPx": 1.271535016232292,
+            "n": 121
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 4.619594114672864,
+        "low": -4.4834377885019085,
+        "high": 13.51656221149809
+      },
+      "bottom": {
+        "nominal": 10.012831015166741,
+        "low": 1.5244930413855524,
+        "high": 19.524493041385554
+      },
+      "left": {
+        "nominal": 8.944721922719264,
+        "low": 2.234474144613861,
+        "high": 15.887312898683234
+      },
+      "right": {
+        "nominal": 6.524054424861127,
+        "low": -1.1628678782955904,
+        "high": 16.83713212170441
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 90.0,
+          "range80": [
+            44.0,
+            96.0
+          ],
+          "score": 13.984756097560975,
+          "coverage": 0.9512195121951219
+        },
+        {
+          "corner": 1,
+          "radius": 94.0,
+          "range80": [
+            88.0,
+            100.0
+          ],
+          "score": 12.698170731707316,
+          "coverage": 0.9512195121951219
+        },
+        {
+          "corner": 2,
+          "radius": 88.0,
+          "range80": [
+            82.0,
+            94.0
+          ],
+          "score": 14.661585365853659,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 88.0,
+          "range80": [
+            80.0,
+            94.0
+          ],
+          "score": 13.954268292682928,
+          "coverage": 0.975609756097561
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 76.0,
+          "range80": [
+            70.0,
+            82.0
+          ],
+          "score": 12.75609756097561,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 76.0,
+          "range80": [
+            70.0,
+            126.0
+          ],
+          "score": 10.472560975609756,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            126.0
+          ],
+          "score": 10.628048780487806,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 78.0,
+          "range80": [
+            72.0,
+            86.0
+          ],
+          "score": 11.893292682926829,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "top clearance crosses zero",
+      "right clearance crosses zero",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/10/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/10/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/10/geometry_data.json"
+    }
+  },
+  {
+    "i": 11,
+    "name": "20_17.bmp",
+    "imageId": "7a289184-c991-4b0a-9816-2462a5d727fa",
+    "contentSha256": "84d8395a467c9e8aec9bd07131be654d69c07b631d4c1b59bff572dc1f71e576",
+    "runId": "py-65f8cb8d3cef6-72955-33",
+    "recordRef": {
+      "$asset": "assets/0614580fdd7700f95c667e461782d4e57b3d1454f20580b507b97edab63d9f25.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "0614580fdd7700f95c667e461782d4e57b3d1454f20580b507b97edab63d9f25",
+      "size": 1280968,
+      "storage": "workspace",
+      "unitId": "7a289184-c991-4b0a-9816-2462a5d727fa"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/20_17.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 285.0,
+          "slope": 0.006000000000000061,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 53.115702479338836,
+          "supportResidual": {
+            "rmsPx": 0.974891385816013,
+            "p95AbsPx": 1.999990722656264,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 816.0,
+          "slope": 0.010000000000000064,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 13.338842975206603,
+          "supportResidual": {
+            "rmsPx": 1.648941321863307,
+            "p95AbsPx": 3.0000189208984693,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 342.0,
+          "slope": -0.007999999999999952,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 17.73553719008264,
+          "supportResidual": {
+            "rmsPx": 2.069056016872474,
+            "p95AbsPx": 3.0000119628905964,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1029.0,
+          "slope": -0.00599999999999995,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 35.80991735537191,
+          "supportResidual": {
+            "rmsPx": 1.2196754870563877,
+            "p95AbsPx": 2.0000535278320513,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 273.10743801407165,
+          "slope": -0.009742726331762888,
+          "rms": 0.48352051660420853,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.48352051660420975,
+            "p95AbsPx": 0.9028924273177381,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 824.0165289231531,
+          "slope": -0.009779117497708536,
+          "rms": 0.6263832832296915,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6263832832296898,
+            "p95AbsPx": 1.1803619690878122,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1045.2231404925762,
+          "slope": 0.013051494269052796,
+          "rms": 0.5031119781032551,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5031119781032624,
+            "p95AbsPx": 0.8634064116215541,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 337.22314049257625,
+          "slope": 0.011397110300407843,
+          "kind": "estimated",
+          "method": "pkg right plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 8.72723009655286,
+        "low": 2.675533497937849,
+        "high": 15.69199575000085
+      },
+      "bottom": {
+        "nominal": 4.039941973905569,
+        "low": -5.261034482457995,
+        "high": 12.738965517542006
+      },
+      "left": {
+        "nominal": 1.7298490764692807,
+        "low": -12.27015092353072,
+        "high": 15.72984907646928
+      },
+      "right": {
+        "nominal": 13.229405062404043,
+        "low": 6.8419225357595455,
+        "high": 19.82710485465809
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 88.0,
+          "range80": [
+            84.0,
+            96.0
+          ],
+          "score": 15.454268292682928,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 84.0,
+          "range80": [
+            78.0,
+            92.0
+          ],
+          "score": 16.317073170731707,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 88.0,
+          "range80": [
+            42.0,
+            98.0
+          ],
+          "score": 12.740853658536585,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 92.0,
+          "range80": [
+            86.0,
+            98.0
+          ],
+          "score": 17.53048780487805,
+          "coverage": 1.0
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            84.0
+          ],
+          "score": 13.292682926829269,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 84.0,
+          "range80": [
+            74.0,
+            90.0
+          ],
+          "score": 13.475609756097562,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 84.0,
+          "range80": [
+            76.0,
+            124.0
+          ],
+          "score": 12.704268292682928,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 116.0,
+          "range80": [
+            110.0,
+            124.0
+          ],
+          "score": 13.064024390243903,
+          "coverage": 0.8048780487804879
+        }
+      ]
+    },
+    "unknownReasons": [
+      "bottom clearance crosses zero",
+      "left clearance crosses zero",
+      "pkg left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/11/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/11/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/11/geometry_data.json"
+    }
+  },
+  {
+    "i": 12,
+    "name": "23_7.bmp",
+    "imageId": "b64a1160-d274-4261-ae0d-a1e8647fbdf2",
+    "contentSha256": "0108cc9ee31bac397b89761f0eca875ff116a3ab7c4323fa41cc86e6715cee0e",
+    "runId": "py-65f8cb8dec172-72955-34",
+    "recordRef": {
+      "$asset": "assets/8bbbbf11148e735c1198634d1f9afab24bd43599a7a5cce7fc4b5f29a1b663dd.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "8bbbbf11148e735c1198634d1f9afab24bd43599a7a5cce7fc4b5f29a1b663dd",
+      "size": 1303945,
+      "storage": "workspace",
+      "unitId": "b64a1160-d274-4261-ae0d-a1e8647fbdf2"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/23_7.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 325.0,
+          "slope": -0.007999999999999952,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 53.22314049586777,
+          "supportResidual": {
+            "rmsPx": 0.6863484351527444,
+            "p95AbsPx": 1.0000124511718695,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 855.0,
+          "slope": -0.009999999999999953,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 28.884297520661164,
+          "supportResidual": {
+            "rmsPx": 0.4264010959228056,
+            "p95AbsPx": 1.0000122070312045,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 337.0,
+          "slope": 0.008000000000000063,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 14.289256198347104,
+          "supportResidual": {
+            "rmsPx": 1.2297956644389678,
+            "p95AbsPx": 3.0000009765624895,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1023.0,
+          "slope": 0.010000000000000064,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 33.94214876033058,
+          "supportResidual": {
+            "rmsPx": 0.8131143257542397,
+            "p95AbsPx": 1.0000549316406477,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 316.783401040789,
+          "slope": -0.015571481588240215,
+          "rms": 0.42976963275822794,
+          "coverage": 0.9834710743801653,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4297696327582277,
+            "p95AbsPx": 0.7657245803979095,
+            "n": 119
+          }
+        },
+        "bottom": {
+          "pos": 865.1735537142001,
+          "slope": -0.019065474391035342,
+          "rms": 0.46605402209600005,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4660540220960076,
+            "p95AbsPx": 0.8323534051256729,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1036.3140495911766,
+          "slope": 0.017442447337017317,
+          "rms": 0.6558422956586285,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6558422956586326,
+            "p95AbsPx": 1.1683712246961022,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 328.3140495911766,
+          "slope": 0.01825396086402633,
+          "kind": "estimated",
+          "method": "pkg right plus good-image width prior",
+          "edgeIntervalPx": 11.0,
+          "supportResidual": null
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 6.6978563615223266,
+        "low": 0.6898045386366647,
+        "high": 13.63070962793266
+      },
+      "bottom": {
+        "nominal": 8.354589131776358,
+        "low": 1.7056765447377993,
+        "high": 14.354589131776358
+      },
+      "left": {
+        "nominal": 7.0683385060563975,
+        "low": -8.556092739647935,
+        "high": 21.0683385060564
+      },
+      "right": {
+        "nominal": 12.138975758662504,
+        "low": 5.058083934397043,
+        "high": 18.138975758662504
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 88.0,
+          "range80": [
+            82.0,
+            96.0
+          ],
+          "score": 14.960365853658537,
+          "coverage": 0.926829268292683
+        },
+        {
+          "corner": 1,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            86.0
+          ],
+          "score": 13.737804878048781,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 82.0,
+          "range80": [
+            76.0,
+            88.0
+          ],
+          "score": 11.990853658536585,
+          "coverage": 0.9512195121951219
+        },
+        {
+          "corner": 3,
+          "radius": 90.0,
+          "range80": [
+            86.0,
+            96.0
+          ],
+          "score": 14.097560975609756,
+          "coverage": 0.975609756097561
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 116.0,
+          "range80": [
+            110.0,
+            126.0
+          ],
+          "score": 11.847560975609756,
+          "coverage": 0.8048780487804879
+        },
+        {
+          "corner": 1,
+          "radius": 82.0,
+          "range80": [
+            74.0,
+            88.0
+          ],
+          "score": 11.71951219512195,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            88.0
+          ],
+          "score": 11.652439024390244,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 84.0,
+          "range80": [
+            78.0,
+            132.0
+          ],
+          "score": 10.082317073170731,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "left clearance crosses zero",
+      "pkg left unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/12/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/12/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/12/geometry_data.json"
+    }
+  },
+  {
+    "i": 13,
+    "name": "26_5.bmp",
+    "imageId": "49f1bb73-3db2-47a4-a0da-089f0327d728",
+    "contentSha256": "bc82c87ea5f772839d1f2e39ce868be2d1b208e442aa937e4b2f57ba4caa7fda",
+    "runId": "py-65f8cb8e9c53e-72955-35",
+    "recordRef": {
+      "$asset": "assets/2efb080d87f1aa6f3ed7fa4a58601aef1763d2bac61d8852f4f89baf2b0a6b23.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "2efb080d87f1aa6f3ed7fa4a58601aef1763d2bac61d8852f4f89baf2b0a6b23",
+      "size": 1310665,
+      "storage": "workspace",
+      "unitId": "49f1bb73-3db2-47a4-a0da-089f0327d728"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/26_5.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 314.0,
+          "slope": -0.00599999999999995,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 24.31404958677686,
+          "supportResidual": {
+            "rmsPx": 1.0082302193031751,
+            "p95AbsPx": 2.0000104980468905,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 845.0,
+          "slope": -0.00599999999999995,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 39.78512396694215,
+          "supportResidual": {
+            "rmsPx": 0.6232415735999229,
+            "p95AbsPx": 1.0000224609375437,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 332.0,
+          "slope": 5.551115123125783e-17,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 33.280991735537185,
+          "supportResidual": {
+            "rmsPx": 0.7977240352174656,
+            "p95AbsPx": 1.0,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1018.0,
+          "slope": 0.008000000000000063,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 31.4380165289256,
+          "supportResidual": {
+            "rmsPx": 0.8430572968549017,
+            "p95AbsPx": 1.0000295410155786,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 308.61498379850906,
+          "slope": -0.008925119480348657,
+          "rms": 0.7043876376505716,
+          "coverage": 0.9834710743801653,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7043876376505716,
+            "p95AbsPx": 1.2926598994080334,
+            "n": 119
+          }
+        },
+        "bottom": {
+          "pos": 856.3553718950399,
+          "slope": -0.011471307131407005,
+          "rms": 0.47785815287613065,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.4778581528761286,
+            "p95AbsPx": 0.8934836029766302,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 323.8251859722368,
+          "slope": 0.01700836758334055,
+          "rms": 0.6414292884190009,
+          "coverage": 0.9917355371900827,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.641429288419002,
+            "p95AbsPx": 1.2638340018457228,
+            "n": 120
+          }
+        },
+        "right": {
+          "pos": 1030.3553719008262,
+          "slope": 0.01094405385195755,
+          "rms": 0.5959079714698889,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5959079714698826,
+            "p95AbsPx": 1.246254042729106,
+            "n": 121
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 4.7967591354275285,
+        "low": -4.2402338673709465,
+        "high": 13.759766132629053
+      },
+      "bottom": {
+        "nominal": 10.254745615999537,
+        "low": 3.9711974759673794,
+        "high": 17.578844341407468
+      },
+      "left": {
+        "nominal": 5.507105487979639,
+        "low": -1.5079735680280857,
+        "high": 11.50710548797964
+      },
+      "right": {
+        "nominal": 11.893032050175437,
+        "low": 5.893032050175437,
+        "high": 18.83593796451774
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 84.0,
+          "range80": [
+            44.0,
+            88.0
+          ],
+          "score": 14.432926829268293,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 80.0,
+          "range80": [
+            40.0,
+            86.0
+          ],
+          "score": 14.24390243902439,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 86.0,
+          "range80": [
+            80.0,
+            96.0
+          ],
+          "score": 13.86890243902439,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 90.0,
+          "range80": [
+            44.0,
+            96.0
+          ],
+          "score": 14.820121951219512,
+          "coverage": 0.926829268292683
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 80.0,
+          "range80": [
+            74.0,
+            84.0
+          ],
+          "score": 13.902439024390244,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 74.0,
+          "range80": [
+            66.0,
+            80.0
+          ],
+          "score": 13.390243902439025,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 76.0,
+          "range80": [
+            68.0,
+            82.0
+          ],
+          "score": 12.588414634146341,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 78.0,
+          "range80": [
+            70.0,
+            84.0
+          ],
+          "score": 12.707317073170731,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "top clearance crosses zero",
+      "left clearance crosses zero",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/13/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/13/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/13/geometry_data.json"
+    }
+  },
+  {
+    "i": 14,
+    "name": "2_12.bmp",
+    "imageId": "692a79a7-7770-4e4b-99e7-b561281445c2",
+    "contentSha256": "180bc05b39367dfa2cabb8e8b3ccf6f23c8f5470d0803482b53a4b37648fb872",
+    "runId": "py-65f8cb8f469bc-72955-36",
+    "recordRef": {
+      "$asset": "assets/8a9568ff2087eb9a0b0d8b5505923f725f297f08ed1d3f54939cc069ae0a4851.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "8a9568ff2087eb9a0b0d8b5505923f725f297f08ed1d3f54939cc069ae0a4851",
+      "size": 1293338,
+      "storage": "workspace",
+      "unitId": "692a79a7-7770-4e4b-99e7-b561281445c2"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/2_12.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 242.0,
+          "slope": -0.00599999999999995,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 24.43801652892563,
+          "supportResidual": {
+            "rmsPx": 1.0909090825949344,
+            "p95AbsPx": 2.999994506835918,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 773.0,
+          "slope": -0.00599999999999995,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 33.46280991735537,
+          "supportResidual": {
+            "rmsPx": 0.6741968774516767,
+            "p95AbsPx": 1.0000261230468368,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 328.0,
+          "slope": 0.006000000000000061,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 16.471074380165277,
+          "supportResidual": {
+            "rmsPx": 1.2264310812058157,
+            "p95AbsPx": 3.0,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1014.0,
+          "slope": 0.008000000000000063,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 17.280991735537185,
+          "supportResidual": {
+            "rmsPx": 1.1134052749677585,
+            "p95AbsPx": 2.9999836425781723,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 235.70727877689788,
+          "slope": -0.007213027091224619,
+          "rms": 1.231427278451809,
+          "coverage": 0.9421487603305785,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 1.2314272784518094,
+            "p95AbsPx": 1.9176204821265883,
+            "n": 114
+          }
+        },
+        "bottom": {
+          "pos": 785.347107438016,
+          "slope": -0.010608650650331904,
+          "rms": 0.5850732147930955,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5850732147930918,
+            "p95AbsPx": 1.1559409930798665,
+            "n": 121
+          }
+        },
+        "left": {
+          "pos": 319.2654807134406,
+          "slope": 0.008790951210316153,
+          "rms": 0.701177554378164,
+          "coverage": 0.9504132231404959,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7011775543781644,
+            "p95AbsPx": 1.2389834628920824,
+            "n": 115
+          }
+        },
+        "right": {
+          "pos": 1026.2121417291116,
+          "slope": 0.011998766177123508,
+          "rms": 0.6306946359496659,
+          "coverage": 0.9586776859504132,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6306946359496687,
+            "p95AbsPx": 1.2677569213669244,
+            "n": 116
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 6.0490365474042305,
+        "low": -2.0745454817231863,
+        "high": 15.925454518276814
+      },
+      "bottom": {
+        "nominal": 11.421232059001182,
+        "low": 4.615660327916977,
+        "high": 17.421232059001184
+      },
+      "left": {
+        "nominal": 8.295014687514755,
+        "low": -0.4752265178633124,
+        "high": 17.524773482136688
+      },
+      "right": {
+        "nominal": 11.582062176482648,
+        "low": 3.9293050156982012,
+        "high": 21.9293050156982
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 86.0,
+          "range80": [
+            82.0,
+            94.0
+          ],
+          "score": 14.253048780487806,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 80.0,
+          "range80": [
+            40.0,
+            88.0
+          ],
+          "score": 12.536585365853659,
+          "coverage": 0.975609756097561
+        },
+        {
+          "corner": 2,
+          "radius": 84.0,
+          "range80": [
+            78.0,
+            92.0
+          ],
+          "score": 14.582317073170731,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 90.0,
+          "range80": [
+            84.0,
+            98.0
+          ],
+          "score": 15.838414634146341,
+          "coverage": 0.975609756097561
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 78.0,
+          "range80": [
+            74.0,
+            116.0
+          ],
+          "score": 13.225609756097562,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 76.0,
+          "range80": [
+            68.0,
+            84.0
+          ],
+          "score": 11.432926829268293,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            130.0
+          ],
+          "score": 10.28048780487805,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 80.0,
+          "range80": [
+            72.0,
+            130.0
+          ],
+          "score": 12.46951219512195,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "top clearance crosses zero",
+      "left clearance crosses zero",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/14/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/14/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/14/geometry_data.json"
+    }
+  },
+  {
+    "i": 15,
+    "name": "7_21.bmp",
+    "imageId": "a610f892-23ff-49cc-a4b4-85d3c53e6853",
+    "contentSha256": "3f93d8272e667bd39bfa516895149748c943050b451f94d0cb763b21917d53a0",
+    "runId": "py-65f8cb8fea672-72955-37",
+    "recordRef": {
+      "$asset": "assets/28f5a59f5999ce6acb0665b0fd64e7a091b418276b8dbae4c3eb72c79fdbe0b5.json",
+      "executionId": "d03dfab1-816d-4185-ad9c-e5b73b467ccd",
+      "kind": "inspection-unit",
+      "mime": "application/json",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round4/workspace",
+      "sha256": "28f5a59f5999ce6acb0665b0fd64e7a091b418276b8dbae4c3eb72c79fdbe0b5",
+      "size": 1237995,
+      "storage": "workspace",
+      "unitId": "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+    },
+    "category": "UNKNOWN",
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/7_21.bmp"
+      }
+    },
+    "evidenceReady": true,
+    "edges": {
+      "lid": {
+        "top": {
+          "pos": 285.0,
+          "slope": 0.012000000000000066,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 41.45454545454545,
+          "supportResidual": {
+            "rmsPx": 0.8953519836653556,
+            "p95AbsPx": 1.0000150146484543,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "side": "bottom",
+          "pos": 816.0,
+          "slope": 0.012000000000000066,
+          "strength": 29.652892561983464,
+          "kind": "estimated",
+          "method": "no resolved separator; provisional 3px outward from weld gradient",
+          "edgeIntervalPx": 6.0,
+          "supportResidual": null
+        },
+        "left": {
+          "pos": 329.0,
+          "slope": -0.011999999999999955,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 13.68595041322314,
+          "supportResidual": {
+            "rmsPx": 1.3696844524691338,
+            "p95AbsPx": 3.000007324218757,
+            "n": 121
+          }
+        },
+        "right": {
+          "pos": 1016.0,
+          "slope": -0.013999999999999957,
+          "kind": "measured-separator",
+          "method": "dark seam adjacent to selected lid rim; geometry consistency required",
+          "edgeIntervalPx": 3.0,
+          "separatorContrast": 7.661157024793383,
+          "supportResidual": {
+            "rmsPx": 1.1606490379867451,
+            "p95AbsPx": 2.9999724731445667,
+            "n": 121
+          }
+        }
+      },
+      "pkg": {
+        "top": {
+          "pos": 272.2727272743157,
+          "slope": 0.002099241839331362,
+          "rms": 0.6476746605345571,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.6476746605345587,
+            "p95AbsPx": 1.0065574006173392,
+            "n": 121
+          }
+        },
+        "bottom": {
+          "pos": 822.5690098178604,
+          "slope": 0.00409696378390868,
+          "rms": 0.5939077434893552,
+          "coverage": 0.9669421487603306,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.5939077434893522,
+            "p95AbsPx": 1.2129257773692415,
+            "n": 117
+          }
+        },
+        "left": {
+          "pos": 319.9431375432072,
+          "slope": -0.00747776460115542,
+          "rms": 0.7844623968371489,
+          "coverage": 0.9917355371900827,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7844623968371498,
+            "p95AbsPx": 1.1986867914356083,
+            "n": 120
+          }
+        },
+        "right": {
+          "pos": 1025.7685950413222,
+          "slope": -0.005555870522449331,
+          "rms": 0.7506361923695902,
+          "coverage": 1.0,
+          "kind": "measured",
+          "method": "separate exposed pkg to background, independently from lid rim",
+          "edgeIntervalPx": 3.0,
+          "supportResidual": {
+            "rmsPx": 0.7506361923695907,
+            "p95AbsPx": 1.5991532618795645,
+            "n": 121
+          }
+        }
+      }
+    },
+    "clearance": {
+      "top": {
+        "nominal": 10.745117266065591,
+        "low": 3.9544088802784856,
+        "high": 16.74511726606559
+      },
+      "bottom": {
+        "nominal": 4.986780115742521,
+        "low": -4.460535795408582,
+        "high": 13.986780115742521
+      },
+      "left": {
+        "nominal": 8.345010183877454,
+        "low": 0.3997855232841694,
+        "high": 18.39978552328417
+      },
+      "right": {
+        "nominal": 8.439696570740733,
+        "low": -0.43331444947681774,
+        "high": 17.566685550523182
+      }
+    },
+    "corners": {
+      "lid": [
+        {
+          "corner": 0,
+          "radius": 90.0,
+          "range80": [
+            40.0,
+            96.0
+          ],
+          "score": 15.173780487804878,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 94.0,
+          "range80": [
+            88.0,
+            100.0
+          ],
+          "score": 14.850609756097562,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 86.0,
+          "range80": [
+            80.0,
+            94.0
+          ],
+          "score": 15.00609756097561,
+          "coverage": 1.0
+        },
+        {
+          "corner": 3,
+          "radius": 88.0,
+          "range80": [
+            46.0,
+            94.0
+          ],
+          "score": 12.332317073170731,
+          "coverage": 1.0
+        }
+      ],
+      "pkg": [
+        {
+          "corner": 0,
+          "radius": 76.0,
+          "range80": [
+            70.0,
+            82.0
+          ],
+          "score": 12.99390243902439,
+          "coverage": 1.0
+        },
+        {
+          "corner": 1,
+          "radius": 82.0,
+          "range80": [
+            74.0,
+            136.0
+          ],
+          "score": 11.567073170731707,
+          "coverage": 1.0
+        },
+        {
+          "corner": 2,
+          "radius": 114.0,
+          "range80": [
+            74.0,
+            122.0
+          ],
+          "score": 10.524390243902438,
+          "coverage": 0.8292682926829268
+        },
+        {
+          "corner": 3,
+          "radius": 82.0,
+          "range80": [
+            74.0,
+            86.0
+          ],
+          "score": 13.283536585365853,
+          "coverage": 1.0
+        }
+      ]
+    },
+    "unknownReasons": [
+      "bottom clearance crosses zero",
+      "right clearance crosses zero",
+      "lid bottom unresolved/estimated",
+      "corner radius has competing peaks or low coverage"
+    ],
+    "artifacts": {
+      "overlay": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/15/overlay.png",
+      "geometry": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/15/geometry.json",
+      "data": "/Users/liangshiben/13-cv/desktop/analysis/lid-round4/results/15/geometry_data.json"
+    }
+  }
+]

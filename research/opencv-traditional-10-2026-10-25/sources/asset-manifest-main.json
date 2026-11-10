@@ -1,0 +1,114 @@
+[
+  {
+    "name": "box.png",
+    "path": "samples/data/box.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box.png",
+    "bytes": 50728,
+    "sha256": "1094629c1e2ebbc8a9ae2c9c63e18c1dff0f5f1481146e02f3b11a3d30feb20a",
+    "status": "downloaded"
+  },
+  {
+    "name": "box_in_scene.png",
+    "path": "samples/data/box_in_scene.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box_in_scene.png",
+    "bytes": 122490,
+    "sha256": "8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+    "status": "downloaded"
+  },
+  {
+    "name": "cards.png",
+    "path": "samples/data/cards.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/cards.png",
+    "bytes": 77914,
+    "sha256": "acf2d347e8de7fbb0edbf457c8fb467cb6d16d4166c92f40e68f3831e06149ac",
+    "status": "downloaded"
+  },
+  {
+    "name": "detect_blob.png",
+    "path": "samples/data/detect_blob.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/detect_blob.png",
+    "bytes": 34115,
+    "sha256": "f31a972c7aa0fbf5c0559a9c76cb0ef88a56567362d05194aa0e7f2592b4cff0",
+    "status": "downloaded"
+  },
+  {
+    "name": "ellipses.jpg",
+    "path": "samples/data/ellipses.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/ellipses.jpg",
+    "bytes": 165414,
+    "sha256": "775f8bd606ba5184907a0851474dc39893e11a296e0af233e8b00f7afbde1866",
+    "status": "downloaded"
+  },
+  {
+    "name": "gauge-1.jpg",
+    "path": "samples/data/gauge-1.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/gauge-1.jpg",
+    "bytes": 17297,
+    "sha256": "e247a7e8bc6a335843da432408a076f7aac48c3573f97d030d07db4e95a56016",
+    "status": "downloaded"
+  },
+  {
+    "name": "leuvenA.jpg",
+    "path": "samples/data/leuvenA.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/leuvenA.jpg",
+    "bytes": 324949,
+    "sha256": "b2977cdbd9fb3f94dadd6f76cf586d145676deb8a22b5f0f42149d21c058c09f",
+    "status": "downloaded"
+  },
+  {
+    "name": "leuvenB.jpg",
+    "path": "samples/data/leuvenB.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/leuvenB.jpg",
+    "bytes": 312454,
+    "sha256": "5bb41a60038a2baa5d8ea0eaba55e6e3050d721b254cf79d8d8998d7e49d664a",
+    "status": "downloaded"
+  },
+  {
+    "name": "notes.png",
+    "path": "samples/data/notes.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/notes.png",
+    "bytes": 14650,
+    "sha256": "b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+    "status": "downloaded"
+  },
+  {
+    "name": "pca_test1.jpg",
+    "path": "samples/data/pca_test1.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pca_test1.jpg",
+    "bytes": 33227,
+    "sha256": "9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+    "status": "downloaded"
+  },
+  {
+    "name": "pic1.png",
+    "path": "samples/data/pic1.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pic1.png",
+    "bytes": 13160,
+    "sha256": "0244e20a34fa2d30c60e60928d6d71f89d32e0e0266b4644980798cc2368765a",
+    "status": "downloaded"
+  },
+  {
+    "name": "pic2.png",
+    "path": "samples/data/pic2.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pic2.png",
+    "bytes": 259603,
+    "sha256": "8c32d76f17c2eca78a1402fd1bb48144785e5397ff5a24de68c36b0f76b1f055",
+    "status": "downloaded"
+  },
+  {
+    "name": "smarties.png",
+    "path": "samples/data/smarties.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+    "bytes": 90815,
+    "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+    "status": "downloaded"
+  },
+  {
+    "name": "stuff.jpg",
+    "path": "samples/data/stuff.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/stuff.jpg",
+    "bytes": 29365,
+    "sha256": "21cd00afbdd0727f445dd91c0a09633e6345ed5b05a3d2355453a1f3c314c6c5",
+    "status": "downloaded"
+  }
+]

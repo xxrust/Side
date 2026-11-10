@@ -1,0 +1,3939 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_geometry_tools",
+        "description": "讀取畫板找線／找圓工具的最新版本、實算候選、參數範圍與關聯量測。手繪標註不能當作實算特徵。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "tune_geometry_tool",
+        "description": "僅在人類指定此工具的調參對話內更新參數並對原圖實算；不接受模型自填結果，不改正式方案。先 get_geometry_tools，保留明確調整依據。新候選需人類確認。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "tool_id": {
+              "type": "string"
+            },
+            "expected_revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "parameters": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "board_id",
+            "item_id",
+            "tool_id",
+            "expected_revision",
+            "parameters",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "search_visual_assets",
+        "description": "先檢索跨專案收藏圖解／歷史圖像的描述，避免重畫相同原理解釋。只回傳分類、方法、適用條件、限制及來源，不傳圖片或HTML；相似不代表本次量測有效。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "schematic",
+                "evidence",
+                "result",
+                "reference"
+              ]
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 24
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_visual_asset",
+        "description": "取得收藏描述；include_content=true才讀HTML/SVG原碼，include_pixels=true才取得已收藏點陣圖像素。直接重用呈現用show_visual_asset，無須把原碼重新生成一遍。歷史結果不能當成本次量測。 offset/limit按字元分頁原碼（預設8000、最多16000），回傳contentLength/contentTruncated；不把全文直接塞入上下文。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "include_content": {
+              "type": "boolean"
+            },
+            "include_pixels": {
+              "type": "boolean"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "show_visual_asset",
+        "description": "把已收藏圖解或圖像直接引用到本輪對話，保留來源；HTML/SVG由隔離渲染器呈現，無需複寫原碼，節省token。只表示引用歷史資產，不是新實算。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "asset_id": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "asset_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "save_visual_asset",
+        "description": "收藏可復用圖解或真實圖像。使用source_id引用get_visual_context的真實圖片，或content加mimeType保存自繪HTML/SVG。title/role/tags/topics/method/applicability/limits描述用途與邊界；既有量測圖不可冒充通用結論。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            },
+            "mimeType": {
+              "type": "string",
+              "enum": [
+                "text/html",
+                "image/svg+xml"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "schematic",
+                "evidence",
+                "result",
+                "reference"
+              ]
+            },
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "topics": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "method": {
+              "type": "string"
+            },
+            "applicability": {
+              "type": "string"
+            },
+            "limits": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "role"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "revise_algorithm_evidence",
+        "description": "依新skill重寫既有運算及procedure/step三項依據，追加修訂歷史，不修改原程式、參數、產物或實驗事實。先get_algorithm_run讀真實數據和explanationRevision（無修訂為0）；expected_revision防止覆蓋他人修改。nodes使用真實instanceId。parameterNotes可補充程式中的繼承值、庫預設及未追蹤設定，最多8000字，不改實際參數；可只傳parameterNotes。只有歷史步驟artifactIds確實為空，可填evidenceGap明說缺失，tool.expectedEvidence留空；此修訂不補造驗證。每項依據圖必須屬於該步artifactIds；未比較、未驗證要明說，不能補造。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "expected_revision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "reason": {
+              "type": "string"
+            },
+            "justification": {
+              "type": "object",
+              "properties": {
+                "tool": {
+                  "type": "object",
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    },
+                    "expectedEvidence": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "artifact",
+                              "gate",
+                              "execution-status"
+                            ]
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "file",
+                              "evidence",
+                              "image",
+                              "mask",
+                              "histogram",
+                              "curves",
+                              "contours",
+                              "circles",
+                              "points"
+                            ]
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "allowed": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "OK"
+                              ]
+                            },
+                            "minItems": 1
+                          },
+                          "caption": {
+                            "type": "string"
+                          },
+                          "visuals": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 12,
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "caption": {
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "artifact",
+                                    "project-image",
+                                    "canvas-asset"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "caption"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": [
+                    "reason",
+                    "expectedEvidence"
+                  ],
+                  "additionalProperties": false
+                },
+                "parameters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "string",
+                        "enum": [
+                          "agent-proposal",
+                          "human-input",
+                          "operator-default",
+                          "data-derived",
+                          "not-supplied"
+                        ]
+                      },
+                      "reason": {
+                        "type": "string"
+                      },
+                      "verification": {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "artifact",
+                              "gate",
+                              "execution-status"
+                            ]
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "file",
+                              "evidence",
+                              "image",
+                              "mask",
+                              "histogram",
+                              "curves",
+                              "contours",
+                              "circles",
+                              "points"
+                            ]
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "allowed": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "OK"
+                              ]
+                            },
+                            "minItems": 1
+                          },
+                          "caption": {
+                            "type": "string"
+                          },
+                          "visuals": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 12,
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "caption": {
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "artifact",
+                                    "project-image",
+                                    "canvas-asset"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "caption"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "source",
+                      "reason",
+                      "verification"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "boundaries": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "condition": {
+                        "type": "string"
+                      },
+                      "check": {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "artifact",
+                              "gate",
+                              "execution-status"
+                            ]
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "file",
+                              "evidence",
+                              "image",
+                              "mask",
+                              "histogram",
+                              "curves",
+                              "contours",
+                              "circles",
+                              "points"
+                            ]
+                          },
+                          "id": {
+                            "type": "string"
+                          },
+                          "allowed": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "OK"
+                              ]
+                            },
+                            "minItems": 1
+                          },
+                          "caption": {
+                            "type": "string"
+                          },
+                          "visuals": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 12,
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "caption": {
+                                  "type": "string"
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "artifact",
+                                    "project-image",
+                                    "canvas-asset"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "caption"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "onFailure": {
+                        "type": "string",
+                        "enum": [
+                          "STOP",
+                          "UNKNOWN",
+                          "REQUEST_HUMAN"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "condition",
+                      "check",
+                      "onFailure"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1
+                },
+                "meta": {
+                  "type": "object",
+                  "properties": {
+                    "sourceFingerprint": {
+                      "type": "string"
+                    },
+                    "schemeFingerprint": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "sourceFingerprint"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "tool",
+                "parameters",
+                "boundaries"
+              ],
+              "additionalProperties": false
+            },
+            "parameterNotes": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 8000
+            },
+            "nodes": {
+              "type": "array",
+              "maxItems": 1000,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "instanceId": {
+                    "type": "string"
+                  },
+                  "justification": {
+                    "type": "object",
+                    "properties": {
+                      "tool": {
+                        "type": "object",
+                        "properties": {
+                          "reason": {
+                            "type": "string"
+                          },
+                          "expectedEvidence": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "artifact",
+                                    "gate",
+                                    "execution-status"
+                                  ]
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "file",
+                                    "evidence",
+                                    "image",
+                                    "mask",
+                                    "histogram",
+                                    "curves",
+                                    "contours",
+                                    "circles",
+                                    "points"
+                                  ]
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "allowed": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "OK"
+                                    ]
+                                  },
+                                  "minItems": 1
+                                },
+                                "caption": {
+                                  "type": "string"
+                                },
+                                "visuals": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "maxItems": 12,
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "caption": {
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "artifact",
+                                          "project-image",
+                                          "canvas-asset"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "caption"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "kind"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "minItems": 0
+                          }
+                        },
+                        "required": [
+                          "reason",
+                          "expectedEvidence"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "parameters": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "source": {
+                              "type": "string",
+                              "enum": [
+                                "agent-proposal",
+                                "human-input",
+                                "operator-default",
+                                "data-derived",
+                                "not-supplied"
+                              ]
+                            },
+                            "reason": {
+                              "type": "string"
+                            },
+                            "verification": {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "artifact",
+                                    "gate",
+                                    "execution-status"
+                                  ]
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "file",
+                                    "evidence",
+                                    "image",
+                                    "mask",
+                                    "histogram",
+                                    "curves",
+                                    "contours",
+                                    "circles",
+                                    "points"
+                                  ]
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "allowed": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "OK"
+                                    ]
+                                  },
+                                  "minItems": 1
+                                },
+                                "caption": {
+                                  "type": "string"
+                                },
+                                "visuals": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "maxItems": 12,
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "caption": {
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "artifact",
+                                          "project-image",
+                                          "canvas-asset"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "caption"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "kind"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "source",
+                            "reason",
+                            "verification"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "boundaries": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "condition": {
+                              "type": "string"
+                            },
+                            "check": {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "artifact",
+                                    "gate",
+                                    "execution-status"
+                                  ]
+                                },
+                                "type": {
+                                  "type": "string",
+                                  "enum": [
+                                    "file",
+                                    "evidence",
+                                    "image",
+                                    "mask",
+                                    "histogram",
+                                    "curves",
+                                    "contours",
+                                    "circles",
+                                    "points"
+                                  ]
+                                },
+                                "id": {
+                                  "type": "string"
+                                },
+                                "allowed": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "OK"
+                                    ]
+                                  },
+                                  "minItems": 1
+                                },
+                                "caption": {
+                                  "type": "string"
+                                },
+                                "visuals": {
+                                  "type": "array",
+                                  "minItems": 1,
+                                  "maxItems": 12,
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "string"
+                                      },
+                                      "caption": {
+                                        "type": "string"
+                                      },
+                                      "kind": {
+                                        "type": "string",
+                                        "enum": [
+                                          "artifact",
+                                          "project-image",
+                                          "canvas-asset"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "caption"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                }
+                              },
+                              "required": [
+                                "kind"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "onFailure": {
+                              "type": "string",
+                              "enum": [
+                                "STOP",
+                                "UNKNOWN",
+                                "REQUEST_HUMAN"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "condition",
+                            "check",
+                            "onFailure"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "minItems": 1
+                      },
+                      "meta": {
+                        "type": "object",
+                        "properties": {
+                          "sourceFingerprint": {
+                            "type": "string"
+                          },
+                          "schemeFingerprint": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "sourceFingerprint"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "tool",
+                      "parameters",
+                      "boundaries"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "evidenceGap": {
+                    "type": "string"
+                  },
+                  "parameterNotes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8000
+                  }
+                },
+                "required": [
+                  "instanceId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "run_id",
+            "expected_revision",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_canvas_artifact_groups",
+        "description": "讀取畫板真實運算產物圖組、過程圖/結果圖和procedure trace派生依賴；分組不證明算法有效。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "group_canvas_artifacts",
+        "description": "將指定真實run已發布到畫板的產物按真程序/步驟分組，保留實際依賴；不接受自造流程。結果角色須有實際declaredOutputs或role來源，否則保留為過程圖。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "run_id": {
+              "type": "string"
+            },
+            "thread_id": {
+              "type": "string"
+            },
+            "turn_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_canvas_artifact_group",
+        "description": "展開/收起或移動畫板產物圖組，只改顯示不重新計算。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "group_id": {
+              "type": "string"
+            },
+            "expanded": {
+              "type": "boolean"
+            },
+            "title": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "group_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "add_canvas_image_label",
+        "description": "在畫板真圖加有連接錨點的文字氣泡，anchor使用該資產原始像素，position使用畫板座標。氣泡是討論註解，不能冒充精確量測或三項依據。不得覆寫人工標註。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "anchor": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            },
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            },
+            "thread_id": {
+              "type": "string"
+            },
+            "turn_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "item_id",
+            "text",
+            "anchor",
+            "position"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "create_linked_canvas_board",
+        "description": "建立與來源畫板關聯的空畫板，保留原畫板、圖像源、參考資料關係和問答歷史；預設不切換目前視圖。容量滿載時可用，再以 show_algorithm_run(board_id) 發布已保存的真實結果。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_board_id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "open": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "source_board_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_canvas_project_context",
+        "description": "讀取當前或指定畫板的分頁圖像源metadata、參考資料IDs、reference_for關係與標記/工具向量；全文用read_reference分頁讀取，圖片集用get_dataset_images。像素另用 get_visual_image；不把沒有座標映射的渲染圖標記冒充原圖座標。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "connect_visual_images",
+        "description": "在發問來源畫板上連接兩張真實圖片，記錄有方向的關係說明；工程師可直接選中連線繼續詢問。不要只在文字裡描述關係。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "from_item_id": {
+              "type": "string"
+            },
+            "to_item_id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "from_item_id",
+            "to_item_id",
+            "label"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_purpose_scheme_capabilities",
+        "description": "讀取單件方案schema、分類規則、算子契約及分頁原圖metadata；舊方案僅相容。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_node_documentation",
+        "description": "編寫或更新目前方案節點的自由 Markdown 文檔。說明目的、方法選擇、關鍵取捨與已知限制，結構由內容決定。只更新說明，不重算、不改歷史結果。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "node_id": {
+              "type": "string"
+            },
+            "scheme_id": {
+              "type": "string"
+            },
+            "documentation": {
+              "type": "string",
+              "maxLength": 64000,
+              "description": "自由 Markdown 節點文章：從檢測實體、缺陷或關係的本質出發，把特徵定位、身份依據、數值量測與實際判定講清楚。按需配可追溯實測圖及自包含 HTML/SVG 原理圖解，區分實測、推估與示意；無固定欄目，不虛構試驗。"
+            }
+          },
+          "required": [
+            "node_id",
+            "documentation"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "rename_flow_node",
+        "description": "修改目前方案節點的顯示名稱；保留穩定 ID、程式、連線與執行指紋，不使既有實算失效。先 get_purpose_scheme 確認節點 ID；顯示名保存於 scheme.presentation.nodeTitles。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "node_id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "scheme_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "node_id",
+            "title"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_purpose_scheme",
+        "description": "读取当前 Purpose/成像约束/执行图/验收卡片和编译错误。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "validate_purpose_scheme",
+        "description": "檢查完整候選方案，不保存、不切換、不執行。與平台編譯和單件執行共用檢查；返回ok/errors(code/path/hint)/questions與方案指紋。先修正候選再set_purpose_scheme；形式通過不等於算法驗收。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "scheme_json": {
+              "type": "string"
+            },
+            "bind_current_sources": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "scheme_json"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_purpose_scheme",
+        "description": "提交完整方案 JSON 作為 Agent 候選；宿主保存到待審區，不直接替換正式方案。先保存卡片与代码，再 get_algorithm_context 获取 sourceFingerprint，重新填写节点 source 和 justification.meta.sourceFingerprint/schemeFingerprint 后提交。bind_current_sources:true明确绑定当前真实图像身份与meta指纹，不补写选用理由、不捏造验证。提交後由人類在方案面板採用或拒絕。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "scheme_json": {
+              "type": "string"
+            },
+            "bind_current_sources": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "scheme_json"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "adopt_purpose_scheme",
+        "description": "採用指定的 Agent 待審方案；重新編譯成功後才替換正式方案，保留方案事件與指紋。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "proposal_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "proposal_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "reject_purpose_scheme",
+        "description": "拒絕指定的 Agent 待審方案並保留拒絕原因；不改正式方案。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "proposal_id": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "proposal_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "compile_scheme",
+        "description": "编译当前方案；scheme 缺链硬失败，draft 仅用于临时实算。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "scheme"
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_purpose_scheme",
+        "description": "編譯並執行目前工件的完整方案，通常一張圖片；不默認遍歷圖像源。多視圖單件用run_workpiece_scheme，明確批量用run_dataset_scheme。舊式方案依已綁定輸入執行；禁止未編譯或失效依據。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_algorithm_capabilities",
+        "description": "讀取算法執行能力與實際套件版本。能力 mode=hybrid-native-first；新建固定算子方案預設使用 Rust typed pipeline/run_pipeline，legacyMode=programmable-python 僅供舊客戶端相容；每個節點與每次 run 都會回傳 resolved executionBackend。run_algorithm 是明確的 Python 相容 fallback，只有在沒有 Rust 算子或明確要求可編程 Python 時使用。像素單位可在未標定影像上開發，但 mm/m 固定方案在 calibration.status 不是 VALID 時會於批次派發被阻止。固定工具只是快捷方式。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_algorithm_context",
+        "description": "取得完整原圖身份、尺寸、標定、人工圈選及既有程式運算紀錄。不需要先建立部件或矩形配方；run_algorithm 原樣回傳 source。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "install_algorithm_packages",
+        "description": "在專案獨立 Python 環境安裝算法依賴，返回真實 pip 結果及環境版本。缺套件時可直接補裝後重跑，不將未預裝套件解釋成不支援該算法。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "packages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "reason": {
+              "type": "string"
+            },
+            "timeout_seconds": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 600
+            }
+          },
+          "required": [
+            "packages",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "environment",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_algorithm",
+        "description": "編寫並執行任意 Python CV 算法程式；可 import、定義函數、組合新流程，不受內建算子清單限制。完整原圖以 image/images/gray 提供，parameters 為明確保存參數；用 save_image/save_json 保存實算中間產物，result 保存數值和 boundaryChecks。程式、環境、錯誤與輸出全部留存。先讀 get_algorithm_capabilities/context，編寫節點文檔，執行失敗可依 traceback 自行修正再跑。多步程式使用procedure/step SDK保存procedureTrace與具名輸入輸出；完整專案使用mode:scheme並指定scheme_node_id，探索使用draft。source 原樣取自 get_algorithm_context；documentation 為自由文檔，舊 justification 僅相容歷史引用。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "parameters_json": {
+              "type": "string"
+            },
+            "image_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "projectEpoch": {
+                  "type": "integer"
+                },
+                "workflowRevision": {
+                  "type": "integer"
+                },
+                "schemeFingerprint": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "imageId": {
+                            "type": "string"
+                          },
+                          "imageSha256": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "width": {
+                            "type": "integer"
+                          },
+                          "height": {
+                            "type": "integer"
+                          },
+                          "contentSha256": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          }
+                        },
+                        "required": [
+                          "imageId",
+                          "imageSha256",
+                          "width",
+                          "height",
+                          "contentSha256"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "imageId": {
+                            "type": "string"
+                          },
+                          "imageSha256": {
+                            "type": "string"
+                          },
+                          "width": {
+                            "type": "integer"
+                          },
+                          "height": {
+                            "type": "integer"
+                          },
+                          "pixelFingerprint": {
+                            "type": "string"
+                          },
+                          "assetFingerprint": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "imageId",
+                          "imageSha256",
+                          "width",
+                          "height",
+                          "pixelFingerprint",
+                          "assetFingerprint"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "projectEpoch",
+                "workflowRevision",
+                "images"
+              ],
+              "additionalProperties": false
+            },
+            "expected_outputs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "image",
+                      "evidence",
+                      "file"
+                    ]
+                  },
+                  "dataContract": {
+                    "title": "AgentCV node data contract",
+                    "description": "Explicit port meaning. Exact kind, frame and units must agree across an edge; no implicit conversion. Geometry JSON repeats coordinates; measurements contain value/unit; homography contains matrix/from/to. Contracts do not prove algorithm accuracy.",
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "image",
+                              "mask"
+                            ]
+                          },
+                          "coordinates": {
+                            "type": "object",
+                            "properties": {
+                              "frame": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "input"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "reference"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "artifact"
+                                      },
+                                      "nodeId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "artifactId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "nodeId",
+                                      "artifactId"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              },
+                              "unit": {
+                                "enum": [
+                                  "px",
+                                  "mm",
+                                  "m"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "frame",
+                              "unit"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "coordinates"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "points",
+                              "contours",
+                              "roi"
+                            ]
+                          },
+                          "coordinates": {
+                            "type": "object",
+                            "properties": {
+                              "frame": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "input"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "reference"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "artifact"
+                                      },
+                                      "nodeId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "artifactId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "nodeId",
+                                      "artifactId"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              },
+                              "unit": {
+                                "enum": [
+                                  "px",
+                                  "mm",
+                                  "m"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "frame",
+                              "unit"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "coordinates"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "const": "homography"
+                          },
+                          "from": {
+                            "type": "object",
+                            "properties": {
+                              "frame": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "input"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "reference"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "artifact"
+                                      },
+                                      "nodeId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "artifactId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "nodeId",
+                                      "artifactId"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              },
+                              "unit": {
+                                "enum": [
+                                  "px",
+                                  "mm",
+                                  "m"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "frame",
+                              "unit"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "to": {
+                            "type": "object",
+                            "properties": {
+                              "frame": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "input"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "reference"
+                                      },
+                                      "slot": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "slot"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "kind": {
+                                        "const": "artifact"
+                                      },
+                                      "nodeId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "artifactId": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "kind",
+                                      "nodeId",
+                                      "artifactId"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                ]
+                              },
+                              "unit": {
+                                "enum": [
+                                  "px",
+                                  "mm",
+                                  "m"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "frame",
+                              "unit"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "from",
+                          "to"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "const": "measurement"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "unit"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "const": "classification"
+                          },
+                          "categories": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "minItems": 1,
+                            "uniqueItems": true
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "categories"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "json",
+                              "file"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "result",
+                      "intermediate"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 48
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "scheme"
+              ]
+            },
+            "scheme_node_id": {
+              "type": "string"
+            },
+            "documentation": {
+              "type": "string",
+              "maxLength": 64000,
+              "description": "自由 Markdown 節點文章：從檢測實體、缺陷或關係的本質出發，把特徵定位、身份依據、數值量測與實際判定講清楚。按需配可追溯實測圖及自包含 HTML/SVG 原理圖解，區分實測、推估與示意；無固定欄目，不虛構試驗。"
+            },
+            "justification": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "timeout_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 600
+            }
+          },
+          "required": [
+            "title",
+            "code",
+            "parameters_json",
+            "source",
+            "expected_outputs"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_algorithm_run",
+        "description": "讀取已保存的算法程式、參數、原圖綁定、實算數據、環境和錯誤；可據此改寫程式或重跑。已封存紀錄自動依批次索引讀取，也可傳 get_inspection_unit / get_dataset_execution 的 recordRef 為 reference_json（同時指定run_id）；不恢復整批到記憶體或畫板。完整JSON產物用artifact_id及path分頁；大型支持點不直接塞入對話。offset/limit讀陣列（每頁最多128）或文字（最多16000字）。圖像像素另從 get_visual_context / get_visual_image 讀取。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "reference_json": {
+              "type": "string"
+            },
+            "include_code": {
+              "type": "boolean"
+            },
+            "artifact_id": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "show_algorithm_run",
+        "description": "打開自編算法的圖像結果及節點文檔；可選具體產物。真正回貼聊天另用 get_visual_context + show_visual_image。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "board_id": {
+              "type": "string"
+            },
+            "artifact_id": {
+              "type": "string"
+            },
+            "section": {
+              "type": "string",
+              "enum": [
+                "document",
+                "tool",
+                "parameters",
+                "boundary"
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "present_algorithm_result",
+        "description": "把任意自編算法結果編排到第6步主工作區，而非只開紀錄彈窗。先讀 get_algorithm_capabilities.presentation：presentation_json 宣告 title/imageId/layout(focus|compare)/components；image 引用 source.artifactId；metrics/table/plot/text 引用 source:{artifactId?,path?} 的真實資料。不能填造數值、HTML或URL。返回真正渲染的回執；接著 get_algorithm_presentation 回讀驗證。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "presentation_json": {
+              "type": "string"
+            },
+            "component_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "presentation_json"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_algorithm_presentation",
+        "description": "回讀目前主工作區的Pi結果視圖、來源是否仍有效、選中元件及宿主渲染回執。viewVisible 表示該主工作區目前可見；圖片須有 loaded 及實際 naturalWidth/Height。MOUNTED 只證明元件存在，不代表算法準確或驗收通過；不能把保存的舊回執當本次畫面。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "presentation_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_algorithm_presentation",
+        "description": "調整已建立視圖的選中元件、原圖並排版面或節點文檔，返回目前界面。這是Pi可操作的顯示協定，不改前端原始碼或檢測結果。切換後再 get_algorithm_presentation 核對回執。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "presentation_id": {
+              "type": "string"
+            },
+            "component_id": {
+              "type": "string"
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "focus",
+                "compare"
+              ]
+            },
+            "section": {
+              "type": "string",
+              "enum": [
+                "document",
+                "tool",
+                "parameters",
+                "boundary"
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "adopt_algorithm_output",
+        "description": "將某次自編程式的具名結構化量測輸出接回主流程。先讀 get_algorithm_capabilities.measurementOutputs；只有 result.measurementOutputs 中的完整四邊幾何/支持點/品質閾值/實際邊界檢查可供矩形量測 adapter 使用。任意算法仍可呈現，不需此契約。宿主重算品質、交點、寬高與既有規則；採用保持TRIAL，失敗會列詳細errors，不改人工答案、不發布。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "output_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "output_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_inspection_capabilities",
+        "description": "讀取四側幾何量測快捷工具：掃描方向、第一/最後/第N條合格線、內/外/最近、極性及設計文檔。新算法另用 run_algorithm，不受此快捷工具的選項限制。它與可執行算子圖是不同入口；已有四側量測方案應先讀此工具與 get_edge_search_context。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_edge_search_context",
+        "description": "讀取目前四側 ROI、真候選、支持品質、人工錨點來源、選邊意圖、實際參數來源和 source 綁定。trial_edge_search 必須原樣傳回 source 並保存實際參數，不猜來源。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            },
+            "target_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "trial_edge_search",
+        "description": "按人描述實際重算四側候選。按方向取第一/最後/第N條時用 intent:scan，selection:first/last/index，scan_direction:outside-in/inside-out/positive/negative，index時帶candidate_index（一基）。scan不要求相對示教框在外側。其他模式可用outer/inner/nearest。建立可撤銷TRIAL。必須提供 get_edge_search_context.source ；documentation 可自由說明設計取捨。沿用固定品質與 ROI，不許放寬門檻；人工錨點留存並明示暫不作用。多個可信外框或不一致回 UNKNOWN，不把最外背景當工件。返回前後量測、新候選、品質與圖像來源。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            },
+            "target_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "sides": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "top",
+                  "bottom",
+                  "left",
+                  "right"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 4
+            },
+            "intent": {
+              "type": "string",
+              "enum": [
+                "outer",
+                "inner",
+                "nearest",
+                "scan"
+              ]
+            },
+            "selection": {
+              "type": "string",
+              "enum": [
+                "first",
+                "last",
+                "nearest",
+                "strongest",
+                "index"
+              ]
+            },
+            "scan_direction": {
+              "type": "string",
+              "enum": [
+                "positive",
+                "negative",
+                "inside-out",
+                "outside-in"
+              ]
+            },
+            "candidate_index": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "contrast_polarity": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "bright-on-dark",
+                "dark-on-bright",
+                "rising",
+                "falling",
+                "any"
+              ]
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "imageId": {
+                  "type": "string"
+                },
+                "imageSha256": {
+                  "type": "string"
+                },
+                "pixelFingerprint": {
+                  "type": "string"
+                },
+                "recipeId": {
+                  "type": "string"
+                },
+                "recipeRevision": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "runId": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "imageId",
+                "imageSha256",
+                "pixelFingerprint",
+                "recipeId",
+                "recipeRevision",
+                "runId"
+              ],
+              "additionalProperties": false
+            },
+            "reason": {
+              "type": "string"
+            },
+            "documentation": {
+              "type": "string",
+              "maxLength": 64000,
+              "description": "自由 Markdown 節點文章：從檢測實體、缺陷或關係的本質出發，把特徵定位、身份依據、數值量測與實際判定講清楚。按需配可追溯實測圖及自包含 HTML/SVG 原理圖解，區分實測、推估與示意；無固定欄目，不虛構試驗。"
+            },
+            "justification": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "intent",
+            "contrast_polarity",
+            "source",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_inspection_view",
+        "description": "把既有四側量測方案顯示為找線疊圖或大幅依據圖，可指定目標、側別及工具/參數/邊界分頁；只改檢視，不改人選、不重新運算。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "target_id": {
+              "type": "string"
+            },
+            "side": {
+              "type": "string",
+              "enum": [
+                "top",
+                "bottom",
+                "left",
+                "right"
+              ]
+            },
+            "section": {
+              "type": "string",
+              "enum": [
+                "document",
+                "tool",
+                "parameters",
+                "boundary"
+              ]
+            },
+            "figure_id": {
+              "type": "string",
+              "enum": [
+                "overview",
+                "candidates",
+                "coverage",
+                "comparison",
+                "scan-order"
+              ]
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_pipeline_capabilities",
+        "description": "讀取真實可執行算子、版本、參數型別、圖連接方式與適用限制。新任務先核對能力，不能憑舊檢查項選單判斷不支援。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_pipeline_evidence",
+        "description": "按需分頁讀取目前版本真實圖像證據。path 留空看可用欄位；例如 evidence.peaks、evidence.radialCurve、evidence.peakGaps、evidence.missingSectors、evidence.centerEstimation、evidence.holeCenterCandidates、decision.toolChoice、decision.parameterChoices、decision.boundaries、summary 或 parameters。包含原圖座標系；失效結果拒讀，不能用候選值冒充有效量測。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            },
+            "node_id": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            }
+          },
+          "required": [
+            "node_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "select_image",
+        "description": "選取專案中的另一張原圖；返回該圖狀態。不能以第一張圖片代表整批。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "image_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_pipeline_view",
+        "description": "直接將方案畫布切到指定算子、原圖/結果/並排、影像/曲線，可同時切圖片。只改檢視，不計算、不改方案；用來把實算證據展示給使用者。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "node_id": {
+              "type": "string"
+            },
+            "image_id": {
+              "type": "string"
+            },
+            "visual": {
+              "type": "string",
+              "enum": [
+                "image",
+                "curves"
+              ]
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "input",
+                "result",
+                "compare"
+              ]
+            },
+            "section": {
+              "type": "string",
+              "enum": [
+                "document",
+                "tool",
+                "parameters",
+                "boundary"
+              ]
+            },
+            "parameter_name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "node_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "create_pipeline",
+        "description": "依檢測目標提交可執行草案。先讀能力與真實輸出契約；documentations 可按節點 id 提供自由 Markdown 文檔。規格不得從樣本答案猜測。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "enum": [
+                "gear",
+                "annulus",
+                "holes",
+                "two_boundary"
+              ]
+            },
+            "goal": {
+              "type": "string"
+            },
+            "parameters": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "documentations": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 64000,
+                "description": "自由 Markdown 節點文章：從檢測實體、缺陷或關係的本質出發，把特徵定位、身份依據、數值量測與實際判定講清楚。按需配可追溯實測圖及自包含 HTML/SVG 原理圖解，區分實測、推估與示意；無固定欄目，不虛構試驗。"
+              }
+            },
+            "justifications": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "measurement": {
+                    "type": "string"
+                  },
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  },
+                  "equals": {
+                    "type": [
+                      "number",
+                      "string",
+                      "boolean"
+                    ]
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "measurement"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "task",
+            "goal"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_pipeline_graph",
+        "description": "依 get_pipeline_capabilities 組裝顯式算子圖。plan_json 包含 schema/id/revision/nodes；節點可用 documentation 自由說明設計。圖、參數和真實引用仍驗證，新版方案須重新實算。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "plan_json": {
+              "type": "string"
+            },
+            "goal": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "plan_json",
+            "goal"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_pipeline",
+        "description": "實際運算指定原圖或目前圖，保存每一步遮罩、輪廓、曲線、支持點與參數依據；返回精簡量測，圖像證據在方案頁。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_pipeline_batch",
+        "description": "對專案所有圖片逐張實算同一版方案，保留各圖結果；未標註或缺公差不冒稱驗收通過。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "verify_pipeline_delivery",
+        "description": "僅適用舊式 workflow.pipelinePlan；單件 purposeScheme 改讀 get_dataset_execution 的 evidenceReady 及 get_project_acceptance，不要呼叫此接口。提交前由宿主腳本重新核對真實引用、完整參數、真實產物及當前圖像/方案/run 綁定。node_id 留空核對全鏈；指定時核對該步及全部上游。缺漏或僅診斷會拒絕並返回逐項 errors/hint；成功只表示本次證據合約成立，不是人工採用、量測準確率或正式發布。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            },
+            "node_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_context",
+        "description": "讀取七步狀態、原圖尺寸、工件、通用部件、成像標定、可讀參考資料、人工答案與真實算法結果。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_canvas_image_mode",
+        "description": "讀取畫板圖卡的固定／即時模式、訂閱接口與目前幀狀態；不載入像素。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "item_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_canvas_image_mode",
+        "description": "設定 Agent 自己的圖卡為 live 或 fixed；live 訂閱目前方案節點的已宣告圖像輸出，fixed 固定當前已就緒幀。固定實算圖組或已有標註不可改成 live，請先 add_visual_image 新增獨立圖卡。不可覆寫工程師物件。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "live",
+                "fixed"
+              ]
+            },
+            "scheme_node_id": {
+              "type": "string"
+            },
+            "artifact_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "item_id",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_visual_context",
+        "description": "讀取共用畫板、分頁圖像目錄與來源綁定；不含像素。offset 是 0-based，第一頁使用 offset=0；使用 offset/limit 翻頁或 image_ids/run_id 篩選。回傳的 pixelAccess=NOT_READ 表示尚未讀像素，目錄不是看過圖的證據。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            },
+            "image_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 200
+            },
+            "run_id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_visual_image",
+        "description": "實際將平台圖像像素送入本次模型上下文，返回真實圖像 parts 和來源；source_id（get_visual_context 的 catalog[].source_id，不是資料集 imageId）與 asset_id 二擇一；封存實算圖則改傳 reference_json、run_id、artifact_id 三者，不同時傳畫板引用。不發布、不切換工件。可讀取歷史快照，但不得冒稱為目前有效量測；只支援圖像輸入模型。同一圖在板上有多份標註時必須指定 item_id。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "asset_id": {
+              "type": "string"
+            },
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "reference_json": {
+              "type": "string"
+            },
+            "run_id": {
+              "type": "string"
+            },
+            "artifact_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "show_visual_image",
+        "description": "把平台真實圖像引用顯示在助理聊天內，保留不可變來源快照；不接受網址、HTML 或自造圖片。source_id、asset_id 二擇一。展示不代表你已讀取像素，讀圖另用 get_visual_image；有多份標註時必須指定 item_id。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "asset_id": {
+              "type": "string"
+            },
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "caption": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "add_visual_image",
+        "description": "把圖像目錄中的真實圖或已保存快照加入共用問詢畫板，source_id、asset_id 二擇一。x/y 是畫板座標。僅共創討論，不改算法、人工 ROI、品質答案或驗收狀態。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "asset_id": {
+              "type": "string"
+            },
+            "board_id": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "annotate_visual_board",
+        "description": "在共用畫板指定圖片上新增 Agent 標註；points 是該圖原始像素座標，不是畫板或螢幕座標。可用鋼筆、遮罩、線、箭頭、矩形、橢圓或文字；人類標註與 CV ROI 不可覆寫。標註僅是討論，不是實算證據。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "pen",
+                "mask",
+                "line",
+                "arrow",
+                "rect",
+                "ellipse",
+                "text"
+              ]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 4096
+            },
+            "text": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "stroke_width": {
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 64
+            }
+          },
+          "required": [
+            "item_id",
+            "type",
+            "points"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "go_to_step",
+        "description": "前往七步中的一頁，仍遵守完成條件。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "step": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            }
+          },
+          "required": [
+            "step"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "propose_region",
+        "description": "在原圖座標提出工件或部件範圍供人採用，不能冒充精密邊緣或已驗證定位。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "target_id": {
+              "type": "string"
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "target_id",
+            "points",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "suggest_foreground",
+        "description": "實際執行本機前景範圍候選檢測，返回算法結果與方法。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_workpiece_info",
+        "description": "按使用者明確提供的資訊記錄工件名稱與介紹，不猜型號。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "add_part",
+        "description": "依使用者說明建立通用部件；位置可另用propose_region提議，不預置部件名稱。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_target_note",
+        "description": "為已存在工件或部件補充說明。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "target_id": {
+              "type": "string"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "target_id",
+            "note"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "add_relation",
+        "description": "記錄使用者描述的對象關係；不能把AI猜測的裝配關係當人確認。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_id": {
+              "type": "string"
+            },
+            "to_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "contains",
+                "mounted_on",
+                "relative_to",
+                "adjacent_to"
+              ]
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "from_id",
+            "to_id",
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_reference",
+        "description": "讀取一份實際已解析的文字參考資料；未解析PDF/3D必須回報限制。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "reference_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 24000
+            }
+          },
+          "required": [
+            "reference_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "propose_label",
+        "description": "將用戶所說判定對應到圖片及檢查項，打開人工標記表單供核對；不自行建立驗收真值。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "image_id": {
+              "type": "string"
+            },
+            "check_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "OK",
+                "NG",
+                "UNKNOWN"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "image_id",
+            "check_id",
+            "status"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "propose_check",
+        "description": "提出通用檢查項草案，軟體打開供使用者核對；不得猜正式公差。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "width",
+                "height",
+                "center_distance",
+                "angle",
+                "presence"
+              ]
+            },
+            "target_id": {
+              "type": "string"
+            },
+            "reference_id": {
+              "type": "string"
+            },
+            "unit": {
+              "type": "string",
+              "enum": [
+                "px",
+                "mm",
+                "deg",
+                "boolean"
+              ]
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "expected": {
+              "type": "boolean"
+            },
+            "basis": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "kind",
+            "target_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "build_recipe",
+        "description": "依已確認對象與檢查項生成真實可執行的算法配方；缺必要條件會失敗。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_dataset_images",
+        "description": "分頁讀取圖像源metadata，不解碼整個資料集。offset 是 0-based，第一頁使用 offset=0；原圖需按需 get_visual_image，檔名不是標註答案。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_workpiece_scheme",
+        "description": "執行已編譯方案的一件工件；通常一張圖，多視圖必須是同件且提供views。失敗與故障分離，真輸出回原畫板。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "unit_id": {
+              "type": "string"
+            },
+            "image_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "views_json": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_project_acceptance",
+        "description": "讀取驗收約定、缺項問題、固定基準及真實失敗案例；開發樣本分頁。保留驗收集由人類啟動，不能冒充盲測。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "baseline_id": {
+              "type": "string"
+            },
+            "case_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "propose_project_acceptance",
+        "description": "保存完整驗收草案，不能代替人類確認。欄位 maxMissRate/maxFalseRejectRate/maxMismatchRate/maxFaultRate 為0–1比例，maxCycleMs>0；unitDescription/missingPolicy/faultPolicy/source 為文字。缺項主動詢問，禁止猜答案。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "draft_json": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "draft_json"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_acceptance_baseline",
+        "description": "重跑固定開發基準：凍結的圖片、人工答案與同一分類契約；使用真實完整執行與保存。保留驗收集僅由人類面板啟動。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "baseline_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "baseline_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "compare_acceptance_runs",
+        "description": "對比同一固定基準的兩次真實執行，列出修復、新退步、未解決工件及驗收條件；缺測不能算通過。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "before_id": {
+              "type": "string"
+            },
+            "after_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "before_id",
+            "after_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_dataset_scheme",
+        "description": "以同一已編譯單件方案逐件跑圖像源回歸，無逐件LLM調用。預設建立可輪詢的背景任務，保存實算、進度、故障及真值比對；不宣稱工業發布。需要同回合等待時才傳 async:false；若上次任務中斷，可傳 resume_execution_id 從已保存的逐件紀錄續跑。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "source_id": {
+              "type": "string"
+            },
+            "units_json": {
+              "type": "string"
+            },
+            "async": {
+              "type": "boolean"
+            },
+            "resume_execution_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_agent_job",
+        "description": "讀取 Agent 背景任務狀態與已產生的執行識別；不重跑、不改方案。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "job_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "job_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_dataset_execution",
+        "description": "分頁讀真實逐件結果與統計，故障不計作NG命中；沒有答案不能冒充召回率。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "execution_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          },
+          "required": [
+            "execution_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_inspection_unit",
+        "description": "按保存recordRef讀單件結果摘要，不自動切換畫板。完整歷史方案及程式不重複附送，明確include_scheme:true才讀方案。需開啟圖像時明確open_on_canvas:true；保留來源/分類/時間。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "reference_json": {
+              "type": "string"
+            },
+            "open_on_canvas": {
+              "type": "boolean"
+            },
+            "include_scheme": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "reference_json"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "rebind_canvas_card",
+        "description": "將既有分類／諮詢／統計卡重新關聯到同畫板真實待檢圖像源；先核對來源角色，固定參考圖不可作待檢對象。保存原人類回答的來源歷史，不把舊來源改寫成新來源。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "card_id": {
+              "type": "string"
+            },
+            "source_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "card_id",
+            "source_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_canvas_consultations",
+        "description": "讀取真實待諮詢卡、人類最新回答、目前規格值與可驗證採用回執；回答不等於已解決。SPEC_UPDATED_UNLINKED 表示問題已消失但缺少回答採用記錄，需核對既有值。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "card_id": {
+              "type": "string"
+            },
+            "source_id": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "apply_canvas_consultation",
+        "description": "將指定最新人類回答轉成真實規格並保存採用回執。先 get_canvas_consultations；patch_json 使用字面點分鍵，例如 {\"execution.timingRequirement\":{\"maxUnitMs\":300}}；不是 {\"execution\":{\"timingRequirement\":...}}。數值必須來自本次人類回答，此例不是預設。只可含對應的一個完整欄位 execution.timingRequirement 或 classificationSpec；宿主自動補入精確回答 provenance。必須保留其他原有規格。宿主驗證回答時間、方案指紋、規格結構及原問題消失；成功不是人類複核或算法驗收。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "card_id": {
+              "type": "string"
+            },
+            "question_id": {
+              "type": "string"
+            },
+            "answer_at": {
+              "type": "string"
+            },
+            "expected_scheme_fingerprint": {
+              "type": "string"
+            },
+            "patch_json": {
+              "type": "string"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "card_id",
+            "question_id",
+            "answer_at",
+            "expected_scheme_fingerprint",
+            "patch_json",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": true
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "add_canvas_card",
+        "description": "為真實圖像源建立分類、待諮詢或統計卡。缺少規格保留醒目問號，不捏造答案。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "source_id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "classification",
+                "consultation",
+                "statistics"
+              ]
+            },
+            "title": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_id",
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "project-write",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_canvas_layers",
+        "description": "讀目前畫板的真實結構圖層與幾何，可依run/layer/object和點offset分頁；區分鎖定實算與人工意圖。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "run_id": {
+              "type": "string"
+            },
+            "layer_id": {
+              "type": "string"
+            },
+            "object_id": {
+              "type": "string"
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1024
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "read",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "reference_canvas_layer",
+        "description": "在某張畫板圖上顯示引用真實上游圖層；這是display-only，不能冒充算法計算依賴。跨圖必需明確affine。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "item_id": {
+              "type": "string"
+            },
+            "run_id": {
+              "type": "string"
+            },
+            "layer_id": {
+              "type": "string"
+            },
+            "transform": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 6,
+              "maxItems": 6
+            }
+          },
+          "required": [
+            "item_id",
+            "run_id",
+            "layer_id"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_canvas_layer_visibility",
+        "description": "設定真實圖層引用的可見性；不改實算幾何、鎖定或算法參數。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "board_id": {
+              "type": "string"
+            },
+            "reference_id": {
+              "type": "string"
+            },
+            "visible": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "reference_id",
+            "visible"
+          ],
+          "additionalProperties": false
+        },
+        "risk": "display",
+        "requiresHumanApproval": false
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_current",
+        "description": "實際試跑目前圖片，返回真實定位、找線、量測與判定。",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "risk": "compute",
+        "requiresHumanApproval": true
+      }
+    }
+  ],
+  "systemPrompt": "你是 AgentCV 的圖像處理協作 Agent，以繁體中文協助工程師在畫板表達需求、分析真實圖像並建立可解釋方案。先讀取適用 CV skill，按需讀取參考文件，使用宿主真實工具；算法不設白名單。專案檢測要求須形成完整方案，經編譯再執行；探索試算如實標為草稿。以自由節點文檔說明設計理由與取捨，無固定三欄，遵守人的確認權限；分清實算、歷史、假設與未知，不捏造結果或聲稱未完成的操作。"
+}

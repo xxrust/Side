@@ -1,0 +1,11 @@
+button.icon-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;gap:0;padding:6px;width:34px;height:34px;line-height:1}
+button.icon-button svg{display:block;width:21px;height:21px;flex:none;pointer-events:none}
+button.icon-label-button{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+button.icon-label-button svg{display:block;width:17px;height:17px;flex:0 0 17px;pointer-events:none}
+.project-actions button.icon-label-button{justify-content:flex-start}
+.image-edit.icon-button{width:25px;height:25px;padding:4px}.image-edit.icon-button svg{width:15px;height:15px}
+.canvas-tools .icon-button,.zoom-tools .icon-button{width:34px;height:34px;padding:6px}
+.inquiry-tools .icon-button{width:36px;height:32px;min-height:32px;padding:5px;align-self:center;flex:0 0 32px}
+.inquiry-zoom .icon-button{width:28px;height:28px;padding:4px}
+.inquiry-zoom .icon-button svg{width:19px;height:19px}
+@media(max-height:760px){.inquiry-tools .icon-button{height:25px;min-height:25px;flex-basis:25px;padding:2px}.inquiry-tools .icon-button svg{width:20px;height:20px}}

@@ -1,0 +1,104 @@
+{
+  "pages": 16,
+  "errors": [],
+  "layout": [
+    {
+      "page": 1,
+      "bottom": 855.90625,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 2,
+      "bottom": 850.765625,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 3,
+      "bottom": 898.859375,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 4,
+      "bottom": 850.765625,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 5,
+      "bottom": 898.859375,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 6,
+      "bottom": 874.8125,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 7,
+      "bottom": 895.546875,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 8,
+      "bottom": 898.859375,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 9,
+      "bottom": 1000.78125,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 10,
+      "bottom": 874.8125,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 11,
+      "bottom": 823.578125,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 12,
+      "bottom": 855.3125,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 13,
+      "bottom": 847.625,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 14,
+      "bottom": 794.296875,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 15,
+      "bottom": 922.90625,
+      "footer": 1060.734375,
+      "overflow": false
+    },
+    {
+      "page": 16,
+      "bottom": 929.15625,
+      "footer": 1060.734375,
+      "overflow": false
+    }
+  ],
+  "images": 11,
+  "scope": "Document rendering only; no CV execution."
+}

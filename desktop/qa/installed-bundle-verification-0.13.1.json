@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-26T00:24:56.786Z",
+  "bundle": "/Users/liangshiben/13-cv/AgentCV.app",
+  "node": "/Users/liangshiben/.local/bin/node",
+  "architecture": "/Users/liangshiben/13-cv/AgentCV.app/Contents/MacOS/agentcv-desktop: Mach-O 64-bit executable arm64",
+  "signature": "valid local ad-hoc signature",
+  "resourcesVerified": {
+    "pi-bridge.mjs": "fda4065260f957028149548d3fe15fe4ae8753911981fe8b7ac69ed8a5b62373",
+    "pi-auth.mjs": "a2d5c05e735e870472e57fd60fc9834cac6e2b09a6ec9020cf7907ffe014366e",
+    "agent-contract.json": "8c77de2257d7ecfcc876771cbb4abf27568a6770dfd884c6c5b5c6de89313ec7",
+    "cv-runtime.py": "e2a3374083207821d4215193541ce2286c7f768538c60b30a22ae6807ee8ec64"
+  },
+  "piBridge": {
+    "model": {
+      "provider": "openai-codex",
+      "id": "gpt-6.1-sol"
+    },
+    "availableModelCount": 24,
+    "tools": [
+      "get_algorithm_capabilities",
+      "get_algorithm_context",
+      "install_algorithm_packages",
+      "run_algorithm",
+      "get_algorithm_run",
+      "show_algorithm_run",
+      "get_inspection_capabilities",
+      "get_edge_search_context",
+      "trial_edge_search",
+      "set_inspection_view",
+      "get_pipeline_capabilities",
+      "get_pipeline_evidence",
+      "select_image",
+      "set_pipeline_view",
+      "create_pipeline",
+      "set_pipeline_graph",
+      "run_pipeline",
+      "run_pipeline_batch",
+      "verify_pipeline_delivery",
+      "get_context",
+      "get_visual_context",
+      "get_visual_image",
+      "show_visual_image",
+      "add_visual_image",
+      "annotate_visual_board",
+      "go_to_step",
+      "propose_region",
+      "suggest_foreground",
+      "set_workpiece_info",
+      "add_part",
+      "set_target_note",
+      "add_relation",
+      "read_reference",
+      "propose_label",
+      "propose_check",
+      "build_recipe",
+      "run_current"
+    ]
+  },
+  "nativeUiAcceptance": "Not assessed by this bundle verifier; see the separately recorded native UI run."
+}

@@ -1,0 +1,2930 @@
+{
+  "schema": "agentcv-project-0.5",
+  "saved_at": "2026-10-23T13:37:42.340Z",
+  "images": [
+    {
+      "id": "image-mvl0lnd4-1",
+      "name": "01-good.png",
+      "dataURL": "data:image/png;base64,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",
+      "width": 640,
+      "height": 360,
+      "sha256": "9c4367fd1b2caa05a31ab1232a6d656091e3634116b6ced2c79029cc1acec41d",
+      "hash_status": "display-rgba8-sha256",
+      "objects": [
+        {
+          "id": "demo-left",
+          "number": 1,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "左孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 210,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          },
+          "result": {
+            "status": "SELECTED",
+            "candidates": [
+              {
+                "id": "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-left:c1",
+                "geometry": {
+                  "type": "circle",
+                  "center": {
+                    "x": 209.51147802432507,
+                    "y": 184.53183881976975
+                  },
+                  "radius": 31.76290204237395,
+                  "rms_px": 0.3571165006577486
+                },
+                "sample_count": 96,
+                "inlier_count": 96,
+                "points": [
+                  {
+                    "x": 240.7,
+                    "y": 185
+                  },
+                  {
+                    "x": 240.63426894342513,
+                    "y": 187.0078760673654
+                  },
+                  {
+                    "x": 241.13136864713763,
+                    "y": 189.0985224357096
+                  },
+                  {
+                    "x": 240.79665780466144,
+                    "y": 191.12583611130643
+                  },
+                  {
+                    "x": 239.65392286707439,
+                    "y": 192.9457446846474
+                  },
+                  {
+                    "x": 239.7336060661463,
+                    "y": 195.0931992105193
+                  },
+                  {
+                    "x": 239.0098173208544,
+                    "y": 197.0162597762638
+                  },
+                  {
+                    "x": 238.1618040841264,
+                    "y": 198.88786487287663
+                  },
+                  {
+                    "x": 237.19319767883138,
+                    "y": 200.7
+                  },
+                  {
+                    "x": 236.1081458262999,
+                    "y": 202.4449053168155
+                  },
+                  {
+                    "x": 234.9112948851448,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 233.0814820896046,
+                    "y": 205.24191652357212
+                  },
+                  {
+                    "x": 232.20315292925758,
+                    "y": 207.20315292925758
+                  },
+                  {
+                    "x": 230.24191652357212,
+                    "y": 208.0814820896046
+                  },
+                  {
+                    "x": 229.11510887087383,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 227.44490531681552,
+                    "y": 211.1081458262999
+                  },
+                  {
+                    "x": 225.7,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 223.88786487287663,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 222.0162597762638,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 220.0931992105193,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 217.9457446846474,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 216.12583611130643,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 214.0985224357096,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 212.0078760673654,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 210,
+                    "y": 215.7
+                  },
+                  {
+                    "x": 207.9921239326346,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 205.9014775642904,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 203.87416388869357,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 202.0542553153526,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 199.9068007894807,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 197.9837402237362,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 196.11213512712337,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 194.3,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 192.16619552007077,
+                    "y": 211.6901745549117
+                  },
+                  {
+                    "x": 190.88489112912617,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 188.8349993352878,
+                    "y": 209.13405782007518
+                  },
+                  {
+                    "x": 186.80689757708123,
+                    "y": 208.19310242291877
+                  },
+                  {
+                    "x": 185.86594217992484,
+                    "y": 206.1650006647122
+                  },
+                  {
+                    "x": 185.08870511485523,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 183.3098254450883,
+                    "y": 202.83380447992926
+                  },
+                  {
+                    "x": 182.2005845385195,
+                    "y": 201.05
+                  },
+                  {
+                    "x": 181.2103849968007,
+                    "y": 199.19746695602996
+                  },
+                  {
+                    "x": 180.3434670063877,
+                    "y": 197.2841381789194
+                  },
+                  {
+                    "x": 179.6035428432071,
+                    "y": 195.3182068362315
+                  },
+                  {
+                    "x": 178.99378097612092,
+                    "y": 193.30809134779093
+                  },
+                  {
+                    "x": 177.83024280277402,
+                    "y": 191.39896256212901
+                  },
+                  {
+                    "x": 178.1746199499007,
+                    "y": 189.18989077026367
+                  },
+                  {
+                    "x": 177.96872856404082,
+                    "y": 187.0994404482876
+                  },
+                  {
+                    "x": 177.9,
+                    "y": 185
+                  },
+                  {
+                    "x": 177.96872856404082,
+                    "y": 182.9005595517124
+                  },
+                  {
+                    "x": 178.1746199499007,
+                    "y": 180.81010922973633
+                  },
+                  {
+                    "x": 177.83024280277402,
+                    "y": 178.601037437871
+                  },
+                  {
+                    "x": 178.99378097612092,
+                    "y": 176.6919086522091
+                  },
+                  {
+                    "x": 178.94069175256053,
+                    "y": 174.4567855380563
+                  },
+                  {
+                    "x": 180.3434670063877,
+                    "y": 172.71586182108064
+                  },
+                  {
+                    "x": 181.2103849968007,
+                    "y": 170.80253304397004
+                  },
+                  {
+                    "x": 182.2005845385195,
+                    "y": 168.95000000000002
+                  },
+                  {
+                    "x": 183.30982544508828,
+                    "y": 167.16619552007077
+                  },
+                  {
+                    "x": 183.97801043844748,
+                    "y": 165.03262512851396
+                  },
+                  {
+                    "x": 185.86594217992482,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 186.80689757708123,
+                    "y": 161.80689757708126
+                  },
+                  {
+                    "x": 188.8349993352878,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 190.03262512851396,
+                    "y": 158.97801043844748
+                  },
+                  {
+                    "x": 192.16619552007077,
+                    "y": 158.3098254450883
+                  },
+                  {
+                    "x": 193.95,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 195.80253304397004,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 197.71586182108064,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 199.4567855380563,
+                    "y": 153.94069175256053
+                  },
+                  {
+                    "x": 201.6919086522091,
+                    "y": 153.99378097612092
+                  },
+                  {
+                    "x": 203.60103743787099,
+                    "y": 152.83024280277405
+                  },
+                  {
+                    "x": 205.81010922973636,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 207.9005595517124,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 210,
+                    "y": 152.9
+                  },
+                  {
+                    "x": 212.09944044828757,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 214.18989077026364,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 216.39896256212901,
+                    "y": 152.83024280277402
+                  },
+                  {
+                    "x": 218.3080913477909,
+                    "y": 153.9937809761209
+                  },
+                  {
+                    "x": 220.3182068362315,
+                    "y": 154.6035428432071
+                  },
+                  {
+                    "x": 222.28413817891936,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 224.19746695602993,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 226.05,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 227.83380447992923,
+                    "y": 158.30982544508828
+                  },
+                  {
+                    "x": 229.1151088708738,
+                    "y": 160.0887051148552
+                  },
+                  {
+                    "x": 231.1650006647122,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 233.19310242291874,
+                    "y": 161.80689757708123
+                  },
+                  {
+                    "x": 234.13405782007518,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 234.91129488514477,
+                    "y": 165.88489112912617
+                  },
+                  {
+                    "x": 236.1081458262999,
+                    "y": 167.55509468318448
+                  },
+                  {
+                    "x": 237.19319767883135,
+                    "y": 169.29999999999998
+                  },
+                  {
+                    "x": 238.1618040841264,
+                    "y": 171.11213512712337
+                  },
+                  {
+                    "x": 239.0098173208544,
+                    "y": 172.9837402237362
+                  },
+                  {
+                    "x": 239.7336060661463,
+                    "y": 174.9068007894807
+                  },
+                  {
+                    "x": 239.65392286707439,
+                    "y": 177.05425531535258
+                  },
+                  {
+                    "x": 240.79665780466144,
+                    "y": 178.87416388869354
+                  },
+                  {
+                    "x": 241.13136864713763,
+                    "y": 180.9014775642904
+                  },
+                  {
+                    "x": 240.63426894342513,
+                    "y": 182.99212393263463
+                  }
+                ],
+                "coverage": 1
+              }
+            ],
+            "selected_ids": [
+              "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-left:c1"
+            ],
+            "rejected_ids": [],
+            "candidate_count": 1,
+            "truncated": false,
+            "algorithm_version": "demo-0.5",
+            "unit": "px",
+            "run_id": "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-left",
+            "input": {
+              "image": {
+                "id": "image-mvl0lnd4-1",
+                "sha256": "9c4367fd1b2caa05a31ab1232a6d656091e3634116b6ced2c79029cc1acec41d"
+              },
+              "roi": {
+                "center": {
+                  "x": 210,
+                  "y": 185
+                },
+                "radius": 60
+              },
+              "parameters": {
+                "threshold": 18,
+                "polarity": "rising"
+              },
+              "tool_revision": 1,
+              "exclude_rois": []
+            },
+            "output": {
+              "type": "GeometrySet",
+              "items": [
+                {
+                  "candidate_id": "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-left:c1",
+                  "geometry": {
+                    "type": "circle",
+                    "center": {
+                      "x": 209.51147802432507,
+                      "y": 184.53183881976975
+                    },
+                    "radius": 31.76290204237395,
+                    "rms_px": 0.3571165006577486
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "demo-right",
+          "number": 2,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "右孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 430,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          },
+          "result": {
+            "status": "AWAITING_SELECTION",
+            "candidates": [
+              {
+                "id": "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-right:c1",
+                "geometry": {
+                  "type": "circle",
+                  "center": {
+                    "x": 429.5114780243251,
+                    "y": 184.53183881976975
+                  },
+                  "radius": 31.762902042373952,
+                  "rms_px": 0.35711650065774636
+                },
+                "sample_count": 96,
+                "inlier_count": 96,
+                "points": [
+                  {
+                    "x": 460.7,
+                    "y": 185
+                  },
+                  {
+                    "x": 460.6342689434251,
+                    "y": 187.0078760673654
+                  },
+                  {
+                    "x": 461.13136864713766,
+                    "y": 189.0985224357096
+                  },
+                  {
+                    "x": 460.79665780466144,
+                    "y": 191.12583611130643
+                  },
+                  {
+                    "x": 459.6539228670744,
+                    "y": 192.9457446846474
+                  },
+                  {
+                    "x": 459.7336060661463,
+                    "y": 195.0931992105193
+                  },
+                  {
+                    "x": 459.0098173208544,
+                    "y": 197.0162597762638
+                  },
+                  {
+                    "x": 458.1618040841264,
+                    "y": 198.88786487287663
+                  },
+                  {
+                    "x": 457.1931976788314,
+                    "y": 200.7
+                  },
+                  {
+                    "x": 456.1081458262999,
+                    "y": 202.4449053168155
+                  },
+                  {
+                    "x": 454.9112948851448,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 453.0814820896046,
+                    "y": 205.24191652357212
+                  },
+                  {
+                    "x": 452.2031529292576,
+                    "y": 207.20315292925758
+                  },
+                  {
+                    "x": 450.2419165235721,
+                    "y": 208.0814820896046
+                  },
+                  {
+                    "x": 449.1151088708738,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 447.4449053168155,
+                    "y": 211.1081458262999
+                  },
+                  {
+                    "x": 445.7,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 443.88786487287666,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 442.01625977626384,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 440.0931992105193,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 437.94574468464737,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 436.12583611130646,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 434.09852243570964,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 432.0078760673654,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 430,
+                    "y": 215.7
+                  },
+                  {
+                    "x": 427.9921239326346,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 425.90147756429036,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 423.8741638886936,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 422.05425531535263,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 419.9068007894807,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 417.98374022373616,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 416.11213512712334,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 414.3,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 412.16619552007074,
+                    "y": 211.6901745549117
+                  },
+                  {
+                    "x": 410.8848911291262,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 408.83499933528776,
+                    "y": 209.13405782007518
+                  },
+                  {
+                    "x": 406.80689757708126,
+                    "y": 208.19310242291877
+                  },
+                  {
+                    "x": 405.86594217992484,
+                    "y": 206.1650006647122
+                  },
+                  {
+                    "x": 405.0887051148552,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 403.3098254450883,
+                    "y": 202.83380447992926
+                  },
+                  {
+                    "x": 402.20058453851954,
+                    "y": 201.05
+                  },
+                  {
+                    "x": 401.2103849968007,
+                    "y": 199.19746695602996
+                  },
+                  {
+                    "x": 400.3434670063877,
+                    "y": 197.2841381789194
+                  },
+                  {
+                    "x": 399.6035428432071,
+                    "y": 195.3182068362315
+                  },
+                  {
+                    "x": 398.9937809761209,
+                    "y": 193.30809134779093
+                  },
+                  {
+                    "x": 397.830242802774,
+                    "y": 191.39896256212901
+                  },
+                  {
+                    "x": 398.17461994990066,
+                    "y": 189.18989077026367
+                  },
+                  {
+                    "x": 397.9687285640408,
+                    "y": 187.0994404482876
+                  },
+                  {
+                    "x": 397.9,
+                    "y": 185
+                  },
+                  {
+                    "x": 397.9687285640408,
+                    "y": 182.9005595517124
+                  },
+                  {
+                    "x": 398.17461994990066,
+                    "y": 180.81010922973633
+                  },
+                  {
+                    "x": 397.830242802774,
+                    "y": 178.601037437871
+                  },
+                  {
+                    "x": 398.9937809761209,
+                    "y": 176.6919086522091
+                  },
+                  {
+                    "x": 398.94069175256055,
+                    "y": 174.4567855380563
+                  },
+                  {
+                    "x": 400.3434670063877,
+                    "y": 172.71586182108064
+                  },
+                  {
+                    "x": 401.2103849968007,
+                    "y": 170.80253304397004
+                  },
+                  {
+                    "x": 402.20058453851954,
+                    "y": 168.95000000000002
+                  },
+                  {
+                    "x": 403.3098254450883,
+                    "y": 167.16619552007077
+                  },
+                  {
+                    "x": 403.9780104384475,
+                    "y": 165.03262512851396
+                  },
+                  {
+                    "x": 405.86594217992484,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 406.8068975770812,
+                    "y": 161.80689757708126
+                  },
+                  {
+                    "x": 408.83499933528776,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 410.0326251285139,
+                    "y": 158.97801043844748
+                  },
+                  {
+                    "x": 412.16619552007074,
+                    "y": 158.3098254450883
+                  },
+                  {
+                    "x": 413.95,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 415.8025330439701,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 417.71586182108064,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 419.4567855380563,
+                    "y": 153.94069175256053
+                  },
+                  {
+                    "x": 421.69190865220907,
+                    "y": 153.99378097612092
+                  },
+                  {
+                    "x": 423.60103743787096,
+                    "y": 152.83024280277405
+                  },
+                  {
+                    "x": 425.8101092297363,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 427.90055955171243,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 430,
+                    "y": 152.9
+                  },
+                  {
+                    "x": 432.09944044828757,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 434.1898907702637,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 436.398962562129,
+                    "y": 152.83024280277402
+                  },
+                  {
+                    "x": 438.3080913477909,
+                    "y": 153.9937809761209
+                  },
+                  {
+                    "x": 440.31820683623147,
+                    "y": 154.6035428432071
+                  },
+                  {
+                    "x": 442.28413817891936,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 444.1974669560299,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 446.05,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 447.8338044799292,
+                    "y": 158.30982544508828
+                  },
+                  {
+                    "x": 449.1151088708738,
+                    "y": 160.0887051148552
+                  },
+                  {
+                    "x": 451.16500066471224,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 453.19310242291874,
+                    "y": 161.80689757708123
+                  },
+                  {
+                    "x": 454.13405782007516,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 454.9112948851448,
+                    "y": 165.88489112912617
+                  },
+                  {
+                    "x": 456.1081458262999,
+                    "y": 167.55509468318448
+                  },
+                  {
+                    "x": 457.1931976788314,
+                    "y": 169.29999999999998
+                  },
+                  {
+                    "x": 458.1618040841264,
+                    "y": 171.11213512712337
+                  },
+                  {
+                    "x": 459.0098173208544,
+                    "y": 172.9837402237362
+                  },
+                  {
+                    "x": 459.7336060661463,
+                    "y": 174.9068007894807
+                  },
+                  {
+                    "x": 459.6539228670744,
+                    "y": 177.05425531535258
+                  },
+                  {
+                    "x": 460.79665780466144,
+                    "y": 178.87416388869354
+                  },
+                  {
+                    "x": 461.13136864713766,
+                    "y": 180.9014775642904
+                  },
+                  {
+                    "x": 460.6342689434251,
+                    "y": 182.99212393263463
+                  }
+                ],
+                "coverage": 1
+              }
+            ],
+            "selected_ids": [],
+            "rejected_ids": [],
+            "candidate_count": 1,
+            "truncated": false,
+            "algorithm_version": "demo-0.5",
+            "unit": "px",
+            "run_id": "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-right",
+            "input": {
+              "image": {
+                "id": "image-mvl0lnd4-1",
+                "sha256": "9c4367fd1b2caa05a31ab1232a6d656091e3634116b6ced2c79029cc1acec41d"
+              },
+              "roi": {
+                "center": {
+                  "x": 430,
+                  "y": 185
+                },
+                "radius": 60
+              },
+              "parameters": {
+                "threshold": 18,
+                "polarity": "rising"
+              },
+              "tool_revision": 1,
+              "exclude_rois": []
+            }
+          }
+        }
+      ],
+      "object_revision": 2,
+      "result": {
+        "status": "OK",
+        "label": "標準孔",
+        "checks": [
+          {
+            "id": "demo-tolerance",
+            "measurement_id": "demo-diameter",
+            "min": 60,
+            "max": 70,
+            "unit": "px",
+            "value": 63.5258040847479,
+            "status": "OK"
+          }
+        ],
+        "class_matches": [
+          "標準孔"
+        ],
+        "reason": "",
+        "measurements": [
+          {
+            "id": "demo-diameter",
+            "name": "左孔直徑",
+            "status": "VALID",
+            "value": 63.5258040847479,
+            "raw_px": 63.5258040847479,
+            "unit": "px",
+            "overlay": {
+              "from": {
+                "x": 177.74857598195112,
+                "y": 184.53183881976975
+              },
+              "to": {
+                "x": 241.27438006669902,
+                "y": 184.53183881976975
+              }
+            },
+            "source_ids": [
+              "demo-left"
+            ],
+            "source_runs": [
+              "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-left"
+            ],
+            "method": "diameter"
+          }
+        ],
+        "run_id": "batch-mvl0lndz-4",
+        "at": "2026-10-23T13:37:42.320Z",
+        "config_revision": 1,
+        "object_revision": 2,
+        "input": {
+          "id": "image-mvl0lnd4-1",
+          "sha256": "9c4367fd1b2caa05a31ab1232a6d656091e3634116b6ced2c79029cc1acec41d",
+          "width": 640,
+          "height": 360
+        }
+      },
+      "result_measure_page": 0
+    },
+    {
+      "id": "image-mvl0lnde-2",
+      "name": "02-oversize.png",
+      "dataURL": "data:image/png;base64,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DkZ/f/9rHz990+/748iR/jdOWDtx4sSYPHlSTJr0+sfEN/1+UiVefQxADm6R4FdoaWmJKVOmOGoHQG144hEAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkBCAAQDICEAAgGQEIAJCMAAQASEYAAgAkIwABAJIRgAAAyQhAAIBkGh2XXzlUegQAACPHEUAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABIRgACACQjAAEAkhGAAADJCEAAgGQEIABAMgIQACAZAQgAkIwABABI5v8DY9RDid8r+IUAAAAASUVORK5CYII=",
+      "width": 640,
+      "height": 360,
+      "sha256": "df07c97bca55668943fce5a3112175e0107e5a27b53bd70291692ca5b0c0f9d8",
+      "hash_status": "display-rgba8-sha256",
+      "objects": [
+        {
+          "id": "demo-left",
+          "number": 1,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "左孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 210,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          },
+          "result": {
+            "status": "SELECTED",
+            "candidates": [
+              {
+                "id": "batch-mvl0lndz-4:image-mvl0lnde-2:demo-left:c1",
+                "geometry": {
+                  "type": "circle",
+                  "center": {
+                    "x": 209.5183150395074,
+                    "y": 184.5004661358231
+                  },
+                  "radius": 39.71716318164998,
+                  "rms_px": 0.3603498484898176
+                },
+                "sample_count": 96,
+                "inlier_count": 96,
+                "points": [
+                  {
+                    "x": 249.10000000000002,
+                    "y": 185
+                  },
+                  {
+                    "x": 249.0162838986294,
+                    "y": 187.5572623528986
+                  },
+                  {
+                    "x": 248.765494079716,
+                    "y": 190.103574115804
+                  },
+                  {
+                    "x": 249.0352541600486,
+                    "y": 192.76459481624192
+                  },
+                  {
+                    "x": 247.7676998079026,
+                    "y": 195.11982466350858
+                  },
+                  {
+                    "x": 247.02496806325865,
+                    "y": 197.5682830933536
+                  },
+                  {
+                    "x": 246.12368972119134,
+                    "y": 199.96292220547502
+                  },
+                  {
+                    "x": 245.06772419392814,
+                    "y": 202.29348778756295
+                  },
+                  {
+                    "x": 243.86159328797157,
+                    "y": 204.55
+                  },
+                  {
+                    "x": 241.92843311241776,
+                    "y": 206.33389694795272
+                  },
+                  {
+                    "x": 241.02011560538733,
+                    "y": 208.80257187424098
+                  },
+                  {
+                    "x": 238.87064860719275,
+                    "y": 210.31887929984265
+                  },
+                  {
+                    "x": 238.1428498912246,
+                    "y": 213.1428498912246
+                  },
+                  {
+                    "x": 235.31887929984265,
+                    "y": 213.87064860719275
+                  },
+                  {
+                    "x": 233.80257187424098,
+                    "y": 216.02011560538733
+                  },
+                  {
+                    "x": 231.33389694795275,
+                    "y": 216.92843311241776
+                  },
+                  {
+                    "x": 229.55,
+                    "y": 218.86159328797157
+                  },
+                  {
+                    "x": 227.29348778756295,
+                    "y": 220.06772419392814
+                  },
+                  {
+                    "x": 224.96292220547502,
+                    "y": 221.12368972119134
+                  },
+                  {
+                    "x": 222.56828309335364,
+                    "y": 222.02496806325865
+                  },
+                  {
+                    "x": 220.11982466350858,
+                    "y": 222.7676998079026
+                  },
+                  {
+                    "x": 217.76459481624192,
+                    "y": 224.0352541600486
+                  },
+                  {
+                    "x": 215.10357411580404,
+                    "y": 223.765494079716
+                  },
+                  {
+                    "x": 212.5572623528986,
+                    "y": 224.0162838986294
+                  },
+                  {
+                    "x": 210,
+                    "y": 224.10000000000002
+                  },
+                  {
+                    "x": 207.4427376471014,
+                    "y": 224.0162838986294
+                  },
+                  {
+                    "x": 204.896425884196,
+                    "y": 223.765494079716
+                  },
+                  {
+                    "x": 202.2354051837581,
+                    "y": 224.0352541600486
+                  },
+                  {
+                    "x": 199.88017533649145,
+                    "y": 222.7676998079026
+                  },
+                  {
+                    "x": 197.4317169066464,
+                    "y": 222.02496806325865
+                  },
+                  {
+                    "x": 194.76919939186942,
+                    "y": 221.77040539394926
+                  },
+                  {
+                    "x": 192.39691012928375,
+                    "y": 220.69553511300103
+                  },
+                  {
+                    "x": 190.45,
+                    "y": 218.86159328797157
+                  },
+                  {
+                    "x": 187.8883047258198,
+                    "y": 218.0924905696413
+                  },
+                  {
+                    "x": 185.7712951254529,
+                    "y": 216.5754629435912
+                  },
+                  {
+                    "x": 183.75803655901723,
+                    "y": 214.92322433766333
+                  },
+                  {
+                    "x": 181.8571501087754,
+                    "y": 213.1428498912246
+                  },
+                  {
+                    "x": 180.07677566233667,
+                    "y": 211.24196344098277
+                  },
+                  {
+                    "x": 178.4245370564088,
+                    "y": 209.2287048745471
+                  },
+                  {
+                    "x": 176.9075094303587,
+                    "y": 207.1116952741802
+                  },
+                  {
+                    "x": 174.9259711467302,
+                    "y": 205.25
+                  },
+                  {
+                    "x": 174.30446488699897,
+                    "y": 202.60308987071627
+                  },
+                  {
+                    "x": 173.22959460605077,
+                    "y": 200.23080060813058
+                  },
+                  {
+                    "x": 172.31218084609478,
+                    "y": 197.79329071906585
+                  },
+                  {
+                    "x": 170.8800040352927,
+                    "y": 195.48217132665212
+                  },
+                  {
+                    "x": 170.27819614366913,
+                    "y": 192.9011580416532
+                  },
+                  {
+                    "x": 169.84648311436064,
+                    "y": 190.2863107849121
+                  },
+                  {
+                    "x": 170.28521485510356,
+                    "y": 187.6030445433597
+                  },
+                  {
+                    "x": 170.19999999999996,
+                    "y": 185
+                  },
+                  {
+                    "x": 170.28521485510356,
+                    "y": 182.3969554566403
+                  },
+                  {
+                    "x": 169.84648311436064,
+                    "y": 179.7136892150879
+                  },
+                  {
+                    "x": 170.27819614366913,
+                    "y": 177.0988419583468
+                  },
+                  {
+                    "x": 170.8800040352927,
+                    "y": 174.5178286733479
+                  },
+                  {
+                    "x": 172.31218084609475,
+                    "y": 172.20670928093415
+                  },
+                  {
+                    "x": 173.22959460605074,
+                    "y": 169.76919939186942
+                  },
+                  {
+                    "x": 174.30446488699897,
+                    "y": 167.39691012928373
+                  },
+                  {
+                    "x": 174.9259711467302,
+                    "y": 164.75
+                  },
+                  {
+                    "x": 176.32548070174687,
+                    "y": 162.4994055627061
+                  },
+                  {
+                    "x": 177.86918971820495,
+                    "y": 160.3451621251468
+                  },
+                  {
+                    "x": 180.07677566233667,
+                    "y": 158.75803655901723
+                  },
+                  {
+                    "x": 180.8672006151142,
+                    "y": 155.86720061511423
+                  },
+                  {
+                    "x": 183.75803655901723,
+                    "y": 155.07677566233667
+                  },
+                  {
+                    "x": 185.34516212514677,
+                    "y": 152.86918971820495
+                  },
+                  {
+                    "x": 187.4994055627061,
+                    "y": 151.3254807017469
+                  },
+                  {
+                    "x": 189.74999999999997,
+                    "y": 149.9259711467302
+                  },
+                  {
+                    "x": 192.39691012928373,
+                    "y": 149.30446488699897
+                  },
+                  {
+                    "x": 194.23344258655828,
+                    "y": 146.93616326053495
+                  },
+                  {
+                    "x": 197.20670928093415,
+                    "y": 147.31218084609478
+                  },
+                  {
+                    "x": 199.5178286733479,
+                    "y": 145.8800040352927
+                  },
+                  {
+                    "x": 202.09884195834678,
+                    "y": 145.27819614366913
+                  },
+                  {
+                    "x": 204.7136892150879,
+                    "y": 144.84648311436064
+                  },
+                  {
+                    "x": 207.3969554566403,
+                    "y": 145.28521485510356
+                  },
+                  {
+                    "x": 210,
+                    "y": 145.19999999999996
+                  },
+                  {
+                    "x": 212.60304454335966,
+                    "y": 145.28521485510356
+                  },
+                  {
+                    "x": 215.28631078491208,
+                    "y": 144.84648311436064
+                  },
+                  {
+                    "x": 217.9011580416532,
+                    "y": 145.27819614366913
+                  },
+                  {
+                    "x": 220.4821713266521,
+                    "y": 145.8800040352927
+                  },
+                  {
+                    "x": 222.79329071906585,
+                    "y": 147.31218084609475
+                  },
+                  {
+                    "x": 225.23080060813055,
+                    "y": 148.22959460605074
+                  },
+                  {
+                    "x": 227.60308987071625,
+                    "y": 149.30446488699897
+                  },
+                  {
+                    "x": 230.25000000000003,
+                    "y": 149.9259711467302
+                  },
+                  {
+                    "x": 232.11169527418016,
+                    "y": 151.90750943035866
+                  },
+                  {
+                    "x": 234.65483787485317,
+                    "y": 152.86918971820492
+                  },
+                  {
+                    "x": 236.24196344098277,
+                    "y": 155.07677566233667
+                  },
+                  {
+                    "x": 238.1428498912246,
+                    "y": 156.8571501087754
+                  },
+                  {
+                    "x": 239.92322433766333,
+                    "y": 158.75803655901723
+                  },
+                  {
+                    "x": 241.57546294359116,
+                    "y": 160.7712951254529
+                  },
+                  {
+                    "x": 243.0924905696413,
+                    "y": 162.88830472581978
+                  },
+                  {
+                    "x": 243.86159328797157,
+                    "y": 165.44999999999996
+                  },
+                  {
+                    "x": 245.06772419392814,
+                    "y": 167.70651221243702
+                  },
+                  {
+                    "x": 246.77040539394926,
+                    "y": 169.76919939186942
+                  },
+                  {
+                    "x": 247.02496806325865,
+                    "y": 172.43171690664636
+                  },
+                  {
+                    "x": 247.7676998079026,
+                    "y": 174.8801753364914
+                  },
+                  {
+                    "x": 249.0352541600486,
+                    "y": 177.23540518375808
+                  },
+                  {
+                    "x": 248.765494079716,
+                    "y": 179.89642588419596
+                  },
+                  {
+                    "x": 249.0162838986294,
+                    "y": 182.4427376471014
+                  }
+                ],
+                "coverage": 1
+              }
+            ],
+            "selected_ids": [
+              "batch-mvl0lndz-4:image-mvl0lnde-2:demo-left:c1"
+            ],
+            "rejected_ids": [],
+            "candidate_count": 1,
+            "truncated": false,
+            "algorithm_version": "demo-0.5",
+            "unit": "px",
+            "run_id": "batch-mvl0lndz-4:image-mvl0lnde-2:demo-left",
+            "input": {
+              "image": {
+                "id": "image-mvl0lnde-2",
+                "sha256": "df07c97bca55668943fce5a3112175e0107e5a27b53bd70291692ca5b0c0f9d8"
+              },
+              "roi": {
+                "center": {
+                  "x": 210,
+                  "y": 185
+                },
+                "radius": 60
+              },
+              "parameters": {
+                "threshold": 18,
+                "polarity": "rising"
+              },
+              "tool_revision": 1,
+              "exclude_rois": []
+            },
+            "output": {
+              "type": "GeometrySet",
+              "items": [
+                {
+                  "candidate_id": "batch-mvl0lndz-4:image-mvl0lnde-2:demo-left:c1",
+                  "geometry": {
+                    "type": "circle",
+                    "center": {
+                      "x": 209.5183150395074,
+                      "y": 184.5004661358231
+                    },
+                    "radius": 39.71716318164998,
+                    "rms_px": 0.3603498484898176
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "demo-right",
+          "number": 2,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "右孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 430,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          },
+          "result": {
+            "status": "AWAITING_SELECTION",
+            "candidates": [
+              {
+                "id": "batch-mvl0lndz-4:image-mvl0lnde-2:demo-right:c1",
+                "geometry": {
+                  "type": "circle",
+                  "center": {
+                    "x": 429.5114780243251,
+                    "y": 184.53183881976975
+                  },
+                  "radius": 31.762902042373952,
+                  "rms_px": 0.35711650065774636
+                },
+                "sample_count": 96,
+                "inlier_count": 96,
+                "points": [
+                  {
+                    "x": 460.7,
+                    "y": 185
+                  },
+                  {
+                    "x": 460.6342689434251,
+                    "y": 187.0078760673654
+                  },
+                  {
+                    "x": 461.13136864713766,
+                    "y": 189.0985224357096
+                  },
+                  {
+                    "x": 460.79665780466144,
+                    "y": 191.12583611130643
+                  },
+                  {
+                    "x": 459.6539228670744,
+                    "y": 192.9457446846474
+                  },
+                  {
+                    "x": 459.7336060661463,
+                    "y": 195.0931992105193
+                  },
+                  {
+                    "x": 459.0098173208544,
+                    "y": 197.0162597762638
+                  },
+                  {
+                    "x": 458.1618040841264,
+                    "y": 198.88786487287663
+                  },
+                  {
+                    "x": 457.1931976788314,
+                    "y": 200.7
+                  },
+                  {
+                    "x": 456.1081458262999,
+                    "y": 202.4449053168155
+                  },
+                  {
+                    "x": 454.9112948851448,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 453.0814820896046,
+                    "y": 205.24191652357212
+                  },
+                  {
+                    "x": 452.2031529292576,
+                    "y": 207.20315292925758
+                  },
+                  {
+                    "x": 450.2419165235721,
+                    "y": 208.0814820896046
+                  },
+                  {
+                    "x": 449.1151088708738,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 447.4449053168155,
+                    "y": 211.1081458262999
+                  },
+                  {
+                    "x": 445.7,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 443.88786487287666,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 442.01625977626384,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 440.0931992105193,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 437.94574468464737,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 436.12583611130646,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 434.09852243570964,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 432.0078760673654,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 430,
+                    "y": 215.7
+                  },
+                  {
+                    "x": 427.9921239326346,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 425.90147756429036,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 423.8741638886936,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 422.05425531535263,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 419.9068007894807,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 417.98374022373616,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 416.11213512712334,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 414.3,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 412.16619552007074,
+                    "y": 211.6901745549117
+                  },
+                  {
+                    "x": 410.8848911291262,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 408.83499933528776,
+                    "y": 209.13405782007518
+                  },
+                  {
+                    "x": 406.80689757708126,
+                    "y": 208.19310242291877
+                  },
+                  {
+                    "x": 405.86594217992484,
+                    "y": 206.1650006647122
+                  },
+                  {
+                    "x": 405.0887051148552,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 403.3098254450883,
+                    "y": 202.83380447992926
+                  },
+                  {
+                    "x": 402.20058453851954,
+                    "y": 201.05
+                  },
+                  {
+                    "x": 401.2103849968007,
+                    "y": 199.19746695602996
+                  },
+                  {
+                    "x": 400.3434670063877,
+                    "y": 197.2841381789194
+                  },
+                  {
+                    "x": 399.6035428432071,
+                    "y": 195.3182068362315
+                  },
+                  {
+                    "x": 398.9937809761209,
+                    "y": 193.30809134779093
+                  },
+                  {
+                    "x": 397.830242802774,
+                    "y": 191.39896256212901
+                  },
+                  {
+                    "x": 398.17461994990066,
+                    "y": 189.18989077026367
+                  },
+                  {
+                    "x": 397.9687285640408,
+                    "y": 187.0994404482876
+                  },
+                  {
+                    "x": 397.9,
+                    "y": 185
+                  },
+                  {
+                    "x": 397.9687285640408,
+                    "y": 182.9005595517124
+                  },
+                  {
+                    "x": 398.17461994990066,
+                    "y": 180.81010922973633
+                  },
+                  {
+                    "x": 397.830242802774,
+                    "y": 178.601037437871
+                  },
+                  {
+                    "x": 398.9937809761209,
+                    "y": 176.6919086522091
+                  },
+                  {
+                    "x": 398.94069175256055,
+                    "y": 174.4567855380563
+                  },
+                  {
+                    "x": 400.3434670063877,
+                    "y": 172.71586182108064
+                  },
+                  {
+                    "x": 401.2103849968007,
+                    "y": 170.80253304397004
+                  },
+                  {
+                    "x": 402.20058453851954,
+                    "y": 168.95000000000002
+                  },
+                  {
+                    "x": 403.3098254450883,
+                    "y": 167.16619552007077
+                  },
+                  {
+                    "x": 403.9780104384475,
+                    "y": 165.03262512851396
+                  },
+                  {
+                    "x": 405.86594217992484,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 406.8068975770812,
+                    "y": 161.80689757708126
+                  },
+                  {
+                    "x": 408.83499933528776,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 410.0326251285139,
+                    "y": 158.97801043844748
+                  },
+                  {
+                    "x": 412.16619552007074,
+                    "y": 158.3098254450883
+                  },
+                  {
+                    "x": 413.95,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 415.8025330439701,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 417.71586182108064,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 419.4567855380563,
+                    "y": 153.94069175256053
+                  },
+                  {
+                    "x": 421.69190865220907,
+                    "y": 153.99378097612092
+                  },
+                  {
+                    "x": 423.60103743787096,
+                    "y": 152.83024280277405
+                  },
+                  {
+                    "x": 425.8101092297363,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 427.90055955171243,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 430,
+                    "y": 152.9
+                  },
+                  {
+                    "x": 432.09944044828757,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 434.1898907702637,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 436.398962562129,
+                    "y": 152.83024280277402
+                  },
+                  {
+                    "x": 438.3080913477909,
+                    "y": 153.9937809761209
+                  },
+                  {
+                    "x": 440.31820683623147,
+                    "y": 154.6035428432071
+                  },
+                  {
+                    "x": 442.28413817891936,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 444.1974669560299,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 446.05,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 447.8338044799292,
+                    "y": 158.30982544508828
+                  },
+                  {
+                    "x": 449.1151088708738,
+                    "y": 160.0887051148552
+                  },
+                  {
+                    "x": 451.16500066471224,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 453.19310242291874,
+                    "y": 161.80689757708123
+                  },
+                  {
+                    "x": 454.13405782007516,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 454.9112948851448,
+                    "y": 165.88489112912617
+                  },
+                  {
+                    "x": 456.1081458262999,
+                    "y": 167.55509468318448
+                  },
+                  {
+                    "x": 457.1931976788314,
+                    "y": 169.29999999999998
+                  },
+                  {
+                    "x": 458.1618040841264,
+                    "y": 171.11213512712337
+                  },
+                  {
+                    "x": 459.0098173208544,
+                    "y": 172.9837402237362
+                  },
+                  {
+                    "x": 459.7336060661463,
+                    "y": 174.9068007894807
+                  },
+                  {
+                    "x": 459.6539228670744,
+                    "y": 177.05425531535258
+                  },
+                  {
+                    "x": 460.79665780466144,
+                    "y": 178.87416388869354
+                  },
+                  {
+                    "x": 461.13136864713766,
+                    "y": 180.9014775642904
+                  },
+                  {
+                    "x": 460.6342689434251,
+                    "y": 182.99212393263463
+                  }
+                ],
+                "coverage": 1
+              }
+            ],
+            "selected_ids": [],
+            "rejected_ids": [],
+            "candidate_count": 1,
+            "truncated": false,
+            "algorithm_version": "demo-0.5",
+            "unit": "px",
+            "run_id": "batch-mvl0lndz-4:image-mvl0lnde-2:demo-right",
+            "input": {
+              "image": {
+                "id": "image-mvl0lnde-2",
+                "sha256": "df07c97bca55668943fce5a3112175e0107e5a27b53bd70291692ca5b0c0f9d8"
+              },
+              "roi": {
+                "center": {
+                  "x": 430,
+                  "y": 185
+                },
+                "radius": 60
+              },
+              "parameters": {
+                "threshold": 18,
+                "polarity": "rising"
+              },
+              "tool_revision": 1,
+              "exclude_rois": []
+            }
+          }
+        }
+      ],
+      "object_revision": 1,
+      "result": {
+        "status": "NG",
+        "label": "大孔",
+        "checks": [
+          {
+            "id": "demo-tolerance",
+            "measurement_id": "demo-diameter",
+            "min": 60,
+            "max": 70,
+            "unit": "px",
+            "value": 79.43432636329996,
+            "status": "NG"
+          }
+        ],
+        "class_matches": [
+          "大孔"
+        ],
+        "reason": "",
+        "measurements": [
+          {
+            "id": "demo-diameter",
+            "name": "左孔直徑",
+            "status": "VALID",
+            "value": 79.43432636329996,
+            "raw_px": 79.43432636329996,
+            "unit": "px",
+            "overlay": {
+              "from": {
+                "x": 169.8011518578574,
+                "y": 184.5004661358231
+              },
+              "to": {
+                "x": 249.2354782211574,
+                "y": 184.5004661358231
+              }
+            },
+            "source_ids": [
+              "demo-left"
+            ],
+            "source_runs": [
+              "batch-mvl0lndz-4:image-mvl0lnde-2:demo-left"
+            ],
+            "method": "diameter"
+          }
+        ],
+        "run_id": "batch-mvl0lndz-4",
+        "at": "2026-10-23T13:37:42.326Z",
+        "config_revision": 1,
+        "object_revision": 1,
+        "input": {
+          "id": "image-mvl0lnde-2",
+          "sha256": "df07c97bca55668943fce5a3112175e0107e5a27b53bd70291692ca5b0c0f9d8",
+          "width": 640,
+          "height": 360
+        }
+      }
+    },
+    {
+      "id": "image-mvl0lndj-3",
+      "name": "03-missing.png",
+      "dataURL": "data:image/png;base64,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",
+      "width": 640,
+      "height": 360,
+      "sha256": "d22f4f9569e827944a604fc475fab08aa84263a62221cb754ea6e7eed50181d2",
+      "hash_status": "display-rgba8-sha256",
+      "objects": [
+        {
+          "id": "demo-left",
+          "number": 1,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "左孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 210,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          },
+          "result": {
+            "status": "UNKNOWN",
+            "reason": "有效邊緣不足，無法擬合圓",
+            "algorithm_version": "demo-0.5",
+            "unit": "px",
+            "run_id": "batch-mvl0lndz-4:image-mvl0lndj-3:demo-left",
+            "input": {
+              "image": {
+                "id": "image-mvl0lndj-3",
+                "sha256": "d22f4f9569e827944a604fc475fab08aa84263a62221cb754ea6e7eed50181d2"
+              },
+              "roi": {
+                "center": {
+                  "x": 210,
+                  "y": 185
+                },
+                "radius": 60
+              },
+              "parameters": {
+                "threshold": 18,
+                "polarity": "rising"
+              },
+              "tool_revision": 1,
+              "exclude_rois": []
+            }
+          }
+        },
+        {
+          "id": "demo-right",
+          "number": 2,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "右孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 430,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          },
+          "result": {
+            "status": "AWAITING_SELECTION",
+            "candidates": [
+              {
+                "id": "batch-mvl0lndz-4:image-mvl0lndj-3:demo-right:c1",
+                "geometry": {
+                  "type": "circle",
+                  "center": {
+                    "x": 429.5114780243251,
+                    "y": 184.53183881976975
+                  },
+                  "radius": 31.762902042373952,
+                  "rms_px": 0.35711650065774636
+                },
+                "sample_count": 96,
+                "inlier_count": 96,
+                "points": [
+                  {
+                    "x": 460.7,
+                    "y": 185
+                  },
+                  {
+                    "x": 460.6342689434251,
+                    "y": 187.0078760673654
+                  },
+                  {
+                    "x": 461.13136864713766,
+                    "y": 189.0985224357096
+                  },
+                  {
+                    "x": 460.79665780466144,
+                    "y": 191.12583611130643
+                  },
+                  {
+                    "x": 459.6539228670744,
+                    "y": 192.9457446846474
+                  },
+                  {
+                    "x": 459.7336060661463,
+                    "y": 195.0931992105193
+                  },
+                  {
+                    "x": 459.0098173208544,
+                    "y": 197.0162597762638
+                  },
+                  {
+                    "x": 458.1618040841264,
+                    "y": 198.88786487287663
+                  },
+                  {
+                    "x": 457.1931976788314,
+                    "y": 200.7
+                  },
+                  {
+                    "x": 456.1081458262999,
+                    "y": 202.4449053168155
+                  },
+                  {
+                    "x": 454.9112948851448,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 453.0814820896046,
+                    "y": 205.24191652357212
+                  },
+                  {
+                    "x": 452.2031529292576,
+                    "y": 207.20315292925758
+                  },
+                  {
+                    "x": 450.2419165235721,
+                    "y": 208.0814820896046
+                  },
+                  {
+                    "x": 449.1151088708738,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 447.4449053168155,
+                    "y": 211.1081458262999
+                  },
+                  {
+                    "x": 445.7,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 443.88786487287666,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 442.01625977626384,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 440.0931992105193,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 437.94574468464737,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 436.12583611130646,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 434.09852243570964,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 432.0078760673654,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 430,
+                    "y": 215.7
+                  },
+                  {
+                    "x": 427.9921239326346,
+                    "y": 215.63426894342513
+                  },
+                  {
+                    "x": 425.90147756429036,
+                    "y": 216.13136864713763
+                  },
+                  {
+                    "x": 423.8741638886936,
+                    "y": 215.79665780466144
+                  },
+                  {
+                    "x": 422.05425531535263,
+                    "y": 214.65392286707439
+                  },
+                  {
+                    "x": 419.9068007894807,
+                    "y": 214.7336060661463
+                  },
+                  {
+                    "x": 417.98374022373616,
+                    "y": 214.0098173208544
+                  },
+                  {
+                    "x": 416.11213512712334,
+                    "y": 213.1618040841264
+                  },
+                  {
+                    "x": 414.3,
+                    "y": 212.19319767883138
+                  },
+                  {
+                    "x": 412.16619552007074,
+                    "y": 211.6901745549117
+                  },
+                  {
+                    "x": 410.8848911291262,
+                    "y": 209.9112948851448
+                  },
+                  {
+                    "x": 408.83499933528776,
+                    "y": 209.13405782007518
+                  },
+                  {
+                    "x": 406.80689757708126,
+                    "y": 208.19310242291877
+                  },
+                  {
+                    "x": 405.86594217992484,
+                    "y": 206.1650006647122
+                  },
+                  {
+                    "x": 405.0887051148552,
+                    "y": 204.11510887087383
+                  },
+                  {
+                    "x": 403.3098254450883,
+                    "y": 202.83380447992926
+                  },
+                  {
+                    "x": 402.20058453851954,
+                    "y": 201.05
+                  },
+                  {
+                    "x": 401.2103849968007,
+                    "y": 199.19746695602996
+                  },
+                  {
+                    "x": 400.3434670063877,
+                    "y": 197.2841381789194
+                  },
+                  {
+                    "x": 399.6035428432071,
+                    "y": 195.3182068362315
+                  },
+                  {
+                    "x": 398.9937809761209,
+                    "y": 193.30809134779093
+                  },
+                  {
+                    "x": 397.830242802774,
+                    "y": 191.39896256212901
+                  },
+                  {
+                    "x": 398.17461994990066,
+                    "y": 189.18989077026367
+                  },
+                  {
+                    "x": 397.9687285640408,
+                    "y": 187.0994404482876
+                  },
+                  {
+                    "x": 397.9,
+                    "y": 185
+                  },
+                  {
+                    "x": 397.9687285640408,
+                    "y": 182.9005595517124
+                  },
+                  {
+                    "x": 398.17461994990066,
+                    "y": 180.81010922973633
+                  },
+                  {
+                    "x": 397.830242802774,
+                    "y": 178.601037437871
+                  },
+                  {
+                    "x": 398.9937809761209,
+                    "y": 176.6919086522091
+                  },
+                  {
+                    "x": 398.94069175256055,
+                    "y": 174.4567855380563
+                  },
+                  {
+                    "x": 400.3434670063877,
+                    "y": 172.71586182108064
+                  },
+                  {
+                    "x": 401.2103849968007,
+                    "y": 170.80253304397004
+                  },
+                  {
+                    "x": 402.20058453851954,
+                    "y": 168.95000000000002
+                  },
+                  {
+                    "x": 403.3098254450883,
+                    "y": 167.16619552007077
+                  },
+                  {
+                    "x": 403.9780104384475,
+                    "y": 165.03262512851396
+                  },
+                  {
+                    "x": 405.86594217992484,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 406.8068975770812,
+                    "y": 161.80689757708126
+                  },
+                  {
+                    "x": 408.83499933528776,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 410.0326251285139,
+                    "y": 158.97801043844748
+                  },
+                  {
+                    "x": 412.16619552007074,
+                    "y": 158.3098254450883
+                  },
+                  {
+                    "x": 413.95,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 415.8025330439701,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 417.71586182108064,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 419.4567855380563,
+                    "y": 153.94069175256053
+                  },
+                  {
+                    "x": 421.69190865220907,
+                    "y": 153.99378097612092
+                  },
+                  {
+                    "x": 423.60103743787096,
+                    "y": 152.83024280277405
+                  },
+                  {
+                    "x": 425.8101092297363,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 427.90055955171243,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 430,
+                    "y": 152.9
+                  },
+                  {
+                    "x": 432.09944044828757,
+                    "y": 152.96872856404082
+                  },
+                  {
+                    "x": 434.1898907702637,
+                    "y": 153.1746199499007
+                  },
+                  {
+                    "x": 436.398962562129,
+                    "y": 152.83024280277402
+                  },
+                  {
+                    "x": 438.3080913477909,
+                    "y": 153.9937809761209
+                  },
+                  {
+                    "x": 440.31820683623147,
+                    "y": 154.6035428432071
+                  },
+                  {
+                    "x": 442.28413817891936,
+                    "y": 155.3434670063877
+                  },
+                  {
+                    "x": 444.1974669560299,
+                    "y": 156.2103849968007
+                  },
+                  {
+                    "x": 446.05,
+                    "y": 157.20058453851954
+                  },
+                  {
+                    "x": 447.8338044799292,
+                    "y": 158.30982544508828
+                  },
+                  {
+                    "x": 449.1151088708738,
+                    "y": 160.0887051148552
+                  },
+                  {
+                    "x": 451.16500066471224,
+                    "y": 160.86594217992484
+                  },
+                  {
+                    "x": 453.19310242291874,
+                    "y": 161.80689757708123
+                  },
+                  {
+                    "x": 454.13405782007516,
+                    "y": 163.8349993352878
+                  },
+                  {
+                    "x": 454.9112948851448,
+                    "y": 165.88489112912617
+                  },
+                  {
+                    "x": 456.1081458262999,
+                    "y": 167.55509468318448
+                  },
+                  {
+                    "x": 457.1931976788314,
+                    "y": 169.29999999999998
+                  },
+                  {
+                    "x": 458.1618040841264,
+                    "y": 171.11213512712337
+                  },
+                  {
+                    "x": 459.0098173208544,
+                    "y": 172.9837402237362
+                  },
+                  {
+                    "x": 459.7336060661463,
+                    "y": 174.9068007894807
+                  },
+                  {
+                    "x": 459.6539228670744,
+                    "y": 177.05425531535258
+                  },
+                  {
+                    "x": 460.79665780466144,
+                    "y": 178.87416388869354
+                  },
+                  {
+                    "x": 461.13136864713766,
+                    "y": 180.9014775642904
+                  },
+                  {
+                    "x": 460.6342689434251,
+                    "y": 182.99212393263463
+                  }
+                ],
+                "coverage": 1
+              }
+            ],
+            "selected_ids": [],
+            "rejected_ids": [],
+            "candidate_count": 1,
+            "truncated": false,
+            "algorithm_version": "demo-0.5",
+            "unit": "px",
+            "run_id": "batch-mvl0lndz-4:image-mvl0lndj-3:demo-right",
+            "input": {
+              "image": {
+                "id": "image-mvl0lndj-3",
+                "sha256": "d22f4f9569e827944a604fc475fab08aa84263a62221cb754ea6e7eed50181d2"
+              },
+              "roi": {
+                "center": {
+                  "x": 430,
+                  "y": 185
+                },
+                "radius": 60
+              },
+              "parameters": {
+                "threshold": 18,
+                "polarity": "rising"
+              },
+              "tool_revision": 1,
+              "exclude_rois": []
+            }
+          }
+        }
+      ],
+      "object_revision": 1,
+      "result": {
+        "status": "UNKNOWN",
+        "label": "待分類",
+        "checks": [
+          {
+            "id": "demo-tolerance",
+            "measurement_id": "demo-diameter",
+            "min": 60,
+            "max": 70,
+            "unit": "px",
+            "status": "UNKNOWN",
+            "reason": "來源 A 尚未取得唯一且有效的算法結果"
+          }
+        ],
+        "class_matches": [],
+        "reason": "分類依賴無效",
+        "measurements": [
+          {
+            "status": "UNKNOWN",
+            "value": null,
+            "reason": "來源 A 尚未取得唯一且有效的算法結果",
+            "id": "demo-diameter",
+            "name": "左孔直徑"
+          }
+        ],
+        "run_id": "batch-mvl0lndz-4",
+        "at": "2026-10-23T13:37:42.331Z",
+        "config_revision": 1,
+        "object_revision": 1,
+        "input": {
+          "id": "image-mvl0lndj-3",
+          "sha256": "d22f4f9569e827944a604fc475fab08aa84263a62221cb754ea6e7eed50181d2",
+          "width": 640,
+          "height": 360
+        }
+      }
+    }
+  ],
+  "activeId": "image-mvl0lnd4-1",
+  "config": {
+    "revision": 1,
+    "measurements": [
+      {
+        "id": "demo-diameter",
+        "name": "左孔直徑",
+        "kind": "diameter",
+        "a": "demo-left",
+        "b": null,
+        "unit": "px"
+      }
+    ],
+    "tolerances": [
+      {
+        "id": "demo-tolerance",
+        "measurement_id": "demo-diameter",
+        "min": 60,
+        "max": 70,
+        "unit": "px"
+      }
+    ],
+    "classes": [
+      {
+        "id": "demo-class-a",
+        "measurement_id": "demo-diameter",
+        "label": "標準孔",
+        "min": 60,
+        "max": 70,
+        "unit": "px"
+      },
+      {
+        "id": "demo-class-b",
+        "measurement_id": "demo-diameter",
+        "label": "大孔",
+        "min": 75,
+        "max": 90,
+        "unit": "px"
+      }
+    ],
+    "calibration": null,
+    "recipe": {
+      "schema": "recipe-0.5",
+      "reference_image_id": "image-mvl0lnd4-1",
+      "reference_signature": "[{\"id\":\"demo-left\",\"type\":\"find_circle\",\"role\":\"target\",\"params\":{\"threshold\":18,\"polarity\":\"rising\"},\"roi\":{\"center\":{\"x\":210,\"y\":185},\"radius\":60},\"geometry\":{\"type\":\"circle\",\"center\":{\"x\":209.51147802432507,\"y\":184.53183881976975},\"radius\":31.76290204237395,\"rms_px\":0.3571165006577486}}]",
+      "frame": {
+        "width": 640,
+        "height": 360
+      },
+      "objects": [
+        {
+          "id": "demo-left",
+          "number": 1,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "左孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 210,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          }
+        },
+        {
+          "id": "demo-right",
+          "number": 2,
+          "kind": "tool",
+          "type": "find_circle",
+          "name": "右孔",
+          "note": "示例預設：定位孔邊",
+          "role": "target",
+          "visible": true,
+          "revision": 1,
+          "center": {
+            "x": 430,
+            "y": 185
+          },
+          "radius": 60,
+          "params": {
+            "threshold": 18,
+            "polarity": "rising"
+          }
+        }
+      ],
+      "anchors": {
+        "demo-left": {
+          "type": "circle",
+          "center": {
+            "x": 209.51147802432507,
+            "y": 184.53183881976975
+          },
+          "radius": 31.76290204237395,
+          "rms_px": 0.3571165006577486
+        }
+      },
+      "matching": {
+        "positionTolerance": 12,
+        "angleTolerance": 3,
+        "radiusTolerance": 40
+      },
+      "selection_policy": "exactly-one-within-confirmed-reference-window"
+    }
+  },
+  "runs": [
+    {
+      "id": "batch-mvl0lndz-4",
+      "at": "2026-10-23T13:37:42.311Z",
+      "mode": "batch",
+      "config": {
+        "revision": 1,
+        "measurements": [
+          {
+            "id": "demo-diameter",
+            "name": "左孔直徑",
+            "kind": "diameter",
+            "a": "demo-left",
+            "b": null,
+            "unit": "px"
+          }
+        ],
+        "tolerances": [
+          {
+            "id": "demo-tolerance",
+            "measurement_id": "demo-diameter",
+            "min": 60,
+            "max": 70,
+            "unit": "px"
+          }
+        ],
+        "classes": [
+          {
+            "id": "demo-class-a",
+            "measurement_id": "demo-diameter",
+            "label": "標準孔",
+            "min": 60,
+            "max": 70,
+            "unit": "px"
+          },
+          {
+            "id": "demo-class-b",
+            "measurement_id": "demo-diameter",
+            "label": "大孔",
+            "min": 75,
+            "max": 90,
+            "unit": "px"
+          }
+        ],
+        "calibration": null,
+        "recipe": {
+          "schema": "recipe-0.5",
+          "reference_image_id": "image-mvl0lnd4-1",
+          "reference_signature": "[{\"id\":\"demo-left\",\"type\":\"find_circle\",\"role\":\"target\",\"params\":{\"threshold\":18,\"polarity\":\"rising\"},\"roi\":{\"center\":{\"x\":210,\"y\":185},\"radius\":60},\"geometry\":{\"type\":\"circle\",\"center\":{\"x\":209.51147802432507,\"y\":184.53183881976975},\"radius\":31.76290204237395,\"rms_px\":0.3571165006577486}}]",
+          "frame": {
+            "width": 640,
+            "height": 360
+          },
+          "objects": [
+            {
+              "id": "demo-left",
+              "number": 1,
+              "kind": "tool",
+              "type": "find_circle",
+              "name": "左孔",
+              "note": "示例預設：定位孔邊",
+              "role": "target",
+              "visible": true,
+              "revision": 1,
+              "center": {
+                "x": 210,
+                "y": 185
+              },
+              "radius": 60,
+              "params": {
+                "threshold": 18,
+                "polarity": "rising"
+              }
+            },
+            {
+              "id": "demo-right",
+              "number": 2,
+              "kind": "tool",
+              "type": "find_circle",
+              "name": "右孔",
+              "note": "示例預設：定位孔邊",
+              "role": "target",
+              "visible": true,
+              "revision": 1,
+              "center": {
+                "x": 430,
+                "y": 185
+              },
+              "radius": 60,
+              "params": {
+                "threshold": 18,
+                "polarity": "rising"
+              }
+            }
+          ],
+          "anchors": {
+            "demo-left": {
+              "type": "circle",
+              "center": {
+                "x": 209.51147802432507,
+                "y": 184.53183881976975
+              },
+              "radius": 31.76290204237395,
+              "rms_px": 0.3571165006577486
+            }
+          },
+          "matching": {
+            "positionTolerance": 12,
+            "angleTolerance": 3,
+            "radiusTolerance": 40
+          },
+          "selection_policy": "exactly-one-within-confirmed-reference-window"
+        }
+      },
+      "results": [
+        {
+          "status": "OK",
+          "label": "標準孔",
+          "checks": [
+            {
+              "id": "demo-tolerance",
+              "measurement_id": "demo-diameter",
+              "min": 60,
+              "max": 70,
+              "unit": "px",
+              "value": 63.5258040847479,
+              "status": "OK"
+            }
+          ],
+          "class_matches": [
+            "標準孔"
+          ],
+          "reason": "",
+          "measurements": [
+            {
+              "id": "demo-diameter",
+              "name": "左孔直徑",
+              "status": "VALID",
+              "value": 63.5258040847479,
+              "raw_px": 63.5258040847479,
+              "unit": "px",
+              "overlay": {
+                "from": {
+                  "x": 177.74857598195112,
+                  "y": 184.53183881976975
+                },
+                "to": {
+                  "x": 241.27438006669902,
+                  "y": 184.53183881976975
+                }
+              },
+              "source_ids": [
+                "demo-left"
+              ],
+              "source_runs": [
+                "batch-mvl0lndz-4:image-mvl0lnd4-1:demo-left"
+              ],
+              "method": "diameter"
+            }
+          ],
+          "run_id": "batch-mvl0lndz-4",
+          "at": "2026-10-23T13:37:42.320Z",
+          "config_revision": 1,
+          "object_revision": 2,
+          "input": {
+            "id": "image-mvl0lnd4-1",
+            "sha256": "9c4367fd1b2caa05a31ab1232a6d656091e3634116b6ced2c79029cc1acec41d",
+            "width": 640,
+            "height": 360
+          }
+        },
+        {
+          "status": "NG",
+          "label": "大孔",
+          "checks": [
+            {
+              "id": "demo-tolerance",
+              "measurement_id": "demo-diameter",
+              "min": 60,
+              "max": 70,
+              "unit": "px",
+              "value": 79.43432636329996,
+              "status": "NG"
+            }
+          ],
+          "class_matches": [
+            "大孔"
+          ],
+          "reason": "",
+          "measurements": [
+            {
+              "id": "demo-diameter",
+              "name": "左孔直徑",
+              "status": "VALID",
+              "value": 79.43432636329996,
+              "raw_px": 79.43432636329996,
+              "unit": "px",
+              "overlay": {
+                "from": {
+                  "x": 169.8011518578574,
+                  "y": 184.5004661358231
+                },
+                "to": {
+                  "x": 249.2354782211574,
+                  "y": 184.5004661358231
+                }
+              },
+              "source_ids": [
+                "demo-left"
+              ],
+              "source_runs": [
+                "batch-mvl0lndz-4:image-mvl0lnde-2:demo-left"
+              ],
+              "method": "diameter"
+            }
+          ],
+          "run_id": "batch-mvl0lndz-4",
+          "at": "2026-10-23T13:37:42.326Z",
+          "config_revision": 1,
+          "object_revision": 1,
+          "input": {
+            "id": "image-mvl0lnde-2",
+            "sha256": "df07c97bca55668943fce5a3112175e0107e5a27b53bd70291692ca5b0c0f9d8",
+            "width": 640,
+            "height": 360
+          }
+        },
+        {
+          "status": "UNKNOWN",
+          "label": "待分類",
+          "checks": [
+            {
+              "id": "demo-tolerance",
+              "measurement_id": "demo-diameter",
+              "min": 60,
+              "max": 70,
+              "unit": "px",
+              "status": "UNKNOWN",
+              "reason": "來源 A 尚未取得唯一且有效的算法結果"
+            }
+          ],
+          "class_matches": [],
+          "reason": "分類依賴無效",
+          "measurements": [
+            {
+              "status": "UNKNOWN",
+              "value": null,
+              "reason": "來源 A 尚未取得唯一且有效的算法結果",
+              "id": "demo-diameter",
+              "name": "左孔直徑"
+            }
+          ],
+          "run_id": "batch-mvl0lndz-4",
+          "at": "2026-10-23T13:37:42.331Z",
+          "config_revision": 1,
+          "object_revision": 1,
+          "input": {
+            "id": "image-mvl0lndj-3",
+            "sha256": "d22f4f9569e827944a604fc475fab08aa84263a62221cb754ea6e7eed50181d2",
+            "width": 640,
+            "height": 360
+          }
+        }
+      ],
+      "completed": true,
+      "stopped": false
+    }
+  ],
+  "events": [
+    {
+      "event_id": "9bd148b5-7feb-48fc-936b-1f4b865028da:e1",
+      "at": "2026-10-23T13:37:42.299Z",
+      "actor": "human",
+      "action": "open_project",
+      "image_id": null,
+      "object_id": null,
+      "run_id": null,
+      "session_id": "9bd148b5-7feb-48fc-936b-1f4b865028da"
+    }
+  ],
+  "limits": [
+    "Local browser pixel processing; no AI model connected.",
+    "Uniform planar scale is not a full camera calibration.",
+    "Batch recipe requires same image dimensions and fixed imaging pose."
+  ]
+}

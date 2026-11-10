@@ -1,0 +1,3544 @@
+{
+  "schema": "agentcv-canvas-user-story-catalog-draft-1",
+  "date": "2026-10-26",
+  "status": "PRD討論稿／交互故事，不是已實作界面或本輪CV實算結果",
+  "sourceDirectory": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25",
+  "scope": "既有10例的目標與樣圖整理；故事索引不是產品任務分類，任意新問題仍使用同一共用畫板。",
+  "collectionTruthPolicy": [
+    "保留合成、官方原圖、官方教學輸出、人工標註的不同角色。",
+    "設計答案供評估者核對；不得由檔名／合成生成參數／NG標籤反推算法輸出或自行設定正式公差。",
+    "若在PRD圖中使用設計錨點，必標示「交互示意／設計真值，非本輪實算」。",
+    "原collection manifest是歷史收錄狀態；本任務不據此判斷後續版本的全部實作測試結果。"
+  ],
+  "commonInteractionContract": [
+    "人可自由混用單圖、多圖、鋼筆、掩膜、文字、關係箭頭及真實找線／找圓工具，不先進入固定任務模式。",
+    "Agent先理解物件、指向、關係和目標；必要澄清應引用畫板中的具體對象，避免長問卷。",
+    "Agent將中間圖、候選、支持點與結果帶回同一畫板；畫板上的人類修正保留ID與版本。",
+    "任何結果圖可直接右鍵引用、多圖組合詢問；文字註解不再有第二層「文字的註解」。",
+    "候選多條／多圓時展示並允許直接選，不因存在多候選就整體棄用。",
+    "不確定時指出失效局部、實際條件、門檻與可行下一步；保留已通過對象。",
+    "七步整理資料與成果，不作表達前的強制類別／表單關卡。"
+  ],
+  "stories": [
+    {
+      "caseId": "01",
+      "slug": "gear",
+      "name": "齒輪齒數與缺齒",
+      "sourceCategory": "工業延伸",
+      "hero": {
+        "label": "合成：完整齒輪",
+        "file": "synthetic/gear-ok.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/gear-ok.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-ok.png",
+        "width": 512,
+        "height": 512,
+        "role": "candidate-input",
+        "upstream": null,
+        "sourceGroup": "synthetic/gear",
+        "note": "設計輸入，非實測輸出",
+        "sha256": "d863b3f6870f5c175a7268799460dad2b381c9d0705113c2e613d99d26020a8c",
+        "isSynthetic": true,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": true,
+        "evaluatorOnlyDesignTruth": {
+          "nominalTeeth": 16,
+          "visibleDesignedTeeth": 16,
+          "missingToothIndex": null,
+          "center": [
+            256,
+            256
+          ],
+          "boreCenter": [
+            256,
+            256
+          ],
+          "boreRadius": 48,
+          "class": "OK",
+          "reason": "complete and concentric toy design"
+        },
+        "referenceAnswerMetadata": {
+          "source": "generated-design",
+          "reference": "annotations.json#/images/0",
+          "scope": "synthetic pipeline only",
+          "toyQualityClass": "OK"
+        },
+        "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-ok.png",
+        "nature": "本專案合成設計輸入，非工業實拍"
+      },
+      "questionInOriginalCollection": "同一種齒輪，齒是否完整？少在哪個角度？",
+      "outputNeeds": [
+        "齒數／缺齒角區",
+        "齒頂與齒根半徑分布",
+        "內孔相對外輪廓的偏心"
+      ],
+      "inputDataDescription": "已收錄 OpenCV 的 device7 周期輪廓 2 張，以及本專案合成齒輪 3 張：完整、缺一齒、偏心內孔。合成形狀非漸開線，不是工業實拍。",
+      "truthLimit": "合成圖有設計齒數、缺齒索引、中心及孔位；實拍須另標外輪廓與缺陷角區，不能把模板當所有圖的真值。",
+      "missingBeforeProductionAcceptance": "真實背光齒輪、多種齒數、實際崩齒／毛刺、尺寸標定與人工逐齒標註。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "合成：完整齒輪",
+          "file": "synthetic/gear-ok.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/gear-ok.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-ok.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "note": "設計輸入，非實測輸出",
+          "sha256": "d863b3f6870f5c175a7268799460dad2b381c9d0705113c2e613d99d26020a8c",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalTeeth": 16,
+            "visibleDesignedTeeth": 16,
+            "missingToothIndex": null,
+            "center": [
+              256,
+              256
+            ],
+            "boreCenter": [
+              256,
+              256
+            ],
+            "boreRadius": 48,
+            "class": "OK",
+            "reason": "complete and concentric toy design"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/0",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-ok.png",
+          "nature": "本專案合成設計輸入，非工業實拍"
+        },
+        {
+          "label": "合成：缺一齒",
+          "file": "synthetic/gear-missing.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/gear-missing.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-missing.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "note": "設計缺陷索引見 annotations.json",
+          "sha256": "c18b68db7896f53080efee65b150cae3a76b0f4755951644fb6fd5604bd41ec0",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalTeeth": 16,
+            "visibleDesignedTeeth": 15,
+            "missingToothIndex": 3,
+            "center": [
+              256,
+              256
+            ],
+            "boreCenter": [
+              256,
+              256
+            ],
+            "boreRadius": 48,
+            "class": "NG",
+            "reason": "designed tooth 3 absent"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/1",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          }
+        },
+        {
+          "label": "合成：偏心孔",
+          "file": "synthetic/gear-eccentric.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/gear-eccentric.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-eccentric.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "note": "孔位偏移是設計真值",
+          "sha256": "0a0afb1ae71aad18aaf2af5586234c44ed155385ea3e123f77452c969b1ae4ee",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalTeeth": 16,
+            "visibleDesignedTeeth": 16,
+            "missingToothIndex": null,
+            "center": [
+              256,
+              256
+            ],
+            "boreCenter": [
+              268,
+              256
+            ],
+            "boreRadius": 48,
+            "class": "NG",
+            "reason": "bore center offset by 12 design px"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/2",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          }
+        },
+        {
+          "label": "官方周期輪廓",
+          "file": "assets/extra-device7-1.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/extra-device7-1.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/extra-device7-1.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-1.png",
+          "sourceGroup": "sha256/727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+          "note": "OpenCV extra，非真實齒輪",
+          "sha256": "727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "極座標 API",
+          "https://docs.opencv.org/4.13.0/da/d54/group__imgproc__transform.html"
+        ],
+        [
+          "polar_transforms.cpp",
+          "repo:samples/cpp/polar_transforms.cpp"
+        ],
+        [
+          "官方周期輪廓素材",
+          "extra:testdata/cv/shape/mpeg_test/device7-1.png"
+        ]
+      ],
+      "story": {
+        "userStory": "作為檢驗工程師，我想直接指著齒輪詢問是否缺齒及缺口在哪，不必先選齒輪模式或填算法參數。",
+        "humanGoal": "幫我看這一件的齒是否完整，把疑似少齒的位置圈給我看。",
+        "boardExpression": [
+          "把完整與待測齒輪放在同一畫板；完整圖可標為「參考」，品質答案與待測圖分開。",
+          "圈出工件或一段齒緣並說明目標；已有明確物件時，直接點物件提問。"
+        ],
+        "tools": [
+          "選取／移動圖片",
+          "鋼筆或掩膜圈選",
+          "箭頭＋物件註解",
+          "可選：找圓提供孔中心意圖"
+        ],
+        "agentFirstReturn": "先在原圖回畫採用的真實外輪廓、孔、中心與逐齒編號；疑似缺口在原圖有可點選角區。點該角區，可連動看局部原圖與角向數據。",
+        "sceneCorrection": "若中心抓錯，工程師點原圖的另一個中心候選，或用找圓工具在孔上實算後點選；Agent 保留選擇及原因，重算同一方案，而非要求重建案例。",
+        "done": [
+          "每個實際可見齒及疑似缺口都能回指原圖；預期位置與實測位置使用不同符號。",
+          "沒有正式名義齒數／缺陷規格時可先報觀察和候選，不擅自判工業OK／NG。",
+          "針對已提供的本例設計規格做整組完整／缺齒／偏心的回歸，不只挑一張成功。"
+        ],
+        "unknown": "輪廓不完整或多個中心導致缺口位置不穩時，在圖上標失效區並給出相應觀察；不得把凸包填出的齒谷或預期齒位置當測點。",
+        "multiImageRelation": "3張合成圖共用同一玩具設計來源；完整圖是參考，缺齒／偏心是同源反例，不是獨立實拍批次。",
+        "anchors": [
+          {
+            "image": "synthetic/gear-ok.png",
+            "kind": "point",
+            "xy": [
+              256,
+              256
+            ],
+            "label": "設計中心",
+            "basis": "annotations.json generated design；非算法量測"
+          },
+          {
+            "image": "synthetic/gear-eccentric.png",
+            "kind": "point",
+            "xy": [
+              268,
+              256
+            ],
+            "label": "設計偏心孔中心",
+            "basis": "annotations.json generated design；非算法量測"
+          }
+        ],
+        "humanExpression": [
+          "把完整與待測齒輪放在同一畫板；完整圖可標為「參考」，品質答案與待測圖分開。",
+          "圈出工件或一段齒緣並說明目標；已有明確物件時，直接點物件提問。"
+        ],
+        "correction": "若中心抓錯，工程師點原圖的另一個中心候選，或用找圓工具在孔上實算後點選；Agent 保留選擇及原因，重算同一方案，而非要求重建案例。",
+        "completion": [
+          "每個實際可見齒及疑似缺口都能回指原圖；預期位置與實測位置使用不同符號。",
+          "沒有正式名義齒數／缺陷規格時可先報觀察和候選，不擅自判工業OK／NG。",
+          "針對已提供的本例設計規格做整組完整／缺齒／偏心的回歸，不只挑一張成功。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "gear",
+      "title": "齒輪齒數與缺齒",
+      "goal": "幫我看這一件的齒是否完整，把疑似少齒的位置圈給我看。",
+      "userStory": "作為檢驗工程師，我想直接指著齒輪詢問是否缺齒及缺口在哪，不必先選齒輪模式或填算法參數。",
+      "references": [
+        {
+          "label": "合成：缺一齒",
+          "file": "synthetic/gear-missing.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/gear-missing.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-missing.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "note": "設計缺陷索引見 annotations.json",
+          "sha256": "c18b68db7896f53080efee65b150cae3a76b0f4755951644fb6fd5604bd41ec0",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalTeeth": 16,
+            "visibleDesignedTeeth": 15,
+            "missingToothIndex": 3,
+            "center": [
+              256,
+              256
+            ],
+            "boreCenter": [
+              256,
+              256
+            ],
+            "boreRadius": 48,
+            "class": "NG",
+            "reason": "designed tooth 3 absent"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/1",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-missing.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "合成：偏心孔",
+          "file": "synthetic/gear-eccentric.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/gear-eccentric.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-eccentric.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/gear",
+          "note": "孔位偏移是設計真值",
+          "sha256": "0a0afb1ae71aad18aaf2af5586234c44ed155385ea3e123f77452c969b1ae4ee",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalTeeth": 16,
+            "visibleDesignedTeeth": 16,
+            "missingToothIndex": null,
+            "center": [
+              256,
+              256
+            ],
+            "boreCenter": [
+              268,
+              256
+            ],
+            "boreRadius": 48,
+            "class": "NG",
+            "reason": "bore center offset by 12 design px"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/2",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/gear-eccentric.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "官方周期輪廓",
+          "file": "assets/extra-device7-1.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/extra-device7-1.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/extra-device7-1.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-1.png",
+          "sourceGroup": "sha256/727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+          "note": "OpenCV extra，非真實齒輪",
+          "sha256": "727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/extra-device7-1.png",
+          "nature": "官方原始素材"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "rect",
+            "x": 88,
+            "y": 88,
+            "width": 336,
+            "height": 336,
+            "label": "這個工件（圈選示意）"
+          }
+        ],
+        "agent": [
+          {
+            "type": "circle",
+            "cx": 256,
+            "cy": 256,
+            "r": 48,
+            "label": "孔／中心支持的展示位置"
+          }
+        ],
+        "basis": "合成設計中心及孔徑；外框為目視圈選示意",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "極座標 API",
+          "https://docs.opencv.org/4.13.0/da/d54/group__imgproc__transform.html"
+        ],
+        [
+          "polar_transforms.cpp",
+          "repo:samples/cpp/polar_transforms.cpp"
+        ],
+        [
+          "官方周期輪廓素材",
+          "extra:testdata/cv/shape/mpeg_test/device7-1.png"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "02",
+      "slug": "washer",
+      "name": "墊圈內外徑與偏心",
+      "sourceCategory": "工業延伸",
+      "hero": {
+        "label": "合成：偏心環件",
+        "file": "synthetic/washer-eccentric.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/washer-eccentric.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-eccentric.png",
+        "width": 512,
+        "height": 512,
+        "role": "candidate-input",
+        "upstream": null,
+        "sourceGroup": "synthetic/washer",
+        "note": "設計中心差見標註",
+        "sha256": "9c496f6a0305fa34bbd6519089a839e0e41738306dc29cf75013871d79f402a0",
+        "isSynthetic": true,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": true,
+        "evaluatorOnlyDesignTruth": {
+          "outerCenter": [
+            256,
+            256
+          ],
+          "outerRadius": 156,
+          "innerCenter": [
+            272,
+            256
+          ],
+          "innerRadius": 78,
+          "centerOffsetPx": 16,
+          "class": "NG",
+          "rule": "toy design requires concentric circles"
+        },
+        "referenceAnswerMetadata": {
+          "source": "generated-design",
+          "reference": "annotations.json#/images/4",
+          "scope": "synthetic pipeline only",
+          "toyQualityClass": "NG"
+        },
+        "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-eccentric.png",
+        "nature": "本專案合成設計輸入，非工業實拍"
+      },
+      "questionInOriginalCollection": "內孔尺寸是否合格？內外圓心是否偏離？",
+      "outputNeeds": [
+        "內／外徑",
+        "內外圓心距",
+        "周向支持與徑向殘差"
+      ],
+      "inputDataDescription": "已收錄 OpenCV smarties 圓物件照片；另有同心、偏心兩張合成環件及設計圓心／半徑。",
+      "truthLimit": "合成圖提供設計圓心與半徑；實拍須量具或校準基準真值，不能用 Hough 輸出自行作答案。",
+      "missingBeforeProductionAcceptance": "真實墊圈、不同內外徑、倒角／反光／橢圓缺陷，以及可追溯的尺寸參考。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "合成：同心環件",
+          "file": "synthetic/washer-ok.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/washer-ok.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-ok.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/washer",
+          "note": "設計輸入，尚未跑檢測",
+          "sha256": "5b46b241c019be291f1bc15f907523a9b9b4e00106a8d6a96e226b544e5da1a8",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "outerCenter": [
+              256,
+              256
+            ],
+            "outerRadius": 156,
+            "innerCenter": [
+              256,
+              256
+            ],
+            "innerRadius": 78,
+            "centerOffsetPx": 0,
+            "class": "OK",
+            "rule": "toy design requires concentric circles"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/3",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          }
+        },
+        {
+          "label": "合成：偏心環件",
+          "file": "synthetic/washer-eccentric.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/washer-eccentric.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-eccentric.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/washer",
+          "note": "設計中心差見標註",
+          "sha256": "9c496f6a0305fa34bbd6519089a839e0e41738306dc29cf75013871d79f402a0",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "outerCenter": [
+              256,
+              256
+            ],
+            "outerRadius": 156,
+            "innerCenter": [
+              272,
+              256
+            ],
+            "innerRadius": 78,
+            "centerOffsetPx": 16,
+            "class": "NG",
+            "rule": "toy design requires concentric circles"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/4",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-eccentric.png",
+          "nature": "本專案合成設計輸入，非工業實拍"
+        },
+        {
+          "label": "官方圓物件照片",
+          "file": "assets/smarties.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "width": 413,
+          "height": 356,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+          "sourceGroup": "sha256/ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "note": "可試圓候選，不是量測標準件",
+          "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方 Hough 圓教學",
+          "https://docs.opencv.org/4.13.0/d4/d70/tutorial_hough_circle.html"
+        ],
+        [
+          "Hough 圓範例源碼",
+          "repo:samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp"
+        ],
+        [
+          "擬合與形狀 API",
+          "https://docs.opencv.org/4.13.0/d3/dc0/group__imgproc__shape.html"
+        ]
+      ],
+      "story": {
+        "userStory": "作為量測工程師，我想在圖上指出要量的內外兩條邊與它們的中心關係，直接檢查偏心，而不是先選圓環任務。",
+        "humanGoal": "我要量這兩圈的直徑，以及它們兩個中心相差多少。",
+        "boardExpression": [
+          "在同一原圖上圈兩個環帶，文字分別叫「外緣」與「內孔」。",
+          "可直接拖入同心參考圖和偏心待測圖，畫箭頭表達要比較的中心關係。"
+        ],
+        "tools": [
+          "環形／自由ROI",
+          "找圓：即時計算全部候選",
+          "點候選圓採用",
+          "關係箭頭與文字"
+        ],
+        "agentFirstReturn": "在原圖同時畫出全部合格圓候選，將擬採用的內外兩圈分色，附真正支持點、兩個中心與連線；數值放在圖下，展開可看周向支持及殘差。",
+        "sceneCorrection": "遇到倒角或陰影產生多個圓，工程師在原圖點另一個候選、移動環形ROI或直接說「要這條外緣」；選擇記錄為意圖，Agent 按新意圖重算。",
+        "done": [
+          "兩個圓的角色與支持點清楚，沒有把最小包圍圓默認當量測圓。",
+          "提供px尺寸與中心距；要求mm時使用同成像條件有效標定，不能只靠倍率。",
+          "同心／偏心兩張在同一方案下驗證；被遮擋的角區與不足支持不補造。"
+        ],
+        "unknown": "透視、橢圓或局部反光令某條邊支持不足時，指出是哪一圈及哪個角區失效，不能只給整張UNKNOWN。",
+        "multiImageRelation": "兩張合成環件提供同源對照；smarties只是額外圓候選素材，不能拿其圓徑當墊圈尺寸標準。",
+        "anchors": [
+          {
+            "image": "synthetic/washer-eccentric.png",
+            "kind": "circle",
+            "center": [
+              256,
+              256
+            ],
+            "radius": 156,
+            "label": "設計外圓",
+            "basis": "annotations.json generated design；非找圓輸出"
+          },
+          {
+            "image": "synthetic/washer-eccentric.png",
+            "kind": "circle",
+            "center": [
+              272,
+              256
+            ],
+            "radius": 78,
+            "label": "設計內圓",
+            "basis": "annotations.json generated design；非找圓輸出"
+          }
+        ],
+        "humanExpression": [
+          "在同一原圖上圈兩個環帶，文字分別叫「外緣」與「內孔」。",
+          "可直接拖入同心參考圖和偏心待測圖，畫箭頭表達要比較的中心關係。"
+        ],
+        "correction": "遇到倒角或陰影產生多個圓，工程師在原圖點另一個候選、移動環形ROI或直接說「要這條外緣」；選擇記錄為意圖，Agent 按新意圖重算。",
+        "completion": [
+          "兩個圓的角色與支持點清楚，沒有把最小包圍圓默認當量測圓。",
+          "提供px尺寸與中心距；要求mm時使用同成像條件有效標定，不能只靠倍率。",
+          "同心／偏心兩張在同一方案下驗證；被遮擋的角區與不足支持不補造。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "washer",
+      "title": "墊圈內外徑與偏心",
+      "goal": "我要量這兩圈的直徑，以及它們兩個中心相差多少。",
+      "userStory": "作為量測工程師，我想在圖上指出要量的內外兩條邊與它們的中心關係，直接檢查偏心，而不是先選圓環任務。",
+      "references": [
+        {
+          "label": "合成：同心環件",
+          "file": "synthetic/washer-ok.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/washer-ok.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-ok.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/washer",
+          "note": "設計輸入，尚未跑檢測",
+          "sha256": "5b46b241c019be291f1bc15f907523a9b9b4e00106a8d6a96e226b544e5da1a8",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "outerCenter": [
+              256,
+              256
+            ],
+            "outerRadius": 156,
+            "innerCenter": [
+              256,
+              256
+            ],
+            "innerRadius": 78,
+            "centerOffsetPx": 0,
+            "class": "OK",
+            "rule": "toy design requires concentric circles"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/3",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/washer-ok.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "官方圓物件照片",
+          "file": "assets/smarties.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "width": 413,
+          "height": 356,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+          "sourceGroup": "sha256/ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "note": "可試圓候選，不是量測標準件",
+          "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "nature": "官方原始素材"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "circle",
+            "cx": 256,
+            "cy": 256,
+            "r": 156,
+            "label": "外緣意圖"
+          },
+          {
+            "type": "circle",
+            "cx": 272,
+            "cy": 256,
+            "r": 78,
+            "label": "內孔意圖"
+          }
+        ],
+        "agent": [
+          {
+            "type": "line",
+            "x1": 256,
+            "y1": 256,
+            "x2": 272,
+            "y2": 256,
+            "label": "應展示兩中心關係"
+          }
+        ],
+        "basis": "annotations.json的兩個設計圓；不是找圓運算",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方 Hough 圓教學",
+          "https://docs.opencv.org/4.13.0/d4/d70/tutorial_hough_circle.html"
+        ],
+        [
+          "Hough 圓範例源碼",
+          "repo:samples/cpp/tutorial_code/ImgTrans/houghcircles.cpp"
+        ],
+        [
+          "擬合與形狀 API",
+          "https://docs.opencv.org/4.13.0/d3/dc0/group__imgproc__shape.html"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "03",
+      "slug": "holes",
+      "name": "多孔鈑金的孔數與孔位",
+      "sourceCategory": "工業延伸",
+      "hero": {
+        "label": "合成：三孔工件",
+        "file": "synthetic/panel-ok.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/panel-ok.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-ok.png",
+        "width": 512,
+        "height": 512,
+        "role": "candidate-input",
+        "upstream": null,
+        "sourceGroup": "synthetic/holes",
+        "note": "已提供設計孔 ID",
+        "sha256": "f31d6267fdb7f78b8598bc0a850ac36a20860cabb85fef0d5414dd462fd102be",
+        "isSynthetic": true,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": true,
+        "evaluatorOnlyDesignTruth": {
+          "nominalHoles": [
+            {
+              "id": "H1",
+              "center": [
+                150,
+                256
+              ],
+              "radius": 25
+            },
+            {
+              "id": "H2",
+              "center": [
+                256,
+                256
+              ],
+              "radius": 25
+            },
+            {
+              "id": "H3",
+              "center": [
+                362,
+                256
+              ],
+              "radius": 25
+            }
+          ],
+          "closedHoleCount": 3,
+          "missingHoleId": null,
+          "openToExteriorId": null,
+          "class": "OK",
+          "rule": "toy design requires three closed holes"
+        },
+        "referenceAnswerMetadata": {
+          "source": "generated-design",
+          "reference": "annotations.json#/images/5",
+          "scope": "synthetic pipeline only",
+          "toyQualityClass": "OK"
+        },
+        "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-ok.png",
+        "nature": "本專案合成設計輸入，非工業實拍"
+      },
+      "questionInOriginalCollection": "孔有沒有少？孔屬於哪個工件？孔距是否正確？",
+      "outputNeeds": [
+        "孔數與孔 ID",
+        "孔相對基準的位置／孔距",
+        "通孔、開槽與邊界缺口的區分"
+      ],
+      "inputDataDescription": "已收錄官方 hierarchy 示意圖；另有三孔、缺孔、邊界開口三張合成鈑金，含設計孔位。",
+      "truthLimit": "每個孔要有 ID、中心或輪廓、所屬工件及缺陷類別；整張 OK／NG 不能取代孔級答案。",
+      "missingBeforeProductionAcceptance": "真實鈑金背光圖、毛刺／異物／堵孔、不同批次與真實尺寸公差。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "合成：三孔工件",
+          "file": "synthetic/panel-ok.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/panel-ok.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-ok.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "note": "已提供設計孔 ID",
+          "sha256": "f31d6267fdb7f78b8598bc0a850ac36a20860cabb85fef0d5414dd462fd102be",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalHoles": [
+              {
+                "id": "H1",
+                "center": [
+                  150,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H2",
+                "center": [
+                  256,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H3",
+                "center": [
+                  362,
+                  256
+                ],
+                "radius": 25
+              }
+            ],
+            "closedHoleCount": 3,
+            "missingHoleId": null,
+            "openToExteriorId": null,
+            "class": "OK",
+            "rule": "toy design requires three closed holes"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/5",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-ok.png",
+          "nature": "本專案合成設計輸入，非工業實拍"
+        },
+        {
+          "label": "合成：少一孔",
+          "file": "synthetic/panel-missing.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/panel-missing.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-missing.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "note": "設計缺孔為 NG",
+          "sha256": "7fd5de856e7fe2217bd2844605554651c6d1c15f650c321249c19006af3776d5",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalHoles": [
+              {
+                "id": "H1",
+                "center": [
+                  150,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H2",
+                "center": [
+                  256,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H3",
+                "center": [
+                  362,
+                  256
+                ],
+                "radius": 25
+              }
+            ],
+            "closedHoleCount": 2,
+            "missingHoleId": "H2",
+            "openToExteriorId": null,
+            "class": "NG",
+            "rule": "toy design requires three closed holes"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/6",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          }
+        },
+        {
+          "label": "合成：孔連通外部",
+          "file": "synthetic/panel-open.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/panel-open.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-open.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "note": "用於孔／開口邊界測試",
+          "sha256": "6db5dd42896b0444ce7694ec0c1e1ea9a7c29c9b76a57c8b090d7cce883ba6b3",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalHoles": [
+              {
+                "id": "H1",
+                "center": [
+                  150,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H2",
+                "center": [
+                  256,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H3",
+                "center": [
+                  362,
+                  256
+                ],
+                "radius": 25
+              }
+            ],
+            "closedHoleCount": 2,
+            "missingHoleId": null,
+            "openToExteriorId": "H3",
+            "class": "NG",
+            "rule": "toy design requires three closed holes"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/7",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          }
+        },
+        {
+          "label": "官方層級示意",
+          "file": "assets/doc-hierarchy.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-hierarchy.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-hierarchy.png",
+          "width": 450,
+          "height": 292,
+          "role": "upstream-teaching-diagram-not-production-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/images/hierarchy.png",
+          "sourceGroup": "sha256/abc61365d664f9cf23f367b03e54b654bb7bb4b48b154b3647fac6d377a389a7",
+          "note": "教學圖，非實拍產品",
+          "sha256": "abc61365d664f9cf23f367b03e54b654bb7bb4b48b154b3647fac6d377a389a7",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方輪廓層級教學",
+          "https://docs.opencv.org/4.13.0/d9/d8b/tutorial_py_contours_hierarchy.html"
+        ],
+        [
+          "教學原文與圖",
+          "repo:doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/py_contours_hierarchy.markdown"
+        ],
+        [
+          "輪廓範例",
+          "repo:samples/cpp/contours2.cpp"
+        ]
+      ],
+      "story": {
+        "userStory": "作為工程師，我想直接指出哪個工件、哪些區域算孔，以及相對哪條基準量位置；系統能理解包含與基準關係。",
+        "humanGoal": "這些孔屬於這塊板；幫我查有沒有少孔，並以這條邊為基準比較孔位。",
+        "boardExpression": [
+          "圈工件，點一個孔並說「像這樣的封閉內孔」；在原圖標基準邊。",
+          "把三孔參考圖、缺孔圖、開口圖放在同一畫板；可在開口處註解「這個連到外面，不算封閉孔」。"
+        ],
+        "tools": [
+          "鋼筆／掩膜",
+          "找直線作基準候選",
+          "找圓或點選孔候選",
+          "包含關係箭頭"
+        ],
+        "agentFirstReturn": "回圖列出工件外形、封閉孔ID與開口，使用不同標記；顯示工件局部基準、實際孔位與參考孔位的連線，缺孔是「預期位置」而非捏造測點。",
+        "sceneCorrection": "若把開槽當孔，工程師點該候選說「連到外部，不是孔」；或改點真正基準線。Agent 修正物件關係與方案，再跑三張，不要求先找算法選單。",
+        "done": [
+          "孔與所屬工件、基準、孔ID匹配均能回圖核對；一張圖可有多個孔級結果。",
+          "沒有名義孔位或公差時只報測得位置及差異，不從參考圖自造製造公差。",
+          "三孔、少孔、外連開口三種設計狀態分開處理。"
+        ],
+        "unknown": "不可見的孔不能一律等於真實缺孔；基準無法可靠建立時，保留可見孔的觀察，孔位尺寸與規格判定明確失效。",
+        "multiImageRelation": "三張鈑金圖是同一合成設計的衍生反例；官方hierarchy圖是解釋輪廓包含關係的教學素材，不作實拍輸入。",
+        "anchors": [
+          {
+            "image": "synthetic/panel-ok.png",
+            "kind": "points",
+            "points": [
+              [
+                150,
+                256
+              ],
+              [
+                256,
+                256
+              ],
+              [
+                362,
+                256
+              ]
+            ],
+            "labels": [
+              "H1",
+              "H2",
+              "H3"
+            ],
+            "basis": "annotations.json nominalHoles；設計位置，非實算孔中心"
+          }
+        ],
+        "humanExpression": [
+          "圈工件，點一個孔並說「像這樣的封閉內孔」；在原圖標基準邊。",
+          "把三孔參考圖、缺孔圖、開口圖放在同一畫板；可在開口處註解「這個連到外面，不算封閉孔」。"
+        ],
+        "correction": "若把開槽當孔，工程師點該候選說「連到外部，不是孔」；或改點真正基準線。Agent 修正物件關係與方案，再跑三張，不要求先找算法選單。",
+        "completion": [
+          "孔與所屬工件、基準、孔ID匹配均能回圖核對；一張圖可有多個孔級結果。",
+          "沒有名義孔位或公差時只報測得位置及差異，不從參考圖自造製造公差。",
+          "三孔、少孔、外連開口三種設計狀態分開處理。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "holes",
+      "title": "多孔鈑金的孔數與孔位",
+      "goal": "這些孔屬於這塊板；幫我查有沒有少孔，並以這條邊為基準比較孔位。",
+      "userStory": "作為工程師，我想直接指出哪個工件、哪些區域算孔，以及相對哪條基準量位置；系統能理解包含與基準關係。",
+      "references": [
+        {
+          "label": "合成：少一孔",
+          "file": "synthetic/panel-missing.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/panel-missing.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-missing.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "note": "設計缺孔為 NG",
+          "sha256": "7fd5de856e7fe2217bd2844605554651c6d1c15f650c321249c19006af3776d5",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalHoles": [
+              {
+                "id": "H1",
+                "center": [
+                  150,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H2",
+                "center": [
+                  256,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H3",
+                "center": [
+                  362,
+                  256
+                ],
+                "radius": 25
+              }
+            ],
+            "closedHoleCount": 2,
+            "missingHoleId": "H2",
+            "openToExteriorId": null,
+            "class": "NG",
+            "rule": "toy design requires three closed holes"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/6",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-missing.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "合成：孔連通外部",
+          "file": "synthetic/panel-open.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/panel-open.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-open.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/holes",
+          "note": "用於孔／開口邊界測試",
+          "sha256": "6db5dd42896b0444ce7694ec0c1e1ea9a7c29c9b76a57c8b090d7cce883ba6b3",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "nominalHoles": [
+              {
+                "id": "H1",
+                "center": [
+                  150,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H2",
+                "center": [
+                  256,
+                  256
+                ],
+                "radius": 25
+              },
+              {
+                "id": "H3",
+                "center": [
+                  362,
+                  256
+                ],
+                "radius": 25
+              }
+            ],
+            "closedHoleCount": 2,
+            "missingHoleId": null,
+            "openToExteriorId": "H3",
+            "class": "NG",
+            "rule": "toy design requires three closed holes"
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/7",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/panel-open.png",
+          "nature": "合成設計輸入"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "circle",
+            "cx": 150,
+            "cy": 256,
+            "r": 33,
+            "label": "像這樣的孔"
+          },
+          {
+            "type": "line",
+            "x1": 94,
+            "y1": 145,
+            "x2": 418,
+            "y2": 145,
+            "label": "以這條邊為基準"
+          }
+        ],
+        "agent": [
+          {
+            "type": "circle",
+            "cx": 150,
+            "cy": 256,
+            "r": 25,
+            "label": "H1位置示意"
+          },
+          {
+            "type": "circle",
+            "cx": 256,
+            "cy": 256,
+            "r": 25,
+            "label": "H2位置示意"
+          },
+          {
+            "type": "circle",
+            "cx": 362,
+            "cy": 256,
+            "r": 25,
+            "label": "H3位置示意"
+          }
+        ],
+        "basis": "孔中心與半徑為generated design，基準線是目視示意",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方輪廓層級教學",
+          "https://docs.opencv.org/4.13.0/d9/d8b/tutorial_py_contours_hierarchy.html"
+        ],
+        [
+          "教學原文與圖",
+          "repo:doc/py_tutorials/py_imgproc/py_contours/py_contours_hierarchy/py_contours_hierarchy.markdown"
+        ],
+        [
+          "輪廓範例",
+          "repo:samples/cpp/contours2.cpp"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "04",
+      "slug": "orientation",
+      "name": "多個沖壓件的擺放方向",
+      "sourceCategory": "官方場景",
+      "hero": {
+        "label": "官方背光原圖",
+        "file": "assets/pca_test1.jpg",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/pca_test1.jpg",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/pca_test1.jpg",
+        "width": 800,
+        "height": 600,
+        "role": "candidate-input",
+        "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pca_test1.jpg",
+        "sourceGroup": "sha256/9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+        "note": "待人工逐件標註角度",
+        "sha256": "9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+        "isSynthetic": false,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": false,
+        "path": "../../research/opencv-traditional-10-2026-10-25/assets/pca_test1.jpg",
+        "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+      },
+      "questionInOriginalCollection": "每個零件各轉了幾度？哪個擺放方向不符合要求？",
+      "outputNeeds": [
+        "逐件 ID 與中心",
+        "主軸角度（mod 180°）",
+        "方向歧義與擺放分類"
+      ],
+      "inputDataDescription": "已收錄官方 pca_test1 背光實拍，以及官方 pca_output 結果圖作閱讀參考。官方結果不是 AgentCV 的運算。",
+      "truthLimit": "人工逐件標 ID 與無向角；若要分頭尾，另標頭部特徵，不能把 PCA 的符號當真值。",
+      "missingBeforeProductionAcceptance": "逐件角度真值、更多實體件／姿態、靠近對稱的件、黏連與遮擋例。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "官方背光原圖",
+          "file": "assets/pca_test1.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/pca_test1.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/pca_test1.jpg",
+          "width": 800,
+          "height": 600,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/pca_test1.jpg",
+          "sourceGroup": "sha256/9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+          "note": "待人工逐件標註角度",
+          "sha256": "9aae52b2bf730216f7e46c662f612a417ebd43642e742e7f867f33aa734293cd",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/pca_test1.jpg",
+          "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+        },
+        {
+          "label": "官方結果示例",
+          "file": "assets/doc-pca_output.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-pca_output.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-pca_output.png",
+          "width": 800,
+          "height": 600,
+          "role": "upstream-example-output-not-test-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/tutorials/others/images/pca_output.png",
+          "sourceGroup": "sha256/6c64099848fb229ac414a15fd018288e8147dc58180bd8a6c8b64584d9a69ef6",
+          "note": "官方教學輸出，非本產品實測",
+          "sha256": "6c64099848fb229ac414a15fd018288e8147dc58180bd8a6c8b64584d9a69ef6",
+          "isSynthetic": false,
+          "containsUpstreamOutput": true,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方 PCA 方向教學",
+          "https://docs.opencv.org/4.13.0/d1/dee/tutorial_introduction_to_pca.html"
+        ],
+        [
+          "PCA 方向範例",
+          "repo:samples/cpp/tutorial_code/ml/introduction_to_pca/introduction_to_pca.cpp"
+        ],
+        [
+          "官方背光原圖",
+          "repo:samples/data/pca_test1.jpg"
+        ]
+      ],
+      "story": {
+        "userStory": "作為工程師，我想一次指出一圖中哪些是零件、哪個方向算朝向，取得逐件結果，而不是先選角度量測類型。",
+        "humanGoal": "檢查每一個零件的擺放方向；這個方向是我所說的朝向。",
+        "boardExpression": [
+          "點一個實際零件表示「這種物件」，再畫一根方向箭頭。",
+          "若要分頭尾，直接在可辨識端部點註解；不要求工程師填PCA或角度算法。"
+        ],
+        "tools": [
+          "點選多個對象",
+          "方向箭頭",
+          "鋼筆排除板框",
+          "可選：找直線作方向基準"
+        ],
+        "agentFirstReturn": "在原圖逐件編號，畫採用輪廓、中心及方向箭頭；板框和背景另列排除。每件可點選查看方向支持、角度與歧義狀態。",
+        "sceneCorrection": "工程師直接刪掉誤識別的板框對象，或翻轉某一件的方向箭頭並解釋頭部特徵；Agent 將這個局部修正轉為可回歸的識別意圖。",
+        "done": [
+          "每件都有自己的結果與對應原圖，不用一個總結果代表整圖。",
+          "無法區分頭尾時，顯示無向角或雙向箭頭；只有提供頭尾證據才顯示有向朝向。",
+          "新增同類件或換位置後可用同方案重跑，而非手填每件角度答案。"
+        ],
+        "unknown": "近對稱／近圓形件、黏連件或不可辨識頭尾時，只拒絕對應的方向判定，圖上清楚顯示需要哪個提示。",
+        "multiImageRelation": "pca_test1是官方原圖；pca_output只是官方教學結果，不可冒充平台的首次回圖或角度真值。",
+        "anchors": [],
+        "humanExpression": [
+          "點一個實際零件表示「這種物件」，再畫一根方向箭頭。",
+          "若要分頭尾，直接在可辨識端部點註解；不要求工程師填PCA或角度算法。"
+        ],
+        "correction": "工程師直接刪掉誤識別的板框對象，或翻轉某一件的方向箭頭並解釋頭部特徵；Agent 將這個局部修正轉為可回歸的識別意圖。",
+        "completion": [
+          "每件都有自己的結果與對應原圖，不用一個總結果代表整圖。",
+          "無法區分頭尾時，顯示無向角或雙向箭頭；只有提供頭尾證據才顯示有向朝向。",
+          "新增同類件或換位置後可用同方案重跑，而非手填每件角度答案。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "orientation",
+      "title": "多個沖壓件的擺放方向",
+      "goal": "檢查每一個零件的擺放方向；這個方向是我所說的朝向。",
+      "userStory": "作為工程師，我想一次指出一圖中哪些是零件、哪個方向算朝向，取得逐件結果，而不是先選角度量測類型。",
+      "references": [],
+      "overlays": {
+        "human": [
+          {
+            "type": "rect",
+            "x": 229,
+            "y": 43,
+            "width": 362,
+            "height": 99,
+            "label": "這類零件"
+          },
+          {
+            "type": "line",
+            "x1": 285,
+            "y1": 112,
+            "x2": 555,
+            "y2": 67,
+            "label": "我要表達的方向"
+          }
+        ],
+        "agent": [
+          {
+            "type": "line",
+            "x1": 265,
+            "y1": 112,
+            "x2": 555,
+            "y2": 67,
+            "label": "逐件方向的展示位置"
+          },
+          {
+            "type": "line",
+            "x1": 184,
+            "y1": 154,
+            "x2": 196,
+            "y2": 432,
+            "label": "另一件須有獨立結果"
+          }
+        ],
+        "basis": "官方原圖目視定位，非角度真值或PCA結果",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方 PCA 方向教學",
+          "https://docs.opencv.org/4.13.0/d1/dee/tutorial_introduction_to_pca.html"
+        ],
+        [
+          "PCA 方向範例",
+          "repo:samples/cpp/tutorial_code/ml/introduction_to_pca/introduction_to_pca.cpp"
+        ],
+        [
+          "官方背光原圖",
+          "repo:samples/data/pca_test1.jpg"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "05",
+      "slug": "touching",
+      "name": "黏連顆粒的分離與計數",
+      "sourceCategory": "官方場景",
+      "hero": {
+        "label": "官方接觸硬幣原圖",
+        "file": "assets/doc-water_coins.jpg",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-water_coins.jpg",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_coins.jpg",
+        "width": 252,
+        "height": 312,
+        "role": "candidate-input",
+        "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+        "sourceGroup": "sha256/7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+        "note": "官方算法起點，未有人工作件答案",
+        "sha256": "7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+        "isSynthetic": false,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": false,
+        "path": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_coins.jpg",
+        "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+      },
+      "questionInOriginalCollection": "接觸在一起的物件，實際有幾個？分界在哪裡？",
+      "outputNeeds": [
+        "物件數與逐件 ID",
+        "實例遮罩與接觸邊界",
+        "過度／不足分割警示"
+      ],
+      "inputDataDescription": "已收錄官方接觸硬幣原圖、遮罩／距離圖／種子／結果；另有 OpenCV extra 的密集圓珠實拍。",
+      "truthLimit": "需逐件 ID 或實例遮罩；只知道總數不足以判斷是否恰好互相抵銷了一次多分與少分。",
+      "missingBeforeProductionAcceptance": "逐件實例遮罩真值、不同顆粒尺寸與接觸程度、實拍 NG 與難以辨識的 UNKNOWN。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "官方接觸硬幣原圖",
+          "file": "assets/doc-water_coins.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-water_coins.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_coins.jpg",
+          "width": 252,
+          "height": 312,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_coins.jpg",
+          "sourceGroup": "sha256/7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+          "note": "官方算法起點，未有人工作件答案",
+          "sha256": "7d95ab25d7ace50dbebbcc5ca66b48f837709ed0089bd4b31bcbdddb5c3030b8",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_coins.jpg",
+          "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+        },
+        {
+          "label": "官方距離圖",
+          "file": "assets/doc-water_dt.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-water_dt.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_dt.jpg",
+          "width": 450,
+          "height": 288,
+          "role": "upstream-example-output-not-test-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_dt.jpg",
+          "sourceGroup": "sha256/2634281d8c920a578b72d32a277d1a5289ae44522359d2c02552d6cbadb85cb2",
+          "note": "官方教學中間圖",
+          "sha256": "2634281d8c920a578b72d32a277d1a5289ae44522359d2c02552d6cbadb85cb2",
+          "isSynthetic": false,
+          "containsUpstreamOutput": true,
+          "hasReferenceAnswer": false
+        },
+        {
+          "label": "官方種子圖",
+          "file": "assets/doc-water_marker.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-water_marker.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_marker.jpg",
+          "width": 391,
+          "height": 483,
+          "role": "upstream-example-output-not-test-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_marker.jpg",
+          "sourceGroup": "sha256/3e061b8c3c28ddc77441a0a92fb1673a40125861f2d71479889b770395859ca8",
+          "note": "官方教學中間圖",
+          "sha256": "3e061b8c3c28ddc77441a0a92fb1673a40125861f2d71479889b770395859ca8",
+          "isSynthetic": false,
+          "containsUpstreamOutput": true,
+          "hasReferenceAnswer": false
+        },
+        {
+          "label": "官方分離結果",
+          "file": "assets/doc-water_result.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-water_result.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-water_result.jpg",
+          "width": 450,
+          "height": 296,
+          "role": "upstream-example-output-not-test-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_imgproc/py_watershed/images/water_result.jpg",
+          "sourceGroup": "sha256/57ce1b24e5048f4a4cd7ada297f4eaf734257b7722e69fee6c5e1cbec419d101",
+          "note": "非本產品實測",
+          "sha256": "57ce1b24e5048f4a4cd7ada297f4eaf734257b7722e69fee6c5e1cbec419d101",
+          "isSynthetic": false,
+          "containsUpstreamOutput": true,
+          "hasReferenceAnswer": false
+        },
+        {
+          "label": "密集圓珠實拍",
+          "file": "assets/extra-beads.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/extra-beads.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/extra-beads.jpg",
+          "width": 1920,
+          "height": 1374,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/imgproc/beads.jpg",
+          "sourceGroup": "sha256/30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+          "note": "更難的多件壓力來源；仍待標註",
+          "sha256": "30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方分水嶺教學",
+          "https://docs.opencv.org/4.13.0/d3/db4/tutorial_py_watershed.html"
+        ],
+        [
+          "教學流程與原圖",
+          "repo:doc/py_tutorials/py_imgproc/py_watershed/py_watershed.markdown"
+        ],
+        [
+          "密集圓珠原圖",
+          "extra:testdata/cv/imgproc/beads.jpg"
+        ]
+      ],
+      "story": {
+        "userStory": "作為工程師，我想在重疊或接觸的物件上直接表達「這是兩件」或「這其實是一件」，而非用算法參數猜分界。",
+        "humanGoal": "把接觸在一起的物件分開，告訴我有幾件；分界也要畫出來。",
+        "boardExpression": [
+          "圈出整群顆粒或兩顆接觸處，直接發問。",
+          "歧義時在每一件內部各點一下，或畫「應分開／應合併」的短筆劃；可同時引用局部放大與原圖。"
+        ],
+        "tools": [
+          "掩膜與畫筆",
+          "點提示",
+          "分離／合併語意註解",
+          "多圖同板放大對照"
+        ],
+        "agentFirstReturn": "原圖疊上逐件分色遮罩、ID與候選分界；另可切換距離／支持圖看分界依據，不先把中間圖當唯一的正確分割。",
+        "sceneCorrection": "若兩件被合併，工程師在它們內部各點一個提示；若一件被切成兩塊，圈兩塊說「同一件」。Agent 回傳更新前後遮罩與ID變更，不要求填種子門檻。",
+        "done": [
+          "每個計數都有可見實例，而非只交總數。",
+          "局部修正、來源及重算範圍被記錄；多分和少分不會因總數恰好相等而被掩蓋。",
+          "另跑接觸程度不同的圖片；反覆手改只作用於單圖時須明示，不能稱為通用分離規則。"
+        ],
+        "unknown": "嚴重遮擋、沒有可辨界線且人也無法確定實際件數時，保留該區歧義；不從不可見區域補造物件。",
+        "multiImageRelation": "硬幣原圖為官方示例；距離／種子／分水嶺結果是官方教學產物。密集圓珠是另一真實場景，尺寸與數量分布不同，不能直接當相同樣品的驗證圖。",
+        "anchors": [],
+        "humanExpression": [
+          "圈出整群顆粒或兩顆接觸處，直接發問。",
+          "歧義時在每一件內部各點一下，或畫「應分開／應合併」的短筆劃；可同時引用局部放大與原圖。"
+        ],
+        "correction": "若兩件被合併，工程師在它們內部各點一個提示；若一件被切成兩塊，圈兩塊說「同一件」。Agent 回傳更新前後遮罩與ID變更，不要求填種子門檻。",
+        "completion": [
+          "每個計數都有可見實例，而非只交總數。",
+          "局部修正、來源及重算範圍被記錄；多分和少分不會因總數恰好相等而被掩蓋。",
+          "另跑接觸程度不同的圖片；反覆手改只作用於單圖時須明示，不能稱為通用分離規則。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "touching",
+      "title": "黏連顆粒的分離與計數",
+      "goal": "把接觸在一起的物件分開，告訴我有幾件；分界也要畫出來。",
+      "userStory": "作為工程師，我想在重疊或接觸的物件上直接表達「這是兩件」或「這其實是一件」，而非用算法參數猜分界。",
+      "references": [
+        {
+          "label": "密集圓珠實拍",
+          "file": "assets/extra-beads.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/extra-beads.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/extra-beads.jpg",
+          "width": 1920,
+          "height": 1374,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/imgproc/beads.jpg",
+          "sourceGroup": "sha256/30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+          "note": "更難的多件壓力來源；仍待標註",
+          "sha256": "30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/extra-beads.jpg",
+          "nature": "官方原始素材"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "rect",
+            "x": 65,
+            "y": 49,
+            "width": 54,
+            "height": 96,
+            "label": "這裡應分開"
+          },
+          {
+            "type": "circle",
+            "cx": 95,
+            "cy": 75,
+            "r": 4,
+            "label": "提示A"
+          },
+          {
+            "type": "circle",
+            "cx": 90,
+            "cy": 119,
+            "r": 4,
+            "label": "提示B"
+          }
+        ],
+        "agent": [
+          {
+            "type": "circle",
+            "cx": 95,
+            "cy": 75,
+            "r": 22,
+            "label": "實例候選A的展示位置"
+          },
+          {
+            "type": "circle",
+            "cx": 90,
+            "cy": 119,
+            "r": 22,
+            "label": "實例候選B的展示位置"
+          }
+        ],
+        "basis": "官方硬幣原圖的目視位置；圓只代表PRD實例示意，不是分割邊界或數量真值",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方分水嶺教學",
+          "https://docs.opencv.org/4.13.0/d3/db4/tutorial_py_watershed.html"
+        ],
+        [
+          "教學流程與原圖",
+          "repo:doc/py_tutorials/py_imgproc/py_watershed/py_watershed.markdown"
+        ],
+        [
+          "密集圓珠原圖",
+          "extra:testdata/cv/imgproc/beads.jpg"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "06",
+      "slug": "continuity",
+      "name": "導線／線柵的斷線與橋接",
+      "sourceCategory": "工業延伸",
+      "hero": {
+        "label": "合成：斷線",
+        "file": "synthetic/traces-break.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/traces-break.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-break.png",
+        "width": 512,
+        "height": 512,
+        "role": "candidate-input",
+        "upstream": null,
+        "sourceGroup": "synthetic/continuity",
+        "note": "設計缺口見 annotations.json",
+        "sha256": "7244e5481d5b5119eb32076e2f54896069d50a0958e4b46c8103c9955b1e8b30",
+        "isSynthetic": true,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": true,
+        "evaluatorOnlyDesignTruth": {
+          "lineIds": [
+            "L1",
+            "L2",
+            "L3",
+            "L4"
+          ],
+          "expectedIndependentNets": 4,
+          "class": "NG",
+          "defectType": "open_circuit",
+          "defectRegion": [
+            250,
+            211,
+            14,
+            16
+          ]
+        },
+        "referenceAnswerMetadata": {
+          "source": "generated-design",
+          "reference": "annotations.json#/images/9",
+          "scope": "synthetic pipeline only",
+          "toyQualityClass": "NG"
+        },
+        "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-break.png",
+        "nature": "本專案合成設計輸入，非工業實拍"
+      },
+      "questionInOriginalCollection": "應連通的兩端是否斷開？不應相連的線是否搭橋？",
+      "outputNeeds": [
+        "每條線的 ID 與端點",
+        "缺口／橋接位置",
+        "預期與實際連通圖"
+      ],
+      "inputDataDescription": "已收錄官方 notes 樂譜原圖；另有完整、斷線、橋接三張合成線柵，以及設計缺陷區域。沒有冒充真實 PCB。",
+      "truthLimit": "按端點和網路 ID 定義應連通／應分離；缺口與橋接另有位置真值。缺陷修補圖不能作驗收真值。",
+      "missingBeforeProductionAcceptance": "實際 PCB／導線樣品、反光銅箔、線寬標定、製程容許規格及真實缺陷。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "合成：完整線柵",
+          "file": "synthetic/traces-ok.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/traces-ok.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-ok.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "note": "設計有四條互不連通導線",
+          "sha256": "2d69725201d1d60be5267cd7d3073d1c396a830d4b62e02c8d73c677ae031805",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "lineIds": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ],
+            "expectedIndependentNets": 4,
+            "class": "OK",
+            "defectType": null,
+            "defectRegion": null
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/8",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          }
+        },
+        {
+          "label": "合成：斷線",
+          "file": "synthetic/traces-break.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/traces-break.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-break.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "note": "設計缺口見 annotations.json",
+          "sha256": "7244e5481d5b5119eb32076e2f54896069d50a0958e4b46c8103c9955b1e8b30",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "lineIds": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ],
+            "expectedIndependentNets": 4,
+            "class": "NG",
+            "defectType": "open_circuit",
+            "defectRegion": [
+              250,
+              211,
+              14,
+              16
+            ]
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/9",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-break.png",
+          "nature": "本專案合成設計輸入，非工業實拍"
+        },
+        {
+          "label": "合成：短接",
+          "file": "synthetic/traces-bridge.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/traces-bridge.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-bridge.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "note": "設計多出一條橋接",
+          "sha256": "d9b7b3f49d091edce4850adb799d52c6ab4ccbb7c50a30ad9526cf449c29e20d",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "lineIds": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ],
+            "expectedIndependentNets": 4,
+            "class": "NG",
+            "defectType": "bridge",
+            "defectRegion": [
+              285,
+              227,
+              14,
+              58
+            ]
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/10",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          }
+        },
+        {
+          "label": "官方方向線條原圖",
+          "file": "assets/notes.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/notes.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/notes.png",
+          "width": 1024,
+          "height": 134,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/notes.png",
+          "sourceGroup": "sha256/b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+          "note": "樂譜，不是 PCB 實拍",
+          "sha256": "b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方線條形態學教學",
+          "https://docs.opencv.org/4.13.0/dd/dd7/tutorial_morph_lines_detection.html"
+        ],
+        [
+          "官方範例源碼",
+          "repo:samples/cpp/tutorial_code/ImgProc/morph_lines_detection/Morphology_3.cpp"
+        ],
+        [
+          "官方樂譜原圖",
+          "repo:samples/data/notes.png"
+        ]
+      ],
+      "story": {
+        "userStory": "作為工程師，我想畫出哪兩端應連通、哪兩條線應分離，讓Agent檢查這個關係是否被破壞。",
+        "humanGoal": "這一條的兩端應該連著；相鄰兩條不能搭在一起。找出斷口或橋接位置。",
+        "boardExpression": [
+          "在原圖點兩個端點，用連線／文字表達「應連通」；對相鄰線表達「應分離」。",
+          "拖入完整、斷線、橋接三張圖，在缺陷局部圈畫並標為對照例。"
+        ],
+        "tools": [
+          "端點標記",
+          "關係連線與註解",
+          "鋼筆／掩膜限定線區",
+          "可選：找直線提供支持範圍"
+        ],
+        "agentFirstReturn": "在未修補的原圖上編出每條線與端點，圈出實際斷口／橋接候選；用圖表示「應連通／實際是否連通」，處理前後像素可切換對照。",
+        "sceneCorrection": "若正常交點被當短接，直接點該位置註記「這裡本來就允許相連」；若降噪補掉斷口，在前後圖上指出差異。Agent 改關係定義或預處理並回放三張。",
+        "done": [
+          "斷線與橋接分項定位，保留原始缺陷像素。",
+          "不以修補後變連通作為原件合格證據。",
+          "每項規則能回指人指定的端點／網路關係；最小可檢缺口要經實拍驗證。"
+        ],
+        "unknown": "缺口小於成像可辨能力或遮罩不穩時，標明該條線、該局部的失效原因；不能因沒檢出就判沒有斷口。",
+        "multiImageRelation": "3張線柵為同源合成關係反例；notes是官方樂譜，不是真PCB，也不等於已有導線工業數據。",
+        "anchors": [
+          {
+            "image": "synthetic/traces-break.png",
+            "kind": "rect",
+            "xywh": [
+              250,
+              211,
+              14,
+              16
+            ],
+            "label": "設計斷口區",
+            "basis": "annotations.json defectRegion；人工設計真值，非CV回圖"
+          },
+          {
+            "image": "synthetic/traces-bridge.png",
+            "kind": "rect",
+            "xywh": [
+              285,
+              227,
+              14,
+              58
+            ],
+            "label": "設計橋接區",
+            "basis": "annotations.json defectRegion；人工設計真值，非CV回圖"
+          }
+        ],
+        "humanExpression": [
+          "在原圖點兩個端點，用連線／文字表達「應連通」；對相鄰線表達「應分離」。",
+          "拖入完整、斷線、橋接三張圖，在缺陷局部圈畫並標為對照例。"
+        ],
+        "correction": "若正常交點被當短接，直接點該位置註記「這裡本來就允許相連」；若降噪補掉斷口，在前後圖上指出差異。Agent 改關係定義或預處理並回放三張。",
+        "completion": [
+          "斷線與橋接分項定位，保留原始缺陷像素。",
+          "不以修補後變連通作為原件合格證據。",
+          "每項規則能回指人指定的端點／網路關係；最小可檢缺口要經實拍驗證。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "continuity",
+      "title": "導線／線柵的斷線與橋接",
+      "goal": "這一條的兩端應該連著；相鄰兩條不能搭在一起。找出斷口或橋接位置。",
+      "userStory": "作為工程師，我想畫出哪兩端應連通、哪兩條線應分離，讓Agent檢查這個關係是否被破壞。",
+      "references": [
+        {
+          "label": "合成：完整線柵",
+          "file": "synthetic/traces-ok.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/traces-ok.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-ok.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "note": "設計有四條互不連通導線",
+          "sha256": "2d69725201d1d60be5267cd7d3073d1c396a830d4b62e02c8d73c677ae031805",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "lineIds": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ],
+            "expectedIndependentNets": 4,
+            "class": "OK",
+            "defectType": null,
+            "defectRegion": null
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/8",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-ok.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "合成：短接",
+          "file": "synthetic/traces-bridge.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/traces-bridge.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-bridge.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/continuity",
+          "note": "設計多出一條橋接",
+          "sha256": "d9b7b3f49d091edce4850adb799d52c6ab4ccbb7c50a30ad9526cf449c29e20d",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "lineIds": [
+              "L1",
+              "L2",
+              "L3",
+              "L4"
+            ],
+            "expectedIndependentNets": 4,
+            "class": "NG",
+            "defectType": "bridge",
+            "defectRegion": [
+              285,
+              227,
+              14,
+              58
+            ]
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/10",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/traces-bridge.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "官方方向線條原圖",
+          "file": "assets/notes.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/notes.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/notes.png",
+          "width": 1024,
+          "height": 134,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/notes.png",
+          "sourceGroup": "sha256/b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+          "note": "樂譜，不是 PCB 實拍",
+          "sha256": "b40d7e1f92df046f4853b006a0dd745bd3e55e48e57faa28c686a519fd062633",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/notes.png",
+          "nature": "官方原始素材"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "line",
+            "x1": 90,
+            "y1": 219,
+            "x2": 421,
+            "y2": 219,
+            "label": "這兩端應連通"
+          }
+        ],
+        "agent": [
+          {
+            "type": "rect",
+            "x": 250,
+            "y": 211,
+            "width": 14,
+            "height": 16,
+            "label": "此處應展示實際斷口證據"
+          }
+        ],
+        "basis": "連線為人類關係提示；斷口區來自generated design評估標註",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方線條形態學教學",
+          "https://docs.opencv.org/4.13.0/dd/dd7/tutorial_morph_lines_detection.html"
+        ],
+        [
+          "官方範例源碼",
+          "repo:samples/cpp/tutorial_code/ImgProc/morph_lines_detection/Morphology_3.cpp"
+        ],
+        [
+          "官方樂譜原圖",
+          "repo:samples/data/notes.png"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "07",
+      "slug": "color",
+      "name": "彩色零件分揀與混料",
+      "sourceCategory": "工業延伸",
+      "hero": {
+        "label": "官方彩色物件原圖",
+        "file": "assets/smarties.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+        "width": 413,
+        "height": 356,
+        "role": "candidate-input",
+        "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+        "sourceGroup": "sha256/ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+        "note": "待逐件人工顏色標註",
+        "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+        "isSynthetic": false,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": false,
+        "path": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+        "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+      },
+      "questionInOriginalCollection": "每個零件是哪一種顏色？這批是否混入錯色件？",
+      "outputNeeds": [
+        "逐件顏色類別與數量",
+        "顏色範圍內外的像素比例",
+        "未知顏色／強反光的拒絕"
+      ],
+      "inputDataDescription": "已收錄官方 smarties 彩色物件實拍。顏色逐件真值尚未標註；沒有把檔名或像素自動聚類當人工答案。",
+      "truthLimit": "逐件人工顏色類別／UNKNOWN 和實例區域；一張圖可同時有多種類別。",
+      "missingBeforeProductionAcceptance": "工業零件各色多批次、曝光與白平衡漂移、相近顏色、無法判色與混色件。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "官方彩色物件原圖",
+          "file": "assets/smarties.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "width": 413,
+          "height": 356,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/smarties.png",
+          "sourceGroup": "sha256/ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "note": "待逐件人工顏色標註",
+          "sha256": "ad3f751c053fdcf432687c1bc0e56a61a9119d2bb2ae29365f8aa6534fc77417",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/smarties.png",
+          "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方 HSV / inRange 教學",
+          "https://docs.opencv.org/4.13.0/da/d97/tutorial_threshold_inRange.html"
+        ],
+        [
+          "可調範圍範例",
+          "repo:samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp"
+        ],
+        [
+          "官方彩色原圖",
+          "repo:samples/data/smarties.png"
+        ]
+      ],
+      "story": {
+        "userStory": "作為分揀工程師，我想直接在實物上指幾種顏色並命名，讓系統找出每件類別與混料，而非先輸入色彩閾值。",
+        "humanGoal": "這幾種是我接受的顏色，把每件分出來並標出不屬於這些顏色的物件。",
+        "boardExpression": [
+          "在代表物件的內部用小掩膜取樣，直接命名類別；避開背景和高光。",
+          "可加入更多批次或反例圖，點物件標真實類別／未知；類別名稱由人給，不是軟件固定下拉表。"
+        ],
+        "tools": [
+          "畫筆取樣與掩膜",
+          "物件點選",
+          "文字命名類別",
+          "同板多圖例與反例"
+        ],
+        "agentFirstReturn": "原圖逐件編號及色標，旁邊顯示本次有效採樣像素與顏色分布；點類別可看它實際收進哪些像素，未知物件保留獨立顏色標記。",
+        "sceneCorrection": "工程師直接把錯分類物件改成正確類別，或圈掉高光說「不要用這些像素判色」；Agent 比較修改前後分布與混淆，而不是要人猜HSV數字。",
+        "done": [
+          "分類是逐件聚合，不以全圖某色像素數當件數。",
+          "新色、混色與強高光可被拒絕；不硬塞最接近的已知類。",
+          "顏色示教圖和保留驗證圖分組，列逐件混淆與UNKNOWN，不自造人工色標真值。"
+        ],
+        "unknown": "光照／白平衡漂移、有效像素不足或類別重疊時，直接在相應物件上顯示未知與原因。",
+        "multiImageRelation": "smarties為官方單張照片，也出現在圓物件案例；同一圖的重用不增加獨立樣本數，逐件人工色標目前未提供。",
+        "anchors": [],
+        "humanExpression": [
+          "在代表物件的內部用小掩膜取樣，直接命名類別；避開背景和高光。",
+          "可加入更多批次或反例圖，點物件標真實類別／未知；類別名稱由人給，不是軟件固定下拉表。"
+        ],
+        "correction": "工程師直接把錯分類物件改成正確類別，或圈掉高光說「不要用這些像素判色」；Agent 比較修改前後分布與混淆，而不是要人猜HSV數字。",
+        "completion": [
+          "分類是逐件聚合，不以全圖某色像素數當件數。",
+          "新色、混色與強高光可被拒絕；不硬塞最接近的已知類。",
+          "顏色示教圖和保留驗證圖分組，列逐件混淆與UNKNOWN，不自造人工色標真值。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "color",
+      "title": "彩色零件分揀與混料",
+      "goal": "這幾種是我接受的顏色，把每件分出來並標出不屬於這些顏色的物件。",
+      "userStory": "作為分揀工程師，我想直接在實物上指幾種顏色並命名，讓系統找出每件類別與混料，而非先輸入色彩閾值。",
+      "references": [],
+      "overlays": {
+        "human": [
+          {
+            "type": "circle",
+            "cx": 278,
+            "cy": 124,
+            "r": 8,
+            "label": "取樣／命名類別A"
+          }
+        ],
+        "agent": [
+          {
+            "type": "rect",
+            "x": 241,
+            "y": 90,
+            "width": 58,
+            "height": 58,
+            "label": "逐件候選A的展示位置"
+          },
+          {
+            "type": "rect",
+            "x": 349,
+            "y": 52,
+            "width": 58,
+            "height": 60,
+            "label": "另一件須單獨判色"
+          }
+        ],
+        "basis": "官方照片目視取樣，非人工色類真值或已分類結果",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方 HSV / inRange 教學",
+          "https://docs.opencv.org/4.13.0/da/d97/tutorial_threshold_inRange.html"
+        ],
+        [
+          "可調範圍範例",
+          "repo:samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp"
+        ],
+        [
+          "官方彩色原圖",
+          "repo:samples/data/smarties.png"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "08",
+      "slug": "pose",
+      "name": "複雜背景中的平面標籤定位",
+      "sourceCategory": "官方場景",
+      "hero": {
+        "label": "官方複雜背景",
+        "file": "assets/box_in_scene.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/box_in_scene.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/box_in_scene.png",
+        "width": 512,
+        "height": 384,
+        "role": "candidate-input",
+        "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box_in_scene.png",
+        "sourceGroup": "sha256/8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+        "note": "同一目標的定位起點",
+        "sha256": "8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+        "isSynthetic": false,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": false,
+        "path": "../../research/opencv-traditional-10-2026-10-25/assets/box_in_scene.png",
+        "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+      },
+      "questionInOriginalCollection": "目標在哪裡？旋轉或透視後，量測區應搬到哪裡？",
+      "outputNeeds": [
+        "四角與平面變換 H",
+        "匹配內點／外點",
+        "矯正圖與有效重疊區"
+      ],
+      "inputDataDescription": "已收錄官方 box 參考圖、box_in_scene 場景圖及官方匹配示例。只有一對起點，沒有假稱已覆蓋各種姿態。",
+      "truthLimit": "人工四角／可見範圍及目標是否存在；分開保存定位答案與後續品質答案。",
+      "missingBeforeProductionAcceptance": "同一實物多姿態、相似假目標、重複標籤、遮擋與逐圖角點真值。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "官方參考物",
+          "file": "assets/box.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/box.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/box.png",
+          "width": 324,
+          "height": 223,
+          "role": "reference-image",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box.png",
+          "sourceGroup": "sha256/1094629c1e2ebbc8a9ae2c9c63e18c1dff0f5f1481146e02f3b11a3d30feb20a",
+          "note": "參考模板，非驗收集",
+          "sha256": "1094629c1e2ebbc8a9ae2c9c63e18c1dff0f5f1481146e02f3b11a3d30feb20a",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        },
+        {
+          "label": "官方複雜背景",
+          "file": "assets/box_in_scene.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/box_in_scene.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/box_in_scene.png",
+          "width": 512,
+          "height": 384,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/samples/data/box_in_scene.png",
+          "sourceGroup": "sha256/8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+          "note": "同一目標的定位起點",
+          "sha256": "8b0225ff76244a42bd1400c0904f8b7afea7d97b7d8115495e42e98ad347bd51",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/box_in_scene.png",
+          "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+        },
+        {
+          "label": "官方匹配示例",
+          "file": "assets/doc-homography_findobj.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/doc-homography_findobj.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/doc-homography_findobj.jpg",
+          "width": 450,
+          "height": 246,
+          "role": "upstream-example-output-not-test-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv/4ffd42f66ae8e554819d86647753f2cec6380748/doc/py_tutorials/py_feature2d/py_feature_homography/images/homography_findobj.jpg",
+          "sourceGroup": "sha256/8350da2ae50e40f5ffc4645984feb0fb4307279d5f1bdb382dc99969b4d30118",
+          "note": "官方教學結果，非本產品實測",
+          "sha256": "8350da2ae50e40f5ffc4645984feb0fb4307279d5f1bdb382dc99969b4d30118",
+          "isSynthetic": false,
+          "containsUpstreamOutput": true,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方匹配與單應性教學",
+          "https://docs.opencv.org/4.13.0/d1/de0/tutorial_py_feature_homography.html"
+        ],
+        [
+          "教學原文",
+          "repo:doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.markdown"
+        ],
+        [
+          "官方場景原圖",
+          "repo:samples/data/box_in_scene.png"
+        ]
+      ],
+      "story": {
+        "userStory": "作為工程師，我想把參考圖與現場圖放在一起，指出「找這個東西」，並把後續檢查區搬到它現在的位置。",
+        "humanGoal": "在這張場景裡找到參考圖這個標籤，把我畫的檢查區一起搬過去。",
+        "boardExpression": [
+          "把參考物和場景圖拖進同一畫板，用引用／箭頭表達它們是同一個目標。",
+          "在參考圖畫檢查ROI；必要時在場景中點一下期望的那個同款實例。"
+        ],
+        "tools": [
+          "多圖同板",
+          "鋼筆／矩形ROI",
+          "圖片之間的對應箭頭",
+          "候選實例點選"
+        ],
+        "agentFirstReturn": "同板回畫參考物與場景候選的四角、對應支持與搬移後ROI；可點開矯正局部圖，並看有效覆蓋範圍，原圖座標與矯正座標分清。",
+        "sceneCorrection": "多個相似標籤時直接點要找的那一件；背景特徵被採用時在原圖劃除它們；Agent 依修正回傳新候選與差異，不要求人填變換矩陣。",
+        "done": [
+          "定位結果及跟隨ROI都能在現場原圖核對。",
+          "參考圖和場景來源始終成對保存，不能只量已矯正圖而丟失原圖映射。",
+          "目標位置正確與後續品質OK／NG分開確認。"
+        ],
+        "unknown": "無足夠可見支持、重複目標不能唯一決定或平面假設失效時，圈出不確定候選／無效ROI區，不硬搬檢查區。",
+        "multiImageRelation": "box.png是參考模板，box_in_scene.png是場景；doc-homography_findobj是官方教學輸出，不能充當平台已完成定位。",
+        "anchors": [],
+        "humanExpression": [
+          "把參考物和場景圖拖進同一畫板，用引用／箭頭表達它們是同一個目標。",
+          "在參考圖畫檢查ROI；必要時在場景中點一下期望的那個同款實例。"
+        ],
+        "correction": "多個相似標籤時直接點要找的那一件；背景特徵被採用時在原圖劃除它們；Agent 依修正回傳新候選與差異，不要求人填變換矩陣。",
+        "completion": [
+          "定位結果及跟隨ROI都能在現場原圖核對。",
+          "參考圖和場景來源始終成對保存，不能只量已矯正圖而丟失原圖映射。",
+          "目標位置正確與後續品質OK／NG分開確認。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "pose",
+      "title": "複雜背景中的平面標籤定位",
+      "goal": "在這張場景裡找到參考圖這個標籤，把我畫的檢查區一起搬過去。",
+      "userStory": "作為工程師，我想把參考圖與現場圖放在一起，指出「找這個東西」，並把後續檢查區搬到它現在的位置。",
+      "references": [],
+      "overlays": {
+        "human": [
+          {
+            "type": "rect",
+            "x": 82,
+            "y": 158,
+            "width": 205,
+            "height": 145,
+            "label": "參考圖所指的目標區"
+          }
+        ],
+        "agent": [
+          {
+            "type": "rect",
+            "x": 82,
+            "y": 158,
+            "width": 205,
+            "height": 145,
+            "label": "候選／搬移ROI的展示位置"
+          }
+        ],
+        "basis": "官方場景目視框選；不是已計算單應性四角或已驗定位",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方匹配與單應性教學",
+          "https://docs.opencv.org/4.13.0/d1/de0/tutorial_py_feature_homography.html"
+        ],
+        [
+          "教學原文",
+          "repo:doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.markdown"
+        ],
+        [
+          "官方場景原圖",
+          "repo:samples/data/box_in_scene.png"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "09",
+      "slug": "difference",
+      "name": "印刷件配準後的缺印／異物",
+      "sourceCategory": "工業延伸",
+      "hero": {
+        "label": "合成：平移＋缺印",
+        "file": "synthetic/print-defect.png",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/print-defect.png",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-defect.png",
+        "width": 512,
+        "height": 512,
+        "role": "candidate-input",
+        "upstream": null,
+        "sourceGroup": "synthetic/difference",
+        "note": "已知位移與缺陷區域",
+        "sha256": "bfb59022b25f167cfb7c9c4e82b34df5a1017a2e2746fd3c31eaebfb3da14ea8",
+        "isSynthetic": true,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": true,
+        "evaluatorOnlyDesignTruth": {
+          "reference": "synthetic/print-reference.png",
+          "referenceToImageTranslation": [
+            8,
+            -5
+          ],
+          "class": "NG",
+          "defectRegionInReference": [
+            220,
+            270,
+            35,
+            35
+          ],
+          "defectRegionInImage": [
+            228,
+            265,
+            35,
+            35
+          ]
+        },
+        "referenceAnswerMetadata": {
+          "source": "generated-design",
+          "reference": "annotations.json#/images/13",
+          "scope": "synthetic pipeline only",
+          "toyQualityClass": "NG"
+        },
+        "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-defect.png",
+        "nature": "本專案合成設計輸入，非工業實拍"
+      },
+      "questionInOriginalCollection": "這一小塊是缺印，還是只是圖像沒對準？",
+      "outputNeeds": [
+        "配準變換與有效區",
+        "差分熱圖／缺陷區域",
+        "缺陷位置、面積與分項判定"
+      ],
+      "inputDataDescription": "已收錄官方 ECC 配準素材 fruits_ecc；另有合成良品、同圖平移、平移加缺印，以及真值缺陷遮罩。",
+      "truthLimit": "分開提供幾何變換真值與缺陷區域真值；合成遮罩只測管線，不驗證真實缺陷分布。",
+      "missingBeforeProductionAcceptance": "工業印刷良品多張、實際缺印／異物／刮傷、照明變化與逐缺陷人工標註。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "合成：印刷基準",
+          "file": "synthetic/print-reference.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/print-reference.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-reference.png",
+          "width": 512,
+          "height": 512,
+          "role": "reference-image",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "note": "設計輸入",
+          "sha256": "49efc381b4e6ef2b61a18548c3489adff916319f370e0209cf2d97d3ec48b74b",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "reference": "synthetic/print-reference.png",
+            "referenceToImageTranslation": [
+              0,
+              0
+            ],
+            "class": "OK",
+            "defectRegionInReference": null,
+            "defectRegionInImage": null
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/11",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          }
+        },
+        {
+          "label": "合成：只有平移",
+          "file": "synthetic/print-shift.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/print-shift.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-shift.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "note": "已知位移，不應誤報缺印",
+          "sha256": "07e74b88265f2414af3078e18716e205b57ffc602f642b6199d56d395c491d01",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "reference": "synthetic/print-reference.png",
+            "referenceToImageTranslation": [
+              8,
+              -5
+            ],
+            "class": "OK",
+            "defectRegionInReference": null,
+            "defectRegionInImage": null
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/12",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          }
+        },
+        {
+          "label": "合成：平移＋缺印",
+          "file": "synthetic/print-defect.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/print-defect.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-defect.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "note": "已知位移與缺陷區域",
+          "sha256": "bfb59022b25f167cfb7c9c4e82b34df5a1017a2e2746fd3c31eaebfb3da14ea8",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "reference": "synthetic/print-reference.png",
+            "referenceToImageTranslation": [
+              8,
+              -5
+            ],
+            "class": "NG",
+            "defectRegionInReference": [
+              220,
+              270,
+              35,
+              35
+            ],
+            "defectRegionInImage": [
+              228,
+              265,
+              35,
+              35
+            ]
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/13",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "NG"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-defect.png",
+          "nature": "本專案合成設計輸入，非工業實拍"
+        },
+        {
+          "label": "合成：缺陷真值遮罩",
+          "file": "synthetic/print-defect-mask.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/print-defect-mask.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-defect-mask.png",
+          "width": 512,
+          "height": 512,
+          "role": "annotation-mask-not-test-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "note": "標註，不是算法輸出",
+          "sha256": "bdf788a423a58770345a77c164a03427ccdcc646b861351b80fa2eaaa8b8646d",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "kind": "annotation, not a test image",
+            "region": [
+              228,
+              265,
+              35,
+              35
+            ],
+            "convention": "white denotes removed designed ink only, in test-image coordinates; rectangle region is the containing edit window",
+            "designedRemovedInkAreaPx": 490
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/14",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": null
+          }
+        },
+        {
+          "label": "官方 ECC 起點",
+          "file": "assets/extra-fruits_ecc.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/extra-fruits_ecc.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/extra-fruits_ecc.png",
+          "width": 216,
+          "height": 216,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits_ecc.png",
+          "sourceGroup": "sha256/973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+          "note": "水果配準素材，非缺陷集",
+          "sha256": "973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false
+        }
+      ],
+      "sourceReferences": [
+        [
+          "官方 ECC 範例",
+          "repo:samples/cpp/image_alignment.cpp"
+        ],
+        [
+          "ECC API 與限制",
+          "https://docs.opencv.org/4.13.0/dc/d6b/group__video__track.html"
+        ],
+        [
+          "官方 ECC 測試素材",
+          "extra:testdata/cv/shared/fruits_ecc.png"
+        ]
+      ],
+      "story": {
+        "userStory": "作為印刷檢驗工程師，我想直接對照良品與待測圖，指出要找缺印／異物，也能說明哪個區域不需要比較。",
+        "humanGoal": "把這張和良品對好後，找真正的缺印或多出來的東西；單純位置偏移不要算缺陷。",
+        "boardExpression": [
+          "把參考圖、只有位移圖、位移加缺印圖放同一畫板；明示哪張作參考。",
+          "在要比較區畫掩膜；若有批號等可變區，直接圈出並註記「這裡略過」。"
+        ],
+        "tools": [
+          "多圖並排／疊合",
+          "鋼筆或掩膜",
+          "局部差異引用",
+          "可變區註解"
+        ],
+        "agentFirstReturn": "先回原圖與對齊後疊圖，再回差分熱圖及映回待測原圖的缺陷區；有效重疊邊界與忽略區可見。每個候選差異可一鍵放大原圖核對。",
+        "sceneCorrection": "若把錯位邊當缺印，工程師在原圖與疊圖同時引用該處說「這裡沒對齊」；若真缺陷被配準吃掉，指出同一局部。Agent 分開修正配準與缺陷判斷，不用一個閾值遮掩。",
+        "done": [
+          "只有位移的設計圖不誤當缺陷；有缺印圖的候選映回正確原圖位置。",
+          "配準成敗、有效比較區與缺陷結論分開呈現。",
+          "允收缺陷面積／類型來自人工規格；缺陷遮罩是評估真值，不能拿來當算法輸入提示。"
+        ],
+        "unknown": "對齊不穩、有效區太小或光度變化不可分辨時，明確標無效區，不能用差分數值直接宣稱NG。",
+        "multiImageRelation": "參考、平移、缺印為同源合成衍生圖，必須在同一資料分組；mask只作評估標註；fruits_ecc是配準素材，不是印刷缺陷集。",
+        "anchors": [
+          {
+            "image": "synthetic/print-defect.png",
+            "kind": "rect",
+            "xywh": [
+              228,
+              265,
+              35,
+              35
+            ],
+            "label": "設計缺印編輯窗口",
+            "basis": "annotations.json defectRegionInImage；不是算法分割的缺陷面積，也不是整個矩形都缺印"
+          }
+        ],
+        "humanExpression": [
+          "把參考圖、只有位移圖、位移加缺印圖放同一畫板；明示哪張作參考。",
+          "在要比較區畫掩膜；若有批號等可變區，直接圈出並註記「這裡略過」。"
+        ],
+        "correction": "若把錯位邊當缺印，工程師在原圖與疊圖同時引用該處說「這裡沒對齊」；若真缺陷被配準吃掉，指出同一局部。Agent 分開修正配準與缺陷判斷，不用一個閾值遮掩。",
+        "completion": [
+          "只有位移的設計圖不誤當缺陷；有缺印圖的候選映回正確原圖位置。",
+          "配準成敗、有效比較區與缺陷結論分開呈現。",
+          "允收缺陷面積／類型來自人工規格；缺陷遮罩是評估真值，不能拿來當算法輸入提示。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "difference",
+      "title": "印刷件配準後的缺印／異物",
+      "goal": "把這張和良品對好後，找真正的缺印或多出來的東西；單純位置偏移不要算缺陷。",
+      "userStory": "作為印刷檢驗工程師，我想直接對照良品與待測圖，指出要找缺印／異物，也能說明哪個區域不需要比較。",
+      "references": [
+        {
+          "label": "合成：只有平移",
+          "file": "synthetic/print-shift.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/synthetic/print-shift.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-shift.png",
+          "width": 512,
+          "height": 512,
+          "role": "candidate-input",
+          "upstream": null,
+          "sourceGroup": "synthetic/difference",
+          "note": "已知位移，不應誤報缺印",
+          "sha256": "07e74b88265f2414af3078e18716e205b57ffc602f642b6199d56d395c491d01",
+          "isSynthetic": true,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "evaluatorOnlyDesignTruth": {
+            "reference": "synthetic/print-reference.png",
+            "referenceToImageTranslation": [
+              8,
+              -5
+            ],
+            "class": "OK",
+            "defectRegionInReference": null,
+            "defectRegionInImage": null
+          },
+          "referenceAnswerMetadata": {
+            "source": "generated-design",
+            "reference": "annotations.json#/images/12",
+            "scope": "synthetic pipeline only",
+            "toyQualityClass": "OK"
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/synthetic/print-shift.png",
+          "nature": "合成設計輸入"
+        },
+        {
+          "label": "官方 ECC 起點",
+          "file": "assets/extra-fruits_ecc.png",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/extra-fruits_ecc.png",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/extra-fruits_ecc.png",
+          "width": 216,
+          "height": 216,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits_ecc.png",
+          "sourceGroup": "sha256/973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+          "note": "水果配準素材，非缺陷集",
+          "sha256": "973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": false,
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/extra-fruits_ecc.png",
+          "nature": "官方原始素材"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "rect",
+            "x": 104,
+            "y": 239,
+            "width": 306,
+            "height": 112,
+            "label": "比較這段印刷"
+          }
+        ],
+        "agent": [
+          {
+            "type": "rect",
+            "x": 228,
+            "y": 265,
+            "width": 35,
+            "height": 35,
+            "label": "差異應映回這個局部"
+          }
+        ],
+        "basis": "差異局部為generated design的編輯窗口，非算法缺陷遮罩，也不代表矩形全區都缺印",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "官方 ECC 範例",
+          "repo:samples/cpp/image_alignment.cpp"
+        ],
+        [
+          "ECC API 與限制",
+          "https://docs.opencv.org/4.13.0/dc/d6b/group__video__track.html"
+        ],
+        [
+          "官方 ECC 測試素材",
+          "extra:testdata/cv/shared/fruits_ecc.png"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    },
+    {
+      "caseId": "10",
+      "slug": "qr",
+      "name": "QR 標籤讀碼與料號核對",
+      "sourceCategory": "官方場景",
+      "hero": {
+        "label": "官方視角：下傾",
+        "file": "assets/qr-version_1_down.jpg",
+        "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_down.jpg",
+        "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_down.jpg",
+        "width": 640,
+        "height": 480,
+        "role": "candidate-input",
+        "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_down.jpg",
+        "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+        "note": "有官方角點與 payload",
+        "sha256": "4b29417c673225aff71672519684f2db9798e9d27356580d90438467bfbb595d",
+        "isSynthetic": false,
+        "containsUpstreamOutput": false,
+        "hasReferenceAnswer": true,
+        "referenceAnswerMetadata": {
+          "source": "upstream-test-config",
+          "payload": "aQqdqecq%hre3?JX",
+          "corners": [
+            [
+              159,
+              167
+            ],
+            [
+              404,
+              170
+            ],
+            [
+              418,
+              391
+            ],
+            [
+              82,
+              381
+            ]
+          ],
+          "reference": "assets/extra-dataset_config.json",
+          "qualityClass": null
+        },
+        "path": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_down.jpg",
+        "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+      },
+      "questionInOriginalCollection": "碼在哪裡？讀出內容是否正確？這個料號是否符合工單？",
+      "outputNeeds": [
+        "每個碼的四角",
+        "矯正後碼圖與字串",
+        "讀碼狀態與料號規則結果"
+      ],
+      "inputDataDescription": "已收錄官方 version_1 的 5 種視角圖片與 dataset_config.json；包含對應角點及 payload。另有官方 QR 照片。",
+      "truthLimit": "官方測試配置提供參考角點與原字串。五個視角仍屬同一編碼圖樣，不能充作五種獨立樣品或料號。",
+      "missingBeforeProductionAcceptance": "實際標籤材質、印刷品質、其他料號、破損／多碼／反光，以及工單匹配規則。",
+      "priorCollectionRunState": "collected-not-executed (historical collection manifest; this PRD task does not rerun CV or audit later product execution)",
+      "images": [
+        {
+          "label": "官方視角：下傾",
+          "file": "assets/qr-version_1_down.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_down.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_down.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_down.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "4b29417c673225aff71672519684f2db9798e9d27356580d90438467bfbb595d",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                159,
+                167
+              ],
+              [
+                404,
+                170
+              ],
+              [
+                418,
+                391
+              ],
+              [
+                82,
+                381
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_down.jpg",
+          "nature": "OpenCV官方樣圖／照片，非本輪平台運算"
+        },
+        {
+          "label": "官方視角：正視",
+          "file": "assets/qr-version_1_top.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_top.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_top.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_top.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "同一編碼圖樣，不是新料號",
+          "sha256": "2f58406d668f34286e95bc3e3797beae1e231f15200247deccd6489dbe3c8865",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                211,
+                157
+              ],
+              [
+                433,
+                158
+              ],
+              [
+                438,
+                388
+              ],
+              [
+                203,
+                385
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          }
+        },
+        {
+          "label": "官方視角：左傾",
+          "file": "assets/qr-version_1_left.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_left.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_left.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_left.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "94cd751c5d2255ea2e02e7129bda5f73a53feaa887ebd1ba93ffcab2763ca625",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                213,
+                265
+              ],
+              [
+                250,
+                98
+              ],
+              [
+                471,
+                108
+              ],
+              [
+                500,
+                284
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          }
+        },
+        {
+          "label": "官方視角：右傾",
+          "file": "assets/qr-version_1_right.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_right.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_right.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_right.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "72eefeefaeaaa87d0169c9debf8fb3e30c6fae2a31cb123e3fbd1fd61a2d7679",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                359,
+                126
+              ],
+              [
+                406,
+                274
+              ],
+              [
+                171,
+                288
+              ],
+              [
+                169,
+                129
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          }
+        },
+        {
+          "label": "官方視角：上傾",
+          "file": "assets/qr-version_1_up.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_up.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_up.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_up.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "1e46c71e861317256129ff9c36e2d57a8d0fb251970ff7b52f38736c151ed917",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                229,
+                334
+              ],
+              [
+                460,
+                334
+              ],
+              [
+                456,
+                458
+              ],
+              [
+                268,
+                450
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          }
+        }
+      ],
+      "sourceReferences": [
+        [
+          "QRCodeDetector API",
+          "https://docs.opencv.org/4.13.0/de/dc3/classcv_1_1QRCodeDetector.html"
+        ],
+        [
+          "官方傳統讀碼範例",
+          "repo:samples/cpp/qrcode.cpp"
+        ],
+        [
+          "官方答案配置",
+          "extra:testdata/cv/qrcode/dataset_config.json"
+        ]
+      ],
+      "story": {
+        "userStory": "作為工程師，我想直接圈出標籤讀內容，再用工單要求核對；讀不到時能看到碼圖為何不可讀。",
+        "humanGoal": "讀這個標籤的內容，再和我給的工單料號核對。",
+        "boardExpression": [
+          "在圖上圈碼或直接點它；把工單文字或可讀附件一併引用。",
+          "可將同一碼的不同視角放在一起，比較哪些視角能讀；多碼時直接點選本次要核對的碼。"
+        ],
+        "tools": [
+          "矩形／鋼筆ROI",
+          "多圖引用",
+          "碼候選點選",
+          "文字與資料附件引用"
+        ],
+        "agentFirstReturn": "原圖畫碼四角、放大矯正碼圖，內容以可複製字串顯示；料號規則及比對結果與讀碼狀態分開。點任一讀碼失敗圖可看同一ROI的原像素。",
+        "sceneCorrection": "讀錯目標碼時直接點另一個候選；工單欄位歧義時引用精確欄位說明。Agent 改目標或對照字段，不要求工程師先選讀碼算法或把料號硬塞尺寸表。",
+        "done": [
+          "每個字串可回指實際原圖和四角；格式不同的輸出用文字／表格承接。",
+          "可靠讀到但不符人提供規則才判NG；未提供工單規則只報讀碼結果。",
+          "5個視角分別實算並列出讀到、讀不到與原因；同碼視角不當5種獨立料號。"
+        ],
+        "unknown": "反光／模糊／遮擋導致解碼失敗為UNKNOWN，不直接說料號錯；工單內容不可解析時保留未核對。",
+        "multiImageRelation": "5張version_1視角為同一payload/編碼圖樣；dataset_config提供官方參考角點與原字串。不是5個獨立產品或料號。",
+        "anchors": [],
+        "humanExpression": [
+          "在圖上圈碼或直接點它；把工單文字或可讀附件一併引用。",
+          "可將同一碼的不同視角放在一起，比較哪些視角能讀；多碼時直接點選本次要核對的碼。"
+        ],
+        "correction": "讀錯目標碼時直接點另一個候選；工單欄位歧義時引用精確欄位說明。Agent 改目標或對照字段，不要求工程師先選讀碼算法或把料號硬塞尺寸表。",
+        "completion": [
+          "每個字串可回指實際原圖和四角；格式不同的輸出用文字／表格承接。",
+          "可靠讀到但不符人提供規則才判NG；未提供工單規則只報讀碼結果。",
+          "5個視角分別實算並列出讀到、讀不到與原因；同碼視角不當5種獨立料號。"
+        ]
+      },
+      "proposedInteractionBudget": {
+        "afterImport": "用一次畫板組合（可包含多圖／標註）＋一句目的開始；不先填算法或任務類型。",
+        "happyPath": "Agent回圖後，可在同一畫板確認要採用的對象／關係，再試跑整組圖片。",
+        "correction": "有歧義時一次局部點選／圈畫可提交修正；不可要求重新建項目、換任務類型或在別欄重輸同一意圖。",
+        "status": "PRD目標待審；不是已測完成時間或保證只需固定點擊數。"
+      },
+      "proposedAcceptance": {
+        "interaction": "畫板與對話可完成表達／回圖／局部修正，不要求工程師知道算法名稱。",
+        "traceability": "每張回圖、對象、工具結果與數據綁原圖及運算版本；人畫的提示與CV實算支持分開。",
+        "evidence": "方法、逐參數選用理由、適用邊界可從當前圖直接展開；圖＞數字＞文字。",
+        "regression": "完整輸入組合、逐對象結果、人工參考答案與UNKNOWN分開保存；同源衍生圖不洩漏為獨立驗證。",
+        "delivery": "回傳一張漂亮圖或整體UNKNOWN皆不算自動完成；須對照本story的done逐項核對。"
+      },
+      "id": "qr",
+      "title": "QR 標籤讀碼與料號核對",
+      "goal": "讀這個標籤的內容，再和我給的工單料號核對。",
+      "userStory": "作為工程師，我想直接圈出標籤讀內容，再用工單要求核對；讀不到時能看到碼圖為何不可讀。",
+      "references": [
+        {
+          "label": "官方視角：正視",
+          "file": "assets/qr-version_1_top.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_top.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_top.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_top.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "同一編碼圖樣，不是新料號",
+          "sha256": "2f58406d668f34286e95bc3e3797beae1e231f15200247deccd6489dbe3c8865",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                211,
+                157
+              ],
+              [
+                433,
+                158
+              ],
+              [
+                438,
+                388
+              ],
+              [
+                203,
+                385
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_top.jpg",
+          "nature": "官方原始素材"
+        },
+        {
+          "label": "官方視角：左傾",
+          "file": "assets/qr-version_1_left.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_left.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_left.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_left.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "94cd751c5d2255ea2e02e7129bda5f73a53feaa887ebd1ba93ffcab2763ca625",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                213,
+                265
+              ],
+              [
+                250,
+                98
+              ],
+              [
+                471,
+                108
+              ],
+              [
+                500,
+                284
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_left.jpg",
+          "nature": "官方原始素材"
+        },
+        {
+          "label": "官方視角：右傾",
+          "file": "assets/qr-version_1_right.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_right.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_right.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_right.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "72eefeefaeaaa87d0169c9debf8fb3e30c6fae2a31cb123e3fbd1fd61a2d7679",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                359,
+                126
+              ],
+              [
+                406,
+                274
+              ],
+              [
+                171,
+                288
+              ],
+              [
+                169,
+                129
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_right.jpg",
+          "nature": "官方原始素材"
+        },
+        {
+          "label": "官方視角：上傾",
+          "file": "assets/qr-version_1_up.jpg",
+          "absolutePath": "/Users/liangshiben/13-cv/research/opencv-traditional-10-2026-10-25/assets/qr-version_1_up.jpg",
+          "relativeToPrd": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_up.jpg",
+          "width": 640,
+          "height": 480,
+          "role": "candidate-input",
+          "upstream": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/version_1_up.jpg",
+          "sourceGroup": "opencv-extra/qr/version_1_same_pattern",
+          "note": "有官方角點與 payload",
+          "sha256": "1e46c71e861317256129ff9c36e2d57a8d0fb251970ff7b52f38736c151ed917",
+          "isSynthetic": false,
+          "containsUpstreamOutput": false,
+          "hasReferenceAnswer": true,
+          "referenceAnswerMetadata": {
+            "source": "upstream-test-config",
+            "payload": "aQqdqecq%hre3?JX",
+            "corners": [
+              [
+                229,
+                334
+              ],
+              [
+                460,
+                334
+              ],
+              [
+                456,
+                458
+              ],
+              [
+                268,
+                450
+              ]
+            ],
+            "reference": "assets/extra-dataset_config.json",
+            "qualityClass": null
+          },
+          "path": "../../research/opencv-traditional-10-2026-10-25/assets/qr-version_1_up.jpg",
+          "nature": "官方原始素材"
+        }
+      ],
+      "overlays": {
+        "human": [
+          {
+            "type": "rect",
+            "x": 70,
+            "y": 150,
+            "width": 375,
+            "height": 260,
+            "label": "讀這個碼"
+          }
+        ],
+        "agent": [
+          {
+            "type": "line",
+            "x1": 159,
+            "y1": 167,
+            "x2": 404,
+            "y2": 170,
+            "label": "四角展示位置示意"
+          },
+          {
+            "type": "line",
+            "x1": 404,
+            "y1": 170,
+            "x2": 418,
+            "y2": 391
+          },
+          {
+            "type": "line",
+            "x1": 418,
+            "y1": 391,
+            "x2": 82,
+            "y2": 381
+          },
+          {
+            "type": "line",
+            "x1": 82,
+            "y1": 381,
+            "x2": 159,
+            "y2": 167
+          }
+        ],
+        "basis": "官方dataset_config中的version_1_down參考角點，非本平台解碼輸出",
+        "coordinateSpace": "hero原圖像素；width/height以hero真尺寸為準",
+        "status": "PRD交互示意，非本輪CV實算、人工採用或工業驗收",
+        "renderingRule": "任一human/agent overlay出現時，所在畫面必標「互動示意／待實算」；不得配上已量測／通過等狀態。"
+      },
+      "sources": [
+        [
+          "QRCodeDetector API",
+          "https://docs.opencv.org/4.13.0/de/dc3/classcv_1_1QRCodeDetector.html"
+        ],
+        [
+          "官方傳統讀碼範例",
+          "repo:samples/cpp/qrcode.cpp"
+        ],
+        [
+          "官方答案配置",
+          "extra:testdata/cv/qrcode/dataset_config.json"
+        ]
+      ],
+      "acceptanceStatus": {
+        "prd": "討論稿，未經用戶逐故事確認",
+        "interaction": "待實作／操作驗收",
+        "cv": "本任務未重跑；舊collection狀態不代替後續版本的真實測試狀態",
+        "production": false
+      }
+    }
+  ]
+}

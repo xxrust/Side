@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Fig1 · 默认依赖图 UI</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: #f7f8fa;
+    color: #111;
+    padding: 28px 32px 24px;
+  }
+  .frame {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 28px 32px 22px;
+    box-shadow: 0 1px 2px rgba(17,17,17,0.04);
+  }
+  .title {
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 20px;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .footer {
+    margin-top: 14px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #4b5563;
+    line-height: 1.45;
+  }
+  .footer strong { color: #111; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="frame" id="capture">
+    <div class="title">默认依赖图 UI · 可导航 DAG</div>
+    <div class="subtitle">首屏即见 fork / merge · 线性 1 › 2 › 3 步骤条为废案 · 边有契约才算连</div>
+
+    <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="依赖图示意">
+      <defs>
+        <!-- requires: solid blue arrow -->
+        <marker id="arrowRequires" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M0,1.2 L9,5 L0,8.8 Z" fill="#2563eb"/>
+        </marker>
+        <!-- shares: dashed teal arrow (lighter) -->
+        <marker id="arrowShares" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,1.5 L9,5 L0,8.5 Z" fill="#0d9488"/>
+        </marker>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#111" flood-opacity="0.08"/>
+        </filter>
+      </defs>
+
+      <!-- Background grid hint (subtle) -->
+      <rect x="24" y="16" width="560" height="340" rx="10" fill="#fafbfc" stroke="#eef0f3"/>
+
+      <!-- ========== Shared localization node (unique) ========== -->
+      <!-- Node: 定位 -->
+      <g filter="url(#softShadow)">
+        <rect x="210" y="36" width="168" height="64" rx="10" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+      </g>
+      <!-- Shared badge -->
+      <rect x="222" y="28" width="44" height="18" rx="9" fill="#0d9488"/>
+      <text x="244" y="41" text-anchor="middle" font-size="10" font-weight="650" fill="#fff">共享</text>
+      <!-- Version badge -->
+      <rect x="320" y="28" width="40" height="18" rx="9" fill="#eff6ff" stroke="#2563eb" stroke-width="1"/>
+      <text x="340" y="41" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">v3</text>
+      <text x="294" y="64" text-anchor="middle" font-size="15" font-weight="650" fill="#111">定位</text>
+      <text x="294" y="82" text-anchor="middle" font-size="11" fill="#6b7280">位姿 / ROI · 唯一实例</text>
+
+      <!-- ========== Downstream: 偏移 ========== -->
+      <g filter="url(#softShadow)">
+        <rect x="48" y="230" width="140" height="56" rx="10" fill="#fff" stroke="#d1d5db" stroke-width="1.5"/>
+      </g>
+      <text x="118" y="255" text-anchor="middle" font-size="14" font-weight="650" fill="#111">偏移</text>
+      <text x="118" y="273" text-anchor="middle" font-size="11" fill="#6b7280">相对变换</text>
+
+      <!-- ========== Downstream: 瑕疵 A ========== -->
+      <g filter="url(#softShadow)">
+        <rect x="230" y="230" width="140" height="56" rx="10" fill="#fff" stroke="#d1d5db" stroke-width="1.5"/>
+      </g>
+      <text x="300" y="255" text-anchor="middle" font-size="14" font-weight="650" fill="#111">瑕疵 A</text>
+      <text x="300" y="273" text-anchor="middle" font-size="11" fill="#6b7280">判据 + 分数</text>
+
+      <!-- ========== Downstream: 瑕疵 B ========== -->
+      <g filter="url(#softShadow)">
+        <rect x="412" y="230" width="140" height="56" rx="10" fill="#fff" stroke="#d1d5db" stroke-width="1.5"/>
+      </g>
+      <text x="482" y="255" text-anchor="middle" font-size="14" font-weight="650" fill="#111">瑕疵 B</text>
+      <text x="482" y="273" text-anchor="middle" font-size="11" fill="#6b7280">判据 + 分数</text>
+
+      <!-- ========== Edges FROM 定位: both types leave the shared node ========== -->
+      <!-- requires (solid blue) — 硬前提 -->
+      <path d="M250,100 C200,145 155,185 130,230"
+            fill="none" stroke="#2563eb" stroke-width="2.25"
+            marker-end="url(#arrowRequires)"/>
+      <rect x="148" y="140" width="58" height="18" rx="4" fill="#eff6ff"/>
+      <text x="177" y="153" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">requires</text>
+
+      <path d="M294,100 L294,230"
+            fill="none" stroke="#2563eb" stroke-width="2.25"
+            marker-end="url(#arrowRequires)"/>
+      <rect x="248" y="140" width="58" height="18" rx="4" fill="#eff6ff"/>
+      <text x="277" y="153" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">requires</text>
+
+      <path d="M338,100 C388,145 433,185 470,230"
+            fill="none" stroke="#2563eb" stroke-width="2.25"
+            marker-end="url(#arrowRequires)"/>
+      <rect x="382" y="140" width="58" height="18" rx="4" fill="#eff6ff"/>
+      <text x="411" y="153" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">requires</text>
+
+      <!-- shares (dashed teal) — fan-out FROM 定位 TO each consumer (parallel, outer offset) -->
+      <path d="M230,100 C165,150 110,190 90,230"
+            fill="none" stroke="#0d9488" stroke-width="1.75" stroke-dasharray="5 4"
+            marker-end="url(#arrowShares)"/>
+      <rect x="88" y="168" width="48" height="16" rx="3" fill="#f0fdfa" stroke="#99f6e4"/>
+      <text x="112" y="179" text-anchor="middle" font-size="9" font-weight="600" fill="#0d9488">shares</text>
+
+      <path d="M310,100 C330,145 330,185 330,230"
+            fill="none" stroke="#0d9488" stroke-width="1.75" stroke-dasharray="5 4"
+            marker-end="url(#arrowShares)"/>
+      <rect x="318" y="168" width="48" height="16" rx="3" fill="#f0fdfa" stroke="#99f6e4"/>
+      <text x="342" y="179" text-anchor="middle" font-size="9" font-weight="600" fill="#0d9488">shares</text>
+
+      <path d="M358,100 C430,150 490,190 510,230"
+            fill="none" stroke="#0d9488" stroke-width="1.75" stroke-dasharray="5 4"
+            marker-end="url(#arrowShares)"/>
+      <rect x="448" y="168" width="48" height="16" rx="3" fill="#f0fdfa" stroke="#99f6e4"/>
+      <text x="472" y="179" text-anchor="middle" font-size="9" font-weight="600" fill="#0d9488">shares</text>
+
+      <!-- Fork callout -->
+      <text x="294" y="118" text-anchor="middle" font-size="10" fill="#9ca3af">↓ 双线扇出：实线 requires · 虚线 shares</text>
+
+      <!-- blocked_by note -->
+      <rect x="48" y="310" width="504" height="32" rx="6" fill="#fff7ed" stroke="#fed7aa"/>
+      <text x="300" y="330" text-anchor="middle" font-size="11" fill="#9a3412">
+        上游 fail / 超适用边界 → 下游不跑，记 blocked_by:&lt;nodeId&gt;（沿 requires 边传递）
+      </text>
+
+      <!-- ========== Legend panel (right) ========== -->
+      <rect x="608" y="16" width="268" height="200" rx="10" fill="#fff" stroke="#e5e7eb"/>
+      <text x="624" y="40" font-size="12" font-weight="650" fill="#111">图例</text>
+
+      <line x1="624" y1="60" x2="668" y2="60" stroke="#2563eb" stroke-width="2.25"/>
+      <polygon points="668,56 676,60 668,64" fill="#2563eb"/>
+      <text x="686" y="64" font-size="11" fill="#111">requires · 硬前提</text>
+      <text x="686" y="78" font-size="10" fill="#6b7280">产出 → 消费（实线）</text>
+
+      <line x1="624" y1="100" x2="668" y2="100" stroke="#0d9488" stroke-width="1.75" stroke-dasharray="5 4"/>
+      <polygon points="668,96 676,100 668,104" fill="#0d9488"/>
+      <text x="686" y="104" font-size="11" fill="#111">shares · 共享实例</text>
+      <text x="686" y="118" font-size="10" fill="#6b7280">自共享节点扇出到各消费方</text>
+
+      <circle cx="636" cy="142" r="5" fill="#2563eb"/>
+      <text x="650" y="146" font-size="11" fill="#111">Agent 推导边</text>
+      <text x="650" y="160" font-size="10" fill="#6b7280">从目标倒推 · 有契约才连</text>
+
+      <circle cx="636" cy="182" r="5" fill="#fff" stroke="#ef4444" stroke-width="1.5"/>
+      <line x1="632" y1="178" x2="640" y2="186" stroke="#ef4444" stroke-width="1.5"/>
+      <line x1="640" y1="178" x2="632" y2="186" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="650" y="186" font-size="11" fill="#111">人否决 / 改契约</text>
+      <text x="650" y="200" font-size="10" fill="#6b7280">禁手拖假连</text>
+
+      <!-- Anti-pattern inset -->
+      <rect x="608" y="232" width="268" height="124" rx="10" fill="#fef2f2" stroke="#fecaca"/>
+      <rect x="620" y="244" width="22" height="18" rx="4" fill="#ef4444"/>
+      <text x="631" y="257" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">废</text>
+      <text x="650" y="257" font-size="12" font-weight="650" fill="#991b1b">线性步骤条（反例）</text>
+
+      <!-- Mini linear strip crossed out -->
+      <g opacity="0.7">
+        <rect x="628" y="274" width="228" height="36" rx="6" fill="#fff" stroke="#fca5a5"/>
+        <text x="660" y="297" font-size="12" fill="#6b7280">1  定位</text>
+        <text x="718" y="297" font-size="14" fill="#d1d5db">›</text>
+        <text x="736" y="297" font-size="12" fill="#6b7280">2  偏移</text>
+        <text x="798" y="297" font-size="14" fill="#d1d5db">›</text>
+        <text x="816" y="297" font-size="12" fill="#6b7280">3  瑕疵</text>
+        <!-- Red X over strip -->
+        <line x1="640" y1="280" x2="844" y2="304" stroke="#ef4444" stroke-width="2"/>
+        <line x1="844" y1="280" x2="640" y2="304" stroke="#ef4444" stroke-width="2"/>
+      </g>
+      <text x="742" y="340" text-anchor="middle" font-size="10" fill="#991b1b">非默认视图 · 仅可作折叠摘要</text>
+
+      <!-- Bottom callouts under main canvas area -->
+      <text x="48" y="390" font-size="11" fill="#4b5563">意图约束 ≠ 推导边 · 人只否决/改契约，不手动画边</text>
+      <text x="48" y="408" font-size="11" fill="#4b5563">线性列表仅折叠摘要 / 搜索命中，不是主导航</text>
+    </svg>
+
+    <div class="footer">
+      <div><strong>边语义：</strong>requires = 硬前提（实线）；shares = 共享定位实例（虚线扇出）。</div>
+      <div><strong>闸规则：</strong>裸 shares（无同源 requires）→ schema 闸拒收；blocked_by 仍只沿 requires。</div>
+      <div><strong>谁建边：</strong>Agent 从目标倒推；人改目标或否决边。</div>
+    </div>
+  </div>
+</body>
+</html>

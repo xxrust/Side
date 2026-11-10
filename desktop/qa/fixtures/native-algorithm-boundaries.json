@@ -1,0 +1,139 @@
+{
+  "sourceRun": "py-65eb3435a4fd9-91802-0",
+  "scope": "Exact saved native boundary payload for generic compact gate display regression.",
+  "boundaryChecks": [
+    {
+      "actual": true,
+      "id": "roi",
+      "status": "PASS",
+      "threshold": {
+        "expression": "all sides: n0 >= 2 and n1 + 2 < normal image dimension",
+        "normalDimensions": {
+          "bottom": 1024,
+          "left": 1280,
+          "right": 1280,
+          "top": 1024
+        }
+      }
+    },
+    {
+      "actual": {
+        "bottom": 3,
+        "left": 1,
+        "right": 2,
+        "top": 4
+      },
+      "id": "support",
+      "status": "PASS",
+      "threshold": {
+        "baselineWidth": 15,
+        "expression": "all sides: qualified candidate count at width 15 >= 1",
+        "qualification": "coverage >= 0.65 AND rms <= 1.5 px AND longest unbridged continuity >= 0.55 AND max gap ratio <= 0.15 AND min(five local coverage ratios) >= 0.35"
+      }
+    },
+    {
+      "actual": {
+        "bottom": {
+          "first": {
+            "pass": true,
+            "positions": [
+              854.9632495164408,
+              854.9284332688588,
+              854.94584139265,
+              854.9187620889749
+            ],
+            "spread": 0.04448742746592416
+          },
+          "last": {
+            "pass": false,
+            "positions": [
+              830.0110267593311,
+              836.2901353965184,
+              830.0561341617463,
+              830.0683009890793
+            ],
+            "spread": 6.279108637187278
+          }
+        },
+        "left": {
+          "first": {
+            "pass": true,
+            "positions": [
+              165.72070085176534,
+              165.7532115156671,
+              165.8384907499483,
+              165.75703324808185
+            ],
+            "spread": 0.11778989818296282
+          },
+          "last": {
+            "pass": false,
+            "positions": [
+              187.13028612284316,
+              165.7532115156671,
+              165.8384907499483,
+              165.75703324808185
+            ],
+            "spread": 21.37707460717607
+          }
+        },
+        "right": {
+          "first": {
+            "pass": true,
+            "positions": [
+              1190.6854219948857,
+              1190.677749360614,
+              1190.7365728900263,
+              1190.7749360613816
+            ],
+            "spread": 0.09718670076745184
+          },
+          "last": {
+            "pass": false,
+            "positions": [
+              1190.6854219948857,
+              1190.677749360614,
+              1190.7365728900263,
+              1169.9863264338312
+            ],
+            "spread": 20.7502464561951
+          }
+        },
+        "top": {
+          "first": {
+            "pass": true,
+            "positions": [
+              83.507790796616,
+              83.40650126013271,
+              83.41392649903288,
+              83.394584139265
+            ],
+            "spread": 0.11320665735100022
+          },
+          "last": {
+            "pass": false,
+            "positions": [
+              98.5638814149121,
+              98.49599532483136,
+              115.45997063072588,
+              115.44618501173387
+            ],
+            "spread": 16.96397530589452
+          }
+        }
+      },
+      "id": "agreement",
+      "status": "FAIL",
+      "threshold": {
+        "expression": "all sides and both selections: len(positions) == 4 AND ptp(positions) <= 3 px",
+        "maxSpreadPx": 3,
+        "requiredWindows": [
+          1,
+          5,
+          9,
+          15
+        ]
+      }
+    }
+  ]
+}

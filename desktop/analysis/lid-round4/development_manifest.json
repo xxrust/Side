@@ -1,0 +1,461 @@
+{
+  "scope": "16 development images; human-confirmed folder meanings from thread collab-lid-20261105-round3 turn 25ffe4ef-f155-4885-950d-939ae29e38fa; labels used only by external scorer, never predict",
+  "images": [
+    {
+      "id": "1d10cefc-de74-480e-be71-fee8f021cae7",
+      "name": "歪斜_20250828032050457.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+      "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/29.1.1",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032050457.bmp",
+        "fields": {
+          "defectLabels": [
+            "歪斜"
+          ]
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032050457.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "c01e5fd2-8c1a-4d25-87c0-eac5da734756",
+      "name": "歪斜_20250828032051647.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "c374eb5c4be419a07989597efb062e5ee0d193c284340fddc8a490d048ed3b79",
+      "contentSha256": "c1533f51e40bf912770dc6fd101c0a9e20a24885e02e5e05213f2251bd96f065",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032051647.bmp",
+        "fields": {
+          "defectLabels": [
+            "歪斜"
+          ]
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032051647.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+      "name": "歪斜_20250828032053433.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+      "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp",
+        "fields": {
+          "defectLabels": [
+            "歪斜"
+          ]
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "b18dd0d1-ac04-4619-8ccc-7cc31337f831",
+      "name": "歪斜_20250828032057035.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "9a0e934d00d675b73c243bc77aced7e105b455d514dd1541f0d0850b6c17a93f",
+      "contentSha256": "5079a7162cc241abb5ee9a53607ab8047b1f30c9b75faa63736eb5cdfa8ca0fc",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032057035.bmp",
+        "fields": {
+          "defectLabels": [
+            "歪斜"
+          ]
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032057035.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "226b40d8-d738-49c7-95b4-c681b05eabfc",
+      "name": "10_2.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "43e4e2f0fa839792b33f0893be6c84eb684602017d46081c67ad30f2feb7d7ad",
+      "contentSha256": "de48aa610c3a4bfdfa69f1bf2b6e126a0549feb911113a36dc4710cb716f128a",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/10_2.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/10_2.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "8116174b-8cba-4604-bdfd-d5b4becfc6e2",
+      "name": "11_15.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "456bb574407d6b483dd3217ab167123ae3026e7d0930407e16790d0eed58b2f4",
+      "contentSha256": "8183a46c3a9a79069c04f0c49cd226750830a0515b85adae45649c59332d0bd1",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/29.1.1",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/11_15.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/11_15.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "51f0084e-06cd-41ab-b887-8382b738d4fa",
+      "name": "12_18.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "d8a002ca41d46d65688ce2ab7bbde9044a9bf748a19f8767af698caa5a4b6553",
+      "contentSha256": "f9631a6411802df6b6cb1b9eecaf5e74612bb7e4237ef959dfe9b559e93187c4",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/12_18.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/12_18.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "c4e25db0-ad7b-4179-9655-64ed26109fac",
+      "name": "16_12.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "609c3b6df7cd8eb0c12c593e0f968b5154aea91ca18dc58eb5ac0f5d2964871e",
+      "contentSha256": "02de74730a2fe049cda9d3dac5957d0c8c2cfecf7fdbec6a983b9d969614efd6",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/16_12.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/16_12.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "c91b9abf-b470-4472-835f-29b42734de72",
+      "name": "17_19.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "87580ce1cf76f7099d5045409c166f2a5df8fbcfd62b379b006b2517bd96ede8",
+      "contentSha256": "37fdc1ac151b2e97ed31d2b9118f16dc82c5dcedabe70b70d170f7b9674ebc23",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/17_19.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/17_19.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "945f1f81-d0b1-4bf1-b24e-0b30a553d910",
+      "name": "17_22.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "564907be4061d2ef8891cc0a22e2bf4a04445029ce89802702c11c5a2b0b0a3c",
+      "contentSha256": "ef22db549f78b4ed81e93b5399668488ac6a5e39228ef82c2e6b7e3249ce77b0",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/17_22.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/17_22.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "afabaa2d-b640-40db-b750-e323cec5077a",
+      "name": "18_5.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "65da499b1a9516884ebd79e6f830696a786c6d4a2ba041b7f75543b96d82d3ae",
+      "contentSha256": "6ef7cdd90ff16eef39e0af9e6bf995d8227846b304c050223c81d6cc5639ab44",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/18_5.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/18_5.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "7a289184-c991-4b0a-9816-2462a5d727fa",
+      "name": "20_17.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "09c49d82917d11df0c23443836591433fc97fada4ac1b77db49504ae0df30e0e",
+      "contentSha256": "84d8395a467c9e8aec9bd07131be654d69c07b631d4c1b59bff572dc1f71e576",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/20_17.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/20_17.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "b64a1160-d274-4261-ae0d-a1e8647fbdf2",
+      "name": "23_7.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "34b8ce1bc663d38412db6b81b0b1a89bb18896a1a81b2bd15dc3301e383adeb6",
+      "contentSha256": "0108cc9ee31bac397b89761f0eca875ff116a3ab7c4323fa41cc86e6715cee0e",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/23_7.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/23_7.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "49f1bb73-3db2-47a4-a0da-089f0327d728",
+      "name": "26_5.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "c30c376facc5571e94d5910c6c2aecadd4c06feafa3195abba0fd1dcbcd2fb06",
+      "contentSha256": "bc82c87ea5f772839d1f2e39ce868be2d1b208e442aa937e4b2f57ba4caa7fda",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/26_5.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/26_5.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "692a79a7-7770-4e4b-99e7-b561281445c2",
+      "name": "2_12.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "3a3d3ef63d8c7f78d7cee5b97ed9514c796f30004ac7beae6fadae7bcef8c094",
+      "contentSha256": "180bc05b39367dfa2cabb8e8b3ccf6f23c8f5470d0803482b53a4b37648fb872",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/2_12.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/2_12.bmp",
+      "encodedBytes": 1311798
+    },
+    {
+      "id": "a610f892-23ff-49cc-a4b4-85d3c53e6853",
+      "name": "7_21.bmp",
+      "width": 1280,
+      "height": 1024,
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sha256": "ad69fcd4df9abc9fefa97705d9299ca896b421cdead155c3138c6045d6c3bcac",
+      "contentSha256": "3f93d8272e667bd39bfa516895149748c943050b451f94d0cb763b21917d53a0",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "labels": {},
+      "expected": {},
+      "decoder": {
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)",
+        "alphaCompositing": "white"
+      },
+      "sourceMeaning": {
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98",
+        "relativePath": "lid瑕疵檢測樣品/良品/7_21.bmp",
+        "fields": {
+          "quality": "OK"
+        },
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z"
+      },
+      "source_relative_path": "lid瑕疵檢測樣品/良品/7_21.bmp",
+      "encodedBytes": 1311798
+    }
+  ]
+}

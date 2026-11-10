@@ -1,0 +1,40 @@
+✔ visual question sends real multiple image parts and freezes per-message board/attachment history without base64 (5.301917ms)
+✔ non-vision/unknown capability and missing pixels reject before chat/state/wire, leaving a visual draft usable (0.310166ms)
+✔ real-image/show tools keep fixed source references; actor spoofing cannot edit human annotations or CV ROI (0.67675ms)
+✔ stopped/changed projects and stale shared board block delayed tool results and refresh context explicitly (0.211875ms)
+✔ cancel while assembling image parts preserves the draft and never starts a turn (0.098083ms)
+✔ visual contract is generated identically for Pi and keeps image-first/source/ownership rules (0.568208ms)
+✔ real bridge preserves prompt/tool image content parts, strips base64 from text/details, and rejects text-only models (100.727917ms)
+✔ several immutable image sources compose on one board while image and annotation coordinates stay independent (4.466666ms)
+✔ snapshots survive later edits and save/load as historical references with no current-run substitution (0.674083ms)
+✔ invalid input rejects atomically, and ordinary undo/redo restores a single inquiry mutation without CV changes (0.445625ms)
+✔ co-creation preserves engineer ownership while letting Agent add independent evidence and marks (0.714ms)
+✔ registering a readable image does not fill a board, repeated registration is stable, and resizing preserves pixels/aspect (0.437791ms)
+✖ continuing an immutable historical snapshot copies its captured annotations and layout atomically to one new board (0.116084ms)
+✔ board opens beside Agent, composes multiple rectangular images, and move/resize keeps their original pixels and sources (59.327042ms)
+✔ direct tools store source-pixel geometry; objects can be moved, edited, deleted and restored without a second annotation for text (75.980084ms)
+✔ questions contain actual annotated PNGs and frozen source bindings; replay stays identical after live edits and Agent can co-create independently (44.749708ms)
+✔ platform library pages without scrolling, supports true drag/drop, and external image registry drops join the same board (37.496208ms)
+✔ opening a chat snapshot shows the original historical annotations and prevents live editing until explicitly copied (26.491375ms)
+✔ wheel zoom anchors the mouse, Space pans, chat typing cannot delete the board and local imports remain inquiry-only (9.08025ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 18
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 567.611167
+
+✖ failing tests:
+
+test at qa/visual-inquiry-model.test.mjs:47:1
+✖ continuing an immutable historical snapshot copies its captured annotations and layout atomically to one new board (0.116084ms)
+  ReferenceError: reference is not defined
+      at TestContext.<anonymous> (file:///Users/liangshiben/13-cv/desktop/qa/visual-inquiry-model.test.mjs:48:52)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "scope": "Standalone PRD story artifact rendering and interactions only; no product code or CV execution is tested or claimed.",
+  "stories": 12,
+  "frames": 72,
+  "checks": [
+    "12 stories appear as a PRD catalog, not product task categories",
+    "crystal-relative-offset: all six illustrated frames have source image and human/Agent behavior",
+    "crystal-outline-size: all six illustrated frames have source image and human/Agent behavior",
+    "gear: all six illustrated frames have source image and human/Agent behavior",
+    "washer: all six illustrated frames have source image and human/Agent behavior",
+    "holes: all six illustrated frames have source image and human/Agent behavior",
+    "orientation: all six illustrated frames have source image and human/Agent behavior",
+    "touching: all six illustrated frames have source image and human/Agent behavior",
+    "continuity: all six illustrated frames have source image and human/Agent behavior",
+    "color: all six illustrated frames have source image and human/Agent behavior",
+    "pose: all six illustrated frames have source image and human/Agent behavior",
+    "difference: all six illustrated frames have source image and human/Agent behavior",
+    "qr: all six illustrated frames have source image and human/Agent behavior",
+    "method, parameter and boundary have three different visual explanations",
+    "local per-story/per-scene review notes survive navigation without approving implementation",
+    "core, acceptance criteria and undecided layout choices can be inspected",
+    "key controls and full diagram remain inside 1440x960,1280x800,1440x740 viewports",
+    "no browser script errors"
+  ],
+  "errors": [],
+  "clipping": []
+}

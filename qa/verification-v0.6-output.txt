@@ -1,0 +1,92 @@
+
+> test
+> node check-prd.cjs && node check-line-quality.cjs && node check-pipeline.cjs && node check-viewport.cjs && node dom-flow.cjs
+
+PASS line fit recovers a known oblique line
+PASS circle fit recovers known center/radius
+PASS degenerate geometry fails explicitly
+PASS horizontal search finds the actual image edge
+PASS vertical search finds the actual image edge
+PASS radial search finds the actual circle pixels
+PASS blank images and overhigh thresholds return UNKNOWN
+PASS reversed polarity does not reuse previous geometry
+PASS movement preserves identity/notes but invalidates tool result
+PASS all drawing types move without detaching metadata
+PASS movement is clamped to the source image bounds
+PASS text editing preserves native keys and clipboard behavior
+PASS IME composition and Alt shortcuts never mutate canvas objects
+PASS Mac and Windows undo/redo/duplicate shortcuts agree
+PASS context menu, inline edit and rename have keyboard entry points
+PASS tool shortcuts do not steal browser commands
+PASS nudges support one-pixel and ten-pixel steps
+PASS multiple parallel edges survive without default selection
+PASS selection is a set scoped to its run, not an ordinal
+PASS advanced coverage gate and angle gate affect acceptance
+
+20 behavior checks passed. All scripts parse; IDs and references are valid.
+Browser visual/interaction QA: not covered by this script.
+PASS multiple genuine edges survive, including a much weaker edge
+PASS dotted fragments are not promoted to a continuous measurement line
+PASS alternating parallel fragments cannot be stitched by a low global RMS
+PASS opposite edge polarities cannot be fused into one candidate
+PASS curved boundaries are rejected as straight measurements
+PASS rasterized oblique true edge remains valid
+PASS measurement supports remain inside the ROI and never borrow a nearby outside edge
+PASS background is excluded only by an explicit user region, never silently selected
+PASS polygon masks also constrain every accepted gradient stencil
+PASS uniform random noise yields no measurement candidate
+PASS small additive pixel noise preserves a genuine weak edge
+PASS malformed pixels and numeric parameters fail explicitly
+PASS line choice remains run-scoped and typed even after multiple detections
+PASS single missing scan does not destroy otherwise continuous evidence
+PASS circle exclusions and run identity follow the same safety contract
+PASS translation accepts arbitrary imported image bounds
+
+16 line quality / contract checks passed. Synthetic fixtures do not establish production accuracy.
+PASS pixels through search, adoption, diameter and class: OK
+PASS oversize image independently recomputes a larger diameter and NG
+PASS missing hole does not reuse geometry and yields UNKNOWN
+PASS changed image dimensions never silently scale a recipe
+PASS two candidates inside a reference window require disambiguation
+PASS unselected and multiple-selected results cannot produce a measurement
+PASS truncated candidate sets cannot be treated as an automatic unique match
+PASS mm conversion requires confirmed applicable scale
+PASS center distance, point-line distance and angle use correct geometry
+PASS missing tolerances, missing measurements and overlapping classes fail closed
+PASS units and invalid unused required measurements cannot silently pass
+PASS exported recipe/config round-trip keeps numeric outcomes
+PASS CSV protects quoted names and spreadsheet formulas
+
+13 pipeline checks passed.
+PASS fit respects non-square image and viewport aspect ratios
+PASS wheel zoom preserves the source point under the cursor, including clamps
+PASS pan and zoom keep image-to-screen mapping invertible
+PASS magnification paints exact pixel blocks without invented blended colors at DPR 1 and 2
+PASS transparent source pixels are composited on white like algorithm input
+
+5 viewport and raster checks passed.
+PASS empty application initializes without a preselected synthetic result
+PASS actual demo raster images run through the full UI controller to OK / NG / UNKNOWN
+PASS pixel fingerprints and per-run provenance are retained
+PASS rerunning the dataset retains previous results and immutable run records
+PASS a rule change invalidates displayed prior results
+PASS measurement form binds detected circles and calculates their center distance
+PASS new measurement dependencies require an explicitly refreshed batch recipe
+PASS project save representation reloads images, measurement rules and run history
+PASS real file import changes the source image, pixel buffer and coordinate frame
+PASS batch rejects mismatched imported geometry rather than reusing stale coordinates
+PASS single-frame automatic execution cannot bypass a stale reference recipe
+PASS new project clears image coordinates, results and configuration coherently
+PASS centered empty-state actions route to multi-file and folder pickers
+PASS folder intake keeps distinct source paths and skips non-image files
+PASS pagination and path filtering can select any image including duplicate filenames
+PASS renaming and expected judgments preserve source identity, computed results and historical runs
+PASS image metadata round-trips through project loading and invalid labels are rejected
+PASS actual wheel handler anchors zoom, renders unsmoothed pixels and leaves data untouched
+PASS contextual actions complete intent → search → explicit adoption → measurement → tolerance → OK
+PASS guidance can be skipped and resumed at the current step and preference survives reload
+PASS middle-button pan is intercepted before annotation handlers and never creates a line
+PASS drawing at zoomed coordinates creates a source-coordinate line and guidance finds its real edge without auto-adoption
+PASS no DOM runtime errors in tested workflow
+
+23 DOM/pixel integration checks passed. Browser layout and pointer hit-testing remain separate.

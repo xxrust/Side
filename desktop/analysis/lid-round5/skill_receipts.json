@@ -1,0 +1,39 @@
+{
+  "skill": {
+    "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/SKILL.md",
+    "sha256": "75fe83c568edb5af6c9bfdbedc9ef805086089ec6a8f3a712c567a56ef23f4a9"
+  },
+  "references": [
+    {
+      "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/references/validation.md",
+      "sha256": "f5f2bb5a988cd4221856f23dc10ec534a669dd2452b48c76ba3392cc1f9da8cd",
+      "totalLines": 53
+    },
+    {
+      "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/references/engineering-model.md",
+      "sha256": "e9b67f40e946def29e68440c2a42e8fb347ac950f52b62f320bb701dcf0dc2c0",
+      "totalLines": 140
+    },
+    {
+      "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/references/project-workflow.md",
+      "sha256": "371c9892ced766b9b458a64f83b652b9281ec55712a481b63b724180d86312e7",
+      "totalLines": 37
+    },
+    {
+      "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/references/project-acceptance.md",
+      "sha256": "8c9f368222e7fa6025edd80173229d18a29ba7f199561e8f4f6cb0fb110d6588",
+      "totalLines": 26
+    },
+    {
+      "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/references/evidence.md",
+      "sha256": "343eddb73c8a5a5b164e03d3754f630eb210aa353062051b0efd01ae79afe6ef",
+      "totalLines": 78
+    },
+    {
+      "path": "/Users/liangshiben/13-cv/desktop/agent-packages/agentcv-cv/skills/cv/references/execution.md",
+      "sha256": "cda8218263c296c430549550d57a4188e7b5c0a544820c640c3c25d9d5b9635b",
+      "totalLines": 74
+    }
+  ],
+  "scope": "read with read_agent_skill during this turn; no skill modification"
+}

@@ -1,0 +1,99 @@
+{
+  "schema": "round3-interface-observations-1",
+  "noPlatformSourceChanges": true,
+  "issues": [
+    {
+      "tool": "validate_purpose_scheme",
+      "code": "PARAMETER_SOURCE_MISMATCH",
+      "path": "operations.comparison.justification.parameters[0].source",
+      "message": "來源與宿主保存的 agent-proposal 不符。",
+      "resolution": "依契約將source改成agent-proposal；理由保留實際數據推導來源。已重新驗證編譯成功。"
+    },
+    {
+      "tool": "run_purpose_scheme",
+      "arguments": {},
+      "observed": "預設執行56張，每張2節點共112次。回覆只含末張圖48f63f48-193e-4fd5-b7ba-60c02e9ff1fa的2個run。完整索引在implicit-run-scope.json。",
+      "resolution": "之後以run_dataset_scheme明確units_json重跑全部16張開發圖，獨立execution 5d6d11bc-2678-484a-8c76-51a19f4ade0e；其他40張沒有缺陷驗證，不引用為良品或通過。"
+    },
+    {
+      "tool": "get_algorithm_run",
+      "arguments": {
+        "run_id": "py-65f8c37b92947-60397-112",
+        "include_code": false
+      },
+      "error": {
+        "schema": "agentcv-platform-feedback-1",
+        "ok": false,
+        "error": "尚無這筆算法運算紀錄",
+        "code": "TOOL_FAILED"
+      },
+      "affected": "封存批次的16件均不能按run ID直接回讀；lastRun亦同。",
+      "fallback": "get_inspection_unit(recordRef,open_on_canvas:false)成功返回真實run/results/audits/immutable assetRefs；已逐件讀回。"
+    },
+    {
+      "tool": "get_visual_context",
+      "arguments": {
+        "run_id": "py-65f8c37b92947-60397-112",
+        "limit": 8
+      },
+      "observed": {
+        "catalog": []
+      },
+      "fallback": "依get_inspection_unit返回已驗證SHA的真實檔案引用，使用view_image逐張目檢；不自行捏造visual source ID。"
+    },
+    {
+      "tool": "get_inspection_unit",
+      "arguments": {
+        "reference_json": {
+          "$asset": "assets/3860f6e00d27ce5be8590bd745e0f32a82d99fb8d026031f4aa520ccefbf6f56.json",
+          "executionId": "5d6d11bc-2678-484a-8c76-51a19f4ade0e",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+          "sha256": "3860f6e00d27ce5be8590bd745e0f32a82d99fb8d026031f4aa520ccefbf6f56",
+          "size": 225351,
+          "storage": "workspace",
+          "unitId": "1d10cefc-de74-480e-be71-fee8f021cae7"
+        },
+        "open_on_canvas": true
+      },
+      "error": {
+        "schema": "agentcv-platform-feedback-1",
+        "ok": false,
+        "error": "此運算沒有可用的圖像產物",
+        "code": "TOOL_FAILED"
+      },
+      "note": "該紀錄的assetRef檔案實際存在且可目檢；未重算去掩蓋封存顯示錯誤。"
+    },
+    {
+      "tool": "get_canvas_layers",
+      "arguments": {
+        "run_id": "py-65f8c3837fd79-60397-142",
+        "limit": 4
+      },
+      "observed": {
+        "layers": [],
+        "diagnostics": []
+      },
+      "note": "批次幾何已保存；未發布圖板，因此不宣稱畫板可選幾何已交付。"
+    },
+    {
+      "tool": "verify_pipeline_delivery",
+      "arguments": {
+        "image_id": "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+      },
+      "code": "PIPELINE_EVIDENCE_DELIVERY_REJECTED",
+      "errors": [
+        {
+          "code": "CURRENT_RUN_REQUIRED",
+          "nodeId": "$pipeline",
+          "path": "result.binding",
+          "message": "目前圖像與方案沒有有效的當前實算結果。",
+          "hint": "先補齊三項依據並以目前圖像/方案重新試跑，再提交交付。"
+        }
+      ],
+      "status": "INCOMPLETE",
+      "note": "32個封存節點的evidence/procedure audit皆READY_FOR_REVIEW並且16件實算保存成功；當前綁定/顯示交付仍不通過，不宣稱delivered。"
+    }
+  ]
+}

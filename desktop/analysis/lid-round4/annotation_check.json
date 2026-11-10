@@ -1,0 +1,81 @@
+{
+  "source": "frozen human annotations in user turn, excluded from executable detection input",
+  "checks": [
+    {
+      "edge": "lid_left",
+      "humanGuide": [
+        [
+          213.0184501845019,
+          364.63468634686353
+        ],
+        [
+          199.1635916359164,
+          712.2656826568267
+        ]
+      ],
+      "algorithmMinusGuideAtEndpointsPx": [
+        -3.0991070110701457,
+        -3.8447503075031193
+      ],
+      "scope": "freehand guide comparison, NOT independent precision GT"
+    },
+    {
+      "edge": "pkg_left",
+      "humanGuide": [
+        [
+          180.27060270602706,
+          401.1611316113163
+        ],
+        [
+          186.56826568265686,
+          753.8302583025832
+        ]
+      ],
+      "algorithmMinusGuideAtEndpointsPx": [
+        0.6495615003720161,
+        -1.5430057249668323
+      ],
+      "scope": "freehand guide comparison, NOT independent precision GT"
+    },
+    {
+      "edge": "lid_bottom",
+      "humanGuide": [
+        [
+          316.30012300123,
+          824.3640836408366
+        ],
+        [
+          784.8462484624847,
+          836.9594095940962
+        ]
+      ],
+      "algorithmMinusGuideAtEndpointsPx": [
+        -1.0450799507997317,
+        0.4159778597783088
+      ],
+      "scope": "freehand guide comparison, NOT independent precision GT"
+    },
+    {
+      "edge": "pkg_bottom",
+      "humanGuide": [
+        [
+          327.6359163591636,
+          868.4477244772451
+        ],
+        [
+          787.3653136531364,
+          865.928659286593
+        ]
+      ],
+      "algorithmMinusGuideAtEndpointsPx": [
+        -0.7121224882024535,
+        -3.94542095647364
+      ],
+      "scope": "freehand guide comparison, NOT independent precision GT"
+    }
+  ],
+  "lidTopAtX360And715": [
+    287.1717111165372,
+    299.8239897666959
+  ]
+}

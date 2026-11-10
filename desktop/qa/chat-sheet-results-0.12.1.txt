@@ -1,0 +1,19 @@
+✔ Pi Markdown displays headings, emphasis, lists, table, quote and code as semantic selectable content (49.513ms)
+✔ raw HTML and model-supplied URLs never create executable elements or fetch images (5.288042ms)
+✔ HTTP links use one explicit external opener while preserving readable labels and safe URL parsing (5.629583ms)
+✔ incomplete streaming text, literal escapes and fenced HTML remain readable without throwing (26.759958ms)
+✔ the real chat renders assistant Markdown while preserving source and literal user/tool messages (208.545291ms)
+✔ Markdown table callback exposes both complete tables with independent indexes, while default rendering remains semantic and safe (52.52975ms)
+✔ old assistant Markdown automatically becomes independent table cards; dialogs preserve every value and save/load keeps original text (128.483667ms)
+✔ a large historical table opens every row and column rather than only a card preview or first page (112.010916ms)
+✔ table search and rectangular selection operate on original cells; copy and CSV preserve full data without editing chat (82.259917ms)
+✔ whole-table and selected-cell references fill a draft with exact provenance; changing projects clears the dialog and quote without sending (95.513875ms)
+✔ streaming updates replace chat cards while an open table and its eventual reference remain frozen historical data (79.51725ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1224.638834

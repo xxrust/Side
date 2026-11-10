@@ -1,0 +1,16 @@
+✔ rectangular camera image uses before/after large panes and real processing thumbnails (335.05ms)
+✔ goal UI reaches real pixel gear measurement without ROI or legacy check, then batch and invalidate (444.249042ms)
+✔ Agent tools build and run an actual graph and switch images without proposing a legacy check (166.569334ms)
+✔ uncertain geometry stays diagnostic when the user selects downstream rules or batch results (295.1095ms)
+✔ Agent view tool selects the requested image, node and evidence view without recalculation (296.064167ms)
+✔ full camera rasters fit with one scale across wide, tall and square images (0.623291ms)
+✔ object fitting is a reversible view of immutable original camera coordinates (0.11875ms)
+✔ object view uses the explicitly selected component rather than the largest candidate (0.086875ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1504.324375

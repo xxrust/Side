@@ -1,0 +1,41 @@
+AgentCV v0.4 — 2026-10-23
+
+Entry points
+  ../index.html: PRD; long-form reading and printing.
+  ../workbench.html: fixed viewport interactive prototype.
+  Both use local files only; no CDN, model API or third-party runtime.
+  Keep assets/ next to the two HTML files. Prior v0.3 is in archive/.
+
+Automated verification
+  Command: node 13-cv/qa/check-prd.cjs (from the home workspace).
+  20 behavior checks passed, including line/circle fitting, pixel-based
+  search, weak parallel edge retention, candidate cap reporting, explicit
+  multi-selection/rejection, stale-run refusal, movement, IME handling,
+  keyboard scopes and angle filtering. JS parses and HTML IDs/anchors pass.
+  These checks do not establish industrial precision, robustness or UI quality.
+
+Browser verification: NOT COMPLETED
+  Computer-use/browser service was unavailable. A local WebKit preview also
+  timed out before navigation completed. No screenshot or actual pointer-based
+  interaction verification is claimed. webkit-check.swift preserves that attempt.
+
+Manual acceptance still required
+  At 1440x900 and 1024x640: canvas and side panels fit; every control accessible
+  without scrolling. Inspect all advanced-parameter pages and candidate pages.
+  Draw, drag, resize, inline-edit text, right-click the actual target, delete,
+  undo/redo and verify native text editing / Chinese IME remain functional.
+  Click one candidate, Shift-click another, explicitly reject a third, add a
+  candidate note and a selection reason, export JSON and inspect event lineage.
+  Move the ROI or apply parameters: candidates recompute and selections reset.
+  Undo restores the previous state and appends an audit event.
+
+Prototype boundaries
+  Synthetic image only; line search provides multiple candidates; circle search
+  is still single-candidate. Geometry is in px, without physical calibration.
+  Advanced line search supports near-horizontal/near-vertical edges only,
+  within the configured angular bound; it is not a general line segment detector.
+  Candidate lists are heuristic results after filtering/NMS, not exhaustive
+  mathematical solutions. No default selection and no implicit first-result use.
+  No Agent integration, generalized selection-rule learning or project import.
+  State remains in memory until exported. Export includes image fingerprint,
+  objects, run-scoped candidate IDs and append-only events.

@@ -1,0 +1,28 @@
+✔ generic Pi events reject stale and stopped tools; commands bypass the model and secrets stay outside chat (464.045875ms)
+✔ bridge without credentials keeps login, help and reset available with model:null (419.787125ms)
+✔ Agent proposals missing any of tool, full parameter coverage, or boundary are rejected atomically with all repair information (11.532333ms)
+✔ planning cannot hide optional parameters, vague sources, placeholders, invalid checks, or fabricated completed evidence (1.468458ms)
+✔ a complete gear proposal runs actual pixels; delivery covers every effective parameter and remains read-only (413.067375ms)
+✔ runtime refuses absent, wrong-kind, transplanted, stale, and modified evidence even if copied audit labels claim delivery (1265.276209ms)
+✔ runtime semantic coverage, reference ownership, and source checks do not rely only on detecting a changed checksum (417.089833ms)
+✔ a typed promise becomes deliverable only when the exact promised artifact or gate is actually produced (443.260667ms)
+✔ editing parameters invalidates current delivery and historical plans never acquire invented author reasons (234.610959ms)
+✔ runtime failure retains diagnostics but cannot pass delivery; absent manufacturing specifications remain UNKNOWN (169.97725ms)
+✔ a successful measurement cannot certify an author boundary whose selected quality check was never applicable (183.185ms)
+✔ capabilities distinguish absent specifications, image-derived policies and fixed defaults without inventing author reasons (2.580459ms)
+✔ delivery uses actual output measurements and rule artifacts instead of accepting modified top-level claims (87.867917ms)
+✔ removing real model gates remains incomplete even when a caller recomputes a consistency checksum (54.7905ms)
+✔ a node certificate requires every upstream step while unresolved rules still block whole-pipeline delivery (86.684583ms)
+✔ non-pipeline tools reuse the three-part planning check with host-owned catalogs and provenance (1.027125ms)
+✔ the three required tabs render distinct actual outline, parameter intervention, and model-gate data from the same run (1063.118042ms)
+✔ a parameter without a matching saved figure is visibly unproven; the viewer never substitutes the attractive gear-outline image (448.910416ms)
+✔ historical plans with only generic runtime operator prose remain incomplete instead of acquiring invented case-specific reasons (481.093583ms)
+✔ an unevaluated applicability promise remains visibly unverified even though the actual gear measurement itself succeeded (355.103083ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3195.326917

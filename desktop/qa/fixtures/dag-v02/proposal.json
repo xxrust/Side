@@ -1,0 +1,109 @@
+{
+  "nodes": [
+    {
+      "id": "loc",
+      "kind": "Locate",
+      "title": "loc",
+      "version": 1,
+      "rationale": "Synthetic contract fixture; no industrial evidence",
+      "params": {
+        "roi": {
+          "x": 10,
+          "y": 10,
+          "w": 40,
+          "h": 40
+        }
+      },
+      "applicability": {
+        "confidence": {
+          "min": 0.5,
+          "max": 1
+        }
+      }
+    },
+    {
+      "id": "offset",
+      "kind": "Offset",
+      "title": "offset",
+      "version": 1,
+      "rationale": "Synthetic contract fixture; no industrial evidence",
+      "params": {
+        "refNodeId": "loc",
+        "transform": {
+          "dx": 0,
+          "dy": 0
+        }
+      },
+      "applicability": {
+        "confidence": {
+          "min": 0.5,
+          "max": 1
+        }
+      }
+    },
+    {
+      "id": "defect",
+      "kind": "Defect",
+      "title": "defect",
+      "version": 1,
+      "rationale": "Synthetic contract fixture; no industrial evidence",
+      "params": {
+        "metric": "contrast",
+        "threshold": 20
+      },
+      "applicability": {
+        "confidence": {
+          "min": 0.5,
+          "max": 1
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e0",
+      "from": "loc",
+      "to": "offset",
+      "kind": "requires",
+      "contract": {
+        "version": "current"
+      }
+    },
+    {
+      "id": "e1",
+      "from": "loc",
+      "to": "offset",
+      "kind": "shares",
+      "contract": {
+        "version": "current"
+      }
+    },
+    {
+      "id": "e2",
+      "from": "loc",
+      "to": "defect",
+      "kind": "requires",
+      "contract": {
+        "version": "current"
+      }
+    },
+    {
+      "id": "e3",
+      "from": "loc",
+      "to": "defect",
+      "kind": "shares",
+      "contract": {
+        "version": "current"
+      }
+    },
+    {
+      "id": "e4",
+      "from": "offset",
+      "to": "defect",
+      "kind": "requires",
+      "contract": {
+        "version": "current"
+      }
+    }
+  ]
+}

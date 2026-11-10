@@ -1,0 +1,30 @@
+PASS multiple genuine edges survive, including a much weaker edge
+PASS dotted fragments are not promoted to a continuous measurement line
+PASS alternating parallel fragments cannot be stitched by a low global RMS
+PASS opposite edge polarities cannot be fused into one candidate
+PASS curved boundaries are rejected as straight measurements
+PASS rasterized oblique true edge remains valid
+PASS measurement supports remain inside the ROI and never borrow a nearby outside edge
+PASS background is excluded only by an explicit user region, never silently selected
+PASS polygon masks also constrain every accepted gradient stencil
+PASS uniform random noise yields no measurement candidate
+PASS small additive pixel noise preserves a genuine weak edge
+PASS malformed pixels and numeric parameters fail explicitly
+PASS line choice remains run-scoped and typed even after multiple detections
+PASS single missing scan does not destroy otherwise continuous evidence
+PASS isolated noisy scan is removed only with stable support on both sides
+PASS a sustained parallel-edge step is not treated as isolated noise
+PASS two consecutive displaced supports cannot use the isolated-scan exception
+PASS frequent spikes exceed the unchanged inlier budget instead of being hidden
+PASS one sparse two-scan dropout keeps real coverage and bounded continuity evidence
+PASS three consecutive missing scans are not bridged
+PASS regular two-scan gaps below eight percent missing still fail the sparsity count
+PASS a two-scan gap without eight real supports on both sides is not bridged
+PASS explicit tangential averaging recovers a noisy edge without weaker quality limits
+PASS caliper averaging still rejects fragments, alternating edges and sustained jumps
+PASS the full caliper and Sobel footprint stays inside ROI and explicit exclusions
+PASS caliper width is explicit, odd and bounded
+PASS circle exclusions and run identity follow the same safety contract
+PASS translation accepts arbitrary imported image bounds
+
+28 line quality / contract checks passed. Synthetic fixtures do not establish production accuracy.

@@ -1,0 +1,133 @@
+{
+  "tool": {
+    "reason": "由人類綠線確認lid身份；原圖左下露出帶是pkg。先量兩物體各自支持，遮擋邊以良品尺寸先驗推估，再計有正負號的lid到pkg邊距。完整包含與單側超出分開要求證據。",
+    "expectedEvidence": [
+      {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "overlay",
+            "caption": "綠lid、青pkg；實線僅在實際支持段，虛線為外推或推估；上青線不再冒充lid。"
+          }
+        ]
+      }
+    ]
+  },
+  "parameters": [
+    {
+      "name": "search",
+      "source": "agent-proposal",
+      "reason": "低閾值65與sigma1.5只定搜尋域；不把最大亮連通區命名為pkg。未新增成像場景驗證。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "profiles",
+            "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scan",
+      "source": "agent-proposal",
+      "reason": "斜率與梯度候選在相同完整原圖比較；sigma1/1.5/2.5敏感性保留。中央56%避開圓角；實際支持段之外是外推。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "profiles",
+            "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lidPrior",
+      "source": "agent-proposal",
+      "reason": "從標註圖與11_15像素直邊推得梯度框約683x529，±10/12px為定位先驗；不是按外包絡比例分類。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "profiles",
+            "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pkgPrior",
+      "source": "agent-proposal",
+      "reason": "11_15外露四邊約708x550px；±8px為暫用尺寸敏感範圍。僅用可見pkg左下邊定位，隱藏上/右邊標推估，不把焊道第二峰叫pkg。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "profiles",
+            "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "quality",
+      "source": "agent-proposal",
+      "reason": "3px實測線位、6px未分離邊、8px尺寸擾動為保守開發試驗；不是已校準誤差。含缺測、穩定性與完整包含檢查。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "profiles",
+            "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cornerFit",
+      "source": "agent-proposal",
+      "reason": "40至140px圓角實掃，四角分別保留80%峰區；多峰/無獨立邊不算完整包含。半徑不是分類特徵。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "corner_trials",
+            "caption": "原始剖面與圓角分數曲線顯示候選/歧義；設定完整保存，未宣稱最優。"
+          }
+        ]
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "condition": "UNKNOWN包含尚未分清的邊與圓角；尺寸先驗可能不適用其他批次，40張其他缺陷未驗證。",
+      "check": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "uncertainty",
+            "caption": "三種平滑加逐邊線位與隱藏尺寸擾動，畫出正內負外區間；非95%置信或工業誤差保證。"
+          }
+        ]
+      },
+      "onFailure": "UNKNOWN"
+    }
+  ]
+}

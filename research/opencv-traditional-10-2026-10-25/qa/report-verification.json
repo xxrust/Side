@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-25T06:30:48.121Z",
+  "cases": 10,
+  "detailRoutesChecked": 73,
+  "caseGallerySelections": 36,
+  "officialImagesDecoded": 35,
+  "embeddedImages": 80,
+  "syntheticImages": 15,
+  "qrReferenceViews": 5,
+  "syntheticPixelTruth": {
+    "missingInkPixels": 490,
+    "maskExactlyMatchesDesignDifference": true
+  },
+  "productFilesChecked": 60,
+  "productFilesChanged": [],
+  "externalCodeOrStyleRequests": 0,
+  "reportJavaScriptErrors": [],
+  "algorithmsExecuted": false,
+  "productVersionUnchanged": "0.9.8",
+  "visualQA": "30 SVG diagrams rasterised; selected diagrams and input photos visually inspected. Native browser unavailable: Sky service startup failed. No native browser layout or pointer QA claimed."
+}

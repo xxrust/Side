@@ -1,0 +1,58 @@
+AgentCV v0.6 — 2026-10-23
+
+Changes
+  Empty-project centered multi-file and recursive folder import entries.
+  Thumbnail list with search/pagination, stable identity, original paths,
+  project display names and independent expected status/class/notes.
+  Expected-vs-actual comparison in list/results/CSV/JSON; expected values
+  are not algorithm inputs. Each run snapshots its expected labels.
+  Cursor-anchored wheel zoom, nearest-neighbor raster display at device
+  pixel ratio, 100%/fit controls and middle-button/Space-drag panning.
+  Original pixels and annotation coordinates remain unchanged by viewing.
+  Skippable, resumable contextual guidance: intent -> executable search
+  -> explicit candidate selection -> measurement -> tolerance -> decision
+  -> confirmed recipe -> batch verification. Guidance preference is saved.
+  Existing v0.5 workspace retained in archive/v0.5/.
+
+Verification
+  Command: npm test --prefix 13-cv/qa
+  Results: 77 checks passed. Full log: verification-v0.6-output.txt
+    20 numeric/geometry/keyboard/static document checks
+    16 line quality / ROI / masking / candidate contract checks
+    13 measurement and rule-classification pipeline checks
+     5 viewport transform and real-raster checks
+    23 DOM + real-raster application integration checks
+
+New behavior exercised
+  Empty buttons route to multi-file and directory inputs.
+  Folder import skips non-images and distinguishes duplicate basenames.
+  Pagination/filter selection, metadata editing, project round-trip,
+  invalid expected-label rejection, independent historical run records.
+  Zoom cursor anchoring and unchanged image/object records.
+  Exact 8x pixel blocks at DPR 1 and 2, no interpolated color creation;
+  transparent input uses the same white backdrop as algorithm preprocessing.
+  Actual application handlers complete drawn-circle intent -> detection ->
+  explicit selection -> diameter -> tolerance -> OK.
+  Skip/resume guidance and saved preference; middle-button pan intercepts
+  annotation handlers; zoomed line drawing preserves source coordinates,
+  produces a real line candidate and does not silently adopt it.
+
+Remaining browser acceptance
+  DOM tests use jsdom with @napi-rs/canvas and synthetic pointer events;
+  they cannot establish native layout, browser hit-testing or file dialogs.
+  The native browser service was unavailable earlier in this session, and
+  installed Chromium failed macOS bootstrap_check_in / MachPortRendezvous.
+  No browser screenshots or native visual acceptance are claimed.
+  browser-flow.cjs is updated for v0.6 and can run when Chromium is available.
+  Check 1440x900 and 1024x640: no clipped image controls; wheel anchoring;
+  Space/middle-button pan; actual annotation dragging at high magnification;
+  native multi-file/directory picker cancellation and nested folders;
+  rename/expected judgment entry, Chinese IME, save and reopen.
+
+Compatibility and limits
+  Existing agentcv-project-0.5 JSON projects load without new optional fields.
+  New labels and UI preference are optional additions to the same schema.
+  Names only change project display names, not files on disk.
+  This remains a local browser prototype without a connected model Agent.
+  Fixed-pose/same-size batch requirements and earlier CV limitations remain.
+  Numerical tests are not a production accuracy guarantee.

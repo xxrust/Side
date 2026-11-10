@@ -1,0 +1,459 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agentcv:structured-layers:1",
+  "title": "AgentCV calculated original-image layers",
+  "type": "array",
+  "maxItems": 256,
+  "items": {
+    "$ref": "#/$defs/layer"
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 499
+    },
+    "point": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      }
+    },
+    "coordinateSpace": {
+      "type": "object",
+      "required": [
+        "imageId"
+      ],
+      "properties": {
+        "imageId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "original-image-pixels"
+        },
+        "unit": {
+          "const": "px"
+        },
+        "transform": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "layer": {
+      "type": "object",
+      "required": [
+        "id",
+        "sourceId",
+        "imageId",
+        "stepId",
+        "objects"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "imageId": {
+          "$ref": "#/$defs/id"
+        },
+        "stepId": {
+          "$ref": "#/$defs/id"
+        },
+        "objects": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/object"
+          }
+        }
+      }
+    },
+    "object": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "geometry",
+        "coordinateSpace"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "type": {
+          "enum": [
+            "roi",
+            "line",
+            "polyline",
+            "blob",
+            "circle",
+            "measurement",
+            "note"
+          ]
+        },
+        "geometry": {
+          "type": "object"
+        },
+        "coordinateSpace": {
+          "$ref": "#/$defs/coordinateSpace"
+        },
+        "locked": {
+          "const": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "roi"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "points"
+                ],
+                "properties": {
+                  "points": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 100000,
+                    "items": {
+                      "$ref": "#/$defs/point"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "line"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "points"
+                ],
+                "properties": {
+                  "points": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "$ref": "#/$defs/point"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "polyline"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "points"
+                ],
+                "properties": {
+                  "points": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 100000,
+                    "items": {
+                      "$ref": "#/$defs/point"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "blob"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "points"
+                ],
+                "properties": {
+                  "points": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 100000,
+                    "items": {
+                      "$ref": "#/$defs/point"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "circle"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "center",
+                  "radius"
+                ],
+                "properties": {
+                  "center": {
+                    "$ref": "#/$defs/point"
+                  },
+                  "radius": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "measurement"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "points",
+                  "value",
+                  "unit"
+                ],
+                "properties": {
+                  "points": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100000,
+                    "items": {
+                      "$ref": "#/$defs/point"
+                    }
+                  },
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "note"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "geometry": {
+                "type": "object",
+                "required": [
+                  "points",
+                  "text"
+                ],
+                "properties": {
+                  "points": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100000,
+                    "items": {
+                      "$ref": "#/$defs/point"
+                    }
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "x-agentcv": {
+    "version": 1,
+    "objectTypes": [
+      "roi",
+      "line",
+      "polyline",
+      "blob",
+      "circle",
+      "measurement",
+      "note"
+    ],
+    "typeAliases": {},
+    "geometry": {
+      "roi": {
+        "points": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 100000,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        }
+      },
+      "line": {
+        "points": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        }
+      },
+      "polyline": {
+        "points": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 100000,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        }
+      },
+      "blob": {
+        "points": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 100000,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        }
+      },
+      "circle": {
+        "center": {
+          "$ref": "#/$defs/point"
+        },
+        "radius": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "measurement": {
+        "points": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "note": {
+        "points": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100000,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "limits": {
+      "layers": 256,
+      "objectsPerLayer": 20000,
+      "pointsPerObject": 100000
+    },
+    "runtimeDefaults": {
+      "layer.imageId": "Only when exactly one workpiece image_records input; references remain explicit. Otherwise imageId is required.",
+      "layer.sourceId": "layer.imageId; must identify an actual input image",
+      "layer.stepId": "current actual trace step instanceId; otherwise explicit executed step required",
+      "object.coordinateSpace": {
+        "imageId": "layer.imageId",
+        "kind": "original-image-pixels",
+        "unit": "px"
+      },
+      "object.locked": true
+    },
+    "semanticChecks": [
+      "unique layer ids per run; unique object ids per layer",
+      "imageId, sourceId and coordinateSpace.imageId identify this run inputs",
+      "stepId resolves to one actual executed trace node; ambiguous base ids require instanceId",
+      "all numbers finite; transform affine6 invertible; cross-image coordinates require transform",
+      "no automatic clipping; finite geometry may extend outside image extent",
+      "polygon is not an alias: use type roi with geometry.points",
+      "measurement value and unit belong inside geometry, not beside it"
+    ]
+  }
+}

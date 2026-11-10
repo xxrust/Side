@@ -1,0 +1,1141 @@
+{
+  "scope": "host observations, residuals are not absolute metrology error; selected is likelihood winner, SKEW display/decision may retain directional candidate 0",
+  "rows": [
+    {
+      "i": 0,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 687.7324266153386,
+          "heightPx": 536.0644033859438,
+          "angleDeg": 2.083779888832686,
+          "radiusPx": 104.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.3210395751270767,
+            "bottom": 1.902225841613017,
+            "left": 2.228856693406243,
+            "right": 1.0213037415442843
+          },
+          "radiusFamily80": [
+            96.0,
+            116.0
+          ],
+          "radiusRawPeak": 104.0,
+          "arcCoverage": 0.7926829268292683,
+          "radiusScore": 0.9015630165231326
+        },
+        "pkg": {
+          "widthPx": 707.990628949949,
+          "heightPx": 549.9499184175451,
+          "angleDeg": -0.6918867007477828,
+          "radiusPx": 94.0,
+          "measuredSides": {
+            "bottom": true,
+            "left": true,
+            "top": false,
+            "right": false
+          },
+          "normalResidualP90Px": {
+            "bottom": 0.8958265057650578,
+            "left": 0.7119873531526366,
+            "top": 0.0,
+            "right": 1.0231815394945443e-13
+          },
+          "radiusFamily80": [
+            82.0,
+            106.0
+          ],
+          "radiusRawPeak": 94.0,
+          "arcCoverage": 0.9166666666666666,
+          "radiusScore": 0.8982407044382036
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.4217584042465603
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 2.228856693406243
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 1.836345168176308
+        }
+      ]
+    },
+    {
+      "i": 1,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 690.3250799607797,
+          "heightPx": 530.6294231905606,
+          "angleDeg": -4.351944208356859,
+          "radiusPx": 100.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": false,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.0401689685056,
+            "bottom": 4.080198064861395,
+            "left": 1.4827655780420157,
+            "right": 1.8162097205376995
+          },
+          "radiusFamily80": [
+            92.0,
+            110.0
+          ],
+          "radiusRawPeak": 100.0,
+          "arcCoverage": 0.8597560975609756,
+          "radiusScore": 0.9889875084779243
+        },
+        "pkg": {
+          "widthPx": 707.7359254163023,
+          "heightPx": 549.851286294316,
+          "angleDeg": -1.1144751080575355,
+          "radiusPx": 92.0,
+          "measuredSides": {
+            "bottom": true,
+            "right": true,
+            "top": false,
+            "left": false
+          },
+          "normalResidualP90Px": {
+            "bottom": 1.3197495920411484,
+            "right": 1.352635004583476,
+            "top": 0.0,
+            "left": 0.0
+          },
+          "radiusFamily80": [
+            82.0,
+            102.0
+          ],
+          "radiusRawPeak": 92.0,
+          "arcCoverage": 0.9583333333333334,
+          "radiusScore": 0.9591514882706648
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.2113977575639865
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 1.8162097205376995
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 1.7704799607414543
+        }
+      ]
+    },
+    {
+      "i": 2,
+      "selectedCandidate": 1,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 692.8714958840442,
+          "heightPx": 525.0266967934372,
+          "angleDeg": -0.008594111005597085,
+          "radiusPx": 114.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.8824059849536638,
+            "bottom": 1.9805902543616867,
+            "left": 1.0327335374863396,
+            "right": 2.206130306300338
+          },
+          "radiusFamily80": [
+            94.0,
+            124.0
+          ],
+          "radiusRawPeak": 114.0,
+          "arcCoverage": 0.5182926829268293,
+          "radiusScore": 0.6508652654373154
+        },
+        "pkg": {
+          "widthPx": 707.9938094882976,
+          "heightPx": 549.9633213335517,
+          "angleDeg": -0.4784936211152556,
+          "radiusPx": 96.0,
+          "measuredSides": {
+            "bottom": true,
+            "right": true,
+            "top": false,
+            "left": false
+          },
+          "normalResidualP90Px": {
+            "bottom": 0.7000270935378694,
+            "right": 0.5729851626258324,
+            "top": 0.0,
+            "left": 0.0
+          },
+          "radiusFamily80": [
+            84.0,
+            106.0
+          ],
+          "radiusRawPeak": 96.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9912555780625715
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.069503923257969
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 2.206130306300338
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 2.1581254566716552
+        }
+      ]
+    },
+    {
+      "i": 3,
+      "selectedCandidate": 2,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 692.8530582232456,
+          "heightPx": 539.194904928365,
+          "angleDeg": 1.0496423468944314,
+          "radiusPx": 106.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 2.964683408478834,
+            "bottom": 6.166604718096892,
+            "left": 2.2674516029465224,
+            "right": 4.838523583013966
+          },
+          "radiusFamily80": [
+            96.0,
+            116.0
+          ],
+          "radiusRawPeak": 106.0,
+          "arcCoverage": 0.7256097560975611,
+          "radiusScore": 0.9261776997569588
+        },
+        "pkg": {
+          "widthPx": 707.946833446269,
+          "heightPx": 550.115469869728,
+          "angleDeg": -0.5465101017177588,
+          "radiusPx": 90.0,
+          "measuredSides": {
+            "bottom": true,
+            "left": true,
+            "top": false,
+            "right": false
+          },
+          "normalResidualP90Px": {
+            "bottom": 1.2042593012627094,
+            "left": 0.8121100071618628,
+            "top": 0.0,
+            "right": 0.0
+          },
+          "radiusFamily80": [
+            82.0,
+            104.0
+          ],
+          "radiusRawPeak": 90.0,
+          "arcCoverage": 0.9814814814814815,
+          "radiusScore": 0.9802429051814371
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 5.929717042860375
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 6.166604718096892
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 7.6976547553024375
+        }
+      ]
+    },
+    {
+      "i": 4,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 687.9119572986506,
+          "heightPx": 531.5695711149735,
+          "angleDeg": -0.9166542563852917,
+          "radiusPx": 92.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": false,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.9864557729910644,
+            "bottom": 0.9998813007272247,
+            "left": 0.3169194369079378,
+            "right": 0.9998998530402332
+          },
+          "radiusFamily80": [
+            80.0,
+            100.0
+          ],
+          "radiusRawPeak": 92.0,
+          "arcCoverage": 0.9878048780487805,
+          "radiusScore": 0.9874807774098553
+        },
+        "pkg": {
+          "widthPx": 708.9637727312222,
+          "heightPx": 550.5850787236977,
+          "angleDeg": -0.8307384749503496,
+          "radiusPx": 74.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.9347758211567339,
+            "bottom": 0.8808930783773121,
+            "left": 1.3632403249682956,
+            "right": 0.8850077125503049
+          },
+          "radiusFamily80": [
+            66.0,
+            82.0
+          ],
+          "radiusRawPeak": 74.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9663886350416193
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.999579457305117
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 1.3632403249682956
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 1.1270281450483708
+        }
+      ]
+    },
+    {
+      "i": 5,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 686.2222754845752,
+          "heightPx": 529.8675480586446,
+          "angleDeg": -0.8020885128056351,
+          "radiusPx": 88.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": false
+          },
+          "normalResidualP90Px": {
+            "top": 1.556953383075495,
+            "bottom": 0.9999132437719709,
+            "left": 1.483975427142866,
+            "right": 0.6316181044585278
+          },
+          "radiusFamily80": [
+            78.0,
+            98.0
+          ],
+          "radiusRawPeak": 90.0,
+          "arcCoverage": 0.9329268292682926,
+          "radiusScore": 0.9817583870701914
+        },
+        "pkg": {
+          "widthPx": 706.0806091946938,
+          "heightPx": 548.3057805083158,
+          "angleDeg": -1.2140501476519772,
+          "radiusPx": 72.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.3552327199171261,
+            "bottom": 0.8620877306377679,
+            "left": 0.7847277726599486,
+            "right": 1.057945391422527
+          },
+          "radiusFamily80": [
+            66.0,
+            80.0
+          ],
+          "radiusRawPeak": 72.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9789434817901379
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 3.6630513332745522
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 1.556953383075495
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 4.133800534837519
+        }
+      ]
+    },
+    {
+      "i": 6,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 687.1323348626962,
+          "heightPx": 531.1348169387854,
+          "angleDeg": -0.8020885128056351,
+          "radiusPx": 92.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": false,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.9998990850032214,
+            "bottom": 1.1200279379525,
+            "left": 1.2609964284047237,
+            "right": 3.062764072811092
+          },
+          "radiusFamily80": [
+            80.0,
+            102.0
+          ],
+          "radiusRawPeak": 92.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9881807646021311
+        },
+        "pkg": {
+          "widthPx": 706.5098288710278,
+          "heightPx": 549.2963332018157,
+          "angleDeg": -0.6795455967530615,
+          "radiusPx": 72.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.8889671678371087,
+            "bottom": 0.8812106510106332,
+            "left": 1.186890908489147,
+            "right": 0.9503190430626772
+          },
+          "radiusFamily80": [
+            64.0,
+            80.0
+          ],
+          "radiusRawPeak": 72.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9470482736948872
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 3.220437098174216
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 3.062764072811092
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 1.8273410708292204
+        }
+      ]
+    },
+    {
+      "i": 7,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 684.5179149522555,
+          "heightPx": 531.0986009318252,
+          "angleDeg": -0.7448031783150649,
+          "radiusPx": 90.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.1400585763466324,
+            "bottom": 3.089835538579564,
+            "left": 0.925988590765769,
+            "right": 1.916939679492998
+          },
+          "radiusFamily80": [
+            82.0,
+            100.0
+          ],
+          "radiusRawPeak": 42.0,
+          "arcCoverage": 0.9207317073170731,
+          "radiusScore": 0.9122061355720839
+        },
+        "pkg": {
+          "widthPx": 702.4222422202445,
+          "heightPx": 545.9724710282007,
+          "angleDeg": -1.4097729827199657,
+          "radiusPx": 74.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.0356057582599647,
+            "bottom": 1.0233680470356603,
+            "left": 1.2127052178084283,
+            "right": 1.0457859447003557
+          },
+          "radiusFamily80": [
+            66.0,
+            80.0
+          ],
+          "radiusRawPeak": 74.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.991751269035533
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 1.41974752907754
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 3.089835538579564
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 1.2653353715354512
+        }
+      ]
+    },
+    {
+      "i": 8,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 686.0,
+          "heightPx": 530.0,
+          "angleDeg": 3.1805546814635168e-15,
+          "radiusPx": 86.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": false,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.0,
+            "bottom": 1.0,
+            "left": 5.1159076974727215e-14,
+            "right": 1.0
+          },
+          "radiusFamily80": [
+            72.0,
+            98.0
+          ],
+          "radiusRawPeak": 86.0,
+          "arcCoverage": 0.9390243902439024,
+          "radiusScore": 0.9706021150645775
+        },
+        "pkg": {
+          "widthPx": 707.9960477632704,
+          "heightPx": 547.5392266365704,
+          "angleDeg": -0.20775051597992544,
+          "radiusPx": 78.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "right": true,
+            "left": false
+          },
+          "normalResidualP90Px": {
+            "top": 1.0707421971935105,
+            "bottom": 0.8917161279679249,
+            "right": 0.8774687131767678,
+            "left": 0.0885392638062342
+          },
+          "radiusFamily80": [
+            70.0,
+            86.0
+          ],
+          "radiusRawPeak": 80.0,
+          "arcCoverage": 0.9695121951219512,
+          "radiusScore": 0.9585338259548056
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 1.106047287718411
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 1.0707421971935105
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 2.0
+        }
+      ]
+    },
+    {
+      "i": 9,
+      "selectedCandidate": 1,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 688.3964561779953,
+          "heightPx": 529.2181357966964,
+          "angleDeg": -0.17188682288001605,
+          "radiusPx": 90.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.137907293979481,
+            "bottom": 3.5288561294605643,
+            "left": 2.4194467297017224,
+            "right": 1.5009211633504265
+          },
+          "radiusFamily80": [
+            78.0,
+            102.0
+          ],
+          "radiusRawPeak": 90.0,
+          "arcCoverage": 0.9878048780487805,
+          "radiusScore": 0.9688300497200697
+        },
+        "pkg": {
+          "widthPx": 707.7627599603907,
+          "heightPx": 550.0859392403418,
+          "angleDeg": -0.123269148758141,
+          "radiusPx": 78.0,
+          "measuredSides": {
+            "top": true,
+            "right": true,
+            "bottom": false,
+            "left": false
+          },
+          "normalResidualP90Px": {
+            "top": 1.587363196914305,
+            "right": 1.1834263355579195,
+            "bottom": 1.0231815394945443e-13,
+            "left": 5.684341886080802e-14
+          },
+          "radiusFamily80": [
+            68.0,
+            90.0
+          ],
+          "radiusRawPeak": 78.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.8504659342579197
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.0114330376847875
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 3.5288561294605643
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 2.13557195433786
+        }
+      ]
+    },
+    {
+      "i": 10,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 687.0,
+          "heightPx": 531.0,
+          "angleDeg": 0.0,
+          "radiusPx": 92.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.0,
+            "bottom": 2.0,
+            "left": 2.0,
+            "right": 2.0
+          },
+          "radiusFamily80": [
+            82.0,
+            100.0
+          ],
+          "radiusRawPeak": 92.0,
+          "arcCoverage": 0.9878048780487805,
+          "radiusScore": 0.9798237803939367
+        },
+        "pkg": {
+          "widthPx": 706.8275914146025,
+          "heightPx": 549.5769440414821,
+          "angleDeg": -0.6127786835752101,
+          "radiusPx": 74.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.8568038803094282,
+            "bottom": 1.393575352365474,
+            "left": 0.8707241626107021,
+            "right": 0.8799256416039043
+          },
+          "radiusFamily80": [
+            66.0,
+            82.0
+          ],
+          "radiusRawPeak": 74.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9916126835948496
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.0
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 2.0
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 3.000000000000057
+        }
+      ]
+    },
+    {
+      "i": 11,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 686.886283827398,
+          "heightPx": 530.5413823274868,
+          "angleDeg": 0.4010639059667062,
+          "radiusPx": 92.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.3685237225560627,
+            "bottom": 3.7538086065461584,
+            "left": 3.109870525414067,
+            "right": 1.918785540378849
+          },
+          "radiusFamily80": [
+            82.0,
+            100.0
+          ],
+          "radiusRawPeak": 92.0,
+          "arcCoverage": 0.9939024390243902,
+          "radiusScore": 0.9637307644754364
+        },
+        "pkg": {
+          "widthPx": 707.9493555014125,
+          "heightPx": 550.7613027955388,
+          "angleDeg": -0.5602843002280707,
+          "radiusPx": 76.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "right": true,
+            "left": false
+          },
+          "normalResidualP90Px": {
+            "top": 0.7693573641114426,
+            "bottom": 1.0497190968543464,
+            "right": 0.8448171028483102,
+            "left": 0.2541421577865265
+          },
+          "radiusFamily80": [
+            68.0,
+            84.0
+          ],
+          "radiusRawPeak": 76.0,
+          "arcCoverage": 0.9878048780487805,
+          "radiusScore": 0.9715779303229723
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 1.9999850737672205
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 3.7538086065461584
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 3.657869815382969
+        }
+      ]
+    },
+    {
+      "i": 12,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 686.0300268323606,
+          "heightPx": 529.7880538449542,
+          "angleDeg": -0.5156480934199322,
+          "radiusPx": 88.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.9431444816446515,
+            "bottom": 0.9531345555703865,
+            "left": 2.9893708152577005,
+            "right": 1.0997593546909457
+          },
+          "radiusFamily80": [
+            76.0,
+            98.0
+          ],
+          "radiusRawPeak": 88.0,
+          "arcCoverage": 0.9512195121951219,
+          "radiusScore": 0.9585479850651215
+        },
+        "pkg": {
+          "widthPx": 707.9366881324579,
+          "heightPx": 548.3551712075692,
+          "angleDeg": -0.999277285313669,
+          "radiusPx": 80.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "right": true,
+            "left": false
+          },
+          "normalResidualP90Px": {
+            "top": 0.7709595013121089,
+            "bottom": 0.8434735621779055,
+            "right": 1.0292769891484568,
+            "left": 0.12790753664882004
+          },
+          "radiusFamily80": [
+            72.0,
+            86.0
+          ],
+          "radiusRawPeak": 80.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9449600301566903
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.4949559855880135
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 2.9893708152577005
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 4.433211376754024
+        }
+      ]
+    },
+    {
+      "i": 13,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 685.1218662816525,
+          "heightPx": 530.9904179665034,
+          "angleDeg": -0.34377055187147026,
+          "radiusPx": 88.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.9999877376873769,
+            "bottom": 0.9999900569815736,
+            "left": 0.8153451871999664,
+            "right": 1.088828301657486
+          },
+          "radiusFamily80": [
+            76.0,
+            96.0
+          ],
+          "radiusRawPeak": 88.0,
+          "arcCoverage": 0.975609756097561,
+          "radiusScore": 0.9476423805617084
+        },
+        "pkg": {
+          "widthPx": 706.3259175386162,
+          "heightPx": 547.54284684258,
+          "angleDeg": -0.6421259049434829,
+          "radiusPx": 72.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.4880981636576394,
+            "bottom": 0.8025029345581061,
+            "left": 1.523718365229911,
+            "right": 1.1212471569324407
+          },
+          "radiusFamily80": [
+            64.0,
+            80.0
+          ],
+          "radiusRawPeak": 72.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9864190421751109
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 1.3940176920020804
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 1.523718365229911
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 4.292555999780632
+        }
+      ]
+    },
+    {
+      "i": 14,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 687.0715380970553,
+          "heightPx": 530.9904512910987,
+          "angleDeg": -0.34377055187147343,
+          "radiusPx": 90.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.9999618037458902,
+            "bottom": 0.9999813901454218,
+            "left": 1.9999643671762897,
+            "right": 1.9107881158890905
+          },
+          "radiusFamily80": [
+            78.0,
+            100.0
+          ],
+          "radiusRawPeak": 90.0,
+          "arcCoverage": 0.9878048780487805,
+          "radiusScore": 0.9757104168184485
+        },
+        "pkg": {
+          "widthPx": 706.6860020998438,
+          "heightPx": 549.4061827864671,
+          "angleDeg": -0.5557402267113354,
+          "radiusPx": 74.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.9537313450254346,
+            "bottom": 1.0140434663318274,
+            "left": 1.311035288834546,
+            "right": 1.25040185263191
+          },
+          "radiusFamily80": [
+            66.0,
+            82.0
+          ],
+          "radiusRawPeak": 74.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9926199346045704
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.0629009784680647
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 1.9999643671762897
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 2.1929469199366283
+        }
+      ]
+    },
+    {
+      "i": 15,
+      "selectedCandidate": 0,
+      "sigma": 1.5,
+      "objects": {
+        "lid": {
+          "widthPx": 687.1183482295367,
+          "heightPx": 530.9617821376055,
+          "angleDeg": 0.6875163546391035,
+          "radiusPx": 92.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": false,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 0.9999402139275162,
+            "bottom": 0.0,
+            "left": 2.9997881734170733,
+            "right": 1.7166372708235258
+          },
+          "radiusFamily80": [
+            82.0,
+            100.0
+          ],
+          "radiusRawPeak": 92.0,
+          "arcCoverage": 0.9817073170731707,
+          "radiusScore": 0.9878467155880735
+        },
+        "pkg": {
+          "widthPx": 706.1500127927974,
+          "heightPx": 550.2351537794333,
+          "angleDeg": 0.2765311858596725,
+          "radiusPx": 76.0,
+          "measuredSides": {
+            "top": true,
+            "bottom": true,
+            "left": true,
+            "right": true
+          },
+          "normalResidualP90Px": {
+            "top": 1.159485199707035,
+            "bottom": 1.133718547719559,
+            "left": 1.336700856823569,
+            "right": 1.1772108962611583
+          },
+          "radiusFamily80": [
+            68.0,
+            84.0
+          ],
+          "radiusRawPeak": 76.0,
+          "arcCoverage": 1.0,
+          "radiusScore": 0.9990480068872147
+        }
+      },
+      "allSigmaWinnerResiduals": [
+        {
+          "sigma": 1,
+          "residualPx": 2.999777676125973
+        },
+        {
+          "sigma": 1.5,
+          "residualPx": 2.9997881734170733
+        },
+        {
+          "sigma": 2.5,
+          "residualPx": 1.9998372180753563
+        }
+      ]
+    }
+  ]
+}

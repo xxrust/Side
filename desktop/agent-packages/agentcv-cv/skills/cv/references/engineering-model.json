@@ -1,0 +1,301 @@
+{
+  "schema": "agentcv-engineering-ontology-1",
+  "revision": 7,
+  "status": "implemented-local-semantic-contracts-not-external-ontology-runtime",
+  "source": {
+    "userConsensus": "/Users/liangshiben/13-cv/docs/product-decisions/2026-10-29-core-consensus.json",
+    "corrections": [
+      "2026-10-29 final categories must be exclusive/exhaustive",
+      "2026-10-29 input images require role and source correspondence",
+      "2026-10-29 update ontology/skill promptly from failures",
+      "2026-10-29 existing failures require impact analysis; UI reachability and underlying computation are separately verified",
+      "2026-10-30 graph roles, data/control/containment semantics must remain observable without inventing topology"
+    ]
+  },
+  "entities": [
+    "DatasetSource",
+    "WorkpieceUnit",
+    "ReferenceAsset",
+    "Scheme",
+    "PurposeNode",
+    "Invocation",
+    "Artifact",
+    "ClassificationSpec",
+    "ExecutionExit",
+    "CalculatedLayer",
+    "DisplayReference",
+    "EvidenceRevision",
+    "Regression"
+  ],
+  "relations": [
+    {
+      "subject": "DatasetSource",
+      "predicate": "contains",
+      "object": "Artifact"
+    },
+    {
+      "subject": "WorkpieceUnit",
+      "predicate": "appliesScheme",
+      "object": "Scheme"
+    },
+    {
+      "subject": "WorkpieceUnit",
+      "predicate": "hasView",
+      "object": "Artifact"
+    },
+    {
+      "subject": "ReferenceAsset",
+      "predicate": "referenceFor",
+      "object": "WorkpieceUnit"
+    },
+    {
+      "subject": "Scheme",
+      "predicate": "declares",
+      "object": "PurposeNode"
+    },
+    {
+      "subject": "PurposeNode",
+      "predicate": "contains",
+      "object": "Invocation"
+    },
+    {
+      "subject": "PurposeNode",
+      "predicate": "requires",
+      "object": "Artifact"
+    },
+    {
+      "subject": "Invocation",
+      "predicate": "produces",
+      "object": "Artifact"
+    },
+    {
+      "subject": "CalculatedLayer",
+      "predicate": "producedBy",
+      "object": "Invocation"
+    },
+    {
+      "subject": "DisplayReference",
+      "predicate": "displays",
+      "object": "CalculatedLayer"
+    },
+    {
+      "subject": "EvidenceRevision",
+      "predicate": "explains",
+      "object": "Invocation"
+    },
+    {
+      "subject": "ClassificationSpec",
+      "predicate": "partitions",
+      "object": "ExecutionExit"
+    },
+    {
+      "subject": "Regression",
+      "predicate": "evaluates",
+      "object": "Scheme"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "one-workpiece",
+      "rule": "Dataset cardinality does not define unit input cardinality.",
+      "enforcedBy": "src/workpiece-runner.js"
+    },
+    {
+      "id": "reference-role",
+      "rule": "Fixed references are outside inspected image_ids and unit counts.",
+      "enforcedBy": "src/workpiece-runner.js; scripts/cv-runtime.py"
+    },
+    {
+      "id": "exclusive-final",
+      "rule": "Exactly one final categoryId for a completed classification; labels are separate.",
+      "enforcedBy": "src/classification-spec.js"
+    },
+    {
+      "id": "exit-conservation",
+      "rule": "sum(counts.exits)=processed; product categories exclude FAULT/CANCELLED.",
+      "enforcedBy": "src/workpiece-runner.js"
+    },
+    {
+      "id": "node-depth",
+      "rule": "At most three engineering node levels; child purpose outcomes affect parent purpose.",
+      "enforcedBy": "src/workpiece-plan.js; src/workpiece-lifecycle.js"
+    },
+    {
+      "id": "failure-type",
+      "rule": "Expected absence and runtime fault are distinct; faults never count as defect TP.",
+      "enforcedBy": "scripts/cv-runtime.py; src/classification-metrics.js"
+    },
+    {
+      "id": "per-operator-evidence",
+      "rule": "Triad and timing trace required for validated canonical schemes.",
+      "enforcedBy": "src/workpiece-runner.js; src/purpose-project-status.js"
+    },
+    {
+      "id": "layer-contract",
+      "rule": "Saved layers must be consumable against the shared shape/coordinate/producer schema.",
+      "enforcedBy": "scripts/structured-layers-contract.json"
+    },
+    {
+      "id": "immutable-history",
+      "rule": "Later explanation revisions survive reread; execution facts are immutable.",
+      "enforcedBy": "src/workspace.js; src/algorithm-evidence-revisions.js"
+    },
+    {
+      "id": "verified-file-backed-pixels",
+      "rule": "Verified CAS/file pixels remain evidence without inline dataURL; hash, size, MIME, dimensions and ownership must match.",
+      "enforcedBy": "src/pipeline-evidence-contract.js"
+    },
+    {
+      "id": "observable-graph-semantics",
+      "rule": "Graph roles are derived from schema. Data arrows run producer to consumer; control conditions and containment are distinct. Visible execution paths require saved unit facts; previews require actual image identity.",
+      "enforcedBy": "src/flow-visual-grammar.js; src/current-scheme-flow.js; src/workpiece-flow-boundaries.js; src/operator-topology.js"
+    }
+  ],
+  "failureEvidence": [
+    {
+      "id": "native-footer",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-core-redesign/native-historical-unit.png",
+      "promotion": "local verified work rule; not evidence of industrial accuracy"
+    },
+    {
+      "id": "triad-history-race",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-core-redesign/integration-review/before-review.json",
+      "promotion": "local verified work rule; not evidence of industrial accuracy"
+    },
+    {
+      "id": "pi-missing-layers",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-core-pi-live-final/completion-review.json",
+      "promotion": "local verified work rule; not evidence of industrial accuracy"
+    },
+    {
+      "id": "pi-incompatible-layers",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-core-pi-followup-selected/completion-review.json",
+      "promotion": "local verified work rule; not evidence of industrial accuracy"
+    },
+    {
+      "id": "layer-contract-roundtrip",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-core-redesign/structured-layer-contract-verification.json",
+      "promotion": "local verified work rule; not evidence of industrial accuracy"
+    },
+    {
+      "id": "real-two-source-example",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-opencv-reference-mapping/receipt.json",
+      "promotion": "local verified work rule; not evidence of industrial accuracy"
+    },
+    {
+      "id": "native-file-backed-evidence",
+      "path": "/Users/liangshiben/13-cv/codex-audit-logs/20261029-core-redesign/native-reference-pixel-audit-verification.json",
+      "promotion": "Verified local engineering correction; does not alter saved historical audits."
+    }
+  ],
+  "deliveryVerification": {
+    "requirements": [
+      "Original user behavior retained after UI migration",
+      "Tool result bound to the current image and accessible canvas view",
+      "Baseline failures individually diagnosed and resolved or explicitly incomplete"
+    ],
+    "insufficientEvidence": [
+      "Same failure existed before",
+      "Detached renderer passes without reachable UI route",
+      "Test selector migrated without preserving behavior assertions"
+    ]
+  },
+  "sourceMembership": {
+    "authoritative": "Current explicit DatasetSource image membership",
+    "historical": "Import sourceId is provenance, not a replacement for subsequent source grouping",
+    "countInvariant": "Iteration and total use identical membership; exclude a fixed ReferenceAsset only if present in this membership",
+    "violation": "Preserve wrong execution; repair and re-execute, never overwrite historical counters"
+  },
+  "classificationFlow": {
+    "decisionPerSpec": 1,
+    "conditionPlacement": "outgoing-branch",
+    "branchPerCategory": 1,
+    "ruleNodesAllowed": false,
+    "preserve": [
+      "ruleIds",
+      "condition AST",
+      "missing mappings",
+      "fallback",
+      "rule conflicts",
+      "category aggregation"
+    ],
+    "highlight": "immutable finalExit only; condition evidence separately recorded",
+    "independentDecisions": "Separate when new input, intermediate output or different downstream execution is required; never merge by shape alone",
+    "enforcedBy": [
+      "compileClassificationSpec.decisionModel",
+      "assertClassificationFlow"
+    ]
+  },
+  "presentationAndExecution": {
+    "nodeStatus": "real runtime events; execution success is independent from product category",
+    "views": [
+      "current-node-output",
+      "collaborative-canvas"
+    ],
+    "imageModes": {
+      "fixed": "immutable pixels/source binding",
+      "live": {
+        "binding": [
+          "schemeId",
+          "schemeNodeId",
+          "artifactId"
+        ],
+        "missingFrame": "no fallback to previous successful frame",
+        "tools": [
+          "get_canvas_image_mode",
+          "set_canvas_image_mode"
+        ]
+      }
+    },
+    "inquiry": "freeze current frame and source identities per question; never rewrite sent history",
+    "rename": {
+      "tool": "rename_flow_node",
+      "storage": "purposeScheme.presentation.nodeTitles",
+      "stable": "node ID, executable graph, runtime fingerprint and saved runs"
+    },
+    "currentExecutionSelection": {
+      "current": "same executable scheme fingerprint and latest execution for the active workpiece",
+      "fixedReference": "no product result merely from selecting a reference image",
+      "missing": "DECLARED/WAITING; never reuse another workpiece or last opened record",
+      "historical": "explicit runId only; identify historical unit",
+      "live": "actual in-flight workpiece takes precedence"
+    }
+  },
+  "consultationAnswerLifecycle": {
+    "read": "get_canvas_consultations",
+    "apply": "apply_canvas_consultation",
+    "states": [
+      "WAITING_FOR_HUMAN",
+      "ANSWERED_PENDING",
+      "SPEC_UPDATED_UNLINKED",
+      "APPLIED",
+      "RECHECK_REQUIRED",
+      "SOURCE_REBIND_REQUIRED"
+    ],
+    "applicationIdentity": [
+      "boardId",
+      "cardId",
+      "sourceId",
+      "questionId",
+      "answerAt",
+      "answerRef"
+    ],
+    "allowedFields": [
+      "execution.timingRequirement",
+      "classificationSpec"
+    ],
+    "checks": [
+      "latest genuine human answer",
+      "expected current scheme fingerprint",
+      "only question-owned complete field",
+      "field validation passes",
+      "original issue no longer present",
+      "saved field value still equals application receipt"
+    ],
+    "notEquivalent": [
+      "answer saved != applied",
+      "applied structural validation != human interpretation review",
+      "specification validated != algorithm or field acceptance"
+    ]
+  }
+}

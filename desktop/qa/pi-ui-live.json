@@ -1,0 +1,78 @@
+{
+  "kind": "Real Pi model + desktop Agent event bridge + actual UI tool handlers + original pixels. Native IPC and layout not covered.",
+  "ok": true,
+  "reason": "Pi tool result reflected on actual project and canvas",
+  "note": "選工件最外側，忽略內部亮帶",
+  "chat": [
+    {
+      "role": "user",
+      "text": "請先讀取目前畫板，再把上邊的說明設成「選工件最外側，忽略內部亮帶」。只調用 get_context 與 set_edge_note，不更改 ROI、不採用候選，然後簡短告知完成。",
+      "at": "2026-10-23T16:02:14.977Z"
+    },
+    {
+      "role": "system",
+      "text": "工具完成：讀取目前畫板",
+      "at": "2026-10-23T16:02:18.761Z"
+    },
+    {
+      "role": "system",
+      "text": "工具完成：保存邊緣說明",
+      "at": "2026-10-23T16:02:22.979Z"
+    },
+    {
+      "role": "assistant",
+      "text": "已讀取畫板，並將上邊說明設為「選工件最外側，忽略內部亮帶」。未更改 ROI，也未採用候選。",
+      "at": "2026-10-23T16:02:24.302Z"
+    }
+  ],
+  "events": [
+    "ready",
+    "turn_start",
+    "tool_start:get_context",
+    "tool_request:get_context",
+    "tool_start:set_edge_note",
+    "tool_request:set_edge_note",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "text_delta",
+    "turn_end"
+  ],
+  "errors": []
+}

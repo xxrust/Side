@@ -1,0 +1,55 @@
+{
+  "tag": "v2.0.0-rc.7",
+  "mode": "read-only source review, no install or external code execution",
+  "files": [
+    {
+      "path": "SKILL.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/SKILL.md",
+      "bytes": 16581,
+      "sha256": "1fa1b43b3b273fdfefc0b2a9243bc001f64dcc7903f2b25d90359784d11928d8",
+      "status": "downloaded"
+    },
+    {
+      "path": "references/design-method.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/references/design-method.md",
+      "bytes": 10575,
+      "sha256": "396589e51c26ca8899347c1b0bdcad99f9919e4f4bd50983bbaba8d7152481a9",
+      "status": "downloaded"
+    },
+    {
+      "path": "references/goal-anchoring.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/references/goal-anchoring.md",
+      "bytes": 9660,
+      "sha256": "9bd6391d3b1c7ab8c498a15726a17015213ba34b00e9d473d30c60647e8b820f",
+      "status": "downloaded"
+    },
+    {
+      "path": "references/professional-capabilities.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/references/professional-capabilities.md",
+      "bytes": 14169,
+      "sha256": "2f79ae51091b00115f9c8a56a46a0f56e286408e00e7a20c90d981ed0930179a",
+      "status": "downloaded"
+    },
+    {
+      "path": "docs/FIRST-PROJECT.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/docs/FIRST-PROJECT.md",
+      "bytes": 17787,
+      "sha256": "ed06e4d91a3bf5980b30911b1201d2fdb0cc9c88c993bf8e53c11427f91eb00c",
+      "status": "downloaded"
+    },
+    {
+      "path": "docs/PROJECT-WORKSPACE.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/docs/PROJECT-WORKSPACE.md",
+      "bytes": 14610,
+      "sha256": "320fad0861c82d454a4cd5d308ee3436036cfe872e918a73f3382f52b5ed0446",
+      "status": "downloaded"
+    },
+    {
+      "path": "docs/CAPABILITIES.md",
+      "url": "https://raw.githubusercontent.com/jiaqiwang969/OntologyEngineering/v2.0.0-rc.7/docs/CAPABILITIES.md",
+      "bytes": 27585,
+      "sha256": "34aae3c63484f92fa76ce82c3258c3f3e00cfa69ada4d19c7ab788b2891cb747",
+      "status": "downloaded"
+    }
+  ]
+}

@@ -1,0 +1,340 @@
+{
+  "runId": "py-65f8c933a8e2e-72955-0",
+  "status": "SUCCEEDED",
+  "source": {
+    "projectEpoch": 2,
+    "workflowRevision": 3,
+    "schemeFingerprint": "84ececf1be487a3f",
+    "images": [
+      {
+        "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+        "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+        "width": 1280,
+        "height": 1024,
+        "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd"
+      }
+    ]
+  },
+  "inputs": [
+    {
+      "colorOrder": "BGR",
+      "dtype": "uint8",
+      "exifOrientationApplied": false,
+      "height": 1024,
+      "id": "1d10cefc-de74-480e-be71-fee8f021cae7",
+      "name": "歪斜_20250828032050457.bmp",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/inputs/image-000.original",
+      "rawChannels": 1,
+      "rawColorOrder": "GRAY",
+      "referenceSlots": [],
+      "role": "workpiece",
+      "sha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+      "source": {
+        "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+        "height": 1024,
+        "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+        "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+        "width": 1280
+      },
+      "width": 1280
+    }
+  ],
+  "artifacts": [
+    {
+      "bytes": 890443,
+      "channels": 3,
+      "dtype": "uint8",
+      "height": 1024,
+      "hostBytesVerified": true,
+      "id": "search_view",
+      "label": "search_view",
+      "mime": "image/png",
+      "name": "search_view.png",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/search_view.png",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "tool",
+      "sha256": "8efcc36cdddf1e74930e0bdd6ec9c478b0ff2fcae07ba2d5829dc523c1251898",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "search",
+      "stepInstanceId": "search#1",
+      "traceNodeId": "search#1",
+      "type": "image",
+      "width": 1280
+    },
+    {
+      "bytes": 55,
+      "hostBytesVerified": true,
+      "id": "search_data",
+      "mime": "application/json",
+      "name": "search_data.json",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/search_data.json",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "parameters",
+      "sha256": "0430bed35fa6a7cf222af1f1ebf126ff858d9e798d3e09de40e9fd735993147a",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "search",
+      "stepInstanceId": "search#1",
+      "traceNodeId": "search#1",
+      "type": "json",
+      "dataSummary": {
+        "kind": "object",
+        "count": 1,
+        "keys": [
+          "bbox"
+        ],
+        "readWith": "get_algorithm_run(artifact_id, path, offset, limit)"
+      }
+    },
+    {
+      "bytes": 926793,
+      "channels": 3,
+      "dtype": "uint8",
+      "height": 1024,
+      "hostBytesVerified": true,
+      "id": "overlay",
+      "label": "overlay",
+      "mime": "image/png",
+      "name": "overlay.png",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/overlay.png",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "tool",
+      "sha256": "54084ddd56be2ab345edbee474a4fdb0db29ff9f9824bd7294ff8f559a17433e",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "edges",
+      "stepInstanceId": "edges#1",
+      "traceNodeId": "edges#1",
+      "type": "image",
+      "width": 1280
+    },
+    {
+      "bytes": 24505,
+      "channels": 3,
+      "dtype": "uint8",
+      "height": 820,
+      "hostBytesVerified": true,
+      "id": "profiles",
+      "label": "profiles",
+      "mime": "image/png",
+      "name": "profiles.png",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/profiles.png",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "parameters",
+      "sha256": "3468c54d925b01e2a1af8633f3cc69f9a706879a703345819c1157a10cf13db9",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "edges",
+      "stepInstanceId": "edges#1",
+      "traceNodeId": "edges#1",
+      "type": "image",
+      "width": 1200
+    },
+    {
+      "bytes": 20383,
+      "channels": 3,
+      "dtype": "uint8",
+      "height": 600,
+      "hostBytesVerified": true,
+      "id": "uncertainty",
+      "label": "uncertainty",
+      "mime": "image/png",
+      "name": "uncertainty.png",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/uncertainty.png",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "boundary",
+      "sha256": "7649151dc589a47ce0fb70bce03aa99d6d5539a5563a3c3098ed3a7871e2db5a",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "edges",
+      "stepInstanceId": "edges#1",
+      "traceNodeId": "edges#1",
+      "type": "image",
+      "width": 1000
+    },
+    {
+      "bytes": 356826,
+      "hostBytesVerified": true,
+      "id": "geometry_data",
+      "mime": "application/json",
+      "name": "geometry_data.json",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/geometry_data.json",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "parameters",
+      "sha256": "5cdf03ffcf5a0b8f51a61671f89be11411e392d6df4f96c084431dff55be5410",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "edges",
+      "stepInstanceId": "edges#1",
+      "traceNodeId": "edges#1",
+      "type": "json",
+      "dataSummary": {
+        "kind": "object",
+        "count": 10,
+        "keys": [
+          "boundaryChecks",
+          "clearance",
+          "containedSupported",
+          "independentSupports",
+          "profiles",
+          "scope",
+          "selected",
+          "skewSupported",
+          "trials",
+          "valid"
+        ],
+        "readWith": "get_algorithm_run(artifact_id, path, offset, limit)"
+      }
+    },
+    {
+      "bytes": 93765,
+      "hostBytesVerified": true,
+      "id": "geometry",
+      "mime": "application/json",
+      "name": "geometry.json",
+      "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65f8c933a8e2e-72955-0/outputs/geometry.json",
+      "procedureId": "objects",
+      "procedureInstanceId": "objects#1",
+      "section": "tool",
+      "sha256": "1fdd68c5b1cc99c26ef7e1b559889d7a04c61853d8ac7b7440a5fb62cff56629",
+      "source": {
+        "images": [
+          {
+            "contentSha256": "2e7646b2a07a96ae3c74bd8cbe91e8349307eda581d8f71aff0f4f08222d21bd",
+            "height": 1024,
+            "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+            "imageSha256": "a9375d06923dbea8bc763acdaca4da5081182e6e906f1fc154ac225f377685c3",
+            "width": 1280
+          }
+        ],
+        "projectEpoch": 2,
+        "schemeFingerprint": "84ececf1be487a3f",
+        "workflowRevision": 3
+      },
+      "stepId": "edges",
+      "stepInstanceId": "edges#1",
+      "traceNodeId": "edges#1",
+      "type": "json",
+      "dataSummary": {
+        "kind": "array",
+        "count": 1,
+        "readWith": "get_algorithm_run(artifact_id, path, offset, limit)"
+      }
+    }
+  ],
+  "codeSha256": "3b98a9f5823327545eea11f8e44cf1b017fd82eccc9a973f5bfb8e45532f1a02",
+  "evidenceAudit": {
+    "schema": "agentcv-algorithm-evidence-audit-1",
+    "procedureStatus": "READY_FOR_REVIEW",
+    "procedureAudit": {
+      "schema": "agentcv-procedure-evidence-audit-1",
+      "status": "READY_FOR_REVIEW",
+      "delivered": false,
+      "nodes": [
+        {
+          "nodeId": "objects#1",
+          "status": "READY_FOR_REVIEW",
+          "delivered": false,
+          "errors": []
+        },
+        {
+          "nodeId": "search#1",
+          "status": "READY_FOR_REVIEW",
+          "delivered": false,
+          "errors": []
+        },
+        {
+          "nodeId": "edges#1",
+          "status": "READY_FOR_REVIEW",
+          "delivered": false,
+          "errors": []
+        }
+      ],
+      "errors": [],
+      "scope": "逐程序三項依據及實際產物／邊界引用核對；不是獨立精度驗證或工業驗收。"
+    },
+    "status": "READY_FOR_REVIEW",
+    "delivered": false,
+    "errors": [],
+    "scope": "保存的程式自檢及產物引用核對；不是獨立精度驗證、人工採用或正式發布。"
+  }
+}

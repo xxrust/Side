@@ -1,0 +1,74 @@
+body.canvas-rail-workspace.project-canvas-mode #desktop{grid-template-rows:minmax(0,1fr);grid-template-columns:clamp(250px,22vw,310px) minmax(0,1fr)}
+body.canvas-rail-workspace.project-canvas-mode #desktop>.workspace{grid-row:1;grid-column:2}
+body.canvas-rail-workspace.project-canvas-mode #desktop>.app-rail{grid-row:1;padding:7px 6px;gap:5px}
+.canvas-rail-workspace .app-rail>.app-header{gap:6px;padding-bottom:6px}
+.canvas-rail-workspace .rail-project>small{display:none}
+.canvas-rail-workspace .rail-project{min-height:25px;align-content:center}
+.canvas-rail-workspace .project-topbar{display:flex;flex-direction:column;align-items:stretch;gap:5px;padding:0;border:0;background:transparent}
+.canvas-rail-workspace .project-topbar .brand{display:none}
+.canvas-rail-workspace .project-topbar .header-actions{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.canvas-rail-workspace .project-topbar .header-actions .icon-button,.canvas-rail-workspace .project-topbar .header-actions button{width:28px;height:28px;padding:5px;min-width:28px;flex:0 0 28px}
+.canvas-rail-workspace .project-topbar .header-actions svg{width:17px;height:17px}
+.canvas-rail-workspace .project-topbar .flow-execution-controls{display:flex;flex-wrap:wrap;gap:4px;margin:0;border:0;padding:0;min-width:0}
+.canvas-rail-workspace .flow-execution-controls output{font-size:10px;align-self:center;overflow:hidden;text-overflow:ellipsis;max-width:150px;white-space:nowrap}
+.canvas-rail-workspace .project-topbar #openPurposeScheme{width:100%;height:25px;text-align:left;padding:3px 6px;overflow:hidden;text-overflow:ellipsis;font-size:10px}
+.project-inspection-controls{display:flex;gap:4px}
+.project-inspection-controls button{width:30px;height:28px;padding:5px;position:relative}
+.project-inspection-controls .needs-answer{border-color:#e6bd67;color:#f5ce83}
+.project-inspection-controls .needs-answer:after{content:attr(data-count);position:absolute;right:-3px;top:-5px;background:#e8be70;color:#17252d;border-radius:7px;padding:0 3px;font-size:9px}
+.project-board-controls .inquiry-heading{display:flex;flex-wrap:wrap;gap:3px;min-width:0}
+.project-board-controls .inquiry-heading select{flex:1 1 100px;width:100px;max-width:140px;height:28px}
+.project-board-controls .inquiry-heading button{width:27px;height:28px;padding:4px}
+.project-board-controls .node-display-modes{display:flex;gap:3px;margin:0;width:100%}
+.project-board-controls .node-display-modes button{flex:1;width:auto;font-size:10px}
+body.canvas-rail-workspace.project-canvas-mode .work-area{padding:0!important}
+body.canvas-rail-workspace.project-canvas-mode .visual-inquiry-panel.embedded-intent-canvas{padding:0;gap:0;grid-template-rows:minmax(0,1fr);border:0;border-radius:0;inset:0}
+.canvas-rail-workspace .embedded-intent-canvas>.inquiry-source,.canvas-rail-workspace .embedded-intent-canvas>.intent-guide{display:none}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-workspace{position:relative;display:block;width:100%;height:100%}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-canvas-area{width:100%;height:100%;border:0;border-radius:0}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools{position:absolute;z-index:6;left:6px;top:8px;width:32px;display:grid;grid-template-columns:1fr;grid-auto-rows:28px;gap:3px;max-height:calc(100% - 16px);overflow-y:auto;scrollbar-width:thin;padding:0;background:#13262bd9;border-radius:5px}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools button{padding:4px;min-height:28px}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools input,.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools select{height:28px;min-height:0;padding:2px}
+.canvas-rail-workspace .intent-selection-actions{left:46px;top:8px;padding:3px;gap:3px;background:#142c25c9}
+.canvas-rail-workspace .intent-selection-actions span{display:none}
+body.canvas-rail-workspace #boardArea{border:0;border-radius:0}
+body.canvas-rail-workspace #flowRailToggle{left:calc(clamp(250px,22vw,310px) - 8px);width:16px;min-width:16px;height:40px;padding:1px}
+body.canvas-rail-workspace #flowRailHandle{width:18px;min-width:18px;height:40px;padding:1px}
+body.canvas-rail-workspace.project-canvas-mode.flow-rail-collapsed #desktop{grid-template-columns:0 minmax(0,1fr)}
+.project-floating-panel{position:fixed;z-index:75;right:18px;top:18px;width:min(420px,calc(100vw - 32px));max-height:calc(100dvh - 36px);display:flex;flex-direction:column;gap:8px;background:#18323be8;backdrop-filter:blur(10px);border:1px solid #7a9d96;border-radius:10px;padding:10px;box-shadow:0 8px 30px #0006;resize:both;overflow:auto;min-width:270px;min-height:80px}
+.project-floating-panel>header{display:flex;align-items:center;gap:5px;cursor:move;touch-action:none}
+.project-floating-panel>header strong{flex:1;font-size:12px}
+.project-floating-panel>header button{width:27px;height:27px;padding:4px}
+.project-floating-panel>select{font-size:11px;padding:5px}
+.project-floating-body{overflow:auto;min-height:0}
+.project-floating-body .canvas-project-card{position:static!important;transform:none!important;min-height:0!important;width:100%!important;margin:0;border:0;background:transparent}
+.project-floating-body .canvas-project-card-body{padding:0}
+.project-floating-panel.is-minimized{width:240px;min-width:240px;min-height:0;height:auto!important;resize:none}
+.project-floating-panel.is-minimized>select,.project-floating-panel.is-minimized>.project-floating-body{display:none}
+.canvas-rail-workspace .app-rail>.app-header>.rail-project{order:0}
+.canvas-rail-workspace .app-rail>.app-header>.project-topbar{order:1}
+.project-floating-panel{height:min(620px,75dvh)}
+.canvas-rail-workspace .app-rail>.app-header{display:flex;flex-direction:column;align-items:stretch}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools{scrollbar-width:none;overflow-x:hidden}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools::-webkit-scrollbar{display:none}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools button{min-width:0;width:32px}
+.project-floating-body *{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.project-floating-body .canvas-project-card{min-width:0!important}
+.project-floating-body{overflow-x:hidden}
+.project-floating-body .statistics-dashboard{grid-template-columns:minmax(0,1fr)}
+.project-floating-body .timing-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* The complete inspector fades while work continues on the canvas. */
+.project-floating-panel{opacity:.5;transition:opacity 120ms ease}
+.project-floating-panel.is-focused{opacity:1}
+@media(prefers-reduced-motion:reduce){.project-floating-panel{transition:none}}
+
+.project-inspection-controls .statistics-completion-ring{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;opacity:0}
+.statistics-completion-ring rect{fill:none;stroke:#b6ffd8;stroke-width:2;stroke-dasharray:22 86;filter:drop-shadow(0 0 2px #8affbb)}
+.cycle-complete .statistics-completion-ring{opacity:1}.cycle-complete .statistics-completion-ring rect{animation:statistics-edge-travel 1.4s linear infinite}
+@keyframes statistics-edge-travel{to{stroke-dashoffset:-108}}
+@media(prefers-reduced-motion:reduce){.cycle-complete .statistics-completion-ring rect{animation:none;stroke-dasharray:none}}
+
+/* Tool groups must size to their controls, not a single fixed-height rail cell. */
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tools{grid-auto-rows:max-content}
+.canvas-rail-workspace .embedded-intent-canvas .inquiry-tool-group{grid-template-columns:1fr;gap:3px}

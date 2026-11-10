@@ -1,0 +1,27 @@
+✔ goal UI reaches real pixel gear measurement without ROI or legacy check, then batch and invalidate (260.430917ms)
+✔ Agent tools build and run an actual graph and switch images without proposing a legacy check (150.6005ms)
+✔ parameter, measurement and long limitation pages expose every item without a scroll container (281.617417ms)
+✔ one-rule pages preserve all rules and unsaved edits when moving across thirteen conditions (218.100292ms)
+✔ batch pagination exposes every real image in at most four rows per page (138.181875ms)
+✔ image and curve occupy the same main viewport, parameters stay in dialog, support IDs never become labels (60.646542ms)
+✔ Agent context keeps numerical geometry while dense supports remain in the visual evidence (93.452584ms)
+✔ evidence is paged by current node, identifies the coordinate system, and refuses stale or prototype paths (25.568ms)
+✔ pipeline measurement needs no check, taught ROI or tolerance and retains pixel values with SPEC_MISSING (24.733416ms)
+✔ explicit rules classify observed quantities and preserve size values when millimeter calibration is absent (44.928958ms)
+✔ an uncertain feature keeps its diagnostics and cannot turn a candidate value into a reliable FAIL (15.50425ms)
+✔ all-image validation executes each raster separately and leaves unlabelled accuracy null (34.756042ms)
+✔ parameter and source-identity edits invalidate completed results instead of silently reusing them (23.330417ms)
+✔ in-flight parameter mutation discards the late result without overwriting the current image (8.457916ms)
+✔ in-flight source-identity mutation also discards the late result (7.186917ms)
+✔ current-result binding detects changed pixels even if source metadata was not refreshed (10.932542ms)
+✔ in-flight pixel edits discard results computed from the earlier pixel snapshot (6.470083ms)
+✔ malformed saved graphs reject atomically before image decoding or workspace replacement (31.35075ms)
+✔ save/load preserves the graph and historical evidence but requires a fresh run for current results (28.754125ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1099.198917

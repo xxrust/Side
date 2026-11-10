@@ -1,0 +1,161 @@
+{
+  "method": "Actual DOM event handlers + original pixels. No native desktop visual or hit-testing acceptance.",
+  "trace": [
+    {
+      "action": "empty entry + disconnected Agent does not fabricate a response",
+      "page": "images",
+      "title": "從一張圖片開始",
+      "next": "請先導入圖片",
+      "disabled": true,
+      "status": ""
+    },
+    {
+      "action": "legacy project import preserves original pixels and invalidates prior edge runs",
+      "page": "images",
+      "title": "選擇要檢測的圖片",
+      "next": "使用這張圖片 →",
+      "disabled": false,
+      "status": "專案已開啟，先確認要使用的圖片"
+    },
+    {
+      "action": "top one candidate; primary explicitly adopts and advances",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "採用這條上邊 →",
+      "disabled": false,
+      "status": "請確認本次計算的邊緣"
+    },
+    {
+      "action": "bottom one candidate; primary explicitly adopts and advances",
+      "page": "edge-bottom",
+      "title": "確認工件的下邊",
+      "next": "採用這條下邊 →",
+      "disabled": false,
+      "status": "請確認本次計算的邊緣"
+    },
+    {
+      "action": "left one candidate; primary explicitly adopts and advances",
+      "page": "edge-left",
+      "title": "確認工件的左邊",
+      "next": "採用這條左邊 →",
+      "disabled": false,
+      "status": "請確認本次計算的邊緣"
+    },
+    {
+      "action": "right one candidate; primary explicitly adopts and advances",
+      "page": "edge-right",
+      "title": "確認工件的右邊",
+      "next": "採用這條右邊 →",
+      "disabled": false,
+      "status": "請確認本次計算的邊緣"
+    },
+    {
+      "action": "four primary actions reach true frame width and height",
+      "page": "measure",
+      "title": "這就是工件的寬度與高度",
+      "next": "設定寬度合格範圍 →",
+      "disabled": false,
+      "status": "",
+      "values": [
+        {
+          "name": "外框寬度",
+          "value": 995.7127039188649,
+          "unit": "px"
+        },
+        {
+          "name": "外框高度",
+          "value": 747.4396992940051,
+          "unit": "px"
+        }
+      ]
+    },
+    {
+      "action": "missing production tolerance disables completion",
+      "page": "tolerance-width",
+      "title": "多寬才算合格？",
+      "next": "保存寬度，設定高度 →",
+      "disabled": true,
+      "status": ""
+    },
+    {
+      "action": "ROI moved into texture invalidates candidates and refuses geometry",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "搜尋上邊",
+      "disabled": false,
+      "status": "搜尋框已更新，請重新選擇邊緣"
+    },
+    {
+      "action": "undo restores old ROI and its matching evidence",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "確認上邊，繼續 →",
+      "disabled": false,
+      "status": "搜尋框已更新，請重新選擇邊緣"
+    },
+    {
+      "action": "advanced bounds reject13 candidates and0.1px RMS; valid settings recompute normally",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "採用這條上邊 →",
+      "disabled": false,
+      "status": "搜尋框已更新，請重新選擇邊緣"
+    },
+    {
+      "action": "redraw disables next and Escape restores the unchanged edge",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "搜尋上邊",
+      "disabled": false,
+      "status": "已退出畫線"
+    },
+    {
+      "action": "redraw then native save/reopen preserves exact top binding with no invented bottom",
+      "page": "images",
+      "title": "選擇要檢測的圖片",
+      "next": "使用這張圖片 →",
+      "disabled": false,
+      "status": "專案已開啟，先確認要使用的圖片",
+      "before": {
+        "top": "e90c1972-8c67-4d9b-8bc6-75b967755dd9"
+      },
+      "after": {
+        "top": "932801d9-5498-43e8-b20c-27d3c9b0a82e"
+      }
+    },
+    {
+      "action": "leaving redraw mode and returning preserves prior intent and restores search action",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "搜尋上邊",
+      "disabled": false,
+      "status": ""
+    },
+    {
+      "action": "right-click delete followed by direct drawing creates a searchable replacement",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "採用這條上邊 →",
+      "disabled": false,
+      "status": "標註已記錄，接著搜尋真實邊緣"
+    },
+    {
+      "action": "keyboard delete and cross-page return also allow drawing immediately",
+      "page": "edge-top",
+      "title": "確認工件的上邊",
+      "next": "搜尋上邊",
+      "disabled": false,
+      "status": "標註已記錄，接著搜尋真實邊緣"
+    },
+    {
+      "action": "legacy mm tolerance stays mm in data, is not prefilled as px, and requires explicit new input",
+      "page": "tolerance-width",
+      "title": "多寬才算合格？",
+      "next": "保存寬度，設定高度 →",
+      "disabled": true,
+      "status": ""
+    }
+  ],
+  "issues": [],
+  "errors": []
+}

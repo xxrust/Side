@@ -1,0 +1,30 @@
+✔ Pi presents actual image/metrics/table/plot/text in the full host and reads source-bound rendered receipts (663.800958ms)
+✔ Pi updates presentation layout and data selection and can verify the actual view changed through get (300.322834ms)
+✔ unsupported components and wrong references reject atomically with actionable errors and preserve the previous actual view (222.360167ms)
+✔ changed source cannot retain a current presentation or a valid current-view receipt (226.715708ms)
+✔ active Pi presentation run_current reruns its actual program and never falls back to the old four-side recipe (411.512959ms)
+✔ Pi set_algorithm_presentation changes the mounted component and section and get verifies a fresh receipt (305.91775ms)
+✔ a failed rerun with fewer artifacts replaces the main view and never borrows dimensions or images from the previously adopted run (435.667708ms)
+✔ a saved program measurement without an active presentation refuses run_current instead of falling back to the legacy recipe (261.151292ms)
+✔ a persisted presentation resolves five visual kinds from actual run records and preserves the complete triad (8.00925ms)
+✔ bad references, HTML/script kinds, arbitrary image URLs, dangerous paths, nonnumeric plots and duplicate IDs reject atomically (1.848333ms)
+✔ diagnostic and partial failed runs may be displayed without becoming accepted inspection results (1.186958ms)
+✔ cross-image selection is explicitly inapplicable, and ROI/configuration changes make the original view stale (1.294042ms)
+✔ a host render receipt requires the latest view token and real image dimensions; mounted and loaded remain distinct (2.964584ms)
+✔ changing image or source after rendering invalidates receipt applicability without rewriting history (1.759625ms)
+✔ saving and reopening preserves references and receipt history but never treats a previous process mount as live UI proof (1.76ms)
+✔ large real arrays retain source totals, deterministic plot sampling and explicit truncation without materializing them into tool responses (11.292208ms)
+✔ same-run result or artifact payload changes invalidate data fingerprints and their render receipts (1.437291ms)
+✔ saved presentation and receipt validation is atomic and does not create a live render session (1.895791ms)
+✔ an image receipt cannot borrow the dimensions of a different loaded image (0.782292ms)
+✔ data fallback displays arbitrary actual JSON and missing failed-run outputs without invented values (0.736459ms)
+✔ run scope is restricted to displayable execution fields and never exposes code, artifacts or credentials (0.644459ms)
+✔ unsupported root, kind-specific and field display properties are rejected atomically rather than pretending to change the UI (0.997625ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3304.071625

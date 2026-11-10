@@ -1,0 +1,21 @@
+✔ annulus uses independent circles and reports measured center offset, including a concentric control (67.798625ms)
+✔ annulus rejects elliptical boundaries, multiple holes, and clipped parts while retaining measured diagnostics (58.251334ms)
+✔ visible gear counts follow pixels across independent tooth counts and rotations without nominal input (131.243166ms)
+✔ parameter comparison retains each already-computed curve and distinguishes the baseline from an optimum claim (22.212625ms)
+✔ missing-tooth inference requires a nominal count and localizes enlarged observed peak gaps (52.0425ms)
+✔ gear center and circular bore center expose measurable eccentricity in pixels (14.908292ms)
+✔ flat tooth caps give measured pitch and missing sectors across rotations, missing indices and adjacent losses (252.162958ms)
+✔ observed angular pitch and predicted missing markers share original-image geometry and remain explicit diagnostics (39.009958ms)
+✔ smooth circles and contaminated gear outlines do not receive an unsupported count (35.672375ms)
+✔ convex corners and deep radial stars do not substitute for a supported gear profile (87.946833ms)
+✔ hole topology distinguishes observed closed holes, solid missing sites, and an exterior-connected opening (7.828167ms)
+✔ zero holes is a measured observation and missing-hole claims need supplied positions (12.399166ms)
+✔ unresolved hole matching, invalid specifications, empty masks and JSON diagnostics are explicit (12.245333ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 853.222209

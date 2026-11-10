@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "AgentCV",
+  "version": "0.16.7",
+  "identifier": "studio.agentcv.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "dragDropEnabled": false,
+        "title": "SIDE · 視覺檢測",
+        "width": 1440,
+        "height": 920,
+        "minWidth": 1080,
+        "minHeight": 700,
+        "backgroundColor": "#11191f"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-src agentcv-preview: http://agentcv-preview.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "Agent-led industrial vision workbench",
+    "resources": {
+      "../scripts/pi-bridge.mjs": "bridge/pi-bridge.mjs",
+      "../scripts/agent-contract.json": "bridge/agent-contract.json",
+      "../scripts/pi-auth.mjs": "bridge/pi-auth.mjs",
+      "../scripts/cv-runtime.py": "bridge/cv-runtime.py",
+      "../scripts/agent-host.mjs": "bridge/agent-host.mjs",
+      "../scripts/agent-resources.mjs": "bridge/agent-resources.mjs",
+      "../agent-packages/": "agent-packages/",
+      "../scripts/agent-image-transport.mjs": "bridge/agent-image-transport.mjs",
+      "../scripts/visual-asset-library.mjs": "bridge/visual-asset-library.mjs",
+      "../scripts/runtime-contract-manifest.json": "bridge/runtime-contract-manifest.json",
+      "../scripts/structured-layers-contract.json": "bridge/structured-layers-contract.json",
+      "../scripts/image-manager.mjs": "bridge/image-manager.mjs",
+      "../scripts/source-structure.mjs": "bridge/source-structure.mjs",
+      "../scripts/codex-bridge.mjs": "bridge/codex-bridge.mjs",
+      "../scripts/codex-mcp-relay.mjs": "bridge/codex-mcp-relay.mjs",
+      "../scripts/json-rpc-peer.mjs": "bridge/json-rpc-peer.mjs",
+      "../node_modules/@agentclientprotocol/codex-acp/dist/index.js": "bridge/codex-acp/index.mjs",
+      "../scripts/codex-role.mjs": "bridge/codex-role.mjs"
+    },
+    "icon": [
+      "icons/icon.png"
+    ],
+    "macOS": {
+      "signingIdentity": "-"
+    },
+    "fileAssociations": [
+      {
+        "ext": [
+          "agentcv"
+        ],
+        "name": "AgentCV 視覺檢測專案",
+        "role": "Editor",
+        "rank": "Owner",
+        "contentTypes": [
+          "studio.agentcv.project"
+        ],
+        "mimeType": "application/x-agentcv-project",
+        "exportedType": {
+          "identifier": "studio.agentcv.project",
+          "conformsTo": [
+            "com.apple.package"
+          ]
+        }
+      }
+    ]
+  }
+}

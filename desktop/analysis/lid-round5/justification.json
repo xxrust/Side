@@ -1,0 +1,181 @@
+{
+  "tool": {
+    "reason": "由兩物體獨立邊支持建立各自單pose圓角矩形，保留方向性越界證據，再做已授權開發像素包含分類。",
+    "expectedEvidence": [
+      {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "overlay",
+            "caption": "本次原圖支持與模型估計分開；虛線不冒充物理測得輪廓。"
+          }
+        ]
+      }
+    ]
+  },
+  "parameters": [
+    {
+      "name": "search",
+      "source": "agent-proposal",
+      "reason": "繼承第四輪65灰階搜尋、sigma1.5；只找搜尋域，不把亮連通區命名為pkg。未比較新照明。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "scan",
+      "source": "agent-proposal",
+      "reason": "繼承中央56%、121點、±70px、斜率±.06/步長.002。每件實比sigma1/1.5/2.5，五組四邊候選保留；不從檔名/ID選峰。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "lidPrior",
+      "source": "agent-proposal",
+      "reason": "繼承梯度框683x529、尺度10/12px，來源第四輪人類示教身份及開發像素。此為找峰先驗，不是物理邊界或分類規格。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pkgPrior",
+      "source": "agent-proposal",
+      "reason": "繼承708x550px與8px尺寸尺度，源於開發良品外露邊；有獨立一橫一豎外露帶才可推估遮擋。換lid候選時固定pkg支持。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "quality",
+      "source": "agent-proposal",
+      "reason": "繼承逐邊3px/未解邊6px/尺寸8px敏感性與分離4px，僅用於方向性SKEW證據。亮背景80及暗縫對比6為歷史設定；不當已校準誤差。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "poseModel",
+      "source": "agent-proposal",
+      "reason": "本輪12張已授權good的舊實測邊經正交pose擬合，lid約684.5–688.3 x 529.8–537.0，選687x532，尺寸評分尺度6px；允收±10px。實測段90百分位法向殘差上限5px，區分模型殘差與絕對定位誤差。破碎pkg邊若90百分位殘差>5px且對邊有支持，保留拒絕點並以對邊+尺寸推估；不放寬品質上限。共同角支持>=3、分數>=.7、覆蓋>=.7為開發品質範圍，保存各候選，並非精度校準。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "radiusModel",
+      "source": "agent-proposal",
+      "reason": "40–140px逐2px，共同半徑但兩物體各自pose；四角歸一化分數等權，遮住pkg角不計。±6px剖面以lid內側亮肩(100到180)、pkg外側背景(110到50)加權；真曲線比較原始梯度與加權結果，排除pkg外沿被叫lid。80%候選族仍保留，不要求各角獨立半徑小範圍。灰階設定為本批開發提案，未做跨光源校準。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "decision",
+      "source": "agent-proposal",
+      "reason": "開發像素容差4px，以本批名義可見邊90百分位殘差最高約3.75px向上取整作開發提案，並比對同分候選族最低-3.40px；非為其他工件制定標準；不是毫米公差/95%誤差。逐件實比容差0/3/4/5與分數差.5/1/2/3，正式選差2。若可用模型族越出容差仍UNKNOWN；方向性SKEW優先保留。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "display",
+      "source": "agent-proposal",
+      "reason": "110px半寬局部圖保持原像素比例；顯示設定不參與分類，未調優。",
+      "verification": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "radius_trials",
+            "caption": "同一輸入的實際候選/剖面與設定；未比較者明示為暫用。"
+          }
+        ]
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "condition": "獨立物體支持、整體幾何與候選歧義須符合開發範圍；絕對精度/其他缺陷/其他40張仍未驗證。",
+      "check": {
+        "kind": "artifact",
+        "type": "evidence",
+        "id": "geometry_data",
+        "visuals": [
+          {
+            "id": "model_clearance",
+            "caption": "本件真實候選、殘差或支持圖；校準缺口不阻塞已授權開發判別。"
+          }
+        ]
+      },
+      "onFailure": "UNKNOWN"
+    }
+  ]
+}

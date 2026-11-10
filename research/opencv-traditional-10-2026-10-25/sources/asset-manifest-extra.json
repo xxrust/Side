@@ -1,0 +1,66 @@
+[
+  {
+    "name": "extra-device7-1.png",
+    "path": "testdata/cv/shape/mpeg_test/device7-1.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-1.png",
+    "bytes": 3144,
+    "sha256": "727c143332eceac05bb0353c23b6de7b3cb6e1f190ff758d90618d1844a7f091",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-device7-2.png",
+    "path": "testdata/cv/shape/mpeg_test/device7-2.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shape/mpeg_test/device7-2.png",
+    "bytes": 3112,
+    "sha256": "f1619e99328b4c43eee94a219a9e2aa78b47602433535f1822f0e8f419957f64",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-beads.jpg",
+    "path": "testdata/cv/imgproc/beads.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/imgproc/beads.jpg",
+    "bytes": 683094,
+    "sha256": "30ac295d4bfe2f509552018d90f21271c3efc3d5629f9c9f9bcdbb7d00965bcf",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-fruits.png",
+    "path": "testdata/cv/shared/fruits.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits.png",
+    "bytes": 428398,
+    "sha256": "172bceeb74155ae1fd815ccb9e9bd1c8e52844a885e519af8b69741f8c8910c9",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-fruits_ecc.png",
+    "path": "testdata/cv/shared/fruits_ecc.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/shared/fruits_ecc.png",
+    "bytes": 31382,
+    "sha256": "973fceec1eb604538895fb305bbe9ff0dd53a55fb05922f137da7900d0e1be89",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-link_ocv.jpg",
+    "path": "testdata/cv/qrcode/link_ocv.jpg",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/link_ocv.jpg",
+    "bytes": 57542,
+    "sha256": "c2b78b1ebb4c06111b8fa2c92da639519daacfe577009d2b31f45f6f8341f5e1",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-dataset_config.json",
+    "path": "testdata/cv/qrcode/dataset_config.json",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/qrcode/dataset_config.json",
+    "bytes": 5648,
+    "sha256": "faa055bec147c11ad48d0f5470675263159a95114f9c913edb9ae964a6ab7e56",
+    "status": "downloaded"
+  },
+  {
+    "name": "extra-wshed_exp.png",
+    "path": "testdata/cv/watershed/wshed_exp.png",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_extra/d244584fd02b509f63db08db89b2d38c97ce990d/testdata/cv/watershed/wshed_exp.png",
+    "bytes": 33503,
+    "sha256": "9df70ea3568780ad709cf99eea5154135f9c52a6fae996dbda087be768e5cbdf",
+    "status": "downloaded"
+  }
+]

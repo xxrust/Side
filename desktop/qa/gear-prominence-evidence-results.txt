@@ -1,0 +1,27 @@
+✔ source inspection distinguishes actual RGB color, achromatic intensity, and strict binary labels (0.63475ms)
+✔ strict binary input skips color conversion and Otsu search while retaining the same pixel labels (112.325417ms)
+✔ decoder record of copied equal channels does not claim a weighted RGB formula was applied (1.110375ms)
+✔ gear sweep changes one variable at a fixed center and saves actual supported and rejected signals (44.272459ms)
+✔ actual adopted center circle and root inspection positions stay tied to measured support (55.721416ms)
+✔ saved prominence bases are actual curve samples, including circular wrap-around (34.92425ms)
+✔ annulus uses independent circles and reports measured center offset, including a concentric control (69.953583ms)
+✔ annulus rejects elliptical boundaries, multiple holes, and clipped parts while retaining measured diagnostics (58.947292ms)
+✔ visible gear counts follow pixels across independent tooth counts and rotations without nominal input (332.290875ms)
+✔ parameter comparison retains each already-computed curve and distinguishes the baseline from an optimum claim (53.673833ms)
+✔ missing-tooth inference requires a nominal count and localizes enlarged observed peak gaps (141.51625ms)
+✔ gear center and circular bore center expose measurable eccentricity in pixels (46.055708ms)
+✔ flat tooth caps give measured pitch and missing sectors across rotations, missing indices and adjacent losses (646.392584ms)
+✔ observed angular pitch and predicted missing markers share original-image geometry and remain explicit diagnostics (97.189958ms)
+✔ smooth circles and contaminated gear outlines do not receive an unsupported count (173.654292ms)
+✔ convex corners and deep radial stars do not substitute for a supported gear profile (167.32025ms)
+✔ hole topology distinguishes observed closed holes, solid missing sites, and an exterior-connected opening (7.659208ms)
+✔ zero holes is a measured observation and missing-hole claims need supplied positions (12.955833ms)
+✔ unresolved hole matching, invalid specifications, empty masks and JSON diagnostics are explicit (62.981375ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1910.967916

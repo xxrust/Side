@@ -1,0 +1,22 @@
+{
+  "scope": "Exact archived native Tauri unit/asset bytes from real template-scene executions; original stored DIAGNOSTIC_ONLY audits retained unchanged for regression comparison",
+  "sourceRoot": "/Users/liangshiben/Library/Application Support/studio.agentcv.desktop/solution-history/project-1793298000964585000-0",
+  "units": [
+    {
+      "file": "assets/6fce414cea9a70ea90c6359b0dd0b6d43e96bec6ae8eb6cf396fe6ad2977bda6.json",
+      "sha256": "6fce414cea9a70ea90c6359b0dd0b6d43e96bec6ae8eb6cf396fe6ad2977bda6",
+      "runIds": [
+        "py-65efeba5d7fb7-11632-2",
+        "py-65efeba617341-11632-3"
+      ]
+    },
+    {
+      "file": "assets/f1f85eb7b0cbd8d5a80b24d38650c60365768a21e48507bd5bd91f696a6f2286.json",
+      "sha256": "f1f85eb7b0cbd8d5a80b24d38650c60365768a21e48507bd5bd91f696a6f2286",
+      "runIds": [
+        "py-65efeba54d583-11632-0",
+        "py-65efeba58aecc-11632-1"
+      ]
+    }
+  ]
+}

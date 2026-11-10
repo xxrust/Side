@@ -1,0 +1,89 @@
+.program-flow-map{display:flex;flex:1;min-height:0;min-width:0;overflow:hidden;width:100%}
+.program-flow-map-surface{display:flex;flex-direction:column;position:relative;flex:1;min-width:0;min-height:0;overflow:hidden;background:#142b35;border:1px solid #35515e;border-radius:10px}
+.program-flow-map-toolbar{display:flex;align-items:center;gap:2px;flex-shrink:0;padding:5px;border-bottom:1px solid #35515e;background:#1b3540}
+.program-flow-map-toolbar .icon-button{width:31px;height:30px;min-width:0;padding:6px;border-radius:6px}
+.program-flow-map-toolbar .icon-button:last-child{margin-left:auto}
+.program-flow-map-viewport{position:relative;flex:1;min-height:80px;min-width:0;overflow:hidden;touch-action:none;cursor:grab;background-image:radial-gradient(#36515c .7px,transparent .7px);background-size:14px 14px}
+.program-flow-map-viewport.is-panning{cursor:grabbing}
+.program-flow-map-viewport>svg{display:block;width:100%;height:100%;position:absolute;inset:0;overflow:hidden;user-select:none;touch-action:none}
+.program-flow-map-empty{position:absolute;inset:0;display:grid;place-items:center;padding:16px;color:#a7bec8;font-size:12px;text-align:center;pointer-events:none}
+.program-flow-map-empty[hidden],.program-flow-map-legend[hidden]{display:none}
+.program-flow-map-node{--flow-state:#ca8a04;cursor:pointer;outline:none}
+.program-flow-map-node>rect{fill:#1b3540;stroke:#526e7b;stroke-width:1}
+.program-flow-map-node.is-group>rect{fill:#1b3540;fill-opacity:.4;stroke:#425e6b;stroke-width:1;pointer-events:stroke}
+.program-flow-map-node.is-group>rect.program-flow-map-group-header{fill:transparent;stroke:none;pointer-events:all}
+.program-flow-map-node text{fill:#d7e8ec;font:500 16px system-ui,-apple-system,sans-serif;pointer-events:none}
+.program-flow-map-node .program-flow-map-status{fill:var(--flow-state);pointer-events:none}
+.program-flow-map-node[aria-current=step]>rect{stroke:#c0adff;stroke-width:1.8;stroke-dasharray:none}
+.program-flow-map-node:hover>rect,.program-flow-map-node:focus-visible>rect{stroke:#c0adff;stroke-width:1.8;stroke-dasharray:none}
+.program-flow-map-node:focus-visible text{font-weight:700}
+.program-flow-map-edge{fill:none;stroke:#7895a3;stroke-width:1.25;color:#7895a3;pointer-events:none}
+.program-flow-map .state-ok,.program-flow-map-dialog .state-ok{--flow-state:#61cc91}
+.program-flow-map .state-failed,.program-flow-map-dialog .state-failed{--flow-state:#ff7987}
+.program-flow-map .state-unknown,.program-flow-map-dialog .state-unknown{--flow-state:#edc967}
+.program-flow-map .state-succeeded,.program-flow-map-dialog .state-succeeded{--flow-state:#79e6aa}
+.program-flow-map .state-running,.program-flow-map-dialog .state-running{--flow-state:#ffe18a}
+.program-flow-map .state-skipped,.program-flow-map-dialog .state-skipped{--flow-state:#92a5b0}
+.program-flow-map-legend{position:absolute;z-index:2;right:5px;top:44px;max-width:220px;display:flex;flex-wrap:wrap;gap:9px 12px;padding:12px;background:#1b3540;border:1px solid #35515e;border-radius:8px;box-shadow:0 4px 16px #14233b1a;font-size:11px;color:#c0d6df}
+.program-flow-map-legend-item{display:inline-flex;align-items:center;gap:5px}
+.program-flow-map-legend-item:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--flow-state)}
+.program-flow-map-dialog{width:calc(100vw - 48px);height:calc(100vh - 48px);max-width:1600px;max-height:none;padding:0;border:1px solid #567782;border-radius:14px;box-shadow:0 20px 90px #10223855;background:#142b35;overflow:hidden}
+.program-flow-map-dialog[open]{display:flex}
+.program-flow-map-dialog::backdrop{background:#14223880}
+.program-flow-map-dialog .program-flow-map-surface{border:0;border-radius:0}
+.program-flow-map-dialog .program-flow-map-toolbar{padding:8px;gap:6px}
+
+.program-flow-map-summary{position:absolute;bottom:12px;left:12px;right:12px;padding:10px 14px;background:#17343ef5;border:1px solid #6a9482;border-radius:7px;font-size:13px;color:#d5eae3;pointer-events:none}.program-flow-map-dialog{width:calc(100vw - 16px)!important;height:calc(100vh - 16px)!important;max-width:none!important;max-height:none!important;padding:8px!important}
+
+.program-flow-map-dialog{width:100dvw!important;height:100dvh!important;max-width:100dvw!important;max-height:100dvh!important;inset:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important}
+.program-flow-map .state-not-found,.program-flow-map-dialog .state-not-found{--flow-state:#79e6aa}.program-flow-map .state-fault,.program-flow-map-dialog .state-fault{--flow-state:#ff6586}.program-flow-map .state-not-selected,.program-flow-map-dialog .state-not-selected{--flow-state:#a8b0ba}.program-flow-map .state-declared,.program-flow-map-dialog .state-declared{--flow-state:#798b95}
+
+.program-flow-map-node.state-available{--flow-state:#80cafa}
+.program-flow-map-edge.is-declared{stroke-dasharray:5 4;opacity:.6}
+.program-flow-map-edge.is-executed{stroke:#a4efc3;stroke-width:2}
+.program-flow-map-edge-label{fill:#c4d8e0;font-size:12px;paint-order:stroke;stroke:#142b35;stroke-width:4px;stroke-linejoin:round;pointer-events:all}
+
+.program-flow-map-node.kind-source rect,.program-flow-map-node.kind-reference rect{stroke:#80cafa;stroke-width:1.6}
+.program-flow-map-node.kind-rule rect{rx:22}
+.program-flow-map-node.kind-decision rect{stroke:#eac887;stroke-width:1.6}
+.program-flow-map-node.kind-category rect{stroke-width:2}
+
+/* Role grammar: silhouettes communicate purpose; marks communicate execution. */
+.program-flow-map-node .flow-node-silhouette{fill:#1b3540;stroke:#6b8795;stroke-width:1.2}
+.program-flow-map-node.kind-source .flow-node-silhouette,.program-flow-map-node.kind-reference .flow-node-silhouette{stroke:#81bcd6;fill:#162d38}
+.program-flow-map-node.kind-reference .flow-node-silhouette{stroke-dasharray:6 3}
+.program-flow-map-node.kind-rule .flow-node-silhouette,.program-flow-map-node.kind-decision .flow-node-silhouette{fill:#30372f;stroke:#c9b485}
+.program-flow-map-node.kind-category .flow-node-silhouette{fill:#203943;stroke:#88b9c3;stroke-width:2}
+.program-flow-map-node.kind-system-exit .flow-node-silhouette{fill:#3b2832;stroke:#d599a9}
+.program-flow-map-node .flow-subprocess-rails{fill:none;stroke:#658c9d;stroke-width:1.2;pointer-events:none}
+.program-flow-map-node .flow-status-mark{fill:var(--flow-state);font-size:14px;font-weight:700}
+.program-flow-map-node .flow-expand-mark{fill:#afc8d4;font-size:15px}
+.program-flow-map-node.kind-source .flow-image-well,.program-flow-map-node.kind-reference .flow-image-well{fill:#0c1c24;stroke:none}
+.program-flow-map-node .flow-image-role{fill:#9ebdcc;font-size:11px}
+.program-flow-map-node .flow-image-role.loaded{font-size:9px}
+.program-flow-map-node image{pointer-events:none;image-rendering:pixelated}
+.program-flow-map-node[aria-current=step]>.flow-node-silhouette,.program-flow-map-node:hover>.flow-node-silhouette,.program-flow-map-node:focus-visible>.flow-node-silhouette{stroke:#d0bcff;stroke-width:2.5}
+.program-flow-map-edge.edge-control{stroke-dasharray:6 3}
+.program-flow-map-edge.edge-fault{stroke:#d599a9;stroke-dasharray:2 4;color:#d599a9}
+.program-flow-map-edge.is-declared{stroke-dasharray:none;opacity:.45}
+.program-flow-map-edge.edge-control.is-declared{stroke-dasharray:6 3}
+.program-flow-map-edge.edge-fault.is-declared{stroke-dasharray:2 4}
+.program-flow-map-edge.is-executed{stroke-width:2.7;opacity:1;color:#a4efc3}
+.program-flow-map-edge.edge-fault.is-executed{stroke:#ff809c;color:#ff809c}
+.flow-port{fill:#132a35;stroke:#8cabb9;stroke-width:1;pointer-events:none}
+.flow-grammar-key{width:100%;line-height:1.5}
+.program-flow-map-legend{max-width:320px;max-height:calc(100% - 52px);overflow:auto}
+
+/* Runtime observations paint the entire node; a product NG exit remains a
+   separate semantic result from successful execution of its classifier. */
+.program-flow-map-node.state-ok,.program-flow-map-node.state-succeeded,.program-flow-map-node.state-not-found{--flow-state:#79e6aa;--flow-background:#205d43}
+.program-flow-map-node.state-running{--flow-state:#ffe18a;--flow-background:#66551e}
+.program-flow-map-node.state-fault,.program-flow-map-node.state-failed{--flow-state:#ff9da5;--flow-background:#773743}
+.program-flow-map-node.state-skipped,.program-flow-map-node.state-not-selected{--flow-state:#b2bdc4;--flow-background:#364650}
+.program-flow-map-node[class*="state-"]>.flow-node-silhouette{fill:var(--flow-background,#1b3540)}
+.program-flow-map-node.is-group[class*="state-"]>rect:not(.program-flow-map-group-header){fill:var(--flow-background,#1b3540);fill-opacity:.65}
+
+.program-flow-map-node .flow-node-duration{fill:#c8e1db;font-size:13px;font-variant-numeric:tabular-nums;font-weight:500}
+.program-flow-map-node .flow-quality-mark{font-size:11px;font-weight:700;fill:#cfefd8}
+.program-flow-map-node .flow-quality-mark.quality-ng{fill:#ffb4a9}
+.program-flow-map-node .flow-quality-mark.quality-unknown{fill:#ffe18a}

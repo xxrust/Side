@@ -1,0 +1,60 @@
+AgentCV v0.5 — 2026-10-23
+
+Deliverables
+  workbench.html: local image-to-measurement-and-rule-classification application.
+  guide.html: operating instructions and explicit prototype boundaries.
+  index.html: updated PRD, scope and acceptance requirements.
+  samples/: three PNG fixtures plus a reopenable demo.agentcv.json project.
+  archive/v0.4/: previous workspace preserved with its original local assets.
+
+Implemented path
+  Import PNG/JPEG/WebP/BMP -> image-coordinate annotation and real pixel search
+  -> explicit candidate adoption -> diameter/distance/angle measurement
+  -> tolerance checks and named interval classes -> single image / batch results
+  -> CSV or JSON export -> project save and reload.
+  All runtime processing stays local. No model or remote Agent is connected.
+
+Verification commands (from 13-cv/qa)
+  node check-prd.cjs
+  node check-line-quality.cjs
+  node check-pipeline.cjs
+  node dom-flow.cjs
+
+Results: 62 checks passed
+  20 numerical, geometry, keyboard and static document wiring checks.
+  16 adversarial line-quality / ROI / mask contract checks.
+  13 deterministic measurement and classification pipeline checks.
+  13 DOM + actual raster-pixel integration checks, including external PNG
+     file import, complete OK/NG/UNKNOWN demo, reruns, project reload, stale
+     recipe guards, UI measurement creation and coherent new-project reset.
+  DOM tests use jsdom and @napi-rs/canvas. They exercise application handlers
+  and real raster processing; they do not validate browser layout/hit-testing.
+
+Critical fixes verified
+  Opposite-polarity edges and alternating fragments cannot be silently stitched.
+  Genuine weaker edges remain available. Explicit rectangle/circle masks affect
+  search and are recorded in input lineage; editing masks recomputes results.
+  Automatic matching requires exactly one candidate in the confirmed window.
+  Truncated candidate searches cannot claim uniqueness or auto-pass.
+  Manual selection remains possible after automatic ambiguity.
+  Missing holes do not reuse previous geometry. Missing/overlapping class
+  rules and invalid units/calibration fail closed.
+  Changed reference geometry blocks stale recipes in both single and batch paths.
+  New measurement dependencies require refreshed recipe confirmation.
+
+Browser acceptance: outstanding
+  Native browser service was unavailable. Playwright's installed Chromium
+  could not start because macOS bootstrap_check_in / MachPortRendezvous failed.
+  No screenshot or real browser pointer/layout acceptance is claimed.
+  browser-flow.cjs retains the browser test for a working browser environment.
+  Still check 1440x900 and 1024x640 layouts, native file selection/downloads,
+  direct dragging/resizing, right-click targets, Chinese IME and keyboard focus.
+
+Limits
+  Fixed-pose, same-resolution batch recipes; no pose registration.
+  Uniform planar scale only; no perspective/lens correction or uncertainty bound.
+  Line search is a constrained Hough prototype, not a general industrial detector.
+  Circle search remains single-candidate. Semantic background cannot be inferred
+  reliably from gradient fitting alone; constrain ROI and masks explicitly.
+  No neural appearance classification, model Agent or release gating backend.
+  Data is in memory until saved; up to 10 run reports are retained per project.

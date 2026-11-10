@@ -1,0 +1,13 @@
+✔ advertised host tools lead from a true imported PNG inner measurement to a new outer TRIAL run and inspectable actual figures (366.491625ms)
+✔ edge rationale omissions survive Agent.event as structured actionable errors and leave the old real recipe/result intact (173.394708ms)
+✔ pipeline proposals reject missing three-part commitments through the actual Pi host event contract before mutation (49.674625ms)
+✔ Agent create/run and delivery tools certify real gear pixels and all upstream nodes, then reject missing upstream evidence with preserved hints (385.525041ms)
+✔ a valid node/upstream certificate cannot silently turn missing downstream specifications into a delivered full pipeline (399.403583ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1712.143708

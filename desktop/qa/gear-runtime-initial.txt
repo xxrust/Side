@@ -1,0 +1,104 @@
+✖ every executed node saves one uniform decision with real local artifact references (41.194167ms)
+✔ grayscale states the actual conversion, fixed formula and unavailable color calibration (2.079167ms)
+✔ documented decoder gray provenance is preserved while runtime quantization stays distinct (0.51825ms)
+✖ Otsu stores all 256 actual variances and the complete optimal platform with first tie (16.468625ms)
+✔ an explicit Otsu threshold remains prescribed while the full curve is diagnostic (12.12625ms)
+✔ polarity decision records actual border occupancy and its fixed engineering ambiguity band (14.048042ms)
+✔ failed segmentation and skipped nodes retain honest comparison status and boundaries (2.16875ms)
+✔ components records every candidate, rejection reasons and an unoptimized minimum area (4.481458ms)
+✔ ambiguous candidates are exposed rather than described as an optimized selection (1.898166ms)
+✔ full candidate evidence remains available beyond the compact summary page limit (5.465625ms)
+✔ feature input setting origin survives analyzer user_specification derivation (11.675417ms)
+✔ gear records real local candidate curves and indices while the base remains unoptimized (61.109333ms)
+✔ rules record each supplied bound origin and measured comparison, without inventing tolerances (17.289291ms)
+✔ hole parameter evidence identifies the real area filter and does not pretend to search layouts (5.284209ms)
+✔ annulus gates expose combined residual allowance, actual values and threshold origins (7.78575ms)
+✔ an early annulus fit rejection does not mark downstream acceptance gates as passed (4.201375ms)
+✔ gear weak-model rejection preserves unexecuted downstream gates even when diagnostics exist (39.167334ms)
+✔ hole topology without nominal sites remains observed; its nominal gate is not applicable (3.978958ms)
+✔ gear bore-center acceptance saves every fixed quality check from the instrumented selection (41.039708ms)
+✔ an already-executed bore fit remains evaluated when later gear applicability rejects the outline (37.232583ms)
+✔ rejected elliptical or tiny bores retain the actual failure and short-circuited quality checks (94.566542ms)
+✔ zero or multiple bore candidates make single-bore quality checks not applicable (73.245584ms)
+✔ a return before bore selection never fabricates executed bore-quality checks (9.996209ms)
+✔ center-refinement gates preserve actual shift, cap and adoption instrumentation (36.3ms)
+✔ capabilities describe typed versioned operators and editable parameter schemas (1.642875ms)
+✔ real annulus pixels traverse full resolution operators; missing tolerance preserves measurement (41.158416ms)
+✔ background connectivity preserves a concavity and an enclosed hole without a convex hull (3.918917ms)
+✔ opening a hole to exterior changes topology from one to zero (7.639833ms)
+✔ multiple foreground components expose ambiguity and require explicit selection (9.692834ms)
+✔ boundary objects are excluded, and explicit bright polarity uses actual pixels (3.355458ms)
+✔ uniform images fail visibly instead of manufacturing geometry (0.80375ms)
+✔ validation rejects unknown versions, operations, parameters, references, types, IDs and cycles (0.422084ms)
+✔ invalid graph is rejected before image decoding or execution (0.263458ms)
+✔ runtime follows references and topological order, with independent operator branches (16.280417ms)
+✔ explicit pixel and count rules evaluate measured values (21.779333ms)
+✔ mm rules require a positive traceable calibration; no scale fabricates no mm (17.897417ms)
+✔ uncertain geometry cannot make candidate measurements a formal pass or fail (3.30375ms)
+✔ workspace dual-axis calibration accepts isotropy and rejects anisotropy or one missing axis (14.159084ms)
+✔ batch runs isolate pixels, identities, parameters and snapshots (10.193542ms)
+✔ result freshness binds graph content, revision, identity and actual pixels (6.31225ms)
+✔ RLE is compact, lossless and rejects malformed or overlapping runs (0.163542ms)
+✔ goal UI reaches real pixel gear measurement without ROI or legacy check, then batch and invalidate (489.533833ms)
+✔ Agent tools build and run an actual graph and switch images without proposing a legacy check (187.715792ms)
+✔ uncertain geometry stays diagnostic when the user selects downstream rules or batch results (314.865ms)
+✔ Agent view tool selects the requested image, node and evidence view without recalculation (312.554333ms)
+✔ annulus uses independent circles and reports measured center offset, including a concentric control (116.30275ms)
+✔ annulus rejects elliptical boundaries, multiple holes, and clipped parts while retaining measured diagnostics (80.977584ms)
+✔ visible gear counts follow pixels across independent tooth counts and rotations without nominal input (351.005375ms)
+✔ parameter comparison retains each already-computed curve and distinguishes the baseline from an optimum claim (49.528833ms)
+✔ missing-tooth inference requires a nominal count and localizes enlarged observed peak gaps (145.741291ms)
+✔ gear center and circular bore center expose measurable eccentricity in pixels (48.851583ms)
+✔ flat tooth caps give measured pitch and missing sectors across rotations, missing indices and adjacent losses (681.148833ms)
+✔ observed angular pitch and predicted missing markers share original-image geometry and remain explicit diagnostics (103.606333ms)
+✔ smooth circles and contaminated gear outlines do not receive an unsupported count (187.910708ms)
+✔ convex corners and deep radial stars do not substitute for a supported gear profile (174.554291ms)
+✔ hole topology distinguishes observed closed holes, solid missing sites, and an exterior-connected opening (9.046958ms)
+✔ zero holes is a measured observation and missing-hole claims need supplied positions (14.590041ms)
+✔ unresolved hole matching, invalid specifications, empty masks and JSON diagnostics are explicit (62.655709ms)
+ℹ tests 58
+ℹ suites 0
+ℹ pass 56
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2079.282917
+
+✖ failing tests:
+
+test at qa/pipeline-decision-contract.test.mjs:30:1
+✖ every executed node saves one uniform decision with real local artifact references (41.194167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'bypassed'
+  - 'prescribed'
+  
+      at TestContext.<anonymous> (file:///Users/liangshiben/13-cv/desktop/qa/pipeline-decision-contract.test.mjs:34:12)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'bypassed',
+    expected: 'prescribed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at qa/pipeline-decision-contract.test.mjs:59:1
+✖ Otsu stores all 256 actual variances and the complete optimal platform with first tie (16.468625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 256
+  
+      at TestContext.<anonymous> (file:///Users/liangshiben/13-cv/desktop/qa/pipeline-decision-contract.test.mjs:61:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 256,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

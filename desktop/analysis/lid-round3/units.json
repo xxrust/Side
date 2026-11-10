@@ -1,0 +1,258 @@
+[
+  {
+    "id": "1d10cefc-de74-480e-be71-fee8f021cae7",
+    "imageIds": [
+      "1d10cefc-de74-480e-be71-fee8f021cae7"
+    ],
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032050457.bmp"
+      }
+    }
+  },
+  {
+    "id": "c01e5fd2-8c1a-4d25-87c0-eac5da734756",
+    "imageIds": [
+      "c01e5fd2-8c1a-4d25-87c0-eac5da734756"
+    ],
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032051647.bmp"
+      }
+    }
+  },
+  {
+    "id": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+    "imageIds": [
+      "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+    ],
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp"
+      }
+    }
+  },
+  {
+    "id": "b18dd0d1-ac04-4619-8ccc-7cc31337f831",
+    "imageIds": [
+      "b18dd0d1-ac04-4619-8ccc-7cc31337f831"
+    ],
+    "expected": {
+      "categoryIds": [
+        "SKEW"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032057035.bmp"
+      }
+    }
+  },
+  {
+    "id": "226b40d8-d738-49c7-95b4-c681b05eabfc",
+    "imageIds": [
+      "226b40d8-d738-49c7-95b4-c681b05eabfc"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/10_2.bmp"
+      }
+    }
+  },
+  {
+    "id": "8116174b-8cba-4604-bdfd-d5b4becfc6e2",
+    "imageIds": [
+      "8116174b-8cba-4604-bdfd-d5b4becfc6e2"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/11_15.bmp"
+      }
+    }
+  },
+  {
+    "id": "51f0084e-06cd-41ab-b887-8382b738d4fa",
+    "imageIds": [
+      "51f0084e-06cd-41ab-b887-8382b738d4fa"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/12_18.bmp"
+      }
+    }
+  },
+  {
+    "id": "c4e25db0-ad7b-4179-9655-64ed26109fac",
+    "imageIds": [
+      "c4e25db0-ad7b-4179-9655-64ed26109fac"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/16_12.bmp"
+      }
+    }
+  },
+  {
+    "id": "c91b9abf-b470-4472-835f-29b42734de72",
+    "imageIds": [
+      "c91b9abf-b470-4472-835f-29b42734de72"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/17_19.bmp"
+      }
+    }
+  },
+  {
+    "id": "945f1f81-d0b1-4bf1-b24e-0b30a553d910",
+    "imageIds": [
+      "945f1f81-d0b1-4bf1-b24e-0b30a553d910"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/17_22.bmp"
+      }
+    }
+  },
+  {
+    "id": "afabaa2d-b640-40db-b750-e323cec5077a",
+    "imageIds": [
+      "afabaa2d-b640-40db-b750-e323cec5077a"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/18_5.bmp"
+      }
+    }
+  },
+  {
+    "id": "7a289184-c991-4b0a-9816-2462a5d727fa",
+    "imageIds": [
+      "7a289184-c991-4b0a-9816-2462a5d727fa"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/20_17.bmp"
+      }
+    }
+  },
+  {
+    "id": "b64a1160-d274-4261-ae0d-a1e8647fbdf2",
+    "imageIds": [
+      "b64a1160-d274-4261-ae0d-a1e8647fbdf2"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/23_7.bmp"
+      }
+    }
+  },
+  {
+    "id": "49f1bb73-3db2-47a4-a0da-089f0327d728",
+    "imageIds": [
+      "49f1bb73-3db2-47a4-a0da-089f0327d728"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/26_5.bmp"
+      }
+    }
+  },
+  {
+    "id": "692a79a7-7770-4e4b-99e7-b561281445c2",
+    "imageIds": [
+      "692a79a7-7770-4e4b-99e7-b561281445c2"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/2_12.bmp"
+      }
+    }
+  },
+  {
+    "id": "a610f892-23ff-49cc-a4b4-85d3c53e6853",
+    "imageIds": [
+      "a610f892-23ff-49cc-a4b4-85d3c53e6853"
+    ],
+    "expected": {
+      "categoryIds": [
+        "GOOD"
+      ],
+      "provenance": {
+        "type": "human",
+        "status": "confirmed",
+        "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/良品/7_21.bmp"
+      }
+    }
+  }
+]

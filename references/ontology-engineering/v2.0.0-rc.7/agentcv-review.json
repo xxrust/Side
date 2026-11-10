@@ -1,0 +1,62 @@
+{
+  "source": "https://github.com/jiaqiwang969/OntologyEngineering/releases/tag/v2.0.0-rc.7",
+  "skill": "SKILL.md",
+  "reviewScope": "已讀原始SKILL.md、design-method、professional-capabilities及goal-anchoring全文；其他下載文件保留供查核。未安裝或執行oev2/Rust/ggen。",
+  "sourceIdentity": "逐檔URL、字節數與SHA-256見download-manifest.json；完整倉庫歸檔下載逾時，僅保留.incomplete，不計為成功。",
+  "adopted": [
+    {
+      "principle": "把工具執行、證據支持、人工採用分開",
+      "implementation": [
+        "規劃READY_FOR_TRIAL",
+        "執行真實trace/artifact",
+        "交付audit/certificate",
+        "人類確認與正式發布保持獨立"
+      ],
+      "files": [
+        "desktop/src/pipeline-evidence-contract.js",
+        "desktop/src/agent-line-tools.js"
+      ]
+    },
+    {
+      "principle": "同一對象、來源、版本與條件綁定",
+      "implementation": [
+        "run/image/plan/node綁定",
+        "完整參數來源與派生",
+        "產物及參數變更使舊證據失效"
+      ],
+      "files": [
+        "desktop/src/pipeline-runtime.js",
+        "desktop/src/pipeline-workspace.js"
+      ]
+    },
+    {
+      "principle": "約束需要真實檢查與反例",
+      "implementation": [
+        "原子拒絕缺少三項依據的Agent方案",
+        "真像素獨立正反例",
+        "缺項逐條code/nodeId/path/message/hint回傳"
+      ],
+      "files": [
+        "desktop/qa/pipeline-evidence-contract.test.mjs",
+        "desktop/qa/pipeline-evidence-tabs.test.mjs",
+        "desktop/qa/agent-line-tools.test.mjs"
+      ]
+    },
+    {
+      "principle": "失敗與未知保留，不授予通過",
+      "implementation": [
+        "DIAGNOSTIC_ONLY保留候選及拒因",
+        "UNKNOWN不獲全鏈交付證書",
+        "工程閘值不冒稱正確率/最優參數/數學證明"
+      ],
+      "files": [
+        "desktop/scripts/validate-pipeline-evidence.mjs"
+      ]
+    }
+  ],
+  "notClaimed": [
+    "未接入朋友倉庫的執行內核或持久化ProjectStore",
+    "未將通用CV適用性或人類意圖語義宣稱可被完整腳本證明",
+    "同一算法產出的曲線與多種渲染不重複計為獨立精度驗證"
+  ]
+}

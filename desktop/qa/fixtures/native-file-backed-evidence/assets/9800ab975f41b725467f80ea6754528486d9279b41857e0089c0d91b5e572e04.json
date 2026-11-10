@@ -1,0 +1,41 @@
+[
+  {
+    "id": "mapped-frame",
+    "imageId": "7972a5fb-c31f-4058-a244-484dfc15223a",
+    "sourceId": "7972a5fb-c31f-4058-a244-484dfc15223a",
+    "objects": [
+      {
+        "id": "frame",
+        "type": "roi",
+        "label": "Reference frame projected into this scene",
+        "geometry": {
+          "points": [
+            {
+              "x": 118.78671264648438,
+              "y": 160.9897918701172
+            },
+            {
+              "x": 284.18023681640625,
+              "y": 175.0649871826172
+            },
+            {
+              "x": 267.493896484375,
+              "y": 297.9637756347656
+            },
+            {
+              "x": 89.75662231445312,
+              "y": 271.9954833984375
+            }
+          ]
+        },
+        "coordinateSpace": {
+          "kind": "original-image-pixels",
+          "imageId": "7972a5fb-c31f-4058-a244-484dfc15223a",
+          "unit": "px"
+        },
+        "locked": true
+      }
+    ],
+    "stepId": "verify-planar-mapping#1"
+  }
+]

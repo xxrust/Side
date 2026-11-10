@@ -1,0 +1,25 @@
+✔ real current-run PNGs stay rectangular and source-bound; mismatched run/source and JSON never masquerade as images (72.62875ms)
+✔ three explanation tabs carry distinct author intent, saved parameter values, and actual-or-unevaluated boundaries (24.459625ms)
+✔ source, code, errors and numerical outputs remain literal saved records, including failure with partial artifacts (14.302708ms)
+✔ image navigation and right-click quoting identify the exact selected artifact without altering input records (13.258875ms)
+✔ actual nested multi-input runtime bindings display the primary image and reject any changed input, order or run without depending on object key order (9.022ms)
+✔ native runtime JSON artifacts resolve as declared evidence for tool and parameter references; missing gate comparisons stay unverified (42.886959ms)
+✔ normal nonregistered Python algorithm reads exact imported PNG and preserves source/code/parameters/triad and actual evidence (360.402209ms)
+✔ missing rationale sections/parameter reason/source and stale original pixels reject atomically before executing code (2.680042ms)
+✔ source pixels changed during real child execution reject current adoption but retain the true execution directory (123.410833ms)
+✔ replacing the project during actual Python execution cannot attach an old run to the new project (109.121417ms)
+✔ actual ROI and imaging-configuration edits during execution invalidate the program conditions even when project epoch and image pixels stay unchanged (217.325834ms)
+✔ real Python failure and missing expected outputs remain diagnostic with traceback/partial artifacts available for repair (202.443916ms)
+✔ save/reopen preserves source history and Python program without executing or converting self-checks to acceptance (102.440042ms)
+✔ changed actual encoded color image bytes invalidate source even when SHA metadata and decoded grayscale cache are unchanged (101.270125ms)
+✔ historical run remains readable without a decoded raster and malformed imported run history rejects before replacing the original project (104.716ms)
+✔ actual Python PASS labels without observed values or malformed boundary collections remain diagnostic rather than complete evidence (206.500125ms)
+✔ host edge trial exposes explicit first/last policy with real PNG pixels and dynamically required rationale (213.573125ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2025.984917

@@ -1,0 +1,2 @@
+export function inquiryWorldAtScreen(point,{width,height,pan={x:0,y:0},zoom=1,rotation=0}){const angle=-rotation*Math.PI/180,cos=Math.cos(angle),sin=Math.sin(angle),x=(point.x-width/2-pan.x)/zoom,y=(point.y-height/2-pan.y)/zoom,rx=x*cos-y*sin,ry=x*sin+y*cos;return {x:rx+width/2,y:ry+height/2}}
+export function inquiryScreenForWorld(world,{width,height,pan={x:0,y:0},zoom=1,rotation=0}){const angle=rotation*Math.PI/180,cos=Math.cos(angle),sin=Math.sin(angle),x=(world.x-width/2)*zoom,y=(world.y-height/2)*zoom;return {x:width/2+pan.x+x*cos-y*sin,y:height/2+pan.y+x*sin+y*cos}}

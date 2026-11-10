@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createExecutionViewScheduler} from '../src/execution-view-scheduler.js';
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+test('1000 progress requests coalesce to current display state while flush and disposal cannot leave a stale callback',async()=>{let state=0;const observed=[],scheduler=createExecutionViewScheduler(()=>observed.push(state),{intervalMs:50});for(let i=1;i<=1000;i++){state=i;scheduler.request();}await wait(15);assert.deepEqual(observed,[1000]);state=1001;scheduler.request();scheduler.flush();assert.deepEqual(observed,[1000,1001]);state=1002;scheduler.request();scheduler.dispose();await wait(60);assert.deepEqual(observed,[1000,1001]);});

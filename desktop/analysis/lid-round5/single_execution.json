@@ -1,0 +1,322 @@
+{
+  "compilation": {
+    "ok": true,
+    "mode": "scheme",
+    "isDraft": false,
+    "schema": "agentcv-workpiece-plan-1",
+    "errors": [],
+    "questions": [],
+    "warnings": [],
+    "order": [
+      "objects"
+    ],
+    "lifecycleDependencies": [],
+    "version": "agentcv-purpose-compiler-2",
+    "schemeFingerprint": "cc28acc1624f42a1",
+    "validationScope": "結構、引用與明示規則檢查；不證明算法精度或效能。"
+  },
+  "execution": {
+    "schema": "agentcv-dataset-execution-1",
+    "evidenceContract": "per-operator-triad-and-timing-1",
+    "timingRequirement": null,
+    "id": "541b73d2-49a5-4bce-9bb4-6ddf6916e458",
+    "schemeFingerprint": "cc28acc1624f42a1",
+    "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+    "status": "COMPLETED",
+    "processed": 1,
+    "total": 1,
+    "counts": {
+      "execution": {
+        "COMPLETED": 1,
+        "FAULT": 0,
+        "CANCELLED": 0
+      },
+      "categories": {
+        "GOOD": 0,
+        "SKEW": 1,
+        "UNKNOWN": 0
+      },
+      "exits": {
+        "FAULT": 0,
+        "CANCELLED": 0,
+        "PRODUCT:GOOD": 0,
+        "PRODUCT:SKEW": 1,
+        "PRODUCT:UNKNOWN": 0
+      },
+      "evidence": {
+        "ready": 1,
+        "notReady": 0
+      },
+      "regression": {
+        "labelled": 0,
+        "matched": 0,
+        "mismatched": 0,
+        "faults": 0,
+        "unlabelled": 1,
+        "labelledFaults": 0,
+        "unavailable": 0,
+        "completedCases": 0,
+        "coverage": {
+          "labelled": 0,
+          "completed": 0,
+          "unavailable": 0,
+          "ratio": null,
+          "scope": "Attempted units with human-confirmed expected categories; unattempted pending units are not in this denominator."
+        },
+        "unavailableExpectedByCategory": {
+          "GOOD": 0,
+          "SKEW": 0,
+          "UNKNOWN": 0
+        },
+        "perCategory": {
+          "GOOD": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "TN": 0,
+            "expectedPositive": 0,
+            "completedExpectedPositive": 0,
+            "unavailableExpected": 0,
+            "precision": null,
+            "recall": null,
+            "falsePositiveRate": null,
+            "endToEndDetectionRate": null
+          },
+          "SKEW": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "TN": 0,
+            "expectedPositive": 0,
+            "completedExpectedPositive": 0,
+            "unavailableExpected": 0,
+            "precision": null,
+            "recall": null,
+            "falsePositiveRate": null,
+            "endToEndDetectionRate": null
+          },
+          "UNKNOWN": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "TN": 0,
+            "expectedPositive": 0,
+            "completedExpectedPositive": 0,
+            "unavailableExpected": 0,
+            "precision": null,
+            "recall": null,
+            "falsePositiveRate": null,
+            "endToEndDetectionRate": null
+          }
+        },
+        "metricsScope": "precision/recall/falsePositiveRate use completed, valid classifications with human-confirmed expected categories only; FAULT/CANCELLED/unavailable classifications are excluded from the confusion matrix. endToEndDetectionRate uses attempted expected-positive units including unavailable outcomes. Neither is independent industrial accuracy or acceptance."
+      }
+    },
+    "startedAt": "2026-11-05T20:16:05.786Z",
+    "retention": "durable-unit-records",
+    "cancellationPolicy": "between-node; active worker finishes or its configured timeout terminates it",
+    "humanConfirmed": false,
+    "delivered": false,
+    "viewTiming": {
+      "updates": 2,
+      "totalMs": 67.96483399998397,
+      "maxMs": 65.5431249999674,
+      "scope": "UI refresh wall time, may overlap native execution; do not add to unit time"
+    },
+    "timing": {
+      "clock": "monotonic",
+      "elapsedMs": 1584.2191250000615,
+      "unitMs": {
+        "count": 1,
+        "mean": 1259.8690420000348,
+        "p50": 1259.8690420000348,
+        "p95": 1259.8690420000348,
+        "max": 1259.8690420000348
+      },
+      "cycleMs": {
+        "count": 1,
+        "mean": 1578.3671670000767,
+        "p50": 1578.3671670000767,
+        "p95": 1578.3671670000767,
+        "max": 1578.3671670000767
+      },
+      "cycleIncludesDurableSave": true,
+      "cycleScope": "unit-start to durable-save completion (or classification completion without durable save); includes host dispatch and persistence, excludes subsequent UI presentation and inter-unit delay",
+      "scope": "batch wall elapsed including host callbacks and inter-unit UI work; not a sum of operator durations",
+      "includes": [
+        "image-read",
+        "node-dispatch",
+        "algorithm",
+        "artifact-verification",
+        "unit-save",
+        "host-callbacks-and-inter-unit-UI"
+      ],
+      "excludes": [
+        "Agent-planning"
+      ]
+    },
+    "finishedAt": "2026-11-05T20:16:07.482Z",
+    "units": [
+      {
+        "unitId": "75067cdb-f6f6-474f-a6e0-1c6b9ddac9d6",
+        "imageIds": [
+          "1d10cefc-de74-480e-be71-fee8f021cae7"
+        ],
+        "execution": "COMPLETED",
+        "categoryId": "SKEW",
+        "categoryIds": [
+          "SKEW"
+        ],
+        "defectLabels": [
+          "lid超出pkg"
+        ],
+        "finalExit": "PRODUCT:SKEW",
+        "evidenceReady": true,
+        "quality": "bad",
+        "regression": "UNLABELLED",
+        "expectedClassification": null,
+        "expectedLabelSource": {
+          "kind": "image-expected",
+          "imageId": "1d10cefc-de74-480e-be71-fee8f021cae7",
+          "stored": {}
+        },
+        "regressionReason": "NO_IMAGE_EXPECTED_LABEL",
+        "cycleTiming": {
+          "clock": "monotonic",
+          "totalMs": 1578.3671670000767,
+          "scope": "unit-start through successful durable-save completion",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "synchronous-host-listeners",
+            "durable-save"
+          ],
+          "excludes": [
+            "post-unit-presentation",
+            "inter-unit-delay",
+            "Agent-planning"
+          ],
+          "storedIn": "dataset-execution-unit-summary; durable record was written before save completion",
+          "afterDecisionMs": 318.4981250000419
+        },
+        "runIds": [
+          "py-65f8d2a5b6b36-84762-0"
+        ],
+        "recordRef": {
+          "$asset": "assets/faf90dcea756a1651ed9fc13ba9fa250d938965cb401de633812e2d671573e68.json",
+          "executionId": "541b73d2-49a5-4bce-9bb4-6ddf6916e458",
+          "kind": "inspection-unit",
+          "mime": "application/json",
+          "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round5/workspace",
+          "sha256": "faf90dcea756a1651ed9fc13ba9fa250d938965cb401de633812e2d671573e68",
+          "size": 3680062,
+          "storage": "workspace",
+          "unitId": "75067cdb-f6f6-474f-a6e0-1c6b9ddac9d6"
+        },
+        "timing": {
+          "clock": "monotonic",
+          "totalMs": 1259.8690420000348,
+          "scope": "workpiece wall elapsed including scheduling and synchronous host listeners; excludes explicit post-unit presentation and durable save",
+          "includes": [
+            "image-read",
+            "node-dispatch",
+            "algorithm",
+            "artifact-verification",
+            "host-scheduling-and-synchronous-listeners"
+          ],
+          "excludes": [
+            "durable-save",
+            "post-unit-presentation",
+            "Agent-planning"
+          ],
+          "breakdown": {
+            "schema": "agentcv-workpiece-timing-1",
+            "clock": "monotonic",
+            "totalMs": 1259.8690420000348,
+            "parts": [
+              {
+                "key": "input",
+                "label": "原圖讀取與準備",
+                "ms": 0.04283299995586276
+              },
+              {
+                "key": "preparation",
+                "label": "節點輸入與契約核對",
+                "ms": 8.885665999958292
+              },
+              {
+                "key": "dispatch",
+                "label": "派發與 Python 執行",
+                "ms": 1226.40304200002
+              },
+              {
+                "key": "audit",
+                "label": "結果與依據檢查",
+                "ms": 9.345250000013039
+              },
+              {
+                "key": "listeners",
+                "label": "同步事件與畫面更新",
+                "ms": 6.039041999960318
+              },
+              {
+                "key": "classification",
+                "label": "分類及證據整理",
+                "ms": 0.45108299993444234
+              },
+              {
+                "key": "scheduling",
+                "label": "流程編排與其餘主機處理",
+                "ms": 8.702126000192948
+              }
+            ],
+            "nodes": [
+              {
+                "nodeId": "objects",
+                "runId": "py-65f8d2a5b6b36-84762-0",
+                "programMs": 901.6500422731042,
+                "host": {
+                  "clock": "monotonic",
+                  "preparationMs": 8.885665999958292,
+                  "dispatchMs": 1226.40304200002,
+                  "auditMs": 9.345250000013039,
+                  "publishMs": 2.3212920000078157,
+                  "totalMs": 1246.955249999999,
+                  "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process"
+                },
+                "native": {
+                  "clock": "monotonic",
+                  "preparationMs": 10.596041,
+                  "processMs": 1129.936875,
+                  "resultReadMs": 11.694167,
+                  "resultWriteMs": 12.431083000000001,
+                  "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+                  "totalMs": 1184.50175,
+                  "verificationMs": 19.827833
+                }
+              }
+            ],
+            "scope": "exclusive spans sum to unit decision wall time; native/process/program are nested breakdowns of dispatch, never added again"
+          }
+        }
+      }
+    ],
+    "unitCount": 1,
+    "offset": 0,
+    "limit": 32,
+    "truncatedUnits": false,
+    "readWith": "get_dataset_execution(execution_id,offset,limit)"
+  },
+  "visual": [
+    {
+      "status": "SAVED_NOT_PUBLISHED",
+      "run_id": "py-65f8d2a5b6b36-84762-0",
+      "pipeline_run_id": null,
+      "scope": "實算結果已保存；不自動新增畫板圖片。先讀產物摘要，需要展示時才用 show_algorithm_run 指定 artifact_id。"
+    }
+  ],
+  "scope": "逐件正常分類與執行故障分開；有人工真值才計回歸，未發布。",
+  "delivered": false
+}

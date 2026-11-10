@@ -1,0 +1,738 @@
+[
+  {
+    "i": 0,
+    "name": "歪斜_20250828032050457.bmp",
+    "id": "1d10cefc-de74-480e-be71-fee8f021cae7",
+    "geometryRunId": "py-65f8c37b92947-60397-112",
+    "comparisonRunId": "py-65f8c37beda36-60397-113",
+    "category": "SKEW",
+    "ratio": 0.8175837368565091,
+    "low": 0.8102750699169002,
+    "high": 0.8230817346366006,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 247110,
+      "boxAngleDeg": -89.1524887084961,
+      "center": [
+        536.02587890625,
+        579.2518920898438
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 715.0106201171875,
+      "lower": 0.8125138433685731,
+      "ratio": 0.8175837368565091,
+      "shortPx": 584.5810546875,
+      "sigma": 1.5,
+      "upper": 0.8226820725210123
+    },
+    "overlay": {
+      "$asset": "assets/a51bc173456de1b614fa3b4c0159b3d1cba25d20975f8d144a551b670375ced2.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "a51bc173456de1b614fa3b4c0159b3d1cba25d20975f8d144a551b670375ced2",
+      "size": 924097
+    },
+    "optical": {
+      "$asset": "assets/481ff43b2b2b4c1c2503f1d8a6cf6a260a58ffc21d86d4931a949f5cfa742f36.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "481ff43b2b2b4c1c2503f1d8a6cf6a260a58ffc21d86d4931a949f5cfa742f36",
+      "size": 923645
+    }
+  },
+  {
+    "i": 1,
+    "name": "歪斜_20250828032051647.bmp",
+    "id": "c01e5fd2-8c1a-4d25-87c0-eac5da734756",
+    "geometryRunId": "py-65f8c37c1a95d-60397-114",
+    "comparisonRunId": "py-65f8c37c6e889-60397-115",
+    "category": "SKEW",
+    "ratio": 0.8147409761145775,
+    "low": 0.8083884966943563,
+    "high": 0.8209271996055724,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 202438,
+      "boxAngleDeg": -2.4895527362823486,
+      "center": [
+        507.8509521484375,
+        571.07177734375
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 718.4082641601562,
+      "lower": 0.8097028857250117,
+      "ratio": 0.8147409761145775,
+      "shortPx": 585.316650390625,
+      "sigma": 1.5,
+      "upper": 0.8198071962209076
+    },
+    "overlay": {
+      "$asset": "assets/a0932bd7dff9ada96fd36e6154192c686349206b49922e176cc0e6d016b55a2b.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "a0932bd7dff9ada96fd36e6154192c686349206b49922e176cc0e6d016b55a2b",
+      "size": 922829
+    },
+    "optical": {
+      "$asset": "assets/df8e75b2c4adf000a0c1ec2e38dbc3aabae675656faf42da030c154bffeaa598.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "df8e75b2c4adf000a0c1ec2e38dbc3aabae675656faf42da030c154bffeaa598",
+      "size": 922792
+    }
+  },
+  {
+    "i": 2,
+    "name": "歪斜_20250828032053433.bmp",
+    "id": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+    "geometryRunId": "py-65f8c37c99199-60397-116",
+    "comparisonRunId": "py-65f8c37cf1166-60397-117",
+    "category": "SKEW",
+    "ratio": 0.8406205649428808,
+    "low": 0.8354430097221895,
+    "high": 0.8482269503546099,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 244271,
+      "boxAngleDeg": -90,
+      "center": [
+        466.49993896484375,
+        553.9999389648438
+      ],
+      "componentCount": 2,
+      "level": 80,
+      "longPx": 708.9998779296875,
+      "lower": 0.8354430097221895,
+      "ratio": 0.8406205649428808,
+      "shortPx": 595.9998779296875,
+      "sigma": 1.5,
+      "upper": 0.845827413267474
+    },
+    "overlay": {
+      "$asset": "assets/ee809a229119bb55e10bd58c6c89ebcc016d4a8fc81b7e9cd3e047862c3e71ec.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "ee809a229119bb55e10bd58c6c89ebcc016d4a8fc81b7e9cd3e047862c3e71ec",
+      "size": 929668
+    },
+    "optical": {
+      "$asset": "assets/68f3d4fedb9b134628e52a0dc8eba27c1e97d9db2742e598c0a497e0a186e48d.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "68f3d4fedb9b134628e52a0dc8eba27c1e97d9db2742e598c0a497e0a186e48d",
+      "size": 934021
+    }
+  },
+  {
+    "i": 3,
+    "name": "歪斜_20250828032057035.bmp",
+    "id": "b18dd0d1-ac04-4619-8ccc-7cc31337f831",
+    "geometryRunId": "py-65f8c37d1c1a8-60397-118",
+    "comparisonRunId": "py-65f8c37d70cbc-60397-119",
+    "category": "SKEW",
+    "ratio": 0.8274894810659187,
+    "low": 0.8221288515406162,
+    "high": 0.8345021037868162,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 226783,
+      "boxAngleDeg": -90,
+      "center": [
+        528.5,
+        593
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 713,
+      "lower": 0.8223776223776224,
+      "ratio": 0.8274894810659187,
+      "shortPx": 590,
+      "sigma": 1.5,
+      "upper": 0.8326300984528833
+    },
+    "overlay": {
+      "$asset": "assets/17ea67c3316fe97c34702c8d524e39c6328f106a58396273be5f4232b5cdf07a.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "17ea67c3316fe97c34702c8d524e39c6328f106a58396273be5f4232b5cdf07a",
+      "size": 915175
+    },
+    "optical": {
+      "$asset": "assets/74a3d1a4fc0daa02e6b42e0e76f313a00f678b6cca5ce642da4d0d50ab0b31df.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "74a3d1a4fc0daa02e6b42e0e76f313a00f678b6cca5ce642da4d0d50ab0b31df",
+      "size": 914547
+    }
+  },
+  {
+    "i": 4,
+    "name": "10_2.bmp",
+    "id": "226b40d8-d738-49c7-95b4-c681b05eabfc",
+    "geometryRunId": "py-65f8c37d9e709-60397-120",
+    "comparisonRunId": "py-65f8c37df8ce7-60397-121",
+    "category": "GOOD",
+    "ratio": 0.777617419314937,
+    "low": 0.7711905466020883,
+    "high": 0.7838457121166739,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 308818,
+      "boxAngleDeg": -1.0374358892440796,
+      "center": [
+        659.0299072265625,
+        544.5397338867188
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 712.5150146484375,
+      "lower": 0.7726416878526959,
+      "ratio": 0.777617419314937,
+      "shortPx": 554.0640869140625,
+      "sigma": 1.5,
+      "upper": 0.7826211627479861
+    },
+    "overlay": {
+      "$asset": "assets/c539916284d542fc1714c2bbfafd04b873d98601efc487efac18871fc0da53a8.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "c539916284d542fc1714c2bbfafd04b873d98601efc487efac18871fc0da53a8",
+      "size": 831987
+    },
+    "optical": {
+      "$asset": "assets/b959c533bcf66d068b1430fc0a695e57e4872c5fe352754f289e770bd39b95d9.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "b959c533bcf66d068b1430fc0a695e57e4872c5fe352754f289e770bd39b95d9",
+      "size": 830875
+    }
+  },
+  {
+    "i": 5,
+    "name": "11_15.bmp",
+    "id": "8116174b-8cba-4604-bdfd-d5b4becfc6e2",
+    "geometryRunId": "py-65f8c37e2301c-60397-122",
+    "comparisonRunId": "py-65f8c37e7d62c-60397-123",
+    "category": "GOOD",
+    "ratio": 0.7756219391186587,
+    "low": 0.7704583240166201,
+    "high": 0.7818378593895743,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 289822,
+      "boxAngleDeg": -1.2453643083572388,
+      "center": [
+        670.7442016601562,
+        532.7337646484375
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 710.2017822265625,
+      "lower": 0.7706356501667622,
+      "ratio": 0.7756219391186587,
+      "shortPx": 550.8480834960938,
+      "sigma": 1.5,
+      "upper": 0.7806363911680059
+    },
+    "overlay": {
+      "$asset": "assets/274404634023202b127fa6256d8f00a9dbe24ce4746aee13cff6f1ebfae9a20e.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "274404634023202b127fa6256d8f00a9dbe24ce4746aee13cff6f1ebfae9a20e",
+      "size": 860103
+    },
+    "optical": {
+      "$asset": "assets/d621ca90b0ab4beb7270706ee3071b69013d7e816f39c5906f5a9fea6a0852c2.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "d621ca90b0ab4beb7270706ee3071b69013d7e816f39c5906f5a9fea6a0852c2",
+      "size": 860593
+    }
+  },
+  {
+    "i": 6,
+    "name": "12_18.bmp",
+    "id": "51f0084e-06cd-41ab-b887-8382b738d4fa",
+    "geometryRunId": "py-65f8c37ea8fd8-60397-124",
+    "comparisonRunId": "py-65f8c37f09715-60397-125",
+    "category": "GOOD",
+    "ratio": 0.7789859408707074,
+    "low": 0.7724539812909331,
+    "high": 0.7849503121766394,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 365868,
+      "boxAngleDeg": -0.7866202592849731,
+      "center": [
+        678.426025390625,
+        545.1932373046875
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 710.4089965820312,
+      "lower": 0.7739916582341717,
+      "ratio": 0.7789859408707074,
+      "shortPx": 553.3986206054688,
+      "sigma": 1.5,
+      "upper": 0.7840084235027859
+    },
+    "overlay": {
+      "$asset": "assets/f96ce4cf193a51478654d0880ccc5daf94791490874bd4ccce82b77c56e8fc9b.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "f96ce4cf193a51478654d0880ccc5daf94791490874bd4ccce82b77c56e8fc9b",
+      "size": 862175
+    },
+    "optical": {
+      "$asset": "assets/3b28b2a77128f9c2da1777faedcf7e67e47c08d51747df6552442d408fbb6424.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "3b28b2a77128f9c2da1777faedcf7e67e47c08d51747df6552442d408fbb6424",
+      "size": 860909
+    }
+  },
+  {
+    "i": 7,
+    "name": "16_12.bmp",
+    "id": "c4e25db0-ad7b-4179-9655-64ed26109fac",
+    "geometryRunId": "py-65f8c37f33d61-60397-126",
+    "comparisonRunId": "py-65f8c37f8e86f-60397-127",
+    "category": "GOOD",
+    "ratio": 0.7817602693072915,
+    "low": 0.7755015912307482,
+    "high": 0.7874294926507743,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 312096,
+      "boxAngleDeg": -1.2480765581130981,
+      "center": [
+        694.711669921875,
+        549.7567749023438
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 707.54443359375,
+      "lower": 0.7767380037945232,
+      "ratio": 0.7817602693072915,
+      "shortPx": 553.130126953125,
+      "sigma": 1.5,
+      "upper": 0.786811007955265
+    },
+    "overlay": {
+      "$asset": "assets/5e686363c7f9e21229d64697ebf47f6face9c6f9f0d30023a551d4858df3daf5.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "5e686363c7f9e21229d64697ebf47f6face9c6f9f0d30023a551d4858df3daf5",
+      "size": 886191
+    },
+    "optical": {
+      "$asset": "assets/233970622fbe71a821b31eda0a8cc1c0260e9d480a866158aa73c9b9b26e5efd.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "233970622fbe71a821b31eda0a8cc1c0260e9d480a866158aa73c9b9b26e5efd",
+      "size": 884513
+    }
+  },
+  {
+    "i": 8,
+    "name": "17_19.bmp",
+    "id": "c91b9abf-b470-4472-835f-29b42734de72",
+    "geometryRunId": "py-65f8c37fb947e-60397-128",
+    "comparisonRunId": "py-65f8c380150d5-60397-129",
+    "category": "GOOD",
+    "ratio": 0.7826621136118133,
+    "low": 0.77674130383806,
+    "high": 0.7893013548982739,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 334115,
+      "boxAngleDeg": -0.3603460490703583,
+      "center": [
+        675.5451049804688,
+        543.1663818359375
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 706.6212158203125,
+      "lower": 0.7776307595574524,
+      "ratio": 0.7826621136118133,
+      "shortPx": 553.045654296875,
+      "sigma": 1.5,
+      "upper": 0.7877220297017268
+    },
+    "overlay": {
+      "$asset": "assets/84058a62dd7031bdcd5489170afd22ff4f84bb9d1b597fea145c0cde00711492.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "84058a62dd7031bdcd5489170afd22ff4f84bb9d1b597fea145c0cde00711492",
+      "size": 855790
+    },
+    "optical": {
+      "$asset": "assets/28d1f0ebfeea60d9bd445e8dd7e0ad396bea013d78aab483cef80873aa8b4afb.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "28d1f0ebfeea60d9bd445e8dd7e0ad396bea013d78aab483cef80873aa8b4afb",
+      "size": 852389
+    }
+  },
+  {
+    "i": 9,
+    "name": "17_22.bmp",
+    "id": "945f1f81-d0b1-4bf1-b24e-0b30a553d910",
+    "geometryRunId": "py-65f8c38042483-60397-130",
+    "comparisonRunId": "py-65f8c380a18d0-60397-131",
+    "category": "GOOD",
+    "ratio": 0.7768312063328514,
+    "low": 0.7704459120447101,
+    "high": 0.782142735598038,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 363716,
+      "boxAngleDeg": -0.3573494851589203,
+      "center": [
+        677.9036865234375,
+        576.5380249023438
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 710.364501953125,
+      "lower": 0.7718426612791289,
+      "ratio": 0.7768312063328514,
+      "shortPx": 551.8333129882812,
+      "sigma": 1.5,
+      "upper": 0.7818479207544061
+    },
+    "overlay": {
+      "$asset": "assets/0fefdc48196dec5405f8a39c07490cd22d1681c1dd19c0a7991226b9a12626e1.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "0fefdc48196dec5405f8a39c07490cd22d1681c1dd19c0a7991226b9a12626e1",
+      "size": 860500
+    },
+    "optical": {
+      "$asset": "assets/6dbc07234e348d3c525ae145d166d8420e530bf3820cb48f13eb8e3d13463a16.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "6dbc07234e348d3c525ae145d166d8420e530bf3820cb48f13eb8e3d13463a16",
+      "size": 857654
+    }
+  },
+  {
+    "i": 10,
+    "name": "18_5.bmp",
+    "id": "afabaa2d-b640-40db-b750-e323cec5077a",
+    "geometryRunId": "py-65f8c380ccb49-60397-132",
+    "comparisonRunId": "py-65f8c3812c212-60397-133",
+    "category": "GOOD",
+    "ratio": 0.7772614717443665,
+    "low": 0.771621876022493,
+    "high": 0.7835131692209483,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 350723,
+      "boxAngleDeg": -0.5672664046287537,
+      "center": [
+        694.9495849609375,
+        551.911376953125
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 711.6284790039062,
+      "lower": 0.7722805565369883,
+      "ratio": 0.7772614717443665,
+      "shortPx": 553.1213989257812,
+      "sigma": 1.5,
+      "upper": 0.7822704631372687
+    },
+    "overlay": {
+      "$asset": "assets/8316b9959cf8fefe033ffe423deb4bc13f403788105a9ee6527e3ad2090b32c0.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "8316b9959cf8fefe033ffe423deb4bc13f403788105a9ee6527e3ad2090b32c0",
+      "size": 861459
+    },
+    "optical": {
+      "$asset": "assets/c138947deb661ea5b1e5e3f8ee209ed9f9515a6202430a22c7b104c4ab182767.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "c138947deb661ea5b1e5e3f8ee209ed9f9515a6202430a22c7b104c4ab182767",
+      "size": 857803
+    }
+  },
+  {
+    "i": 11,
+    "name": "20_17.bmp",
+    "id": "7a289184-c991-4b0a-9816-2462a5d727fa",
+    "geometryRunId": "py-65f8c3815813b-60397-134",
+    "comparisonRunId": "py-65f8c381b7029-60397-135",
+    "category": "GOOD",
+    "ratio": 0.7777192607734474,
+    "low": 0.772742383350667,
+    "high": 0.784605907077605,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 347660,
+      "boxAngleDeg": -0.5150043964385986,
+      "center": [
+        690.4846801757812,
+        548.7799072265625
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 712.3914184570312,
+      "lower": 0.772742383350667,
+      "ratio": 0.7777192607734474,
+      "shortPx": 554.04052734375,
+      "sigma": 1.5,
+      "upper": 0.7827241614932074
+    },
+    "overlay": {
+      "$asset": "assets/d1f625e342bb3bb16e11010feacb083bf5c952952da19dbd1e67887bafc836a4.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "d1f625e342bb3bb16e11010feacb083bf5c952952da19dbd1e67887bafc836a4",
+      "size": 886224
+    },
+    "optical": {
+      "$asset": "assets/bb0bcc08351efc7e76be5e01e6551688d8c32b9edcb68929f9b68ac296aac058.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "bb0bcc08351efc7e76be5e01e6551688d8c32b9edcb68929f9b68ac296aac058",
+      "size": 886912
+    }
+  },
+  {
+    "i": 12,
+    "name": "23_7.bmp",
+    "id": "b64a1160-d274-4261-ae0d-a1e8647fbdf2",
+    "geometryRunId": "py-65f8c381e1553-60397-136",
+    "comparisonRunId": "py-65f8c38240436-60397-137",
+    "category": "GOOD",
+    "ratio": 0.7783494042364927,
+    "low": 0.7732402246077633,
+    "high": 0.785381862665493,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 332609,
+      "boxAngleDeg": -0.9334535002708435,
+      "center": [
+        682.8983154296875,
+        591.197265625
+      ],
+      "componentCount": 5,
+      "level": 80,
+      "longPx": 709.7897338867188,
+      "lower": 0.773352565087027,
+      "ratio": 0.7783494042364927,
+      "shortPx": 552.4644165039062,
+      "sigma": 1.5,
+      "upper": 0.7833744825022397
+    },
+    "overlay": {
+      "$asset": "assets/0a9813da59e181791486d27f11dbf2619704509ef00e82d162818f2d0dd6f09f.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "0a9813da59e181791486d27f11dbf2619704509ef00e82d162818f2d0dd6f09f",
+      "size": 875297
+    },
+    "optical": {
+      "$asset": "assets/c0eae1e50eb1fc4456d8b3d7bfb0e965ade1651c05699a8627e08fe26c992116.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "c0eae1e50eb1fc4456d8b3d7bfb0e965ade1651c05699a8627e08fe26c992116",
+      "size": 875259
+    }
+  },
+  {
+    "i": 13,
+    "name": "26_5.bmp",
+    "id": "49f1bb73-3db2-47a4-a0da-089f0327d728",
+    "geometryRunId": "py-65f8c3826b943-60397-138",
+    "comparisonRunId": "py-65f8c382cabfd-60397-139",
+    "category": "GOOD",
+    "ratio": 0.7770934020157789,
+    "low": 0.7719537370960988,
+    "high": 0.7833791172533582,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 354563,
+      "boxAngleDeg": -0.5595113039016724,
+      "center": [
+        676.1817626953125,
+        581.7130737304688
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 711.210205078125,
+      "lower": 0.7721100369731514,
+      "ratio": 0.7770934020157789,
+      "shortPx": 552.6767578125,
+      "sigma": 1.5,
+      "upper": 0.7821048736198009
+    },
+    "overlay": {
+      "$asset": "assets/d7e446e6b31924b8c44112882cb3f80f68fb2a8fba7ea9f974d7bc849e51fc3d.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "d7e446e6b31924b8c44112882cb3f80f68fb2a8fba7ea9f974d7bc849e51fc3d",
+      "size": 885356
+    },
+    "optical": {
+      "$asset": "assets/ebab42bd3261172eecd7994dfced8faca713e34cc678ba487a6306d6faddc4f4.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "ebab42bd3261172eecd7994dfced8faca713e34cc678ba487a6306d6faddc4f4",
+      "size": 885005
+    }
+  },
+  {
+    "i": 14,
+    "name": "2_12.bmp",
+    "id": "692a79a7-7770-4e4b-99e7-b561281445c2",
+    "geometryRunId": "py-65f8c382f5425-60397-140",
+    "comparisonRunId": "py-65f8c383546ad-60397-141",
+    "category": "GOOD",
+    "ratio": 0.7782339857754161,
+    "low": 0.7727300267056438,
+    "high": 0.7843805267683124,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 361510,
+      "boxAngleDeg": -0.5683918595314026,
+      "center": [
+        671.4969482421875,
+        510.4910888671875
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 712.3021850585938,
+      "lower": 0.773255045425039,
+      "ratio": 0.7782339857754161,
+      "shortPx": 554.3377685546875,
+      "sigma": 1.5,
+      "upper": 0.783240964560449
+    },
+    "overlay": {
+      "$asset": "assets/43d3d5376821f9c8701674a326b2391ef90271790ff01c8f8147cf831c9d2ec4.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "43d3d5376821f9c8701674a326b2391ef90271790ff01c8f8147cf831c9d2ec4",
+      "size": 857948
+    },
+    "optical": {
+      "$asset": "assets/eebf0909642b20292af453e44311337f558df26c6c36e5996f17bbd7e762f2d1.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "eebf0909642b20292af453e44311337f558df26c6c36e5996f17bbd7e762f2d1",
+      "size": 855717
+    }
+  },
+  {
+    "i": 15,
+    "name": "7_21.bmp",
+    "id": "a610f892-23ff-49cc-a4b4-85d3c53e6853",
+    "geometryRunId": "py-65f8c3837fd79-60397-142",
+    "comparisonRunId": "py-65f8c383e2d18-60397-143",
+    "category": "GOOD",
+    "ratio": 0.7827481799249288,
+    "low": 0.7767840476182529,
+    "high": 0.7887824814287967,
+    "usable": true,
+    "geometryAudit": "READY_FOR_REVIEW",
+    "comparisonAudit": "READY_FOR_REVIEW",
+    "geometryTrace": "READY_FOR_REVIEW",
+    "comparisonTrace": "READY_FOR_REVIEW",
+    "selected": {
+      "areaPx2": 374978,
+      "boxAngleDeg": -89.62055969238281,
+      "center": [
+        673.1314697265625,
+        547.6498413085938
+      ],
+      "componentCount": 1,
+      "level": 80,
+      "longPx": 710.1499633789062,
+      "lower": 0.7777415148358333,
+      "ratio": 0.7827481799249288,
+      "shortPx": 555.8685913085938,
+      "sigma": 1.5,
+      "upper": 0.7877831252673494
+    },
+    "overlay": {
+      "$asset": "assets/3cc454de69b317e8f091d7ebc0d0911089dc85dfed4767e5c936f079e6383e6d.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "3cc454de69b317e8f091d7ebc0d0911089dc85dfed4767e5c936f079e6383e6d",
+      "size": 864262
+    },
+    "optical": {
+      "$asset": "assets/ef9bb32ca7bb90cce2998e947c6d152fb673e8bfe0e9bc833a5d339a124771ce.png",
+      "mime": "image/png",
+      "root": "/Users/liangshiben/13-cv/desktop/runtime/collab-lid/round3/workspace",
+      "sha256": "ef9bb32ca7bb90cce2998e947c6d152fb673e8bfe0e9bc833a5d339a124771ce",
+      "size": 863611
+    }
+  }
+]
