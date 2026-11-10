@@ -6,6 +6,7 @@
 .image-renderer-controls button{min-width:28px;height:27px;padding:3px 7px;font-size:11px}
 .image-renderer-controls .icon-button{width:28px;padding:4px}
 .image-renderer-zoom{min-width:42px;text-align:center;font-size:10px;color:#d7eee2;font-variant-numeric:tabular-nums}
+.image-renderer .image-rgb-readout{position:absolute;right:8px;bottom:8px;z-index:4;padding:4px 7px;background:#101d24ee;border:1px solid #52706f;border-radius:5px;color:#d7eee2;font:11px ui-monospace,monospace;white-space:nowrap;pointer-events:none}
 .image-renderer-viewport>[hidden]{display:none!important}
 dialog.image-renderer-fullscreen{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;overflow:hidden;background:#0b151b;box-sizing:border-box}
 dialog.image-renderer-fullscreen[open]{display:flex}

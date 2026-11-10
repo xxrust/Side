@@ -11,6 +11,13 @@ const near=(a,b)=>Math.abs(a-b)<1.1;
 const settle=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(resolve,50))));
 async function until(fn){for(let n=0;n<100;n++){if(fn())return;await new Promise(resolve=>setTimeout(resolve,20));}throw Error('Image/DOM did not settle');}
 const button=(text,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=text||'';b.onclick=fn;return b;};
+function sample(root,expected){
+ const image=root.querySelector('img'),rect=image.getBoundingClientRect(),viewport=root.querySelector('.image-renderer-viewport');
+ viewport.dispatchEvent(new PointerEvent('pointermove',{clientX:rect.left+rect.width*.2,clientY:rect.top+rect.height*.25,bubbles:true}));
+ const outputs=root.querySelectorAll('.image-rgb-readout');check(outputs.length===1,'Duplicate or missing RGB readout');
+ check(outputs[0].textContent===expected,`Wrong pixel color: ${outputs[0].textContent}, expected ${expected}`);
+ check(getComputedStyle(outputs[0]).display!=='none'&&outputs[0].getBoundingClientRect().width>0,'RGB is hidden');
+}
 
 export async function runImageRendererChecks(){
  const results=[],record=name=>results.push(name),canvas=document.createElement('canvas');canvas.width=1200;canvas.height=800;
@@ -23,6 +30,7 @@ export async function runImageRendererChecks(){
  check(r.bounds().height>100&&input.clientHeight>100,'Input/output renderer collapsed in grid');
  check(r.image.offsetWidth<=r.bounds().width&&r.image.offsetHeight<=r.bounds().height,'Fit clips image');
  check(getComputedStyle(view.surface.empty).display==='none','Hidden empty state still covers image');record('main input/output grid and hidden states');
+ sample(r.root,'RGB 28, 106, 132');
  area.style.width='320px';await settle();check(r.maxButton.getBoundingClientRect().right<=r.root.getBoundingClientRect().right,'Narrow main pane clips maximize control');area.style.width='100%';await settle();
 
  const anchor={x:120,y:90},pixel={x:(anchor.x-r.view.x)/r.view.scale,y:(anchor.y-r.view.y)/r.view.scale};r.zoomBy(2,anchor);
@@ -34,28 +42,38 @@ export async function runImageRendererChecks(){
  area.style.transform='translate(30px,10px) scale(.65)';area.style.transformOrigin='top left';area.style.overflow='hidden';await settle();
  const rect=r.viewport.getBoundingClientRect(),point=r.localPoint({clientX:rect.left+rect.width*.25,clientY:rect.top+rect.height*.3});
  check(near(point.x,r.bounds().width*.25)&&near(point.y,r.bounds().height*.3),'Scaled canvas pointer coordinates are wrong');record('pointer coordinates under canvas transform');
+ // Refit keeps the known test pixel visible after prior camera operations.
+ r.fit();sample(r.root,'RGB 28, 106, 132');r.zoomBy(1.2);r.view.x+=7;r.view.y+=3;r.paint();sample(r.root,'RGB 28, 106, 132');
  const host=r.root.parentElement,hostStyle=host.getAttribute('style'),saved={...r.view};
  r.toggleMaximize(true);r.toggleMaximize(true);await settle();
  check(document.querySelectorAll('.image-renderer-fullscreen').length===1,'Repeated maximize creates duplicate hosts');
  check(near(r.bounds().width,innerWidth)&&near(r.bounds().height,innerHeight),'Maximize remains clipped by canvas');
+ sample(r.root,'RGB 28, 106, 132');
  r.viewport.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));await settle();
  check(r.root.parentElement===host&&host.getAttribute('style')===hostStyle,'Restore changed parent layout');
  check(near(saved.scale,r.view.scale)&&near(saved.x,r.view.x)&&near(saved.y,r.view.y),'Restore loses camera');record('top-layer maximize, idempotence, Escape and restore');
+ sample(r.root,'RGB 28, 106, 132');r.viewport.dispatchEvent(new PointerEvent('pointerleave'));check(r.rgb.textContent==='RGB —','Pointer leave retains stale RGB');record('RGB after zoom, pan, canvas transform, maximize and restore');
  r.actual();check(r.view.scale===1&&r.image.offsetWidth===1200,'1:1 uses wrong image dimensions');
  r.setSource({src:url+'#new',width:1200,height:800});await settle();check(r.view.fitted,'New image did not reset to fit');
- r.toggleMaximize(true);r.clear();check(!document.querySelector('.image-renderer-fullscreen')&&r.maxButton.disabled,'Clearing image leaves modal behind');view.dispose();area.remove();record('1:1, change source, clear and dispose');
+ r.toggleMaximize(true);r.clear();check(!document.querySelector('.image-renderer-fullscreen')&&r.maxButton.disabled,'Clearing image leaves modal behind');check(r.rgb.textContent==='RGB —','Clearing leaves stale RGB');view.dispose();area.remove();record('1:1, change source, clear and dispose');
 
  // Use the production source dialog, project model and image store.
- const p=new Workspace();await p.addImages([{name:'wide.png',dataUrl:url},{name:'same.png',dataUrl:url}],async()=>ctx.getImageData(0,0,1200,800));
- const ids=p.data.images.map(image=>image.id),dialog=openFlowNodePanel({project:p,node:{id:'source',kind:'source',imageIds:ids},flow:{nodes:[],edges:[]},onLoadDecisionEvidence:async()=>({state:'READY',reasons:[{title:'Evidence',images:[{runId:'fixture',artifactId:'evidence',width:1200,height:800}]}],loadImage:async()=>url})});
+ const portrait=document.createElement('canvas');portrait.width=800;portrait.height=1200;const pc=portrait.getContext('2d');pc.fillStyle='rgb(28,106,132)';pc.fillRect(0,0,800,1200);const sourceURL=portrait.toDataURL();
+ const p=new Workspace();await p.addImages([{name:'portrait.png',dataUrl:sourceURL},{name:'same.png',dataUrl:sourceURL}],async()=>pc.getImageData(0,0,800,1200));
+ const ids=p.data.images.map(image=>image.id),dialog=openFlowNodePanel({project:p,node:{id:'source',kind:'source',imageIds:ids},flow:{nodes:[],edges:[]},onLoadDecisionEvidence:async()=>({state:'READY',reasons:[{title:'Evidence',images:[{runId:'fixture',artifactId:'evidence',width:800,height:1200}]}],loadImage:async()=>sourceURL})});
  await until(()=>dialog.querySelector('.flow-source-original img')?.dataset.imageId===ids[0]&&dialog.querySelector('.source-decision img')?.complete&&dialog.querySelector('.source-decision img')?.naturalWidth);await settle();
  const original=dialog.querySelector('.flow-source-original .image-renderer'),evidence=dialog.querySelector('.source-decision .image-renderer');
  check(original.clientHeight>100&&original.clientWidth>100&&evidence.clientHeight>100&&evidence.clientWidth>100,'Source dialog collapsed after migration');
  check(!evidence.querySelector('[aria-label="最大化"]').disabled&&evidence.querySelector('img').offsetWidth>100,'Evidence pixels/tools were not installed');
+ const sameSize=()=>{const a=original.getBoundingClientRect(),b=evidence.getBoundingClientRect(),ai=original.querySelector('img').getBoundingClientRect(),bi=evidence.querySelector('img').getBoundingClientRect();check(near(a.top,b.top)&&near(a.width,b.width)&&near(a.height,b.height),'Source viewing wells have different sizes');check(near(ai.width,bi.width)&&near(ai.height,bi.height),'Same-sized source images fit at different scales');};
+ sameSize();dialog.querySelector('.flow-source-original figcaption').textContent='very-long-filename-'.repeat(30)+'.png';await settle();sameSize();
+ sample(original,'RGB 28, 106, 132');sample(evidence,'RGB 28, 106, 132');record('source pair equal fit and RGB with long filename');
  const modalStyle=dialog.getAttribute('style');original.querySelector('[aria-label="最大化"]').click();await settle();
  check(document.querySelectorAll('dialog[open]').length===2,'Source maximize lost parent modal');
+ sample(original,'RGB 28, 106, 132');
  document.querySelector('.image-renderer-fullscreen').dispatchEvent(new Event('cancel',{cancelable:true}));await settle();
  check(dialog.open&&original.parentElement.classList.contains('flow-source-original')&&dialog.getAttribute('style')===modalStyle,'Escape failed to restore source modal');
+ sameSize();sample(original,'RGB 28, 106, 132');
  original.querySelector('[aria-label="最大化"]').click();dialog.close();await settle();check(!document.querySelector('.image-renderer-fullscreen'),'Closing source leaves a fullscreen orphan');record('source original/evidence layout and nested modal cleanup');
 
  // Card thumbnails must report their decoded pixel size, not the original's.
@@ -81,6 +99,7 @@ export async function runWorkbenchRendererCheck(api){
  p.data.algorithmRuns=[run];p.data.datasetExecutions=[{id:'ui-fixture-execution',schemeFingerprint:fingerprint,units:[{unitId:'ui-fixture-unit',imageIds:[image.id],runIds:[run.runId]}]}];
  await api.inquiryView.open();const v=api.inquiryView;v.outputView.focus('preview');v.render();
  await until(()=>document.querySelectorAll('.node-output-gallery img[src]').length===2);await settle();
+ for(const root of document.querySelectorAll('.node-output-gallery .image-renderer'))sample(root,'RGB 36, 93, 120');
  const surface=v.outputView.surface,r=surface.renderer;r.zoomBy(1.4);const saved={...r.view};r.toggleMaximize(true);
  for(let i=0;i<10;i++)v.render();check(v.outputView.surface===surface,'Polling recreated the live output surface');
  check(r.maximizeDialog?.open,'Polling dismissed maximized output');r.restoreMaximize();await settle();

@@ -47,6 +47,15 @@ npx.cmd --no-install tauri build --no-bundle -- --locked
 
 最终构建成功，原生程序启动后窗口标题为 `SIDE · 視覺檢測`，进程正常响应并创建 WebView2。启动检查使用独立 WebView 数据目录，检查后已结束测试进程；原来运行中的旧程序未关闭。原生启动检查与 Chromium 图片交互验证分开记录。
 
-可执行文件：`E:\personal_project\mycv\viewport-build\target\release\agentcv-desktop.exe`。版本号仍为 `0.16.7`，通过此路径区分旧版。SHA-256：`AEEF9A7C12B35A26BAD37347A82806636D5D6CB9B11F81A80D279E1EBAF944B7`。
+可执行文件：`E:\personal_project\mycv\viewport-build\target\release\agentcv-desktop.exe`。版本号仍为 `0.16.7`，通过此路径区分旧版。SHA-256：`BE30F563E261A07EDF25B8EE4C311891203C276DBA28400B095CA07373804804`。
 
 构建保留原有 4 项 Rust 未使用代码警告，以及 Vite 混合导入／大包提示。构建前的本地生成文件已备份至 `E:\personal_project\mycv\viewport-merge-backup`。未推送远端。
+
+
+## 图像源对齐与 RGB 回归修正
+
+后续复现：图像源原图下方文件名占用高度，左、右渲染框分别为 361×204 和 361×228，竖图显示大小因此不一致。改为共享标题、图片、文件名三行布局；相同尺寸竖图的两个渲染框现均为 361×204，显示图像均为 123×184。文件名过长以省略号显示，不再挤压图片。
+
+RGB 读数和取色移入共享 ImageRenderer，每个窗口只保留一个右下角读数，覆盖图像源原图、依据图、主界面输入／输出、缩略图和最大化窗口。复用 1×1 采样画布，使用当前缩放和平移换算像素坐标；离开图片、切图或清图时重置读数，避免显示上一位置的颜色。
+
+更新后 9 组浏览器回归通过，包含竖图／长文件名下的等大图片，以及已知像素在缩放、平移、父画板缩放、最大化和恢复后的准确 RGB 数值。实际工作台两侧取色与 10 次连续刷新检查通过。原有 6 项测试通过；Windows Release 重新编译成功，输出路径不变。本轮未重复执行原生界面启动检查。

@@ -18,6 +18,10 @@ export class ImageRenderer{
   this.zoomIn=button('zoom-in','放大',()=>this.zoomBy(1.25));this.fitButton=button('fit','適合畫面',()=>this.fit());
   this.actualButton=el('button','1:1');this.actualButton.type='button';this.actualButton.title='原始尺寸 1:1';this.actualButton.setAttribute('aria-label','原始尺寸 1:1');this.actualButton.onclick=()=>this.actual();this.controls.append(this.actualButton);
   this.maxButton=button('fullscreen','最大化',()=>this.toggleMaximize());this.root.append(this.controls);
+  this.rgb=el('output','RGB —','image-rgb-readout');this.rgb.setAttribute('aria-label','游標像素 RGB');this.viewport.append(this.rgb);
+  this.sampleCanvas=document.createElement('canvas');this.sampleCanvas.width=this.sampleCanvas.height=1;
+  this.sampleContext=this.sampleCanvas.getContext('2d',{willReadFrequently:true});
+  this.viewport.addEventListener('pointerleave',()=>this.resetRGB());
   // The surrounding canvas can scale a card. Pointer math uses local CSS pixels.
   this.viewport.addEventListener('wheel',event=>{event.preventDefault();event.stopPropagation();this.zoomBy(Math.exp(-event.deltaY*.002),this.localPoint(event));},{passive:false});
   this.viewport.addEventListener('pointerdown',event=>{
@@ -25,6 +29,7 @@ export class ImageRenderer{
    this.drag={point:this.localPoint(event),view:{...this.view}};this.viewport.setPointerCapture?.(event.pointerId);this.viewport.classList.add('is-panning');
   });
   this.viewport.addEventListener('pointermove',event=>{if(!this.drag)return;const point=this.localPoint(event);this.view={...this.drag.view,x:this.drag.view.x+point.x-this.drag.point.x,y:this.drag.view.y+point.y-this.drag.point.y,fitted:false};this.paint();});
+  this.viewport.addEventListener('pointermove',event=>this.sampleRGB(event));
   for(const type of ['pointerup','pointercancel','lostpointercapture'])this.viewport.addEventListener(type,()=>{this.drag=null;this.viewport.classList.remove('is-panning');});
   this.viewport.addEventListener('dblclick',event=>{event.stopPropagation();this.maximizeDialog?this.restoreMaximize():this.fit();});
   this.root.addEventListener('keydown',event=>{
@@ -47,11 +52,22 @@ export class ImageRenderer{
   const changed=this.source?.src!==src;
   this.source={...(!changed?this.source:{}),src,width:width||(!changed&&this.source?.width)||0,height:height||(!changed&&this.source?.height)||0};
   if(alt)this.image.alt=alt;
-  if(changed){this.view={scale:1,x:0,y:0,fitted:true};this.image.src=src;this.fit();}
+  if(changed){this.resetRGB();this.view={scale:1,x:0,y:0,fitted:true};this.image.src=src;this.fit();}
   this.paint(); // Polling the same frame must preserve zoom and pan.
   return this;
  }
- clear(){this.restoreMaximize();this.source=null;this.image.removeAttribute('src');this.drag=null;this.view={scale:1,x:0,y:0,fitted:true};this.paint();}
+ clear(){this.restoreMaximize();this.source=null;this.image.removeAttribute('src');this.resetRGB();this.drag=null;this.view={scale:1,x:0,y:0,fitted:true};this.paint();}
+ resetRGB(){this.rgb.textContent='RGB —';}
+ sampleRGB(event){
+  const image=this.image,context=this.sampleContext;
+  if(!this.source||image.hidden||!image.complete||!image.naturalWidth||!context){this.resetRGB();return;}
+  const point=this.localPoint(event),size=this.size(),x=(point.x-this.view.x)/this.view.scale,y=(point.y-this.view.y)/this.view.scale,bounds=this.bounds();
+  if(point.x<0||point.y<0||point.x>=bounds.width||point.y>=bounds.height||x<0||y<0||x>=size.width||y>=size.height){this.resetRGB();return;}
+  try{
+   context.clearRect(0,0,1,1);context.drawImage(image,Math.floor(x/size.width*image.naturalWidth),Math.floor(y/size.height*image.naturalHeight),1,1,0,0,1,1);
+   const d=context.getImageData(0,0,1,1).data;this.rgb.textContent=`RGB ${d[0]}, ${d[1]}, ${d[2]}`;
+  }catch{this.resetRGB();}
+ }
  bounds(){return {width:this.viewport.clientWidth,height:this.viewport.clientHeight};}
  localPoint(event){const rect=this.viewport.getBoundingClientRect(),b=this.bounds();return {x:(event.clientX-rect.left)*b.width/(rect.width||1),y:(event.clientY-rect.top)*b.height/(rect.height||1)};}
  size(){return {width:this.source?.width||this.image.naturalWidth||1,height:this.source?.height||this.image.naturalHeight||1};}

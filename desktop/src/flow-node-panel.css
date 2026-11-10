@@ -65,3 +65,10 @@
 .flow-source-track img{-webkit-user-drag:none;user-select:none}
 
 .flow-source-panel .source-decision [hidden]{display:none}
+
+/* Share header, image and caption rows so filenames cannot shrink one image. */
+.flow-source-panel>.flow-source-pair{grid-template-rows:24px minmax(0,1fr) auto;gap:5px 12px}
+.flow-source-panel .flow-source-original,.flow-source-panel .source-decision{display:grid;grid-row:1/4;grid-template-rows:subgrid}
+.flow-source-panel .flow-source-original>.image-renderer{grid-row:2;height:auto}
+.flow-source-panel .flow-source-original>figcaption{grid-row:3;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flow-source-panel .source-decision-body{grid-row:2}
