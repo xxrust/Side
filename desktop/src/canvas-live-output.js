@@ -15,6 +15,7 @@ export function liveOutputState(project,item){
  const artifact=output.artifacts.find(a=>a.id===binding.artifactId);
  if(!artifact)return {mode:'live',frameAvailable:false,status:'WAITING',reason:'本件未產生所訂閱的輸出圖',binding,unitId:output.unitId,executionId:output.executionId};
  const dataURL=artifact.dataURL||artifact.dataUrl;
+ if(!dataURL&&output.run.artifactMode==='inspection')return {mode:'live',frameAvailable:false,status:'WAITING',reason:'本次未生成階段圖；請開啟「保存階段渲染圖」後重跑',binding,runId:output.run.runId,artifactId:artifact.id,unitId:output.unitId,executionId:output.executionId};
  if(!dataURL)return {mode:'live',frameAvailable:false,status:'WAITING',reason:'本件輸出圖像正在載入',binding,runId:output.run.runId,artifactId:artifact.id,unitId:output.unitId,executionId:output.executionId,needsPixels:true};
  return {mode:'live',frameAvailable:true,status:output.status,reason:output.status==='READY'?'目前工件的節點輸出':'目前工件的失敗診斷圖：'+output.reason,binding,runId:output.run.runId,artifactId:artifact.id,unitId:output.unitId,executionId:output.executionId,frameKey:[output.run.runId,artifact.id,artifact.sha256||''].join(':'),reference:{...outputImageReference(output,artifact),source:{...outputImageReference(output,artifact).source,schemeId:binding.schemeId,liveOutputFrame:true}}};
 }

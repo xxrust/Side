@@ -36,7 +36,7 @@ export function captureWorkpieceArtifactPixels(project,unitId,runs=[]){
   for(const artifact of run.artifacts||[]){
    if(artifact.type!=='image')continue;
    const dataURL=artifact.dataURL||artifact.dataUrl;
-   if(typeof dataURL==='string'&&/^data:image\/(?:png|jpeg|webp);base64,/i.test(dataURL)){
+   if(typeof dataURL==='string'&&/^data:image\/(?:png|jpeg|webp|bmp|svg\+xml);base64,/i.test(dataURL)){
     state.pixels.set(pixelKey(run.runId,artifact.id),dataURL);
     // Keep project metadata small and prevent transient process pixels from
     // being archived by an ordinary project save.

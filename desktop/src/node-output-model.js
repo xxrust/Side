@@ -10,12 +10,13 @@ const list=x=>Array.isArray(x)?x:[];
  * canvas position or whichever historical run was opened most recently. */
 export function resolveNodeOutput(project,{schemeNodeId}={}){
  const data=project.data||project,scheme=data.purposeScheme,node=scheme?.operatorGraph?.nodes?.find(n=>n.id===schemeNodeId);
- const base={schemeNodeId,title:node?purposeNodeTitle(scheme,node):'節點輸出',run:null,artifacts:[],live:false,unitId:null,executionId:null,recordRef:null};
+ const activeId=project.image?.id||data.activeId;
+ const base={schemeNodeId,title:node?purposeNodeTitle(scheme,node):'節點輸出',imageId:activeId,run:null,artifacts:[],live:false,unitId:null,executionId:null,recordRef:null};
  const empty=(status,reason,extra={})=>({...base,status,reason,...extra,artifacts:[]});
  if(!node)return empty('WAITING','請選擇方案節點');
- const basis=schemeFingerprint(scheme),live=activeWorkpieceExecution(project),activeId=project.image?.id||data.activeId;
+ const basis=schemeFingerprint(scheme),live=activeWorkpieceExecution(project);
  let unit,execution;
- if(live?.schemeFingerprint===basis){unit=live;execution={id:live.executionId,status:'RUNNING'};base.live=true;}
+ if(live?.schemeFingerprint===basis){unit=live;execution={id:live.executionId,status:'RUNNING'};base.live=true;base.imageId=live.imageIds.includes(activeId)?activeId:live.imageIds[0]||activeId;}
  else {
   const executions=list(data.datasetExecutions).filter(e=>e.schemeFingerprint===basis);
   execution=executions.findLast(e=>list(e.units).some(u=>list(u.imageIds).includes(activeId)));

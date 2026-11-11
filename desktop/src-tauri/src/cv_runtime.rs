@@ -164,12 +164,7 @@ fn clean_command(executable: &Path, directory: &Path) -> Result<Command, String>
     for path in [&home, &cache, &tmp] {
         fs::create_dir_all(path).map_err(|error| format!("無法建立算法執行目錄：{error}"))?;
     }
-    let mut command = Command::new(executable);
-    #[cfg(windows)]
-    {
-        use std::os::windows::process::CommandExt;
-        command.creation_flags(0x08000000); // CREATE_NO_WINDOW: keep focus on inspection controls.
-    }
+    let mut command = crate::background_command::new(executable);
     // Do not forward Pi credentials, API keys, proxy passwords, user Python
     // startup hooks or the calling terminal's environment to algorithm code.
     command.env_clear().current_dir(directory)
@@ -277,7 +272,8 @@ fn verify_artifact_files(result: &mut Value, directory: &Path, source_binding: &
     verify_artifact_files_mode(result, directory, source_binding, "inline")
 }
 fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_binding: &Value, artifact_mode: &str) -> Result<(), String> {
-    let inline = artifact_mode != "references";
+    let inspection = artifact_mode == "inspection";
+    let inline = artifact_mode != "references" && !inspection;
     let memory_only = artifact_mode == "memory";
     if let Some(artifacts) = result.get_mut("artifacts").and_then(Value::as_array_mut) {
         if artifacts.len() > 48 { return Err("算法回傳產物超過 48 項".into()); }
@@ -285,6 +281,35 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
         let mut bytes_total = 0usize;
         for artifact in artifacts {
             let is_image = artifact.get("type").and_then(Value::as_str).unwrap_or("file") == "image";
+            let raster = inspection && is_image;
+            let raster_bytes = if raster {
+                let width = artifact["width"].as_u64().filter(|&v| v > 0).ok_or("檢測像素寬度無效")?;
+                let height = artifact["height"].as_u64().filter(|&v| v > 0).ok_or("檢測像素高度無效")?;
+                let channels = artifact["channels"].as_u64().filter(|v| matches!(v, 1 | 3 | 4)).ok_or("檢測像素通道無效")?;
+                let depth = match artifact["dtype"].as_str() {
+                    Some("uint8") => 1,
+                    Some("uint16") => 2,
+                    _ => return Err("檢測像素位深無效".into()),
+                };
+                let size = width.checked_mul(height).and_then(|v| v.checked_mul(channels * depth)).ok_or("檢測像素尺寸溢出")?;
+                if artifact["rasterEncoding"] != "raw-le" || artifact["bytes"].as_u64() != Some(size) {
+                    return Err("檢測像素描述與資料不一致".into());
+                }
+                artifact["pixelRetention"] = json!("metadata-only");
+                artifact["pixelAvailable"] = json!(false);
+                artifact["mime"] = json!("application/octet-stream");
+                let map = artifact.as_object_mut().ok_or("檢測圖像描述無效")?;
+                map.remove("dataUrl");
+                map.remove("dataURL");
+                map.remove("assetRef");
+                if !map.contains_key("path") {
+                    // This describes an output array; no file was produced or verified.
+                    artifact["source"] = source_binding.clone();
+                    artifact["hostBytesVerified"] = json!(false);
+                    continue;
+                }
+                Some(size)
+            } else { None };
             let memory_image = memory_only && is_image && artifact.get("path").is_none();
             let (bytes, canonical_path) = if memory_image {
                 let data_url = artifact.get("dataUrl").or_else(|| artifact.get("dataURL")).and_then(Value::as_str)
@@ -300,6 +325,9 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                 (fs::read(&canonical).map_err(|error| error.to_string())?, Some(canonical))
             };
             if bytes.len() > 24 * 1024 * 1024 { return Err("單個回傳產物超過 24 MB".into()); }
+            if raster_bytes.is_some_and(|size| size != bytes.len() as u64) {
+                return Err("檢測像素文件長度與描述不一致".into());
+            }
             bytes_total += bytes.len();
             if bytes_total > 64 * 1024 * 1024 { return Err("算法回傳產物合計超過 64 MB".into()); }
             artifact["sha256"] = json!(format!("{:x}", Sha256::digest(&bytes)));
@@ -312,15 +340,16 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                 artifact["pixelRetention"] = json!("current-workpiece-memory");
             }
             match artifact.get("type").and_then(Value::as_str).unwrap_or("file") {
+                "image" if raster => {}
                 "image" => {
                     if bytes.len() < 24 || bytes[..8] != [137,80,78,71,13,10,26,10] { return Err("算法圖像產物需為實際 PNG bytes".into()); }
                     artifact["width"] = json!(u32::from_be_bytes(bytes[16..20].try_into().unwrap()));
                     artifact["height"] = json!(u32::from_be_bytes(bytes[20..24].try_into().unwrap()));
                     artifact["mime"] = json!("image/png");
-                    if inline {
+                    if inline && !memory_image {
                         let data_url = format!("data:image/png;base64,{}", STANDARD.encode(bytes));
                         artifact["dataUrl"] = json!(data_url);
-                        artifact["dataURL"] = artifact["dataUrl"].clone();
+                        if !memory_only { artifact["dataURL"] = artifact["dataUrl"].clone(); }
                     }
                 }
                 "json" => {
@@ -330,7 +359,7 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                     artifact["mime"] = json!("application/json");
                     if inline {
                         artifact["dataUrl"] = json!(format!("data:application/json;base64,{}", STANDARD.encode(&bytes)));
-                        artifact["dataURL"] = artifact["dataUrl"].clone();
+                        if !memory_only { artifact["dataURL"] = artifact["dataUrl"].clone(); }
                     }
                 }
                 _ => {
@@ -342,7 +371,7 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                     if inline {
                         let data_url = format!("data:application/octet-stream;base64,{}", STANDARD.encode(bytes));
                         artifact["dataUrl"] = json!(data_url);
-                        artifact["dataURL"] = artifact["dataUrl"].clone();
+                        if !memory_only { artifact["dataURL"] = artifact["dataUrl"].clone(); }
                     }
                 }
             }
@@ -414,6 +443,21 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
     request["runId"] = json!(id);
     request["timeoutSeconds"] = json!(seconds);
     let resident_key=crate::resident_worker::plan_key(&request)?;
+    if request["artifactMode"] == "inspection" {
+        let plan = &request["runtimePlan"];
+        let node = plan["nodeId"].as_str().ok_or("普通檢測需要已編譯節點")?;
+        let mut outputs = std::collections::BTreeSet::new();
+        if let Some(nodes) = plan["definition"]["operatorGraph"]["nodes"].as_array() {
+            for consumer in nodes {
+                if let Some(inputs) = consumer["inputs"].as_object() {
+                    for input in inputs.values().filter(|input| input["nodeId"] == node) {
+                        if let Some(id) = input["artifactId"].as_str() { outputs.insert(id.to_owned()); }
+                    }
+                }
+            }
+        }
+        request["inspectionRasterOutputs"] = json!(outputs);
+    }
     let resident_requested=resident_key.is_some();
     if resident_requested {
         let assets=base.join("input-assets");fs::create_dir_all(&assets).map_err(|e|e.to_string())?;
@@ -526,15 +570,37 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
             }
         }
     }
-    let result_write_started = Instant::now();
-    save_json(&path, &result)?;
-    let result_write_ms = result_write_started.elapsed().as_secs_f64() * 1000.0;
-    result["timing"]["native"] = json!({"clock":"monotonic", "artifactMode":artifact_mode, "preparationMs":preparation_ms, "processMs":process_ms, "resultReadMs":result_read_ms, "verificationMs":verification_ms, "resultWriteMs":result_write_ms, "totalMs":native_started.elapsed().as_secs_f64()*1000.0, "scope":"native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive"});
-    if let Some(receipt)=resident_receipt {
+    result["timing"]["native"] = json!({"clock":"monotonic", "artifactMode":artifact_mode, "preparationMs":preparation_ms, "processMs":process_ms, "resultReadMs":result_read_ms, "verificationMs":verification_ms, "scope":"native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive"});
+    if let Some(receipt)=resident_receipt.as_ref() {
         result["timing"]["resident"]=json!({"backend":"rust-supervised-python-extension","pid":receipt.pid,"call":receipt.call,"coldStart":receipt.cold,"roundTripMs":receipt.elapsed_ms,"planBound":true});
         if result["status"]!="SUCCEEDED" {crate::resident_worker::invalidate();}
     }
-    save_json(&path, &result)?;
+    // Persist one verified report. Completion timing is added to the returned
+    // receipt after the write and is included in the durable inspection record.
+    let result_write_started = Instant::now();
+    let bytes = serde_json::to_vec(&result).map_err(|error| error.to_string())?;
+    fs::write(&path, bytes).map_err(|error| error.to_string())?;
+    result["timing"]["native"]["resultWriteMs"] = json!(result_write_started.elapsed().as_secs_f64() * 1000.0);
+    // Attach the live pixels only to the IPC response, after report persistence.
+    if artifact_mode == "inspection" {
+        if let Some(mut receipt) = resident_receipt {
+            if let Some(artifacts) = result.get_mut("artifacts").and_then(Value::as_array_mut) {
+                for artifact in artifacts.iter_mut().filter(|a| a["type"] == "image") {
+                    let Some(bytes) = artifact["id"].as_str().and_then(|id| receipt.live_images.remove(id)) else { continue };
+                    if bytes.len() < 54 || &bytes[..2] != b"BM"
+                        || u32::from_le_bytes(bytes[2..6].try_into().unwrap()) as usize != bytes.len()
+                        || Some(u32::from_le_bytes(bytes[18..22].try_into().unwrap()) as u64) != artifact["width"].as_u64()
+                        || Some(u32::from_le_bytes(bytes[22..26].try_into().unwrap()) as u64) != artifact["height"].as_u64() {
+                        return Err("即時顯示影像與本次產物尺寸不一致".into());
+                    }
+                    artifact["dataUrl"] = json!(format!("data:image/bmp;base64,{}", STANDARD.encode(bytes)));
+                    artifact["storage"] = json!("process-memory");
+                }
+            }
+            if !receipt.live_images.is_empty() { return Err("即時影像沒有對應本次產物".into()); }
+        }
+    }
+    result["timing"]["native"]["totalMs"] = json!(native_started.elapsed().as_secs_f64() * 1000.0);
     Ok(result)
 }
 

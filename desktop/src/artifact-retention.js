@@ -60,6 +60,7 @@ export function retainDatasetArtifacts(product,{retention,unitIndex=0,total=null
  const imageArtifacts=(product.runs||[]).reduce((sum,run)=>sum+(run.artifacts||[]).filter(a=>a.type==='image').length,0);
  const retainedImageArtifacts=keepPixels?imageArtifacts:0;
  Object.assign(decision,{imageArtifacts,retainedImageArtifacts,metadataOnlyImageArtifacts:imageArtifacts-retainedImageArtifacts,roles:keepPixels?[...new Set((product.runs||[]).flatMap(run=>(run.artifacts||[]).filter(a=>a.type==='image').map(a=>outputRole(run,a))))]:[]});
- const durable={...clone(product),runs};durable.record={...durable.record,artifactRetention:decision};
+ const {runs:_liveRuns,...metadata}=product;
+ const durable={...clone(metadata),runs};durable.record={...durable.record,artifactRetention:decision};
  return {product:durable,decision};
 }

@@ -8,7 +8,6 @@ use std::{
     fs::{self, File, OpenOptions},
     io::{Read, Write},
     path::{Component, Path, PathBuf},
-    process::Command,
     sync::atomic::{AtomicU64, Ordering},
 };
 
@@ -567,7 +566,7 @@ pub(crate) fn import_project(package: &Path, dest: &Path) -> Result<TransferRece
     transfer_impl(package, package, dest)
 }
 fn refs(repo: &Path) -> Result<Vec<u8>, String> {
-    let mut command = Command::new("git");
+    let mut command = crate::background_command::new("git");
     for key in [
         "GIT_DIR",
         "GIT_WORK_TREE",
@@ -708,6 +707,7 @@ pub(crate) fn attach_history(source: &Path, project: &Path) -> Result<TransferRe
 
 #[cfg(test)]
 mod tests {
+    use std::process::Command;
     use super::*;
     use crate::git_lfs_storage;
     struct Temp(PathBuf);

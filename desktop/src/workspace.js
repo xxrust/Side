@@ -66,7 +66,6 @@ export class Workspace extends Project{
   constructor(engine){super();this.inspection=engine||new InspectionEngine()}
   newProject(){clearWorkpieceArtifactPixels(this);this.pipelineSession=uid();this.epoch++;this.loadSequence=(this.loadSequence||0)+1;this.imageStore?.reset();this.imageLoadErrors?.clear();this.inspectionSelection=null;this.data={schema:'agentcv-workspace-0.9',images:[],activeId:null,config:{revision:1,measurements:[],tolerances:[],classes:[],calibration:null,recipe:null},events:[],chat:[],visualInquiry:createInquiryState(),workflow:blankWorkflow()};this.pixels.clear();this.pending.clear();this.undoStack=[];this.redoStack=[];this.dirty=false;this.notify()}
   onImageSelected(imageId){for(const board of this.data.visualInquiry?.boards||[])for(const source of board.projectSpaces?.sources||[])if(source.imageIds.includes(imageId))source.selectedImageId=imageId;}
-  selectImage(id){if(this.data.activeId!==id)clearWorkpieceArtifactPixels(this);return super.selectImage(id)}
   restoreInspectionUnit(saved,reference){
     if(!record(saved)||!Array.isArray(saved.runs)||!record(saved.record))throw Error('單件存檔格式不完整');
     const restored=clone(saved.runs);prepareAlgorithmRuns({algorithmRuns:restored});

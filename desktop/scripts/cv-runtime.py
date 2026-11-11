@@ -176,7 +176,11 @@ def json_value(value):
 
 
 def write_json(path, value):
-    text = json.dumps(json_value(value), ensure_ascii=False, indent=2, allow_nan=False)
+    settings = {"ensure_ascii": False, "separators": (",", ":"), "allow_nan": False}
+    try:
+        text = json.dumps(value, **settings)
+    except (TypeError, ValueError):
+        text = json.dumps(json_value(value), **settings)
     path.write_text(text + "\n", encoding="utf-8")
 
 
@@ -242,6 +246,11 @@ def trace_value(value):
     Arrays themselves remain in ordinary Python and saved image/array artifacts.
     Small JSON geometry and scalar values remain inspectable without conversion.
     """
+    value_type = type(value)
+    if value is None or value_type in (str, bool, int):
+        return value
+    if value_type is float:
+        return value if math.isfinite(value) else None
     if hasattr(value, "shape") and hasattr(value, "dtype") and hasattr(value, "tobytes"):
         if len(value.shape) == 0:
             return json_value(value.item())
@@ -422,7 +431,7 @@ class ProcedureTrace:
 class ProcedureUnit:
     def __init__(self, trace, node):
         self.trace, self.node = trace, node
-        self.started = time.monotonic()
+        self.started = time.perf_counter()
         self.entered = False
 
     def __enter__(self):
@@ -450,7 +459,7 @@ class ProcedureUnit:
     def finish(self, status):
         self.node["status"] = status
         self.node["finishedAt"] = datetime.now(timezone.utc).isoformat()
-        self.node["durationMs"] = (time.monotonic() - self.started) * 1000
+        self.node["durationMs"] = (time.perf_counter() - self.started) * 1000
         self.node.setdefault("execution", {"status": "COMPLETED" if status == "SUCCEEDED" else "FAULT" if status == "FAILED" else status})
 
     def set_judgement(self, judgement):
@@ -467,15 +476,21 @@ class ProcedureUnit:
 
 
 def execute(request_path: Path, run_directory: Path, resident=None):
-    started = time.monotonic()
+    started = time.perf_counter()
     phases = []
     phase_started, phase_name = started, "request"
     def phase(name):
         nonlocal phase_started, phase_name
-        now = time.monotonic()
+        now = time.perf_counter()
         phases.append({"key": phase_name, "ms": (now - phase_started) * 1000})
         phase_started, phase_name = now, name
     request = json.loads(request_path.read_text(encoding="utf-8"))
+    inspection = request.get("artifactMode") == "inspection"
+    raster_outputs = set(request.get("inspectionRasterOutputs", [])) if inspection else set()
+    declared_images = [o for o in request.get("expectedOutputs", []) if o.get("type") == "image"]
+    live_outputs = {o["id"] for o in declared_images if o.get("role") in ("result","final","output")} or {o["id"] for o in declared_images}
+    live_images = {}
+    live_bytes = 0
     code = request["code"]
     (run_directory / "algorithm.py").write_text(code, encoding="utf-8")
     source = request.get("sourceBinding", {})
@@ -536,20 +551,20 @@ def execute(request_path: Path, run_directory: Path, resident=None):
                 if path.stat().st_size>MAX_INPUT_BYTES:
                     raise ValueError("Original asset exceeds input size bound")
                 raw = path.read_bytes()
-                if hashlib.sha256(raw).hexdigest()!=host_asset["sha256"]:
-                    raise ValueError("Original asset content hash mismatch")
             else:
                 if not isinstance(data_url, str) or not re.match(r"^data:image/[a-zA-Z0-9.+-]+;base64,", data_url):
                     raise ValueError(f"Input image {index} must contain original base64 image bytes")
                 raw = base64.b64decode(data_url.split(",", 1)[1], validate=True)
+            raw_hash = hashlib.sha256(raw).hexdigest()
+            if host_asset and raw_hash != host_asset["sha256"]:
+                raise ValueError("Original asset content hash mismatch")
             declared_hash = (entry.get("source") or {}).get("contentSha256")
-            if declared_hash and declared_hash != hashlib.sha256(raw).hexdigest():
+            if declared_hash and declared_hash != raw_hash:
                 raise ValueError("Input original bytes do not match declared contentSha256")
             total_input_bytes += len(raw)
             if total_input_bytes > MAX_INPUT_BYTES:
                 raise ValueError("Input images exceed 64 MB in this execution")
             input_path = inputs / f"image-{index:03d}.original"
-            raw_hash = hashlib.sha256(raw).hexdigest()
             if resident is not None:
                 original = resident["root"] / (raw_hash + ".original")
                 if not original.exists():
@@ -612,7 +627,7 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             image_records.append({
                 "id": entry.get("id", str(index)), "name": entry.get("name", str(index)),
                 "width": width, "height": height, "path": str(input_path),
-                "sha256": hashlib.sha256(raw).hexdigest(), "source": entry.get("source"),
+                "sha256": raw_hash, "source": entry.get("source"),
                 "colorOrder": "BGR", "rawColorOrder": "GRAY" if decoded.ndim == 2 else "BGRA" if decoded.shape[2] == 4 else "BGR",
                 "dtype": str(decoded.dtype), "rawChannels": 1 if decoded.ndim == 2 else int(decoded.shape[2]),
                 "exifOrientationApplied": orientation != 1,
@@ -660,11 +675,57 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             return artifact["id"]
 
         def save_image(name, array, color_order="BGR", label=None, section="tool"):
+            nonlocal live_bytes
             array = np.asarray(array)
             if array.dtype == np.bool_:
                 array = array.astype(np.uint8) * 255
             if array.dtype not in (np.uint8, np.uint16):
                 raise ValueError("save_image requires uint8/uint16 or bool; explicitly scale floating point diagnostic images")
+            color = color_order.upper() if array.ndim == 3 else "GRAY"
+            if array.ndim != 2 and (array.ndim != 3 or array.shape[2] not in (3, 4) or color not in ("BGR", "RGB")):
+                raise ValueError("save_image expects grayscale, BGR/RGB or BGRA/RGBA image")
+            details = {
+                "width": int(array.shape[1]), "height": int(array.shape[0]), "label": label or name,
+                "section": section, "channels": 1 if array.ndim == 2 else int(array.shape[2]), "dtype": str(array.dtype),
+                **({"binary": bool(np.all((array == 0) | (array == 1)) or np.all((array == 0) | (array == np.iinfo(array.dtype).max)))}
+                   if array.ndim == 2 and any(o.get("id") == name and o.get("dataContract", {}).get("kind") == "mask" for o in request.get("expectedOutputs", [])) else {}),
+            }
+            if inspection:
+                # Only graph consumers need pixel bytes. Retain the other
+                # images as descriptors so data contracts can check dimensions.
+                if array.size == 0:
+                    raise ValueError("save_image expects non-empty pixels")
+                if color == "RGB":
+                    array = array[:, :, [2, 1, 0, 3] if array.shape[2] == 4 else [2, 1, 0]]
+                pixels = np.ascontiguousarray(array, dtype="<u2" if array.dtype == np.uint16 else np.uint8)
+                filename = output_name(name, ".raster")
+                details.update({"mime": "application/octet-stream", "pixelRetention": "metadata-only",
+                                "pixelAvailable": False, "rasterEncoding": "raw-le"})
+                raw = memoryview(pixels).cast("B")
+                if resident is not None and name in live_outputs:
+                    display = pixels if pixels.dtype == np.uint8 else (pixels >> 8).astype(np.uint8)
+                    if display.ndim == 3:
+                        if cv2 is not None:
+                            # Opaque BMP is for display; the downstream raw raster
+                            # still keeps its original channels and bit depth.
+                            display = cv2.cvtColor(display, cv2.COLOR_BGR2RGB if display.shape[2] == 3 else cv2.COLOR_BGRA2RGB)
+                        else:
+                            display = display[:, :, [2, 1, 0]]
+                    buffer = io.BytesIO()
+                    Image.fromarray(display).save(buffer, format="BMP")
+                    preview = buffer.getvalue()
+                    if len(preview) > MAX_ARTIFACT_BYTES or live_bytes + len(preview) > MAX_TOTAL_ARTIFACT_BYTES:
+                        raise ValueError("Live image bytes exceed the run's output bound")
+                    live_images[name] = preview
+                    live_bytes += len(preview)
+                if name in raster_outputs:
+                    return register(filename, raw, "image", details, artifact_id=name)
+                artifact = {"id": name, "name": filename, "type": "image", "source": source,
+                            "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw), **details}
+                used_names.add(filename)
+                trace.bind_artifact(artifact)
+                report["artifacts"].append(artifact)
+                return name
             if array.ndim == 2:
                 pixels = array
             elif array.ndim == 3 and array.shape[2] in (3, 4):
@@ -690,17 +751,19 @@ def execute(request_path: Path, run_directory: Path, resident=None):
                 raw = buffer.getvalue()
             url = None if request.get("artifactMode") == "references" else "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
             return register(output_name(name, ".png"), raw, "image", {
-                **({"dataUrl": url, "dataURL": url} if request.get("artifactMode") != "references" else {}), "mime": "image/png", "width": int(array.shape[1]),
-                "height": int(array.shape[0]), "label": label or name, "section": section,
-                "channels": 1 if array.ndim == 2 else int(array.shape[2]), "dtype": str(array.dtype),
-                **({"binary": bool(np.all((array == 0) | (array == 1)) or np.all((array == 0) | (array == np.iinfo(array.dtype).max)))}
-                   if array.ndim == 2 and any(o.get("id") == name and o.get("dataContract", {}).get("kind") == "mask" for o in request.get("expectedOutputs", [])) else {}),
+                **({"dataUrl": url} if request.get("artifactMode") == "memory" else
+                   {"dataUrl": url, "dataURL": url} if url is not None else {}), "mime": "image/png", **details,
             }, artifact_id=name)
 
         def save_json(name, data, section="parameters"):
             data = json_value(data)
-            raw = (json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode("utf-8")
-            return register(output_name(name, ".json"), raw, "json", {"data": data, "section": section}, artifact_id=name)
+            compact = inspection or request.get("artifactMode") == "memory"
+            formatting = {"separators": (",", ":")} if compact else {"indent": 2}
+            raw = (json.dumps(data, ensure_ascii=False, allow_nan=False, **formatting) + "\n").encode("utf-8")
+            # The native host reads and verifies the saved JSON bytes and adds
+            # their parsed value to its response. Avoid sending the same tree twice.
+            return register(output_name(name, ".json"), raw, "json",
+                            {"section": section} if compact else {"data": data, "section": section}, artifact_id=name)
 
         def save_array(name, array):
             buffer = io.BytesIO()
@@ -739,6 +802,13 @@ def execute(request_path: Path, run_directory: Path, resident=None):
                         raise ValueError(f"Upstream image {slot!r} data URL is invalid") from error
                 if hashlib.sha256(raw).hexdigest() != artifact.get("sha256"):
                     raise ValueError(f"Upstream image {slot!r} content hash changed")
+                if inspection and artifact.get("rasterEncoding") == "raw-le":
+                    shape = (artifact["height"], artifact["width"])
+                    if artifact["channels"] != 1:
+                        shape += (artifact["channels"],)
+                    dtype = {"uint8": np.uint8, "uint16": "<u2"}[artifact["dtype"]]
+                    upstream_value["image"] = np.frombuffer(raw, dtype=dtype).reshape(shape).copy()
+                    continue
                 if cv2 is None:
                     raise ImportError("Reading upstream images requires cv2")
                 upstream_value["image"] = cv2.imdecode(np.frombuffer(raw, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
@@ -778,6 +848,7 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             "gray": gray, "image_records": workpiece_records, "source": source,
             "parameters": request.get("parameters", {}), "params": request.get("parameters", {}),
             "upstream": upstream_values,
+            "capture_stage_diagnostics": not inspection,
             "workpiece_unit": request.get("workpieceUnit") or {},
             "views": {slot: decoded_images[index_by_id[image_id]] for slot, image_id in ((request.get("workpieceUnit") or {}).get("views") or {}).items()},
             "run_directory": run_directory, "output_directory": outputs,
@@ -806,9 +877,9 @@ def execute(request_path: Path, run_directory: Path, resident=None):
     report["stdout"] = stdout.save()
     report["stderr"] = stderr.save()
     phase("done")
-    report["durationMs"] = (time.monotonic() - started) * 1000
+    report["durationMs"] = (time.perf_counter() - started) * 1000
     report.setdefault("execution", {"status": "FAULT"})["durationMs"] = report["durationMs"]
-    artifact_phase = "artifact-encode-and-memory-retain" if request.get("artifactMode") == "memory" else "artifact-write"
+    artifact_phase = "inspection-raster-and-metadata" if inspection else "artifact-encode-and-memory-retain" if request.get("artifactMode") == "memory" else "artifact-write"
     report["timing"] = {"clock": "monotonic", "totalMs": report["durationMs"], "includes": ["imports", "image-decode", "algorithm", artifact_phase], "excludes": ["host-dispatch", "host-verification", "UI-render"]}
     report["timing"]["phases"] = phases
     report["timing"]["opencvThreads"] = cv2.getNumThreads() if "cv2" in locals() and cv2 is not None else None
@@ -821,6 +892,8 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         "meaning": "Execution and saved evidence do not establish accuracy, human acceptance or formal delivery",
     }
     write_json(result_path, report)
+    if resident is not None:
+        resident["liveImages"] = live_images
     return {"status": report["status"], "resultFile": str(result_path), "runId": request["runId"]}
 
 
@@ -847,6 +920,7 @@ def serve(address, token):
             resident["root"] = Path(message["cacheRoot"]).resolve() / "originals"
             resident["root"].mkdir(parents=True,exist_ok=True)
             cwd = Path.cwd()
+            resident["liveImages"] = {}
             try:
                 os.chdir(directory)
                 execute(Path(message["request"]), directory, resident=resident)
@@ -855,7 +929,11 @@ def serve(address, token):
                 reply = {"call":message.get("call"),"ok":False,"error":str(error)[:1000]}
             finally:
                 os.chdir(cwd)
+            images = resident.pop("liveImages", {})
+            reply["liveImages"] = [[name,len(data)] for name,data in images.items()]
             channel.write((json.dumps(reply)+"\n").encode())
+            for data in images.values():
+                channel.write(data)
             channel.flush()
 
 

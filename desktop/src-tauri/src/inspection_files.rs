@@ -322,7 +322,7 @@ fn save_workspace_unit(
     let mut assets = Vec::new();
     if let Some(runs) = request.get_mut("runs").and_then(Value::as_array_mut) {
         for run in runs {
-            let origin = run.clone();
+            let origin = json!({"runDirectory":run["runDirectory"]});
             if cleanup_runtime {
                 if let Some(path) = origin.get("runDirectory").and_then(Value::as_str) {
                     run_directories.push(PathBuf::from(path));

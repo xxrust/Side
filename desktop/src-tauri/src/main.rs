@@ -14,6 +14,7 @@ mod git_workspace;
 mod git_lfs_storage;
 mod history_transfer;
 mod cv_runtime;
+mod background_command;
 mod native_cv;
 mod two_boundary;
 mod resident_worker;
@@ -202,12 +203,7 @@ fn agent_command(app: &tauri::AppHandle, script: &str) -> Result<Command, String
         else if cfg!(debug_assertions) && dev.join("agent-packages").is_dir(){dev.join("agent-packages")}
         else if resources.join("agent-packages").is_dir(){resources.join("agent-packages")}
         else {return Err("應用內缺少 Agent 套件資源，請重新打包".into())};
-    let mut command=Command::new(node);
-    #[cfg(windows)]
-    {
-        use std::os::windows::process::CommandExt;
-        command.creation_flags(0x08000000); // Background Agent services must not steal keyboard focus.
-    }
+    let mut command=background_command::new(node);
     command.arg(scripts.join(script)).env("AGENTCV_AGENT_CONFIG",data.join("agent-profile.json"))
         .env("AGENTCV_RESOURCE_DIR",package_root).env("AGENTCV_TOOL_CONTRACT",scripts.join("agent-contract.json"))
         .env("AGENTCV_DEFAULT_ADAPTER","codex")

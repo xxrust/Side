@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 if (-not (Test-Path -LiteralPath $Executable -PathType Leaf)) { throw "Executable missing: $Executable" }
 $taskRunning = @(Get-Process -Name agentcv-desktop -ErrorAction SilentlyContinue)
 if ($taskRunning.Count -gt 0) {
-    throw 'SIDE is already running. Save and close the current window, then start version 0.16.8 again.'
+    throw 'SIDE is already running. Save and close the current window, then start version 0.16.9 again.'
 }
 $taskArguments = @()
 if ($Project) {

@@ -5,29 +5,42 @@ import {iconButton} from './ui-icons.js';
 import {ImageRenderer} from './image-renderer.js';
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
 export async function discussReference(view,reference,{schemeNodeId,question}={}){
- const epoch=view.project.epoch;
+ if(!reference?.dataURL)throw Error('目前沒有可引用的圖像');
+ const epoch=view.project.epoch,projectData=view.project.data;
+ if(/^data:image\/(?:bmp|x-ms-bmp);base64,/i.test(reference.dataURL)){
+  const image=new Image();image.src=reference.dataURL;await image.decode();
+  const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+  const context=canvas.getContext('2d');if(!context)throw Error('無法轉換引用圖像');
+  context.drawImage(image,0,0);
+  reference={...reference,dataURL:canvas.toDataURL('image/png'),width:canvas.width,height:canvas.height};
+ }
+ const assertCurrent=()=>{if(view.project.epoch!==epoch||view.project.data!==projectData)throw Error('專案已切換，未加入舊引用');};
+ assertCurrent();
  let board=view.board();const isDiscussion=board?.title.startsWith('討論 · ');
  if(!isDiscussion){board=view.project.createInquiryBoard({title:'討論 · '+(reference.label||'圖像')});await view.open({boardId:board.id});}
- if(view.project.epoch!==epoch)throw Error('專案已切換，未加入舊引用');
+ assertCurrent();
  const selected=new Set(view.selected),result=await view.addReference(reference,{x:Math.max(0,...board.items.map(i=>i.x+i.width))+40,y:40});
  selected.add(result.item.id);view.selected=selected;view.outputView.mode='canvas';view.outputView.schemeNodeId=schemeNodeId||reference.source?.schemeNodeId||null;
  const snapshot=view.snapshot({selectedOnly:true}),image=await view.composite({snapshot}),text=question||'請根據引用的圖像與標註分析問題，先說明觀察依據與適用邊界。';
- await view.onAsk?.({text,question:text,reference:{kind:'visual_inquiry',boardId:view.boardId,revision:snapshot.revision,snapshot},images:[image],visual:{images:[image],attachments:snapshot.items.map(i=>({assetId:i.assetId,itemId:i.id,label:i.asset.label,source:i.asset.source})),snapshot}});
+ assertCurrent();await view.onAsk?.({text,question:text,reference:{kind:'visual_inquiry',boardId:view.boardId,revision:snapshot.revision,snapshot},images:[image],visual:{images:[image],attachments:snapshot.items.map(i=>({assetId:i.assetId,itemId:i.id,label:i.asset.label,source:i.asset.source})),snapshot}});
  view.fit();return result;
 }
 export function mountInputPane(view,initial,gallery){
  const card=el('article',undefined,'node-output-card node-input-card'),header=el('header',undefined,'node-image-heading'),label=el('strong','本步實際輸入'),choices=el('div',undefined,'node-input-choices'),note=el('small'),actions=el('div',undefined,'node-output-actions'),renderer=new ImageRenderer({label:'本步實際輸入'}),img=renderer.image;choices.setAttribute('aria-label','選擇本步輸入');header.append(label,choices);card.append(header,renderer.root,note,actions);gallery.prepend(card);
- let model=initial,sources=[],selected=0,current=null,generation=0,signature='',hasFrame=false;
+ let model=initial,sources=[],selected=0,current=null,generation=0,signature='',frameImageId=null;
  const edit=view.button('標記／詢問',()=>discussReference(view,current,{schemeNodeId:model.schemeNodeId}));edit.disabled=true;actions.append(edit);
- const load=async()=>{const ticket=++generation,epoch=view.project.epoch,data=view.project.data,activeId=view.project.image?.id,source=sources[selected];current=null;edit.disabled=true;if(!source){if(!hasFrame){renderer.clear();img.hidden=true;}note.textContent='等待本步輸入';return;}try{
+ const load=async()=>{const ticket=++generation,epoch=view.project.epoch,data=view.project.data,activeId=view.project.image?.id,source=sources[selected];current=null;edit.disabled=true;if(!source){renderer.clear();img.hidden=true;note.textContent='等待本步輸入';return;}try{
   const guard={activeId,isCurrent:()=>ticket===generation&&epoch===view.project.epoch&&data===view.project.data&&activeId===view.project.image?.id};
-  let ref;if(source.original){const dataURL=await view.project.readImageAsset(source.original.id);ref={label:source.label,kind:'original',dataURL,width:source.original.width,height:source.original.height,source:{kind:'project-original',imageId:source.original.id,inputSha256:source.identity.imageSha256,schemeNodeId:model.schemeNodeId,runId:model.run.runId,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'original-image-pixels'}};}
+  let ref;if(source.original){const dataURL=await view.project.readImageAsset(source.original.id);ref={label:source.label,kind:'original',dataURL,width:source.original.width,height:source.original.height,source:{kind:'project-original',imageId:source.original.id,inputSha256:source.identity.imageSha256,schemeNodeId:model.schemeNodeId,runId:model.run?.runId,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'original-image-pixels'}};}
   else{let a=source.artifact;const cached=workpieceArtifactPixel(view.project,model.unitId,source.run.runId,a.id);if(!a.dataURL&&!a.dataUrl&&cached)a={...a,dataURL:cached,dataUrl:cached};if(!a.dataURL&&!a.dataUrl){await view.onLoadOutputImage?.({...model,run:source.run},a,guard);a=view.project.data.algorithmRuns.find(r=>r.runId===source.run.runId)?.artifacts.find(x=>x.id===a.id)||a;}const dataURL=a.dataURL||a.dataUrl||workpieceArtifactPixel(view.project,model.unitId,source.run.runId,a.id);if(!dataURL)throw Error('此輸入圖尚未載入');ref={label:source.label,kind:'stage',dataURL,width:a.width,height:a.height,source:{kind:'algorithm-output',schemeNodeId:source.run.schemeNodeId,runId:source.run.runId,artifactId:a.id,artifactSha256:a.sha256,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'algorithm-output-pixels'}};}
-  if(ticket!==generation||epoch!==view.project.epoch||!card.isConnected)return;const preload=new Image();await new Promise((resolve,reject)=>{preload.onload=resolve;preload.onerror=reject;preload.src=ref.dataURL});if(preload.decode)try{await preload.decode()}catch{}if(ticket!==generation||epoch!==view.project.epoch||!card.isConnected)return;current=ref;if(renderer.source?.src!==ref.dataURL){renderer.setSource({src:ref.dataURL,width:ref.width,height:ref.height,alt:ref.label});hasFrame=true}img.hidden=false;img.alt=ref.label;edit.disabled=false;note.textContent='';
+  if(!guard.isCurrent()||!card.isConnected)return;
+  if(renderer.source?.src!==ref.dataURL){img.hidden=true;renderer.setSource({src:ref.dataURL,width:ref.width,height:ref.height,alt:ref.label});await img.decode();}
+  if(!guard.isCurrent()||!card.isConnected)return;current=ref;img.hidden=false;img.alt=ref.label;edit.disabled=false;note.textContent='';
  }catch(e){if(ticket===generation&&card.isConnected)note.textContent=e.message;}};
- const update=next=>{model=next;const key=[view.project.epoch,model.schemeNodeId,model.run?.runId,model.unitId].join(':');if(key===signature)return;signature=key;sources=[];selected=0;current=null;edit.disabled=true;if(!hasFrame){renderer.clear();img.hidden=true;}note.textContent='載入新本步輸入…';
-  for(const [slot,binding]of Object.entries(model.run?.upstreamBindings||{})){const producer=view.project.data.algorithmRuns.find(r=>r.runId===binding.runId),artifact=producer?.artifacts.find(a=>a.id===binding.artifactId&&a.type==='image');if(producer?.workpieceUnit?.id===model.run.workpieceUnit?.id&&artifact)sources.push({label:slot+' · '+artifact.name,run:producer,artifact});}
-  for(const identity of model.run?.sourceBinding?.images||[]){const original=view.project.imageRecord(identity.imageId);if(original&&original.sha256===identity.imageSha256)sources.push({label:(Object.values(model.run.referenceInputs||{}).includes(original.id)?'參考 · ':'工件 · ')+original.name,original,identity});}
+ const update=next=>{model=next;const active=view.project.imageRecord(model.imageId);const key=[view.project.epoch,active?.id,model.schemeNodeId,model.run?.runId,model.unitId].join(':');if(key===signature)return;signature=key;generation++;sources=[];selected=0;current=null;edit.disabled=true;if(frameImageId!==active?.id||!renderer.source){frameImageId=active?.id;renderer.clear();img.hidden=true;}note.textContent='載入新本步輸入…';
+  if(active)sources.push({label:'工件 · '+active.name,original:active,identity:{imageSha256:active.sha256}});
+  for(const identity of model.run?.sourceBinding?.images||[]){const original=view.project.imageRecord(identity.imageId);if(original&&original.id!==active?.id&&original.sha256===identity.imageSha256)sources.push({label:(Object.values(model.run.referenceInputs||{}).includes(original.id)?'參考 · ':'工件 · ')+original.name,original,identity});}
+  for(const [slot,binding]of Object.entries(model.run?.upstreamBindings||{})){const producer=view.project.data.algorithmRuns.find(r=>r.runId===binding.runId),artifact=producer?.artifacts.find(a=>a.id===binding.artifactId&&a.type==='image');if(producer&&producer.workpieceUnit?.id===model.run?.workpieceUnit?.id&&artifact&&(artifact.pixelRetention!=='metadata-only'||workpieceArtifactPixel(view.project,model.unitId,producer.runId,artifact.id)))sources.push({label:slot+' · '+artifact.name,run:producer,artifact});}
   choices.replaceChildren();for(const [i,source]of sources.entries()){const b=view.button(source.label,()=>{selected=i;for(const [j,child]of [...choices.children].entries())child.setAttribute('aria-pressed',String(i===j));void load();});b.setAttribute('aria-pressed',String(i===0));choices.append(b);}queueMicrotask(load);
  };update(initial);return {update,card,restore:()=>renderer.restoreMaximize(),destroy:()=>{generation++;renderer.destroy();}};
 }

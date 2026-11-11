@@ -32,7 +32,7 @@ fn project_root(path:&str)->Result<PathBuf,String>{
  Ok(root)
 }
 fn git_base()->Command{
- let mut c=Command::new("git");
+ let mut c=crate::background_command::new("git");
  // Do not consume the user's Git settings, active index, hooks, filters or UI credentials.
  for key in ["GIT_DIR","GIT_WORK_TREE","GIT_INDEX_FILE","GIT_COMMON_DIR","GIT_OBJECT_DIRECTORY","GIT_ALTERNATE_OBJECT_DIRECTORIES","GIT_CONFIG","GIT_CONFIG_PARAMETERS","GIT_CONFIG_COUNT","GIT_TEMPLATE_DIR"]{c.env_remove(key);}
  c.env("GIT_CONFIG_NOSYSTEM","1").env("GIT_CONFIG_GLOBAL",if cfg!(windows){"NUL"}else{"/dev/null"}).env("GIT_TERMINAL_PROMPT","0")

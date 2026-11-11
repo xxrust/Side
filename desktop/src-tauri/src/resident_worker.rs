@@ -2,9 +2,9 @@
 //! within a session. Protocol is separate from arbitrary algorithm stdout.
 use serde_json::{Value,json};
 use sha2::{Digest,Sha256};
-use std::{fs,io::{BufRead,BufReader,Write},net::{TcpListener,TcpStream},path::{Path,PathBuf},process::{Child,Command},sync::Mutex,time::{Duration,Instant},thread};
+use std::{collections::BTreeMap,fs,io::{BufRead,BufReader,Read,Write},net::{TcpListener,TcpStream},path::{Path,PathBuf},process::{Child,Command},sync::Mutex,time::{Duration,Instant},thread};
 static WORKER: Mutex<Option<Worker>>=Mutex::new(None);
-const MAX_REPLY: usize=4096;
+const MAX_REPLY: usize=16*1024;
 struct Worker {key:String, child:Child, channel:BufReader<TcpStream>, root:PathBuf, calls:u64}
 impl Drop for Worker {
  fn drop(&mut self){
@@ -27,7 +27,7 @@ pub fn plan_key(request:&Value)->Result<Option<String>,String>{
  if plan["fingerprint"].as_str().unwrap_or("").is_empty(){return Err("缺少編譯方案指紋".into());}
  Ok(Some(format!("{:x}",Sha256::digest(serde_json::to_vec(definition).map_err(|e|e.to_string())?))))
 }
-pub struct Receipt{pub pid:u32,pub call:u64,pub cold:bool,pub elapsed_ms:f64}
+pub struct Receipt{pub pid:u32,pub call:u64,pub cold:bool,pub elapsed_ms:f64,pub live_images:BTreeMap<String,Vec<u8>>}
 pub fn execute(key:&str,script:&Path,root:&Path,mut command:Command,request:&Path,directory:&Path,seconds:u64)->Result<Receipt,String>{
  let started=Instant::now();let key=format!("{key}:{}:{}:{}",root.display(),script.display(),fs::metadata(script).and_then(|m|m.modified()).map(|v|format!("{v:?}")).unwrap_or_default());
  let mut slot=WORKER.lock().map_err(|e|e.to_string())?;
@@ -51,7 +51,24 @@ pub fn execute(key:&str,script:&Path,root:&Path,mut command:Command,request:&Pat
  let worker=slot.as_mut().unwrap();worker.calls+=1;let call=worker.calls;let pid=worker.child.id();
  worker.channel.get_mut().set_read_timeout(Some(Duration::from_secs(seconds))).map_err(|e|e.to_string())?;
  let body=json!({"call":call,"request":request,"directory":directory,"cacheRoot":worker.root});
- let outcome=(||{let stream=worker.channel.get_mut();stream.write_all(&serde_json::to_vec(&body).map_err(|e|e.to_string())?).map_err(|e|e.to_string())?;stream.write_all(b"\n").map_err(|e|e.to_string())?;stream.flush().map_err(|e|e.to_string())?;let reply=line(&mut worker.channel)?;if reply["call"]!=call||reply["ok"]!=true{return Err(format!("常駐算法回覆不一致：{reply}"));}Ok(())})();
- if let Err(error)=outcome{*slot=None;return Err(error);}
- Ok(Receipt{pid,call,cold,elapsed_ms:started.elapsed().as_secs_f64()*1000.})
+ let outcome=(||{
+  let mut bytes=serde_json::to_vec(&body).map_err(|e|e.to_string())?;
+  bytes.push(b'\n');worker.channel.get_mut().write_all(&bytes).map_err(|e|e.to_string())?;
+  let reply=line(&mut worker.channel)?;
+  if reply["call"]!=call||reply["ok"]!=true{return Err(format!("常駐算法回覆不一致：{reply}"));}
+  let mut images=BTreeMap::new();let mut total=0;
+  if let Some(frames)=reply["liveImages"].as_array(){
+   if frames.len()>48{return Err("即時影像數量超過限制".into());}
+   for frame in frames {
+    let name=frame[0].as_str().filter(|n|!n.is_empty()&&n.len()<=480).ok_or("即時影像識別無效")?;
+    let size=frame[1].as_u64().filter(|v|(54..=24*1024*1024).contains(v)).ok_or("即時影像長度無效")? as usize;
+    total+=size;if total>64*1024*1024||images.contains_key(name){return Err("即時影像重複或超過大小限制".into());}
+    let mut data=vec![0;size];worker.channel.read_exact(&mut data).map_err(|e|e.to_string())?;
+    images.insert(name.to_owned(),data);
+   }
+  }
+  Ok(images)
+ })();
+ let live_images=match outcome{Ok(images)=>images,Err(error)=>{*slot=None;return Err(error);}};
+ Ok(Receipt{pid,call,cold,elapsed_ms:started.elapsed().as_secs_f64()*1000.,live_images})
 }

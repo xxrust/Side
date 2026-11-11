@@ -27,9 +27,10 @@ export function openFlowNodePanel({project,node,flow,onNavigate,onRefresh,onErro
     if(sourceExists(collection.id)){const choice=await project.selectSourceImage(collection.id,id);if(!choice.selected)throw Error('圖片選取已改變，未啟動舊圖片檢測');}else await project.selectImage(id);
     message.textContent='檢測中…';await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
     if(!onRunInspection)throw Error('尚未連接真實檢測執行器');
-    await onRunInspection({controller:sourceController,onResultReady:async()=>{if(epoch===project.epoch&&dialog.open){resultReady=true;message.textContent='檢測完成，正在保存紀錄…';await draw();}},autoAdvance:false,units:[{id:crypto.randomUUID(),imageIds:[id]}],...(sourceExists(collection.id)?{sourceId:collection.id}:{})});
+    await onRunInspection({controller:sourceController,onResultReady:async()=>{if(epoch===project.epoch&&dialog.open){resultReady=true;message.textContent='檢測完成。';await draw();}},units:[{id:crypto.randomUUID(),imageIds:[id]}],...(sourceExists(collection.id)?{sourceId:collection.id}:{})});
     if(epoch!==project.epoch)return;
     if(collection.imageIds.includes(project.image?.id))selected=project.image.id;
+    if(selected!==id){const index=sourceFilteredIds(project,collection).indexOf(selected),left=index*184;if(index>=0&&(left<gallery.scrollLeft||left+184>gallery.scrollLeft+gallery.clientWidth))gallery.scrollLeft=Math.max(0,left-184);}
     message.textContent=project.data.datasetExecutions?.at(-1)?.status==='CANCELLED'?'已停止檢測。':selected!==id?'檢測完成，已準備下一張；點選圖片或執行一次可繼續。':'檢測完成。';
    }catch(error){message.textContent='檢測未完成：'+error.message;throw error;}finally{busy=false;sourceController=null;if(dialog.open&&epoch===project.epoch)await draw();}
   };

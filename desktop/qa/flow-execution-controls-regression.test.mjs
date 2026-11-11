@@ -53,3 +53,18 @@ test('execution states repaint both flow sizes without changing geometry, includ
   assert.deepEqual(h.errors,[]);
  }finally{h.close();}
 });
+
+test('toolbar does not label the gap between batch units as a fault and settles external execution',async()=>{
+ const h=await createHarness();
+ try{
+  await h.api.startupReady;
+  const p=h.api.project,output=h.w.document.querySelector('.flow-execution-controls output');
+  p.data.datasetExecutions=[{id:'batch-external',status:'RUNNING',processed:1,total:2}];h.api.render();
+  assert.doesNotMatch(output.textContent,/執行故障/);
+  p.data.datasetExecutions[0].status='COMPLETED';p.data.datasetExecutions[0].processed=2;h.api.render();
+  assert.match(output.textContent,/執行結束.*2 \/ 2/);
+  p.data.datasetExecutions.push({id:'cancelled-external',status:'CANCELLED',processed:1,total:33});h.api.render();
+  assert.match(output.textContent,/已停止.*1 \/ 33/);
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
