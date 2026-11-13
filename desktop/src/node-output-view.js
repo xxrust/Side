@@ -24,21 +24,44 @@ export class NodeOutputView{
   const v=this.owner,p=v.project,section=el('section',undefined,'node-output-view'),header=el('header'),identity=el('div'),title=el('strong'),name=el('small'),status=el('small'),gallery=el('div',undefined,'node-output-gallery'),card=el('article',undefined,'node-output-card'),heading=el('header',undefined,'node-image-heading'),outputName=el('span'),empty=el('div',undefined,'node-output-empty'),actions=el('div',undefined,'node-output-actions'),pager=el('nav',undefined,'node-output-pages'),history=el('div'),renderer=new ImageRenderer({label:'本步輸出'}),image=renderer.image,viewport=renderer.viewport;
   section.setAttribute('aria-label','目前工件的即時輸出');identity.append(title,name,status);header.append(identity);heading.append(el('strong','本步輸出'),outputName);image.draggable=false;empty.setAttribute('role','status');renderer.viewport.append(empty);const ask=v.button('圈選／詢問',()=>this.toCanvas(this.currentModel,this.currentArtifact,{ask:true}));actions.append(ask);viewport.oncontextmenu=e=>{e.preventDefault();if(!ask.disabled)v.perform(()=>this.toCanvas(this.currentModel,this.currentArtifact,{ask:true}));};card.append(heading,renderer.root,actions);gallery.append(card);
   section.append(header,gallery,pager,history);area.append(section);
-  this.surface={section,title,name,status,outputName,image,empty,ask,pager,history,renderer,reset:()=>renderer.fit(),hasFrame:false,epoch:p.epoch,boardId:v.boardId};this.surface.input=mountInputPane(v,{},gallery);
+  this.surface={section,title,name,status,outputName,get image(){return renderer.image;},empty,ask,pager,history,renderer,reset:()=>renderer.fit(),hasFrame:false,epoch:p.epoch,boardId:v.boardId};this.surface.input=mountInputPane(v,{},gallery);
  }
 
- refresh(){
+ refresh({prepared}={}){
   const v=this.owner,p=v.project,u=this.surface;if(!u?.section.isConnected||u.epoch!==p.epoch||u.boardId!==v.boardId||this.mode!=='output'||v.historicalSnapshot)return false;
   const model=resolveNodeOutput(p,{schemeNodeId:this.target()}),signature=[p.epoch,model.schemeNodeId,model.unitId,model.run?.runId,model.status,model.artifacts.map(a=>a.id+':'+a.sha256).join('|')].join(':');
   if(signature!==this.signature){this.page=0;this.signature=signature;}
-  this.currentModel=model;this.page=Math.max(0,Math.min(this.page,model.artifacts.length-1));const a=model.artifacts[this.page];this.currentArtifact=a;
+  this.page=Math.max(0,Math.min(this.page,model.artifacts.length-1));const a=model.artifacts[this.page],url=a?.dataURL||a?.dataUrl;
+  const key=JSON.stringify([signature,this.page,url,model.imageId,p.imageSelection]);
+  if(url&&prepared?.key!==key&&u.committedKey!==key){
+   u.ask.disabled=true;u.section.setAttribute('aria-busy','true');u.status.textContent=u.hasFrame?'載入下一組圖像 · 保留目前畫面':'載入圖像…';
+   if(u.pending?.key!==key){
+    const pending={key};u.pending=pending;const data=p.data,selection=p.imageSelection;
+    const isCurrent=()=>this.surface===u&&u.section.isConnected&&u.pending===pending&&p.data===data&&u.epoch===p.epoch&&p.imageSelection===selection;
+    pending.promise=Promise.all([u.input.prepare(model,{activeId:p.image?.id,isCurrent}),u.renderer.prepareSource({src:url,width:a.width,height:a.height,alt:artifactDisplayName(a)})]).then(([input,output])=>{
+     if(isCurrent())this.refresh({prepared:{key,input,output}});
+    }).catch(error=>{if(isCurrent()){u.status.textContent='圖像準備失敗：'+String(error?.message||error);u.section.setAttribute('aria-busy','false');u.pending=null;}});
+   }
+   return true;
+  }
+  // A validated native record can precede publication of its run/pixels. No
+  // metadata-only state may clear a decoded pair, including VALID and faults.
+  // Keep its identity and explicitly label why a replacement is unavailable.
+  if(!url&&u.hasFrame){
+   u.pending=null;u.ask.disabled=true;u.section.setAttribute('aria-busy',String(!['FAULT','STALE','SKIPPED','NOT_FOUND'].includes(model.status)));u.status.textContent=(['FAULT','STALE','SKIPPED','NOT_FOUND'].includes(model.status)?model.reason:'等待下一組圖像')+' · 保留上次完整畫面';
+   if(a&&a.pixelRetention!=='metadata-only')this.ensureImage(model,a,u.section);
+   if(model.status==='RESTORE_REQUIRED')this.ensureRecord(model,u.section);
+   return true;
+  }
+  u.pending=null;u.committedKey=key;u.section.setAttribute('aria-busy','false');
+  this.currentModel=model;this.currentArtifact=a;
   const set=(element,text)=>{if(element.textContent!==text)element.textContent=text;};
   if(u.section.dataset.status!==model.status)u.section.dataset.status=model.status;if(u.section.dataset.runId!==(model.run?.runId||''))u.section.dataset.runId=model.run?.runId||'';
   const imageName=p.imageRecord(model.imageId)?.name||'';
-  set(u.title,model.title||'');set(u.name,imageName);set(u.status,labels[model.status]||model.status);set(u.outputName,a?artifactDisplayName(a):'');u.input.update(model);
+  set(u.title,model.title||'');set(u.name,imageName);set(u.status,model.pendingUnitId?'下一件檢測中 · 顯示上一件輸出':labels[model.status]||model.status);set(u.outputName,a?artifactDisplayName(a):'');u.input.update(model,{prepared:prepared?.input});
   // Retention describes the saved record. The resolved artifact can still have
   // verified current-workpiece pixels hydrated from the process-local cache.
-  const url=a?.dataURL||a?.dataUrl,hasPixels=!!url;if(hasPixels){if(u.renderer.source?.src!==url){u.renderer.setSource({src:url,width:a.width,height:a.height,alt:artifactDisplayName(a)});u.hasFrame=true;}this.lastPixelFrame={url,label:artifactDisplayName(a),width:a.width,height:a.height,imageName,imageId:model.imageId};u.image.hidden=false;u.image.alt=artifactDisplayName(a);u.empty.classList.remove('node-output-retained-note');u.empty.hidden=true;u.ask.disabled=false;}
+  const hasPixels=!!url;if(hasPixels){if(prepared?.output)u.renderer.commitSource(prepared.output);u.hasFrame=true;this.lastPixelFrame={url,label:artifactDisplayName(a),width:a.width,height:a.height,imageName,imageId:model.imageId};u.image.hidden=false;u.image.alt=artifactDisplayName(a);u.empty.classList.remove('node-output-retained-note');u.empty.hidden=true;u.ask.disabled=false;}
   else if(model.run?.artifactMode==='inspection'){this.lastPixelFrame=null;u.renderer.clear();u.image.hidden=true;u.empty.classList.remove('node-output-retained-note');u.empty.hidden=false;set(u.empty,model.status==='FAULT'?model.reason:'本次未生成階段圖；需要圖像時，開啟「保存階段渲染圖」後重跑');u.ask.disabled=true;}
   else if(this.lastPixelFrame&&this.lastPixelFrame.imageId===model.imageId){if(u.renderer.source?.src!==this.lastPixelFrame.url){u.renderer.setSource({src:this.lastPixelFrame.url,width:this.lastPixelFrame.width,height:this.lastPixelFrame.height,alt:this.lastPixelFrame.label});u.hasFrame=true;}u.image.hidden=false;u.image.alt=this.lastPixelFrame.label;u.empty.classList.add('node-output-retained-note');u.empty.hidden=false;set(u.empty,`尚無新像素；上次輸出：${this.lastPixelFrame.imageName} · ${this.lastPixelFrame.label}`);u.ask.disabled=true;if(a&&a.pixelRetention!=='metadata-only')this.ensureImage(model,a,u.section);else if(!a&&model.status==='RESTORE_REQUIRED')this.ensureRecord(model,u.section);}
   else{u.renderer.clear();u.image.hidden=true;u.empty.classList.remove('node-output-retained-note');u.empty.hidden=false;set(u.empty,a?.pixelRetention==='metadata-only'?'本批次只保留此圖的摘要；需要像素時請重跑此工件或改用完整圖像保留':a?'正在讀取本次產物…':model.reason||'等待本件輸出');u.ask.disabled=true;if(a&&a.pixelRetention!=='metadata-only')this.ensureImage(model,a,u.section);else if(!a&&model.status==='RESTORE_REQUIRED')this.ensureRecord(model,u.section);}

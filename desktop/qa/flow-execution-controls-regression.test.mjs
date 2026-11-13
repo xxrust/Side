@@ -14,12 +14,15 @@ test('source modal cannot suppress execution-control locking or final unlock on 
   for(const fails of [false,true]){
    let settle;
    h.w.__native.invoke=async name=>{
+    if(name==='flush_inspection_archive')return {items:[]};
     if(name==='save_project_document')return new Promise((resolve,reject)=>settle=()=>fails?reject(Error('QA save failure')):resolve('/tmp/control-regression.agentcv'));
     return null;
    };
    const pending=h.$('saveProject').onclick();
    assert.ok(buttons().every(b=>b.disabled),'modal must not leave execution available during another operation');
    h.$('openPurposeScheme').click();h.w.document.querySelector('.purpose-workspace-dialog')?.close();
+   for(let i=0;i<100&&!settle;i++)await h.tick();
+   assert.equal(typeof settle,'function','save must reach native dispatch after archive flush');
    settle();await pending;
    assert.ok(buttons().every(b=>!b.disabled),'the operation settling must unlock without closing the source modal');
    assert.equal(d.open,true);

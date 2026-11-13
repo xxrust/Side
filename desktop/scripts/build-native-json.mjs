@@ -1,0 +1,17 @@
+import {spawnSync} from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const target=path.resolve(process.env.CARGO_TARGET_DIR||path.join(desktop,'src-tauri/target'),'native-json');
+const args=['build','--release','--locked','--manifest-path',path.join(desktop,'native-json/Cargo.toml')];
+const result=spawnSync('cargo',args,{stdio:'inherit',env:{...process.env,CARGO_TARGET_DIR:target},windowsHide:true});
+if(result.error)throw result.error;if(result.status!==0)process.exit(result.status||1);
+const artifact=process.platform==='win32'?'_agentcv_json.dll':process.platform==='darwin'?'lib_agentcv_json.dylib':'lib_agentcv_json.so';
+const name=process.platform==='win32'?'_agentcv_json.pyd':'_agentcv_json.abi3.so';
+const source=path.join(target,'release',artifact),directory=path.join(desktop,'scripts/native-json');
+fs.mkdirSync(directory,{recursive:true});fs.copyFileSync(source,path.join(directory,name));
+const digest=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+fs.writeFileSync(path.join(directory,'build-receipt.json'),JSON.stringify({version:1,abi:'CPython abi3 >=3.10',platform:process.platform,arch:process.arch,file:name,sha256:digest(source),sources:Object.fromEntries(['Cargo.toml','Cargo.lock','src/lib.rs'].map(file=>[file,digest(path.join(desktop,'native-json',file))]))},null,2));
+console.log('Built native SDK JSON encoder: '+name);

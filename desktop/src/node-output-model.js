@@ -1,6 +1,6 @@
 import {schemeFingerprint} from './purpose-compiler.js';
 import {algorithmRunCurrent} from './algorithm-workspace.js';
-import {activeWorkpieceExecution,workpieceArtifactPixel,retainedWorkpieceOutput} from './workpiece-live-state.js';
+import {activeWorkpieceExecution,workpieceArtifactPixel,retainedWorkpieceOutput,completedWorkpiece} from './workpiece-live-state.js';
 import {programScope} from './program-scope.js';
 import {purposeNodeTitle} from './purpose-node-presentation.js';
 import {artifactDisplayName} from './artifact-presentation.js';
@@ -16,8 +16,14 @@ export function resolveNodeOutput(project,{schemeNodeId}={}){
  const empty=(status,reason,extra={})=>({...base,status,reason,...extra,artifacts:[]});
  if(!node)return empty('WAITING','請選擇方案節點');
  const basis=schemeFingerprint(scheme),live=activeWorkpieceExecution(project);
- let unit,execution;
- if(live?.schemeFingerprint===basis){unit=live;execution={id:live.executionId,status:'RUNNING'};base.live=true;base.imageId=live.imageIds.includes(activeId)?activeId:live.imageIds[0]||activeId;}
+ const completed=completedWorkpiece(project),display=completed?.schemeFingerprint===basis?completed:null;
+ let unit,execution,displayRuns;
+ const liveRun=live&&list(live.runIds).map(id=>list(data.algorithmRuns).find(r=>r.runId===id)).find(r=>r?.schemeNodeId===schemeNodeId);
+ const latest=list(data.datasetExecutions).at(-1);
+ if(display&&(live?.schemeFingerprint===basis&&!liveRun||!live&&latest?.id===display.executionId&&(latest.status==='RUNNING'||latest.processed>1))){
+  unit=display.record;execution={id:display.executionId,status:'COMPLETED'};displayRuns=display.runs;base.imageId=unit.imageIds[0]||activeId;base.pendingUnitId=live?.unitId||null;
+ }
+ else if(live?.schemeFingerprint===basis){unit=live;execution={id:live.executionId,status:'RUNNING'};base.live=true;base.imageId=live.imageIds.includes(activeId)?activeId:live.imageIds[0]||activeId;}
  else {
   const executions=list(data.datasetExecutions).filter(e=>e.schemeFingerprint===basis);
   const retained=retainedWorkpieceOutput(project);
@@ -35,7 +41,7 @@ export function resolveNodeOutput(project,{schemeNodeId}={}){
  }
  if(!unit)return empty('WAITING','目前工件尚無這份方案的執行結果');
  Object.assign(base,{unitId:unit.unitId,executionId:execution.id,recordRef:unit.recordRef||unit.archive?.reference||null});
- const observed=list(unit.nodeStates).find(s=>s.nodeId===schemeNodeId),run=list(unit.runIds).map(id=>list(data.algorithmRuns).find(r=>r.runId===id)).find(r=>r?.schemeNodeId===schemeNodeId);
+ const observed=list(unit.nodeStates).find(s=>s.nodeId===schemeNodeId),run=list(unit.runIds).map(id=>list(displayRuns||data.algorithmRuns).find(r=>r.runId===id)).find(r=>r?.schemeNodeId===schemeNodeId);
  if(observed?.status==='RUNNING')return empty('RUNNING','本節點正在執行');
  if(!run){
   if(['SKIPPED','PENDING','DECLARED'].includes(observed?.status))return empty(observed.status,observed.reason||'本件尚無此節點輸出');

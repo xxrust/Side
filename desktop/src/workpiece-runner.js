@@ -3,7 +3,7 @@ import {validateProjectScheme} from './scheme-validation.js';
 import {buildDecisionEvidence} from './decision-evidence.js';
 import {resolveWorkpieceExpected} from './workpiece-expected-label.js';
 import {workpieceRegression,workpieceRecordFields} from './workpiece-product.js';
-import {publishWorkpieceExecution,clearWorkpieceExecution,beginWorkpieceArtifactPixels,captureWorkpieceArtifactPixels} from './workpiece-live-state.js';
+import {publishWorkpieceExecution,clearWorkpieceExecution,beginWorkpieceArtifactPixels,captureWorkpieceArtifactPixels,publishCompletedWorkpiece} from './workpiece-live-state.js';
 import {aggregatePurposeStates} from './workpiece-lifecycle.js';
 import {scheduleWorkpieceNodes,nodeRunState as state} from './workpiece-node-scheduler.js';
 import {runNativeWorkpieceSession} from './native-workpiece-session.js';
@@ -109,9 +109,8 @@ export async function runDatasetScheme(project,execute,options={}){
    if(!unit.id||!Array.isArray(imageIds)||!imageIds.length||new Set(imageIds).size!==imageIds.length)throw Error('單件需要穩定id及不重複imageIds；多視圖只能屬於同一工件。');
    if(scheme.execution.inputSlots.length>1){if(!unit.views||scheme.execution.inputSlots.some(s=>s.required&&!unit.views[s.id])||Object.values(unit.views).some(imageId=>!imageIds.includes(imageId)))throw Error('同件多視圖需views:{slotId:imageId}，不得把資料集誤當多視圖。');}
    else if(imageIds.length!==1)throw Error('單視圖方案每件只能一張圖；多視圖須先聲明inputSlots並提供views。');
-   // Switching to the next unit immediately releases the previous unit's
-   // process pixels, even before the new operator finishes.
-   beginWorkpieceArtifactPixels(project,unit.id);
+   // Keep the completed display until the next unit has a verified replacement.
+   beginWorkpieceArtifactPixels(project,unit.id,{preserveDisplay:true});
    const referenceInputs=scheme.execution.referenceInputs||{},referenceIds=[...new Set(Object.values(referenceInputs))],inputIds=[...new Set([...imageIds,...referenceIds])];
    let releaseInputs=()=>{},inputFault=null;
    const expectedResolution=resolveWorkpieceExpected(project,unit,scheme);
@@ -214,6 +213,7 @@ export async function runDatasetScheme(project,execute,options={}){
    else {entry.units.push(immutableJson(record));latestUnitRunIds=runs.map(r=>r.runId);}
    times.push(record.timing.totalMs);timeSum+=record.timing.totalMs;timeMax=Math.max(timeMax,record.timing.totalMs);entry.processed++;entry.counts.execution[record.execution.status]++;entry.counts.exits[record.finalExit]=(entry.counts.exits[record.finalExit]||0)+1;entry.counts.evidence[record.evidenceReady?'ready':'notReady']++;for(const cat of result.categoryIds)entry.counts.categories[cat]=(entry.counts.categories[cat]||0)+1;
    updateClassificationMetrics(entry.counts.regression,record);
+   publishCompletedWorkpiece(project,entry,record,runs);
    delete entry.activeUnit;clearWorkpieceExecution(project);emit();if(cancelled||options.signal?.aborted){entry.status='CANCELLED';break;}
    }finally{releaseInputs();}
   }

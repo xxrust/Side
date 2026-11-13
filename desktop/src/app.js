@@ -317,7 +317,8 @@ function textInput(label,value,onchange){const l=el('label',label),i=el('input')
 function projectCanvasHome(){const hadHome=project.data.visualInquiry?.boards.some(b=>b.projectSpaces),dirty=project.dirty,board=project.ensureProjectCanvas();if(!hadHome&&!dirty&&!project.data.images.length&&!wf().references.length)project.dirty=false;return {board,source:board.projectSpaces.sources[0],reference:board.projectSpaces.references[0]};}
 const sourcePanelOpen=()=>!!document.querySelector('.flow-source-panel[open]');
 const executionViewUpdates=createExecutionViewScheduler(()=>{
- if(!working||!inspectionAbortController||sourcePanelOpen())return;
+ if(!working||!inspectionAbortController)return;
+ if(sourcePanelOpen()){inquiryView.outputView.refresh();return;}
  const start=performance.now();purposeWorkspaceView?.refreshProgress();projectRail.sync();
  if(inquiryView.outputView.mode==='output')inquiryView.render();
  else{if(inquiryView.syncingLiveOutputs)return;inquiryView.syncingLiveOutputs=true;try{project.syncInquiryLiveOutputs?.(inquiryView.boardId);}finally{inquiryView.syncingLiveOutputs=false;}inquiryView.programFlow.sync();inquiryView.paint();}
@@ -325,7 +326,7 @@ const executionViewUpdates=createExecutionViewScheduler(()=>{
 },{intervalMs:150});
 // Both app and canvas subscribe to project changes. Route both through the same
 // scheduler, otherwise the canvas subscription rebuilds the DOM on every node.
-inquiryView.onExecutionUpdate=()=>{if(sourcePanelOpen())return true;if(!working||!inspectionAbortController)return false;executionViewUpdates.request();return true;};
+inquiryView.onExecutionUpdate=()=>{if(sourcePanelOpen()){if(working&&inspectionAbortController)executionViewUpdates.request();else inquiryView.outputView.refresh();return true;}if(!working||!inspectionAbortController)return false;executionViewUpdates.request();return true;};
 function render(){
  if(sessionBooting){
   let notice=document.getElementById('sessionRestoreNotice');
@@ -335,7 +336,7 @@ function render(){
  // Operation controls must settle even when a modal or the progress scheduler
  // deliberately suppresses the expensive canvas redraw.
  purposeWorkspaceView?.refreshControls();
- if(sourcePanelOpen()){executionViewUpdates.cancel();return;}
+ if(sourcePanelOpen()){executionViewUpdates.cancel();inquiryView.outputView.refresh();return;}
  // A thousand workpieces still need at most one presentation update per 150ms.
  // Results and durable saves remain per-unit; the final refresh is synchronous.
  if(working&&inspectionAbortController&&inquiryView.opened&&inquiryView.panel?.isConnected){executionViewUpdates.request();return;}

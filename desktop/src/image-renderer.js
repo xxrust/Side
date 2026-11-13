@@ -40,12 +40,37 @@ export class ImageRenderer{
    if(action){event.preventDefault();event.stopPropagation();action();}
   });
   this.resize=typeof ResizeObserver==='function'?new ResizeObserver(()=>this.onResize()):null;this.resize?.observe(this.viewport);
+  this.bindImage();this.paint();
+ }
+ bindImage(){
   this.image.onload=()=>{
    if(!this.source||this.image.getAttribute('src')!==this.source.src)return;
    this.source.width=this.source.width||this.image.naturalWidth;this.source.height=this.source.height||this.image.naturalHeight;
    if(this.view.fitted)this.fit();else this.paint();this.onLoad?.(this.source);
   };
-  this.image.onerror=()=>{if(this.source)this.onError?.(Error('圖片解碼失敗'));};this.paint();
+  this.image.onerror=()=>{if(this.source)this.onError?.(Error('圖片解碼失敗'));};
+ }
+ // Decode on a detached element. The visible element and its camera remain
+ // untouched until all members of an input/output pair can commit together.
+ async prepareSource(source){
+  if(!source?.src)throw Error('缺少待載入圖像');
+  if(this.source?.src===source.src&&this.image.complete&&this.image.naturalWidth)return {source,image:this.image};
+  const image=el('img');image.crossOrigin='anonymous';image.draggable=false;image.alt=source.alt||this.image.alt;image.src=source.src;
+  await image.decode();
+  if(!image.naturalWidth||!image.naturalHeight)throw Error('圖片解碼後沒有有效像素');
+  return {source:{...source,width:source.width||image.naturalWidth,height:source.height||image.naturalHeight},image};
+ }
+ commitSource(frame){
+  if(!frame?.image?.naturalWidth)throw Error('圖像尚未準備完成');
+  const changed=this.source?.src!==frame.source.src;
+  if(this.image!==frame.image){
+   const old=this.image;old.onload=old.onerror=null;
+   frame.image.className=old.className;frame.image.hidden=false;
+   old.replaceWith(frame.image);this.image=frame.image;this.bindImage();
+  }
+  this.source={...frame.source};
+  if(changed){this.resetRGB();this.view={scale:1,x:0,y:0,fitted:true};this.fit();}
+  this.paint();return this;
  }
  setSource({src,width,height,alt}={}){
   if(!src){this.clear();return this;}

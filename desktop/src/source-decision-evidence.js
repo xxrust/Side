@@ -1,7 +1,7 @@
 import {sourceImageLabels} from './source-image-labels.js';
 import {schemeFingerprint} from './purpose-compiler.js';
 import {buildDecisionEvidence} from './decision-evidence.js';
-import {workpieceArtifactPixel} from './workpiece-live-state.js';
+import {workpieceArtifactPixel,completedWorkpiece} from './workpiece-live-state.js';
 const list=x=>Array.isArray(x)?x:[];
 /** Read-only: inspecting a past result cannot select images or restore a live run. */
 export async function loadSourceDecisionEvidence(project,{imageId,sourceId},records){
@@ -10,7 +10,9 @@ export async function loadSourceDecisionEvidence(project,{imageId,sourceId},reco
  const entry=list(project.data.datasetExecutions).find(e=>e.id===labels.last.executionId),summary=list(entry?.units).find(u=>u.unitId===labels.last.unitId);
  const reference=summary?.recordRef||summary?.archive?.reference;
  let saved=null,record=summary,runs=list(project.data.algorithmRuns).filter(r=>list(summary?.runIds).includes(r.runId));
- if(reference){
+ const completed=completedWorkpiece(project);
+ if(completed?.executionId===entry.id&&completed.record.unitId===summary.unitId){record=completed.record;runs=completed.runs;}
+ else if(reference){
   if(!records)return {...base,state:'UNAVAILABLE',message:'需桌面執行紀錄讀取器載入本件判定依據'};
   const current=project.inspectionSelection;
   const fresh=current?.executionId===entry.id&&current?.unitId===summary.unitId&&JSON.stringify(current.recordRef)===JSON.stringify(summary.recordRef)&&current.record?.runIds?.every(id=>runs.some(r=>r.runId===id));
