@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildProgramFlow,programFlowForAsset,programFlowNode} from '../src/program-flow.js';
+import {sealProjectExecutionFacts} from '../src/execution-facts.js';
+import {programScope} from '../src/program-scope.js';
 
 // These are model-only records: they assert provenance and graph semantics,
 // never serve as image/algorithm acceptance evidence.
@@ -70,4 +72,30 @@ test('malformed saved parent cycles cannot create an endlessly expanding panel t
  const flow=buildProgramFlow([run]);
  assert.ok(flow.nodes.filter(n=>n.kind!=='run').every(n=>n.parentId==='run-a::run'));
  assert.equal(flow.diagnostics.filter(d=>d.code==='CYCLIC_PARENT').length,2);
+});
+
+test('display graphs share certified facts while editable readers and live metadata remain independent',()=>{
+ const run=record(),values={points:Array.from({length:700},(_,i)=>({x:i/3,y:-i}))};
+ run.result={measurement:values};run.artifacts.push({id:'facts',type:'json',data:values});
+ run.procedureTrace.nodes[1].outputs={measurement:values};
+ const project={data:{algorithmRuns:[run]}};sealProjectExecutionFacts(project.data);
+ const before=JSON.stringify(run),ordinary=buildProgramFlow(project),display=buildProgramFlow(project,{shareImmutableFacts:true});
+ assert.equal(JSON.stringify(display),JSON.stringify(ordinary));
+ assert.equal(display.nodes[0].outputs,run.result);
+ assert.equal(display.nodes[0].artifacts.at(-1).data,run.artifacts.at(-1).data);
+ assert.equal(programFlowNode(display,'run-a::locate#1').outputs,run.procedureTrace.nodes[1].outputs);
+ assert.throws(()=>{display.nodes[0].outputs.measurement.points[0].x=99;},TypeError);
+ ordinary.nodes[0].outputs.measurement.points[0].x=99;
+ ordinary.nodes[0].artifacts.at(-1).data.points.push({x:1,y:2});
+ display.nodes[0].artifacts[0].sha256='display-only';display.nodes[0].sourceImages[0].imageId='display-only';
+ display.nodes[0].artifacts.push({id:'view-local'});
+ assert.equal(JSON.stringify(run),before);
+ const scope=programScope(project,{},run.runId);assert.equal(scope.node.outputs,run.result);
+ run.artifacts[0].sha256='new-live-metadata';
+ const refreshed=buildProgramFlow(project,{shareImmutableFacts:true});
+ assert.equal(refreshed.nodes[0].artifacts[0].sha256,'new-live-metadata');
+ // An arbitrary shallow Object.freeze must never authorize borrowed children.
+ const unsafe={...record(),result:Object.freeze({nested:{value:3}})};
+ const safe=buildProgramFlow([unsafe],{shareImmutableFacts:true});safe.nodes[0].outputs.nested.value=8;
+ assert.equal(unsafe.result.nested.value,3);
 });

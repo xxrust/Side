@@ -11,7 +11,7 @@ export class ImageRenderer{
   this.view={scale:1,x:0,y:0,fitted:true};
   this.root=el('section',undefined,'image-renderer');this.root.setAttribute('aria-label',label);
   this.viewport=el('div',undefined,'image-renderer-viewport');this.viewport.tabIndex=0;this.viewport.setAttribute('role','img');this.viewport.setAttribute('aria-label',label);
-  this.image=el('img');this.image.draggable=false;this.image.alt=label;this.viewport.append(this.image);this.root.append(this.viewport);
+  this.image=el('img');this.image.crossOrigin='anonymous';this.image.draggable=false;this.image.alt=label;this.viewport.append(this.image);this.root.append(this.viewport);
   this.controls=el('nav',undefined,'image-renderer-controls');this.controls.setAttribute('aria-label','圖像檢視工具');
   const button=(icon,text,fn)=>{const b=iconButton(el('button'),icon,text);b.type='button';b.onclick=fn;this.controls.append(b);return b;};
   this.zoomOut=button('zoom-out','縮小',()=>this.zoomBy(.8));this.zoomLabel=el('output','—','image-renderer-zoom');this.controls.append(this.zoomLabel);

@@ -9,6 +9,8 @@
 **/node_modules/
 desktop/dist/
 desktop/src-tauri/target/
+desktop/native-json/target/
+desktop/scripts/native-json/
 desktop/runtime/
 desktop/qa/*.tmp
 qa/node_modules/

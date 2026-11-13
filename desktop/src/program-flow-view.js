@@ -8,12 +8,14 @@ import {programScope,engineeringFlow} from './program-scope.js';
 import {ProgramFlowMap} from './program-flow-map.js';
 import {iconButton} from './ui-icons.js';
 import {renderNodeDocumentation,nodeDocumentationActions} from './node-documentation-view.js';
-import {buildProgramFlow,programFlowForAsset,programFlowNode} from './program-flow.js';
+import {buildProgramFlow as buildDetachedProgramFlow,programFlowForAsset,programFlowNode} from './program-flow.js';
 import './program-flow-view.css';
 
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=String(text);if(cls)n.className=cls;return n};
 const labels={NOT_FOUND:'正常執行，目標未找到',FAULT:'執行故障',BRANCH_NOT_SELECTED:'本件未選分支',DECLARED:'已宣告，未執行',SUCCEEDED:'已執行',FAILED:'程式錯誤',TIMEOUT:'執行逾時',SKIPPED:'未執行',RUNNING:'執行中',UNKNOWN:'紀錄未知'};
 const copy=x=>JSON.parse(JSON.stringify(x));
+// Rendering reads execution facts; edits go through the project's commands.
+const buildProgramFlow=(project,options)=>buildDetachedProgramFlow(project,{...options,shareImmutableFacts:true});
 /** Navigation is derived solely from saved executions. Each node has its own
  * editable inquiry board; navigation never rewrites code, outputs or the answer. */
 export class ProgramFlowView{
@@ -25,10 +27,14 @@ export class ProgramFlowView{
   if(!this.pending&&board?.id!==this.lastBoardId){this.evidenceNodeId=null;this.lastBoardId=board?.id;if(binding){this.selectedId=binding.nodeId;this.runId=binding.runId;}else{this.selectedId=null;this.runId=null;}this.evidencePage=0;this.textPage=0;this.fullText=false;}
   if(this.pendingTarget){this.selectedId=this.pendingTarget.id;this.runId=this.pendingTarget.runId;}
   const boundRun=(this.pendingTarget&&runs.find(run=>run.runId===this.pendingTarget.runId))||(binding&&runs.find(run=>run.runId===binding.runId)),imageId=boundRun?.sourceBinding?.images?.[0]?.imageId||v.project.image?.id;
-  const all=buildProgramFlow(v.project,{imageId}),roots=all.roots.map(id=>programFlowNode(all,id));
-  if(!binding&&!this.pending)this.runId=roots.at(-1)?.runId||null;
-  if(!roots.some(n=>n.runId===this.runId))this.runId=roots.at(-1)?.runId||null;
+  // Selecting a run only needs provenance metadata. Constructing every saved
+  // trace here copied historical JSON artifacts on every progress refresh,
+  // even when the current scheme supplies the displayed graph below.
+  const matching=runs.filter(run=>!imageId||(run.sourceBinding?.images||[]).some(image=>image.imageId===imageId));
+  if(!binding&&!this.pending)this.runId=matching.at(-1)?.runId||null;
+  if(!matching.some(run=>run.runId===this.runId))this.runId=matching.at(-1)?.runId||null;
   const canonical=v.project.data.purposeScheme?.execution?.unit==='workpiece',schemeFlow=buildCurrentSchemeFlow(v.project,{runId:activeWorkpieceExecution(v.project)||canonical&&!binding&&!this.pendingTarget?undefined:this.runId});this.schemeFlow=schemeFlow.available;
+  const all=schemeFlow.available?schemeFlow.flow:buildProgramFlow(v.project,{imageId}),roots=all.roots.map(id=>programFlowNode(all,id));
   this.flow=schemeFlow.available?schemeFlow.flow:this.runId?buildProgramFlow(v.project,{runId:this.runId}):{nodes:[],edges:[],roots:[],diagnostics:[]};
   this.flowViewKey=schemeFlow.available?schemeFlow.key:this.runId;
   if(!schemeFlow.available&&schemeFlow.reason?.startsWith('STALE_'))this.flow.diagnostics.push({code:schemeFlow.reason,message:schemeFlow.message});

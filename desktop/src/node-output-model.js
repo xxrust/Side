@@ -1,13 +1,14 @@
 import {schemeFingerprint} from './purpose-compiler.js';
 import {algorithmRunCurrent} from './algorithm-workspace.js';
-import {activeWorkpieceExecution,workpieceArtifactPixel} from './workpiece-live-state.js';
+import {activeWorkpieceExecution,workpieceArtifactPixel,retainedWorkpieceOutput} from './workpiece-live-state.js';
 import {programScope} from './program-scope.js';
 import {purposeNodeTitle} from './purpose-node-presentation.js';
 import {artifactDisplayName} from './artifact-presentation.js';
 const list=x=>Array.isArray(x)?x:[];
 
-/** Current outputs are selected by workpiece + executable scheme, never by
- * canvas position or whichever historical run was opened most recently. */
+/** Outputs follow the exact workpiece + executable scheme. Automatic advance
+ * prepares the next input while keeping the completed pair visible; manual
+ * selection browses the selected image. Canvas position never picks a result. */
 export function resolveNodeOutput(project,{schemeNodeId}={}){
  const data=project.data||project,scheme=data.purposeScheme,node=scheme?.operatorGraph?.nodes?.find(n=>n.id===schemeNodeId);
  const activeId=project.image?.id||data.activeId;
@@ -19,19 +20,26 @@ export function resolveNodeOutput(project,{schemeNodeId}={}){
  if(live?.schemeFingerprint===basis){unit=live;execution={id:live.executionId,status:'RUNNING'};base.live=true;base.imageId=live.imageIds.includes(activeId)?activeId:live.imageIds[0]||activeId;}
  else {
   const executions=list(data.datasetExecutions).filter(e=>e.schemeFingerprint===basis);
-  execution=executions.findLast(e=>list(e.units).some(u=>list(u.imageIds).includes(activeId)));
-  unit=list(execution?.units).findLast(u=>list(u.imageIds).includes(activeId));
+  const retained=retainedWorkpieceOutput(project);
+  if(retained?.schemeFingerprint===basis){
+   execution=executions.find(e=>e.id===retained.executionId);
+   unit=list(execution?.units).find(u=>u.unitId===retained.unitId&&list(u.imageIds).includes(retained.imageId));
+   if(unit)base.imageId=retained.imageId;
+  }else{
+   execution=executions.findLast(e=>list(e.units).some(u=>list(u.imageIds).includes(activeId)));
+   unit=list(execution?.units).findLast(u=>list(u.imageIds).includes(activeId));
+  }
   // Restored durable records supply node states absent in compact summaries.
   const selected=project.inspectionSelection||data.inspectionSelection;
   if(selected&&execution&&unit&&selected.executionId===execution.id&&selected.unitId===unit.unitId&&selected.record?.schemeFingerprint===basis)unit={...unit,...selected.record};
  }
  if(!unit)return empty('WAITING','目前工件尚無這份方案的執行結果');
- Object.assign(base,{unitId:unit.unitId,executionId:execution.id,recordRef:unit.recordRef||null});
+ Object.assign(base,{unitId:unit.unitId,executionId:execution.id,recordRef:unit.recordRef||unit.archive?.reference||null});
  const observed=list(unit.nodeStates).find(s=>s.nodeId===schemeNodeId),run=list(unit.runIds).map(id=>list(data.algorithmRuns).find(r=>r.runId===id)).find(r=>r?.schemeNodeId===schemeNodeId);
  if(observed?.status==='RUNNING')return empty('RUNNING','本節點正在執行');
  if(!run){
   if(['SKIPPED','PENDING','DECLARED'].includes(observed?.status))return empty(observed.status,observed.reason||'本件尚無此節點輸出');
-  if(!base.live&&unit.recordRef&&list(unit.runIds).length)return empty('RESTORE_REQUIRED','正在讀取本件已保存的執行紀錄');
+  if(!base.live&&(unit.recordRef||unit.archive?.reference)&&list(unit.runIds).length)return empty('RESTORE_REQUIRED','正在讀取本件已保存的執行紀錄');
   return empty(observed?.status||'WAITING',observed?.reason||'等待本件節點產生輸出');
  }
  const sameIds=(a,b)=>list(a).length===list(b).length&&[...list(a)].sort().every((id,i)=>id===[...list(b)].sort()[i]);

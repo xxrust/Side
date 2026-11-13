@@ -42,7 +42,26 @@ fn git_base()->Command{
 }
 fn output(c:&mut Command)->Result<Output,String>{c.output().map_err(|e|if e.kind()==std::io::ErrorKind::NotFound{"找不到 Git，專案未建立版本；請安裝 Git 後重試".into()}else{format!("無法執行 Git：{e}")})}
 fn checked(c:&mut Command,op:&str)->Result<Vec<u8>,String>{let o=output(c)?;if !o.status.success(){let e=String::from_utf8_lossy(&o.stderr);return Err(format!("{op}失敗：{}",e.trim().chars().take(500).collect::<String>()))}Ok(o.stdout)}
-fn git(repo:&Path)->Command{let mut c=git_base();c.arg("--git-dir").arg(repo);c}
+// Windows canonicalize returns verbatim paths. Git init accepts them, but
+// Git's --git-dir parser rejects them as non-repositories. Keep the verified
+// destination and translate only its path spelling for the external command.
+pub(crate) fn git_path(path:&Path)->PathBuf{
+ #[cfg(windows)] {
+  use std::path::{Component,Prefix};
+  let mut components=path.components();
+  if let Some(Component::Prefix(prefix))=components.next(){
+   let mut normal=match prefix.kind(){
+    Prefix::VerbatimDisk(drive)=>PathBuf::from(format!("{}:",drive as char)),
+    Prefix::VerbatimUNC(server,share)=>{let mut p=PathBuf::from(r"\\");p.push(server);p.push(share);p},
+    _=>return path.to_owned(),
+   };
+   for component in components{normal.push(component.as_os_str());}
+   return normal;
+  }
+ }
+ path.to_owned()
+}
+fn git(repo:&Path)->Command{let mut c=git_base();c.arg("--git-dir").arg(git_path(repo));c}
 fn config_hash(repo:&Path)->Result<String,String>{let path=repo.join("config");let meta=std::fs::symlink_metadata(&path).map_err(|_|"版本庫缺少設定")?;if !meta.is_file()||meta.file_type().is_symlink(){return Err("版本庫設定不安全".into())}let b=std::fs::read(path).map_err(|_|"無法讀取版本庫設定")?;Ok(format!("{:x}",Sha256::digest(&b)))}
 fn validate_repo(repo:&Path)->Result<(),String>{
  let meta=std::fs::symlink_metadata(repo).map_err(|_|"專案尚未建立版本")?;
@@ -87,6 +106,10 @@ fn asset_records(value:&Value,records:&mut BTreeMap<String,AssetRecord>)->Result
   Value::Array(rows)=>for row in rows{asset_records(row,records)?},
   Value::Object(object)=>{
    if let Some(path)=object.get("$asset").and_then(Value::as_str){
+    if object.contains_key("packedIn"){
+     let physical=crate::inspection_files::asset_pack::container(value)?.ok_or("版本容器定位缺失")?;
+     return asset_records(physical,records);
+    }
     let file=path.strip_prefix("assets/").ok_or("版本資產路徑不安全")?;
     let (sha,ext)=file.split_once('.').ok_or("版本資產路徑不安全")?;
     if sha.len()!=64||!sha.bytes().all(|c|c.is_ascii_digit()||(b'a'..=b'f').contains(&c))||ext.is_empty()||ext.len()>10||!ext.bytes().all(|c|c.is_ascii_lowercase()||c.is_ascii_digit()){return Err("版本資產路徑不安全".into())}
@@ -116,7 +139,11 @@ fn verify_asset(root:&Path,record:&AssetRecord)->Result<(),String>{
  let path=asset_path(root,record)?;let mut file=std::fs::File::open(path).map_err(|_|"無法核對資產")?;let mut sha=Sha256::new();let mut count=0u64;let mut buf=[0u8;256*1024];loop{let size=file.read(&mut buf).map_err(|_|"讀取資產失敗")?;if size==0{break}count+=size as u64;if count>record.size{return Err(format!("資產大小已變更：{}",record.path))}sha.update(&buf[..size]);}
  if count!=record.size||format!("{:x}",sha.finalize())!=record.sha{return Err(format!("資產 SHA-256 不符：{}",record.path))}Ok(())
 }
-pub(crate) fn validate_snapshot_files(root:&Path)->Result<(),String>{for record in manifest_records(root)?.values(){verify_asset(root,record)?}Ok(())}
+pub(crate) fn validate_snapshot_files(root:&Path)->Result<(),String>{
+ for record in manifest_records(root)?.values(){verify_asset(root,record)?}
+ let manifest:Value=serde_json::from_slice(&std::fs::read(root.join("manifest.agentcv.json")).map_err(|_|"無法讀取快照清單")?).map_err(|_|"快照清單無效")?;
+ crate::workspace::validate_packed_closure(root,&manifest)
+}
 fn prepare_snapshot(root:&Path,work:&Path,content:&str)->Result<(),String>{
  std::fs::create_dir_all(work).map_err(|_|"無法建立版本快照")?;write_workspace(work,content)?;
  for record in manifest_records(work)?.values(){
@@ -292,6 +319,13 @@ mod tests {
  fn temp()->Scratch{Scratch::new().unwrap()}
  fn content(name:&str)->String{serde_json::json!({"schema":"agentcv-workspace-0.9","images":[{"id":"im","name":name,"dataURL":"data:image/png;base64,aGVsbG8="}],"workflow":{"checks":[{"id":"check","min":3}],"relations":[]},"algorithmRuns":[],"canvasRelations":[],"visualInquiry":{"boards":[]}}).to_string()}
  fn git_call(path:&Path,args:&[&str])->String{let output=Command::new("git").arg("-C").arg(path).args(args).output().unwrap();assert!(output.status.success(),"{}",String::from_utf8_lossy(&output.stderr));String::from_utf8(output.stdout).unwrap()}
+ #[cfg(windows)]
+ #[test]
+ fn git_paths_preserve_disk_unc_and_unicode_destinations(){
+  for (input,expected) in [(r"\\?\C:\项目\history.git",r"C:\项目\history.git"),(r"\\?\UNC\server\share\项目\history.git",r"\\server\share\项目\history.git"),(r"E:\项目\history.git",r"E:\项目\history.git")]{assert_eq!(git_path(Path::new(input)),PathBuf::from(expected));}
+  let t=temp();let repo=t.0.join("history.git");let mut init=git_base();init.args(["init","--bare","--template="]).arg(&repo);checked(&mut init,"test init").unwrap();
+  let mut command=git(&repo.canonicalize().unwrap());command.args(["rev-parse","--is-bare-repository"]);assert_eq!(checked(&mut command,"canonical repository").unwrap(),b"true\n");
+ }
  #[test]
  fn full_project_versions_roundtrip_and_repeat_is_noop(){
   let t=temp();let p=t.0.join("project");std::fs::create_dir(&p).unwrap();let original=content("第一圖");write_workspace(&p,&original).unwrap();let path=p.to_str().unwrap();assert!(version_list(path).unwrap().is_empty());

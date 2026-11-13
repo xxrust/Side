@@ -40,3 +40,18 @@ test('undoing to an already saved state while another snapshot is writing still 
  const s=await storage();let name='A.jpg';const started=deferred(),release=deferred();
  try{const session=new AppSession({store:s,capture:()=>({project:project(name),ui:{page:6},dirty:true}),restore:()=>{}});await session.ready;await session.flush();s.setGate({started,release});name='B.jpg';const middle=session.flush();await started.promise;name='A.jpg';const reverted=session.flush();await Promise.resolve();release.resolve();await Promise.all([middle,reverted]);assert.deepEqual(s.writes.map(row=>row.project.images[0].name),['A.jpg','B.jpg','A.jpg']);assert.equal(JSON.parse(await fs.readFile(s.file,'utf8')).project.images[0].name,'A.jpg');assert.equal(session.pendingWrites,0);}finally{await s.close();}
 });
+test('cached saved baseline writes exactly the bytes of single-pass encoding and refreshes when the baseline changes',async()=>{
+ const {serializeProject}=await import('../src/project-serialization.js');
+ const raw=[],store={async read(){return null;},async write(content){raw.push(content);return {};}};
+ let value={project:project('draft.jpg'),ui:{page:6},dirty:true};
+ const session=new AppSession({store,capture:()=>value,restore:()=>{}});await session.ready;
+ session.acceptProject(project('saved-1.jpg'),'/p.agentcv');clearTimeout(session.timer);
+ // Reference: the previous single-pass encoder (baseline last, then the timestamp appended).
+ const expectedFor=(captured,content)=>{const single=serializeProject({schema:'agentcv-app-session-1',...captured,projectPath:'/p.agentcv',savedAt:undefined,...(captured.dirty?{savedProject:session.savedProject}:{})});return single.slice(0,-1)+',"savedAt":'+JSON.stringify(JSON.parse(content).savedAt)+'}';};
+ await session.flush();assert.equal(raw[0],expectedFor(value,raw[0]));
+ value={project:project('draft-2.jpg'),ui:{page:6},dirty:true};await session.flush();assert.equal(raw[1],expectedFor(value,raw[1]));
+ session.acceptProject(project('saved-2.jpg'),'/p.agentcv');clearTimeout(session.timer);await session.flush();
+ assert.equal(raw[2],expectedFor(value,raw[2]));assert.equal(JSON.parse(raw[2]).savedProject.images[0].name,'saved-2.jpg');
+ value={project:project('clean.jpg'),ui:{page:1},dirty:false};await session.flush();
+ assert.equal(JSON.parse(raw[3]).savedProject,undefined);
+});

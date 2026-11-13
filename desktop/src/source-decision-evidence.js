@@ -8,12 +8,13 @@ export async function loadSourceDecisionEvidence(project,{imageId,sourceId},reco
  const labels=sourceImageLabels(project,imageId,sourceId),base={labels,reasons:[],notExecuted:[]};
  if(!labels.last)return {...base,state:'WAITING',message:'此圖尚未檢測'};
  const entry=list(project.data.datasetExecutions).find(e=>e.id===labels.last.executionId),summary=list(entry?.units).find(u=>u.unitId===labels.last.unitId);
+ const reference=summary?.recordRef||summary?.archive?.reference;
  let saved=null,record=summary,runs=list(project.data.algorithmRuns).filter(r=>list(summary?.runIds).includes(r.runId));
- if(summary?.recordRef){
+ if(reference){
   if(!records)return {...base,state:'UNAVAILABLE',message:'需桌面執行紀錄讀取器載入本件判定依據'};
   const current=project.inspectionSelection;
   const fresh=current?.executionId===entry.id&&current?.unitId===summary.unitId&&JSON.stringify(current.recordRef)===JSON.stringify(summary.recordRef)&&current.record?.runIds?.every(id=>runs.some(r=>r.runId===id));
-  saved=fresh?{executionId:entry.id,record:current.record,runs}:await records.read(summary.recordRef);record=saved.record;runs=list(saved.runs);
+  saved=fresh?{executionId:entry.id,record:current.record,runs}:await records.read(reference);record=saved.record;runs=list(saved.runs);
   if(saved.executionId!==entry.id||record?.unitId!==summary.unitId||record?.schemeFingerprint!==entry.schemeFingerprint||JSON.stringify([...list(record?.imageIds)].sort())!==JSON.stringify([...list(summary.imageIds)].sort()))throw Error('判定依據紀錄與所選工件／執行不一致，未顯示其他圖片');
  }
  if(!record?.imageIds?.includes(imageId))throw Error('判定依據不屬於所選圖片');
@@ -33,8 +34,8 @@ export async function loadSourceDecisionEvidence(project,{imageId,sourceId},reco
   // the live cache first so the current input still has its evidence image.
   const inline=a.dataURL||a.dataUrl||workpieceArtifactPixel(project,record.unitId,run.runId,a.id);
   if(inline)return inline;
-  if(!summary.recordRef||!records)throw Error('此依據圖尚無可讀取的持久資產');
-  const loaded=await records.artifact({...summary.recordRef,runId:run.runId,artifactId:a.id});return loaded.dataURL;
+  if(!reference||!records)throw Error('此依據圖尚無可讀取的持久資產');
+  const loaded=await records.artifact({...reference,runId:run.runId,artifactId:a.id});return loaded.dataURL;
  };
  return {...base,...model,labels,state:model.status==='FAULT'?'FAULT':model.status==='CANCELLED'?'CANCELLED':model.reasons.length?'READY':'UNAVAILABLE',legacy:!record.decisionEvidence,loadImage,message:model.status==='CANCELLED'?'本次已取消，沒有有效分類結果':null};
 }

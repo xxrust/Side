@@ -15,6 +15,16 @@ test('session recovery drops volatile algorithm pixels and activity while keepin
  assert.ok(JSON.stringify(compact).length<1000000);
 });
 
+test('session recovery keeps only the requested algorithm runs and leaves the source project untouched',()=>{
+ const project={images:[{id:'input',dataURL:'data:image/png;base64,abc'}],algorithmRuns:[{runId:'old-1',artifacts:[]},{runId:'keep-1',artifacts:[]},{runId:'old-2',artifacts:[]},{runId:'keep-2',artifacts:[]}],chat:[]};
+ const compact=compactSessionProject(project,{retainRunIds:new Set(['keep-1','keep-2'])});
+ assert.deepEqual(compact.algorithmRuns.map(run=>run.runId),['keep-1','keep-2']);
+ assert.equal(project.algorithmRuns.length,4);
+ assert.equal(compact.images[0].dataURL,'data:image/png;base64,abc');
+ assert.equal(compactSessionProject(project).algorithmRuns.length,4);
+ assert.equal(compactSessionProject(project,{retainRunIds:new Set()}).algorithmRuns.length,0);
+});
+
 test('session recovery collapses identical dataURL aliases without changing mismatched legacy values',()=>{
  const shared='data:image/png;base64,'+'C'.repeat(120000);
  const project={

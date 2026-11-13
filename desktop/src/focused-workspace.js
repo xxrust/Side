@@ -7,8 +7,8 @@ const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefine
 export async function discussReference(view,reference,{schemeNodeId,question}={}){
  if(!reference?.dataURL)throw Error('目前沒有可引用的圖像');
  const epoch=view.project.epoch,projectData=view.project.data;
- if(/^data:image\/(?:bmp|x-ms-bmp);base64,/i.test(reference.dataURL)){
-  const image=new Image();image.src=reference.dataURL;await image.decode();
+ if(/^data:image\/(?:bmp|x-ms-bmp);base64,/i.test(reference.dataURL)||/^(?:http:\/\/agentcv-memory\.localhost\/|agentcv-memory:\/\/localhost\/)[a-f0-9]{64}$/.test(reference.dataURL)){
+  const image=new Image();image.crossOrigin='anonymous';image.src=reference.dataURL;await image.decode();
   const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
   const context=canvas.getContext('2d');if(!context)throw Error('無法轉換引用圖像');
   context.drawImage(image,0,0);
@@ -27,11 +27,16 @@ export async function discussReference(view,reference,{schemeNodeId,question}={}
 }
 export function mountInputPane(view,initial,gallery){
  const card=el('article',undefined,'node-output-card node-input-card'),header=el('header',undefined,'node-image-heading'),label=el('strong','本步實際輸入'),choices=el('div',undefined,'node-input-choices'),note=el('small'),actions=el('div',undefined,'node-output-actions'),renderer=new ImageRenderer({label:'本步實際輸入'}),img=renderer.image;choices.setAttribute('aria-label','選擇本步輸入');header.append(label,choices);card.append(header,renderer.root,note,actions);gallery.prepend(card);
- let model=initial,sources=[],selected=0,current=null,generation=0,signature='',frameImageId=null;
+ let model=initial,sources=[],selected=0,current=null,generation=0,signature='',frameImageId=null,originalFrame=null;
+ // This pane holds one already verified display snapshot. New executions can
+ // update their inquiry binding without rereading/re-hashing the same original.
+ // Image/source edits, undo, project changes and image switching invalidate it.
+ const originalKey=record=>[view.project.epoch,record.id,record.width,record.height,record.sha256,record.contentSha256,record.dataURL,JSON.stringify(record.assetRef)];
+ const originalURL=record=>{const key=originalKey(record),data=view.project.data;if(originalFrame?.data===data&&key.every((value,index)=>value===originalFrame.key[index]))return originalFrame.promise;const frame={key,data,promise:view.project.readImageAsset(record.id)};originalFrame=frame;frame.promise.catch(()=>{if(originalFrame===frame)originalFrame=null;});return frame.promise;};
  const edit=view.button('標記／詢問',()=>discussReference(view,current,{schemeNodeId:model.schemeNodeId}));edit.disabled=true;actions.append(edit);
  const load=async()=>{const ticket=++generation,epoch=view.project.epoch,data=view.project.data,activeId=view.project.image?.id,source=sources[selected];current=null;edit.disabled=true;if(!source){renderer.clear();img.hidden=true;note.textContent='等待本步輸入';return;}try{
   const guard={activeId,isCurrent:()=>ticket===generation&&epoch===view.project.epoch&&data===view.project.data&&activeId===view.project.image?.id};
-  let ref;if(source.original){const dataURL=await view.project.readImageAsset(source.original.id);ref={label:source.label,kind:'original',dataURL,width:source.original.width,height:source.original.height,source:{kind:'project-original',imageId:source.original.id,inputSha256:source.identity.imageSha256,schemeNodeId:model.schemeNodeId,runId:model.run?.runId,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'original-image-pixels'}};}
+  let ref;if(source.original){const dataURL=await originalURL(source.original);ref={label:source.label,kind:'original',dataURL,width:source.original.width,height:source.original.height,source:{kind:'project-original',imageId:source.original.id,inputSha256:source.identity.imageSha256,schemeNodeId:model.schemeNodeId,runId:model.run?.runId,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'original-image-pixels'}};}
   else{let a=source.artifact;const cached=workpieceArtifactPixel(view.project,model.unitId,source.run.runId,a.id);if(!a.dataURL&&!a.dataUrl&&cached)a={...a,dataURL:cached,dataUrl:cached};if(!a.dataURL&&!a.dataUrl){await view.onLoadOutputImage?.({...model,run:source.run},a,guard);a=view.project.data.algorithmRuns.find(r=>r.runId===source.run.runId)?.artifacts.find(x=>x.id===a.id)||a;}const dataURL=a.dataURL||a.dataUrl||workpieceArtifactPixel(view.project,model.unitId,source.run.runId,a.id);if(!dataURL)throw Error('此輸入圖尚未載入');ref={label:source.label,kind:'stage',dataURL,width:a.width,height:a.height,source:{kind:'algorithm-output',schemeNodeId:source.run.schemeNodeId,runId:source.run.runId,artifactId:a.id,artifactSha256:a.sha256,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'algorithm-output-pixels'}};}
   if(!guard.isCurrent()||!card.isConnected)return;
   if(renderer.source?.src!==ref.dataURL){img.hidden=true;renderer.setSource({src:ref.dataURL,width:ref.width,height:ref.height,alt:ref.label});await img.decode();}

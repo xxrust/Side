@@ -117,6 +117,11 @@ fn registered_windows_pythons() -> Vec<PathBuf> {
 }
 
 fn python() -> Result<PathBuf, String> {
+    // Avoid enumerating Windows registry installations for every warm node
+    // when the higher-priority managed/explicit interpreter already exists.
+    let managed=runtime_root().join(if cfg!(windows){"python/Scripts/python.exe"}else{"python/bin/python3"});
+    if managed.is_file(){return Ok(managed);}
+    if let Some(path)=std::env::var_os("AGENTCV_PYTHON").map(PathBuf::from).filter(|p|p.is_file()){return Ok(path);}
     python_candidates().into_iter().find(|path| path.is_file())
         .ok_or_else(|| "找不到 Python 3。請配置 AGENTCV_PYTHON，或建立專案的 runtime/python 環境。".into())
 }
@@ -247,13 +252,18 @@ fn run_process(mut command: Command, seconds: u64) -> Result<ProcessResult, Stri
 }
 
 fn unique_directory(base: &Path) -> Result<(String, PathBuf), String> {
-    fs::create_dir_all(base).map_err(|error| error.to_string())?;
     for _ in 0..100 {
         let micros = SystemTime::now().duration_since(UNIX_EPOCH).map_err(|error| error.to_string())?.as_micros();
         let seq = RUN_SEQUENCE.fetch_add(1, Ordering::Relaxed);
         let id = format!("py-{micros:x}-{}-{seq}", std::process::id());
         let path = base.join(&id);
-        match fs::create_dir(&path) {
+        // Warm runs already have the parent. Try the exclusive directory
+        // creation first; only prepare parents when the filesystem needs it.
+        let created=fs::create_dir(&path).or_else(|error|{
+            if error.kind()!=std::io::ErrorKind::NotFound{return Err(error);}
+            fs::create_dir_all(base)?;fs::create_dir(&path)
+        });
+        match created {
             Ok(()) => return Ok((id, path)),
             Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
             Err(error) => return Err(error.to_string()),
@@ -272,12 +282,19 @@ fn verify_artifact_files(result: &mut Value, directory: &Path, source_binding: &
     verify_artifact_files_mode(result, directory, source_binding, "inline")
 }
 fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_binding: &Value, artifact_mode: &str) -> Result<(), String> {
+    verify_artifact_bytes(result,directory,source_binding,artifact_mode,None,"","").map(|_|())
+}
+fn verify_artifact_bytes(result: &mut Value, directory: &Path, source_binding: &Value, artifact_mode: &str,
+    mut memory:Option<&mut std::collections::BTreeMap<String,Vec<u8>>>,scope:&str,run_id:&str) -> Result<Value, String> {
+    let mut stages=[0f64;5];
     let inspection = artifact_mode == "inspection";
     let inline = artifact_mode != "references" && !inspection;
     let memory_only = artifact_mode == "memory";
     if let Some(artifacts) = result.get_mut("artifacts").and_then(Value::as_array_mut) {
         if artifacts.len() > 48 { return Err("算法回傳產物超過 48 項".into()); }
+        let canonical_started=Instant::now();
         let canonical_run = fs::canonicalize(directory).map_err(|error| error.to_string())?;
+        stages[0]+=canonical_started.elapsed().as_secs_f64()*1000.;
         let mut bytes_total = 0usize;
         for artifact in artifacts {
             let is_image = artifact.get("type").and_then(Value::as_str).unwrap_or("file") == "image";
@@ -302,7 +319,7 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                 map.remove("dataUrl");
                 map.remove("dataURL");
                 map.remove("assetRef");
-                if !map.contains_key("path") {
+                if !map.contains_key("path") && !map.get("residentRaster").and_then(Value::as_bool).unwrap_or(false) {
                     // This describes an output array; no file was produced or verified.
                     artifact["source"] = source_binding.clone();
                     artifact["hostBytesVerified"] = json!(false);
@@ -311,7 +328,12 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                 Some(size)
             } else { None };
             let memory_image = memory_only && is_image && artifact.get("path").is_none();
-            let (bytes, canonical_path) = if memory_image {
+            let load_started=Instant::now();
+            let memory_bytes=memory.as_mut().and_then(|m|artifact["id"].as_str().and_then(|id|m.remove(id)));
+            let from_memory=memory_bytes.is_some();
+            let (bytes, canonical_path) = if let Some(bytes)=memory_bytes {
+                (bytes,None)
+            } else if memory_image {
                 let data_url = artifact.get("dataUrl").or_else(|| artifact.get("dataURL")).and_then(Value::as_str)
                     .ok_or("內存圖像產物缺少 dataUrl")?;
                 let encoded = data_url.strip_prefix("data:image/png;base64,").ok_or("內存圖像產物必須是 PNG data URL")?;
@@ -324,13 +346,20 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                 if size > 24 * 1024 * 1024 { return Err("單個回傳產物超過 24 MB".into()); }
                 (fs::read(&canonical).map_err(|error| error.to_string())?, Some(canonical))
             };
+            stages[1]+=load_started.elapsed().as_secs_f64()*1000.;
             if bytes.len() > 24 * 1024 * 1024 { return Err("單個回傳產物超過 24 MB".into()); }
             if raster_bytes.is_some_and(|size| size != bytes.len() as u64) {
                 return Err("檢測像素文件長度與描述不一致".into());
             }
             bytes_total += bytes.len();
             if bytes_total > 64 * 1024 * 1024 { return Err("算法回傳產物合計超過 64 MB".into()); }
-            artifact["sha256"] = json!(format!("{:x}", Sha256::digest(&bytes)));
+            let hash_started=Instant::now();
+            let hash=format!("{:x}", Sha256::digest(&bytes));
+            stages[2]+=hash_started.elapsed().as_secs_f64()*1000.;
+            if from_memory && (artifact["sha256"]!=hash || artifact["bytes"].as_u64()!=Some(bytes.len() as u64)) {
+                return Err("內存產物與實際回傳 bytes 不一致".into());
+            }
+            artifact["sha256"] = json!(hash);
             artifact["bytes"] = json!(bytes.len());
             artifact["source"] = source_binding.clone();
             if let Some(canonical) = canonical_path { artifact["path"] = json!(canonical.to_string_lossy()); }
@@ -347,13 +376,15 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                     artifact["height"] = json!(u32::from_be_bytes(bytes[20..24].try_into().unwrap()));
                     artifact["mime"] = json!("image/png");
                     if inline && !memory_image {
-                        let data_url = format!("data:image/png;base64,{}", STANDARD.encode(bytes));
+                        let data_url = format!("data:image/png;base64,{}", STANDARD.encode(&bytes));
                         artifact["dataUrl"] = json!(data_url);
                         if !memory_only { artifact["dataURL"] = artifact["dataUrl"].clone(); }
                     }
                 }
                 "json" => {
+                    let parse_started=Instant::now();
                     artifact["data"] = serde_json::from_slice(&bytes).map_err(|error| format!("算法 JSON 產物無效：{error}"))?;
+                    stages[3]+=parse_started.elapsed().as_secs_f64()*1000.;
                     // Parsed values do not preserve whitespace, numeric spelling or raw hashes.
                     // Archive the verified original JSON alongside its convenient parsed view.
                     artifact["mime"] = json!("application/json");
@@ -369,15 +400,23 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
                     // as content-addressed data, never as an executable launch.
                     artifact["mime"] = json!("application/octet-stream");
                     if inline {
-                        let data_url = format!("data:application/octet-stream;base64,{}", STANDARD.encode(bytes));
+                        let data_url = format!("data:application/octet-stream;base64,{}", STANDARD.encode(&bytes));
                         artifact["dataUrl"] = json!(data_url);
                         if !memory_only { artifact["dataURL"] = artifact["dataUrl"].clone(); }
                     }
                 }
             }
+            if from_memory && !is_image {
+                let retain_started=Instant::now();
+                let mime=artifact["mime"].as_str().unwrap_or("application/octet-stream");
+                artifact["memoryRef"]=crate::memory_resources::retain(scope,run_id,artifact["id"].as_str().ok_or("產物識別無效")?,mime,bytes)?;
+                stages[4]+=retain_started.elapsed().as_secs_f64()*1000.;
+            }
         }
     }
-    Ok(())
+    if memory.is_some_and(|m|!m.is_empty()){return Err("內存回傳包含未宣告產物".into());}
+    Ok(json!({"canonicalizeMs":stages[0],"loadBytesMs":stages[1],"hashMs":stages[2],"jsonParseMs":stages[3],"retainBytesMs":stages[4],
+        "scope":"non-overlapping nested portions of verificationMs; descriptor validation, source stamping and other work remain in parent interval"}))
 }
 
 fn info_impl(script: PathBuf) -> Result<Value, String> {
@@ -400,7 +439,8 @@ fn info_impl(script: PathBuf) -> Result<Value, String> {
         "note":"Process/input/output budgets, not algorithm-kind restrictions; split larger image sets into repeatable runs."});
     info["sdk"] = json!({
         "image": "First original input as numpy BGR array, full source resolution and native uint8/uint16 depth",
-        "images": "List of all original input BGR arrays; image_records contains ids, native dtype/channels, paths and byte SHA-256",
+        "images": "List of all original input BGR arrays; image_records contains ids, native dtype/channels and byte SHA-256. Ordinary inspection path is null; no input file is created by default.",
+        "input_file": "input_file(index=0) explicitly requests one private writable temporary input copy; returns pathlib.Path and updates image_records[index].path/fileStatus. It never modifies or archives the original source.",
         "raw_images": "Original decoded arrays preserving native depth, grayscale and alpha (GRAY/BGR/BGRA), after explicit EXIF orientation",
         "gray": "First input grayscale conversion; original image is also available",
         "parameters": "Request parameters object; params is an alias",
@@ -424,8 +464,13 @@ pub async fn cv_runtime_info(app: tauri::AppHandle) -> Result<Value, String> {
     }).await.map_err(|error| error.to_string())?
 }
 
-fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
+fn execute_impl(script: PathBuf, request: Value) -> Result<Value, String> {
     let _execution = EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;
+    execute_locked(script,request)
+}
+
+// Caller owns EXECUTION_LOCK for the entire workpiece, including all nodes.
+fn execute_locked(script: PathBuf, mut request: Value) -> Result<Value, String> {
     let native_started = Instant::now();
     if !request.is_object() { return Err("算法請求必須為 JSON object".into()); }
     let code = request.get("code").and_then(Value::as_str).ok_or("缺少 Python code")?.to_owned();
@@ -442,12 +487,20 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
     let (id, directory) = unique_directory(&base)?;
     request["runId"] = json!(id);
     request["timeoutSeconds"] = json!(seconds);
-    let resident_key=crate::resident_worker::plan_key(&request)?;
+    let identity_directory_ms=native_started.elapsed().as_secs_f64()*1000.;
+    let plan_started=Instant::now();
+    let resident_plan=crate::resident_worker::resolve_plan(&request)?;
+    let resident_key=resident_plan.as_ref().map(|plan|plan.key.clone());
+    let plan_token=resident_key.clone();
+    let memory_transport=resident_key.is_some()&&request["artifactMode"]=="inspection";
+    let memory_scope=format!("{:x}",Sha256::digest(serde_json::to_vec(&json!({"plan":resident_key,"root":base,"session":request["runtimeSessionId"],
+        "unit":if request["workpieceUnit"].is_object(){&request["workpieceUnit"]}else{&request["sourceBinding"]}})).map_err(|e|e.to_string())?));
+    if memory_transport {request["runtimeMemoryScope"]=json!(memory_scope);}
     if request["artifactMode"] == "inspection" {
         let plan = &request["runtimePlan"];
         let node = plan["nodeId"].as_str().ok_or("普通檢測需要已編譯節點")?;
         let mut outputs = std::collections::BTreeSet::new();
-        if let Some(nodes) = plan["definition"]["operatorGraph"]["nodes"].as_array() {
+        if let Some(nodes) = resident_plan.as_ref().and_then(|plan|plan.definition["operatorGraph"]["nodes"].as_array()) {
             for consumer in nodes {
                 if let Some(inputs) = consumer["inputs"].as_object() {
                     for input in inputs.values().filter(|input| input["nodeId"] == node) {
@@ -458,10 +511,21 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
         }
         request["inspectionRasterOutputs"] = json!(outputs);
     }
+    let plan_ms=plan_started.elapsed().as_secs_f64()*1000.;
+    let inputs_started=Instant::now();
     let resident_requested=resident_key.is_some();
+    let mut original_inputs=Vec::new();
     if resident_requested {
-        let assets=base.join("input-assets");fs::create_dir_all(&assets).map_err(|e|e.to_string())?;
+        let assets=base.join("input-assets");if !memory_transport{fs::create_dir_all(&assets).map_err(|e|e.to_string())?;}
+        let mut total_original_bytes=0usize;
         for image in request["images"].as_array_mut().unwrap() {
+            if memory_transport {
+                if let Some(original)=crate::original_resources::lookup(image)? {
+                    total_original_bytes+=original.bytes.len();if total_original_bytes>64*1024*1024{return Err("原圖總量超過64MB".into());}
+                    let map=image.as_object_mut().unwrap();map.remove("dataUrl");map.remove("dataURL");map.remove("assetRef");map.remove("runtimeInput");map.insert("hostOriginal".into(),original.reference.clone());
+                    original_inputs.push(original);continue;
+                }
+            }
             let bytes=if let Some(reference)=image.get("assetRef") {
                 let root=reference.get("root").and_then(Value::as_str).ok_or("原圖資產缺少根目錄")?;
                 crate::workspace::read_workspace_asset_bytes(std::path::Path::new(root),reference)?
@@ -471,6 +535,12 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
                 STANDARD.decode(encoded).map_err(|e|e.to_string())?
             };
             if bytes.len()>64*1024*1024{return Err("單圖超過64MB輸入限制".into());}
+            total_original_bytes+=bytes.len();if total_original_bytes>64*1024*1024{return Err("原圖總量超過64MB".into());}
+            if memory_transport {
+                let original=crate::original_resources::capture(image,bytes)?;
+                let map=image.as_object_mut().unwrap();map.remove("dataUrl");map.remove("dataURL");map.remove("assetRef");map.remove("runtimeInput");map.insert("hostOriginal".into(),original.reference.clone());
+                original_inputs.push(original);continue;
+            }
             let hash=format!("{:x}",Sha256::digest(&bytes));
             if image["source"]["contentSha256"].as_str().is_some_and(|v|v!=hash){return Err("原圖與來源內容雜湊不一致".into());}
             let path=assets.join(format!("{hash}.original"));
@@ -479,36 +549,65 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
             let map=image.as_object_mut().unwrap();map.remove("dataUrl");map.remove("dataURL");map.insert("hostAsset".into(),json!({"path":path,"sha256":hash,"bytes":bytes.len()}));
         }
     }
+    let inputs_ms=inputs_started.elapsed().as_secs_f64()*1000.;
+    let request_started=Instant::now();
     // All source, inputs and conditions exist before the user code is dispatched.
+    if memory_transport {request["runtimePlan"].as_object_mut().unwrap().remove("definition");}
+    else if let Some(plan)=&resident_plan {
+        // Legacy request-file callers keep their complete dispatch snapshot.
+        request["runtimePlan"]["definition"]=plan.definition.as_ref().clone();
+    }
+    if memory_transport {
+        if let Some(upstream)=request["upstream"].as_object_mut(){for input in upstream.values_mut(){
+            if input["artifact"]["residentJson"]==true&&input["artifact"]["type"]=="json" {
+                input["artifact"].as_object_mut().unwrap().remove("data");
+            }
+        }}
+    }
     let encoded = serde_json::to_vec(&request).map_err(|error| error.to_string())?;
     if encoded.len() > MAX_REQUEST_BYTES { return Err("算法請求超過 100 MB 資源限制".into()); }
-    fs::write(directory.join("algorithm.py"), &code).map_err(|error| error.to_string())?;
-    fs::write(directory.join("request.json"), &encoded).map_err(|error| error.to_string())?;
-    let executable = python()?;
-    let mut command = clean_command(&executable, &directory)?;
-    command.arg(&script).arg("--run").arg(directory.join("request.json")).arg(&directory);
+    if !memory_transport {
+        fs::write(directory.join("algorithm.py"), &code).map_err(|error| error.to_string())?;
+        fs::write(directory.join("request.json"), &encoded).map_err(|error| error.to_string())?;
+    }
+    let request_encoding_ms=request_started.elapsed().as_secs_f64()*1000.;
+    let interpreter_started=Instant::now();
+    // A live resident worker already owns its interpreter. Resolve discovery
+    // paths only when that worker actually launches; package installation
+    // invalidates it while holding ENVIRONMENT_LOCK for writing.
+    let executable = if resident_key.is_none(){Some(python()?)}else{None};
+    let interpreter_ms=interpreter_started.elapsed().as_secs_f64()*1000.;
     let preparation_ms = native_started.elapsed().as_secs_f64() * 1000.0;
     let started = Instant::now();
     let mut resident_receipt=None;
     let observed = if let Some(key)=resident_key {
         // A separate control socket keeps arbitrary program stdout out of IPC.
         let worker_root=base.join("resident").join(&key);
-        let command=clean_command(&executable,&worker_root)?;
-        match crate::resident_worker::execute(&key,&script,&worker_root,command,&directory.join("request.json"),&directory,seconds){
+        match crate::resident_worker::execute(&key,&script,&worker_root,||clean_command(&python()?,&worker_root),&directory.join("request.json"),if memory_transport{Some(&encoded)}else{None},&original_inputs,&directory,seconds){
             Ok(receipt)=>{resident_receipt=Some(receipt);ProcessResult{code:Some(0),timed_out:false,stdout:String::new(),stderr:String::new()}},
             Err(error)=>ProcessResult{code:None,timed_out:false,stdout:String::new(),stderr:error},
         }
-    }else{run_process(command, seconds)?};
+    }else{
+        let mut command = clean_command(executable.as_ref().unwrap(), &directory)?;
+        command.arg(&script).arg("--run").arg(directory.join("request.json")).arg(&directory);
+        run_process(command, seconds)?
+    };
     let process_ms = started.elapsed().as_secs_f64() * 1000.0;
     let read_started = Instant::now();
     // Restore the host's dispatch snapshot, even if a program wrote files with
     // these names. It remains the exact source sent for this run.
-    fs::write(directory.join("algorithm.py"), &code).map_err(|error| error.to_string())?;
-    fs::write(directory.join("request.json"), &encoded).map_err(|error| error.to_string())?;
-    fs::write(directory.join("host-stdout.log"), &observed.stdout).map_err(|error| error.to_string())?;
-    fs::write(directory.join("host-stderr.log"), &observed.stderr).map_err(|error| error.to_string())?;
+    if !memory_transport || observed.code!=Some(0) {
+        fs::write(directory.join("algorithm.py"), &code).map_err(|error| error.to_string())?;
+        fs::write(directory.join("request.json"), &encoded).map_err(|error| error.to_string())?;
+        fs::write(directory.join("host-stdout.log"), &observed.stdout).map_err(|error| error.to_string())?;
+        fs::write(directory.join("host-stderr.log"), &observed.stderr).map_err(|error| error.to_string())?;
+    }
     let path = directory.join("result.json");
-    let mut result = if (!resident_requested || resident_receipt.is_some()) && !observed.timed_out && path.is_file() && fs::metadata(&path).map_err(|error| error.to_string())?.len() <= MAX_RESULT_BYTES {
+    let memory_report=resident_receipt.as_mut().and_then(|receipt|receipt.report.take());
+    let mut result = if let Some(report)=memory_report {
+        if report["runId"]!=id || report["sourceBinding"]!=request["sourceBinding"] {return Err("常駐結果與本次工件身份不一致".into());}
+        report
+    } else if !memory_transport && (!resident_requested || resident_receipt.is_some()) && !observed.timed_out && path.is_file() && fs::metadata(&path).map_err(|error| error.to_string())?.len() <= MAX_RESULT_BYTES {
         serde_json::from_slice::<Value>(&fs::read(&path).map_err(|error| error.to_string())?).map_err(|error| error.to_string())?
     } else {
         json!({
@@ -544,6 +643,7 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
     result["runDirectory"] = json!(directory.to_string_lossy());
     result["runId"] = json!(id);
     result["artifactMode"] = request["artifactMode"].clone();
+    if let Some(token)=plan_token {result["runtimePlanToken"]=json!(token);}
     result["stage"] = json!("TRIAL");
     result["humanConfirmed"] = json!(false);
     result["delivered"] = json!(false);
@@ -552,7 +652,8 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
     let result_read_ms = read_started.elapsed().as_secs_f64() * 1000.0;
     let verify_started = Instant::now();
     let artifact_mode = request["artifactMode"].as_str().unwrap_or("inline");
-    verify_artifact_files_mode(&mut result, &directory, &request["sourceBinding"], artifact_mode)?;
+    let verification_stages=verify_artifact_bytes(&mut result, &directory, &request["sourceBinding"], artifact_mode,
+        if memory_transport{resident_receipt.as_mut().map(|receipt|&mut receipt.artifacts)}else{None},&memory_scope,&id)?;
     let verification_ms = verify_started.elapsed().as_secs_f64() * 1000.0;
     let host_ms = started.elapsed().as_secs_f64() * 1000.0;
     if !result["execution"].is_object() { result["execution"] = json!({}); }
@@ -571,15 +672,27 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
         }
     }
     result["timing"]["native"] = json!({"clock":"monotonic", "artifactMode":artifact_mode, "preparationMs":preparation_ms, "processMs":process_ms, "resultReadMs":result_read_ms, "verificationMs":verification_ms, "scope":"native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive"});
+    result["timing"]["native"]["preparationStages"]=json!({"identityAndDirectoryMs":identity_directory_ms,"planMs":plan_ms,
+        "originalInputsMs":inputs_ms,"requestEncodingMs":request_encoding_ms,"interpreterSelectionMs":interpreter_ms,
+        "otherMs":preparation_ms-identity_directory_ms-plan_ms-inputs_ms-request_encoding_ms-interpreter_ms,
+        "residentInterpreterSelection":"inside processMs, only during worker launch/restart",
+        "scope":"exclusive nested stages of preparationMs; includes every preparation operation"});
+    result["timing"]["native"]["verificationStages"]=verification_stages;
     if let Some(receipt)=resident_receipt.as_ref() {
-        result["timing"]["resident"]=json!({"backend":"rust-supervised-python-extension","pid":receipt.pid,"call":receipt.call,"coldStart":receipt.cold,"roundTripMs":receipt.elapsed_ms,"planBound":true});
-        if result["status"]!="SUCCEEDED" {crate::resident_worker::invalidate();}
+        result["timing"]["resident"]=json!({"backend":"rust-supervised-python-extension","pid":receipt.pid,"call":receipt.call,"coldStart":receipt.cold,"roundTripMs":receipt.elapsed_ms,"planBound":true,"originalTransferBytes":receipt.original_transfer_bytes,"exchange":receipt.exchange_timing});
+        /* A program-level FAILED result (e.g. INSUFFICIENT_MEASURED_EDGES) leaves a healthy worker; only a timeout needs a restart. Transport errors are already cleared inside resident_worker::execute. */ if result["status"]=="TIMEOUT" {crate::resident_worker::invalidate();}
     }
     // Persist one verified report. Completion timing is added to the returned
     // receipt after the write and is included in the durable inspection record.
     let result_write_started = Instant::now();
-    let bytes = serde_json::to_vec(&result).map_err(|error| error.to_string())?;
-    fs::write(&path, bytes).map_err(|error| error.to_string())?;
+    if !memory_transport || result["status"]!="SUCCEEDED" {
+        let bytes = serde_json::to_vec(&result).map_err(|error| error.to_string())?;
+        fs::write(&path, bytes).map_err(|error| error.to_string())?;
+        if memory_transport {
+            fs::write(directory.join("algorithm.py"), &code).map_err(|e|e.to_string())?;
+            fs::write(directory.join("request.json"), &encoded).map_err(|e|e.to_string())?;
+        }
+    }
     result["timing"]["native"]["resultWriteMs"] = json!(result_write_started.elapsed().as_secs_f64() * 1000.0);
     // Attach the live pixels only to the IPC response, after report persistence.
     if artifact_mode == "inspection" {
@@ -593,16 +706,88 @@ fn execute_impl(script: PathBuf, mut request: Value) -> Result<Value, String> {
                         || Some(u32::from_le_bytes(bytes[22..26].try_into().unwrap()) as u64) != artifact["height"].as_u64() {
                         return Err("即時顯示影像與本次產物尺寸不一致".into());
                     }
-                    artifact["dataUrl"] = json!(format!("data:image/bmp;base64,{}", STANDARD.encode(bytes)));
+                    let reference=crate::memory_resources::retain(&memory_scope,&id,artifact["id"].as_str().ok_or("即時產物識別無效")?,"image/bmp",bytes)?;
+                    artifact["dataUrl"] = json!(crate::memory_resources::url(&reference));
                     artifact["storage"] = json!("process-memory");
                 }
             }
             if !receipt.live_images.is_empty() { return Err("即時影像沒有對應本次產物".into()); }
         }
     }
+    if memory_transport {
+        result["runtimeInputResources"]=json!(original_inputs.iter().map(|v|&v.reference).collect::<Vec<_>>());
+        result["timing"]["native"]["memoryResources"]=crate::memory_resources::stats()?;
+        result["timing"]["native"]["originalResources"]=crate::original_resources::stats()?;
+    }
     result["timing"]["native"]["totalMs"] = json!(native_started.elapsed().as_secs_f64() * 1000.0);
     Ok(result)
 }
+
+#[tauri::command]
+pub async fn execute_inspection_session(app: tauri::AppHandle, request: Value, progress:tauri::ipc::Channel<Value>) -> Result<tauri::ipc::Response,String> {
+    let queued=Instant::now();let script=runner(&app)?;
+    let registration=crate::inspection_service::register(request["sessionId"].as_str().ok_or("SESSION_ID_REQUIRED")?)?;
+    tauri::async_runtime::spawn_blocking(move||{
+        let _environment=ENVIRONMENT_LOCK.read().map_err(|e|e.to_string())?;
+        let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;
+        let queue_ms=queued.elapsed().as_secs_f64()*1000.;
+        let deferred=request["commit"]["mode"]=="background";
+        let mut result=crate::inspection_service::execute_with_commit(request,|node|execute_locked(script.clone(),node),
+            ||registration.cancelled.load(Ordering::Acquire),|event|{let _=progress.send(event);},|product|{
+                if deferred {crate::inspection_archive::enqueue_desktop(app.clone(),product)}
+                else {crate::inspection_files::save_inspection_unit_impl(app.clone(),product)}
+            })?;
+        result["timing"]["queueMs"]=json!(queue_ms);
+        // Return UTF-8 bytes through Tauri's binary response body. A large JSON
+        // tree otherwise gets escaped again as JavaScript callback source.
+        Ok(tauri::ipc::Response::new(encode_session_response(result)?))
+    }).await.map_err(|e|e.to_string())?
+}
+
+// Measure the previously invisible return path without serializing the tree a
+// second time. Metadata is appended as an ordinary JSON root field, so existing
+// consumers and independent disk oracles still read the exact same full facts.
+// Tree destruction happens before the response can be returned and belongs to
+// framework time too. The tiny metadata append itself is outside this span.
+fn encode_session_response(mut result: Value) -> Result<Vec<u8>,String> {
+    if !result.is_object() || result.get("_responseEncoding").is_some() {
+        return Err("SESSION_RESPONSE_ENVELOPE_INVALID".into());
+    }
+    let started=Instant::now();
+    crate::shared_facts::compact(&mut result)?;
+    let mut bytes=serde_json::to_vec(&result).map_err(|e|e.to_string())?;
+    let encode_ns=started.elapsed().as_nanos();
+    let releasing=Instant::now();drop(result);
+    let release_ns=releasing.elapsed().as_nanos();
+    let json_bytes=bytes.len();
+    let sent_ms=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d|d.as_millis()).unwrap_or(0);let closing=bytes.pop();debug_assert_eq!(closing,Some(b'}'));
+    write!(&mut bytes,",\"_responseEncoding\":{{\"backend\":\"rust-json-once-v1\",\"encodeNs\":{encode_ns},\"releaseNs\":{release_ns},\"jsonBytes\":{json_bytes},\"sentAtMs\":{sent_ms}}}}}").map_err(|e|e.to_string())?;
+    Ok(bytes)
+}
+
+#[cfg(test)]
+mod response_encoding_tests {
+    use super::*;
+    #[test]
+    fn response_encoding_retains_every_json_value_and_reports_actual_payload_size() {
+        let original=json!({"runs":[{"code":"original\n算法","result":{"small":1.2345678901234567,"large":9007199254740991u64,"negativeZero":-0.0},"artifacts":[{"data":{"__proto__":{"safe":true},"quote":"\"\\\n"}}]}],"timing":{"nativeMs":12.5}});
+        let encoded=encode_session_response(original.clone()).unwrap();
+        let mut parsed:Value=serde_json::from_slice(&encoded).unwrap();
+        let timing=parsed.as_object_mut().unwrap().remove("_responseEncoding").unwrap();
+        assert_eq!(parsed,original);
+        assert_eq!(timing["jsonBytes"].as_u64().unwrap() as usize,serde_json::to_vec(&original).unwrap().len());
+        assert!(timing["encodeNs"].as_u64().is_some());
+        assert!(timing["releaseNs"].as_u64().is_some());
+    }
+    #[test]
+    fn response_metadata_cannot_be_shadowed() {
+        assert!(encode_session_response(json!({"_responseEncoding":null})).is_err());
+        assert!(encode_session_response(json!([])).is_err());
+    }
+}
+
+#[tauri::command]
+pub fn cancel_inspection_session(session_id:String)->Result<bool,String>{crate::inspection_service::cancel(&session_id)}
 
 #[tauri::command]
 pub async fn execute_cv_algorithm(app: tauri::AppHandle, request: Value) -> Result<Value, String> {
@@ -809,6 +994,48 @@ mod resident_tests {
   crate::resident_worker::invalidate();fs::remove_dir_all(directory).unwrap();
  }
  #[test]
+ fn resident_inspection_frames_keep_exact_bytes_without_file_roundtrips(){
+  let _originals=crate::original_resources::TEST_LOCK.lock().unwrap();
+  let (_,directory)=unique_directory(&std::env::temp_dir().join("agentcv-memory-tests")).unwrap();
+  let code="with step('pixels'):\n save_image('pixels',image)\n save_json('facts',{'answer':42})\nresult={'sum':int(image.sum())}\n";
+  let mut request=bind(input(),code,&directory);request["artifactMode"]=json!("inspection");request["workpieceUnit"]=json!({"id":"real-unit","imageIds":["real-reference"]});
+  request["expectedOutputs"]=json!([{"id":"pixels","type":"image","role":"result"}]);
+  request["runtimePlan"]["definition"]["operatorGraph"]["nodes"][0]["expected_outputs"]=request["expectedOutputs"].clone();
+  let script=desktop_root().join("scripts/cv-runtime.py");let result=execute_impl(script.clone(),request.clone()).unwrap();
+  assert_eq!(result["status"],"SUCCEEDED","{result}");
+  let run=PathBuf::from(result["runDirectory"].as_str().unwrap());
+  for filename in ["request.json","result.json","algorithm.py","stdout.log","stderr.log","host-stdout.log"] {assert!(!run.join(filename).exists(),"{filename} should not be written");}
+  let facts=result["artifacts"].as_array().unwrap().iter().find(|a|a["id"]=="facts").unwrap();
+  assert_eq!(facts["data"]["answer"],42);assert_eq!(facts["hostBytesVerified"],true);
+  let bytes=crate::memory_resources::read(&facts["memoryRef"]).unwrap();assert_eq!(bytes.as_slice(),b"{\"answer\":42}\n");
+  let pixels=result["artifacts"].as_array().unwrap().iter().find(|a|a["id"]=="pixels").unwrap();
+  assert!(pixels["dataUrl"].as_str().unwrap().contains("agentcv-memory"));
+  let mut cached=request.clone();cached["runtimePlan"].as_object_mut().unwrap().remove("definition");cached["runtimePlan"]["token"]=result["runtimePlanToken"].clone();
+  for (image,reference) in cached["images"].as_array_mut().unwrap().iter_mut().zip(result["runtimeInputResources"].as_array().unwrap()){
+   image["runtimeInput"]=reference.clone();image["dataUrl"]=json!("unused: captured original bytes are authoritative");
+  }
+  let again=execute_impl(script.clone(),cached.clone()).unwrap();assert_eq!(again["result"],result["result"]);
+  assert_eq!(again["timing"]["resident"]["originalTransferBytes"],0);
+  assert_eq!(again["timing"]["originalCache"]["entries"],request["images"].as_array().unwrap().len());
+  crate::resident_worker::invalidate();
+  let restarted=execute_impl(script.clone(),cached.clone()).unwrap();assert_eq!(restarted["result"],result["result"]);
+  assert_eq!(restarted["timing"]["resident"]["coldStart"],true);
+  assert!(restarted["timing"]["resident"]["originalTransferBytes"].as_u64().unwrap()>0);
+  let mut expired=request.clone();for (image,reference) in expired["images"].as_array_mut().unwrap().iter_mut().zip(result["runtimeInputResources"].as_array().unwrap()){image["runtimeInput"]=reference.clone();}
+  for n in 0..16{crate::original_resources::capture(&json!({"id":format!("expiry-{n}"),"width":1,"height":1}),vec![n]).unwrap();}
+  let refreshed=execute_impl(script.clone(),expired).unwrap();assert_eq!(refreshed["result"],result["result"]);
+  assert_ne!(refreshed["runtimeInputResources"][0]["token"],result["runtimeInputResources"][0]["token"]);
+  assert!(refreshed["timing"]["resident"]["originalTransferBytes"].as_u64().unwrap()>0);
+  cached["parameters"]=json!({"changed":true});assert!(execute_impl(script.clone(),cached).unwrap_err().contains("不一致"));
+  let mut crash=bind(input(),"import os\nos._exit(3)",&directory);crash["artifactMode"]=json!("inspection");
+  assert_eq!(execute_impl(script.clone(),crash).unwrap()["execution"]["status"],"FAULT");
+  let mut timeout=bind(input(),"while True: pass",&directory);timeout["artifactMode"]=json!("inspection");timeout["timeoutSeconds"]=json!(1);
+  let began=Instant::now();assert_eq!(execute_impl(script.clone(),timeout).unwrap()["execution"]["status"],"FAULT");assert!(began.elapsed()<Duration::from_secs(5));
+  let mut recovered=bind(input(),"result={'recovered':True}",&directory);recovered["artifactMode"]=json!("inspection");
+  assert_eq!(execute_impl(script,recovered).unwrap()["result"]["recovered"],true);
+  crate::resident_worker::invalidate();fs::remove_dir_all(directory).unwrap();
+ }
+ #[test]
  #[ignore="Explicit real 1000-unit native throughput and durable-save acceptance"]
  fn resident_real_thousand_units(){
   let root=desktop_root();let workspace=std::env::temp_dir().join(format!("agentcv-native-thousand-{}", std::process::id()));fs::create_dir_all(&workspace).unwrap();
@@ -834,7 +1061,8 @@ mod resident_tests {
 }
 
 /// Local automation uses the exact desktop native execution and storage paths.
-/// The JS compiler/runner remains the sole author of graph and classification.
+/// Compilation remains in the UI; native scheduling/decisions have differential
+/// checks against the production JS implementation before desktop acceptance.
 pub(crate) fn headless_service()->Result<(),String>{
  use std::io::BufRead;
  let stdin=std::io::stdin();let mut input=stdin.lock();let stdout=std::io::stdout();let mut output=stdout.lock();
@@ -843,6 +1071,19 @@ pub(crate) fn headless_service()->Result<(),String>{
   if read==0{break;}if bytes.len()>512*1024*1024{return Err("本機工程請求超過512MB".into());}
   let message:Value=serde_json::from_slice(&bytes).map_err(|e|e.to_string())?;
   let result:Result<Value,String>=(||match message["op"].as_str().unwrap_or(""){
+   "replay_session"=>crate::inspection_session::replay(&message["request"]),
+   "classify_workpiece"=>{let r=&message["request"];Ok(crate::inspection_decision::classify(&r["spec"],&r["observations"],r["faults"].as_array().map(Vec::as_slice).unwrap_or(&[])))},
+   "inspection_product"=>{let r=&message["request"];crate::inspection_product::finalize(&r["request"],&r["session"],&r["decision"])},
+   "inspection_evidence"=>{let r=&message["request"];Ok(crate::inspection_evidence::audit(&r["run"],r["expected"].as_array().map(Vec::as_slice).unwrap_or(&[])))},
+   "inspection_evidence_pixels"=>Ok(json!(crate::inspection_evidence::verified_pixels(&message["request"]))),
+   "inspection_run"=>{let r=&message["request"];let mut run=r["run"].clone();crate::inspection_run::assemble(&mut run,&r["authored"],&r["shared"],r["nodeId"].as_str().ok_or("SESSION_NODE_ID_REQUIRED")?)?;run.as_object_mut().unwrap().remove("runtimeInputResources");Ok(run)},
+   "inspection_product_policy"=>{let r=&message["request"];Ok(json!({"regression":crate::inspection_product::regression(&r["spec"],&r["resolution"],&r["result"],r["faults"].as_array().map(Vec::as_slice).unwrap_or(&[]),r["cancelled"]==true,r.get("knownCategoryIds")),"retention":crate::inspection_product::retention(&r["record"],r["runs"].as_array().map(Vec::as_slice).unwrap_or(&[]),&r["options"],&Value::Null)}))},
+   "decision_evidence"=>{let r=&message["request"];Ok(crate::inspection_decision::evidence(&r["scheme"],&r["record"],&r["runs"]))},
+   "workpiece_decision"=>{let r=&message["request"];Ok(crate::inspection_decision::decide(&r["request"],&r["session"],r["cancelled"]==true))},
+   "adapt_native_session"=>Ok(crate::inspection_service::adapt_native(message["request"]["native"].clone(),&message["request"]["request"],message["request"]["elapsedMs"].as_f64().unwrap_or(0.))),
+   "execute_session"=>{let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;crate::inspection_service::execute_with_commit(message["request"].clone(),|r|execute_locked(desktop_root().join("scripts/cv-runtime.py"),r),||false,|_|{},crate::inspection_files::save_headless_unit)},
+   "inspection_commit_product"=>{let r=&message["request"];crate::inspection_commit::product(&r["request"],&r["session"],r["nativeMs"].as_f64().unwrap_or(0.),r["at"].as_str().ok_or("SESSION_TIMESTAMP_REQUIRED")?)},
+   "audit_output_contracts"=>{let r=&message["request"];Ok(crate::output_contract::audit(&r["run"],r["expected"].as_array().ok_or("Missing expected outputs")?,&r["scheme"],&r["upstream"]))},
    "execute"=>execute_impl(desktop_root().join("scripts/cv-runtime.py"),message["request"].clone()),
    "save_unit"=>crate::inspection_files::save_headless_unit(message["request"].clone()),
    "read_unit"=>crate::inspection_files::read_headless_unit(&message["reference"]),

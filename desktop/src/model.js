@@ -1,4 +1,4 @@
-import {jsonSnapshot} from './json-snapshot.js';
+import {jsonSnapshot,projectSnapshot} from './json-snapshot.js';
 import {serializeProject} from './project-serialization.js';
 import {canvasThreadMethods} from './canvas-thread-model.js';
 import {artifactGroupMethods} from './canvas-artifact-groups.js';
@@ -62,11 +62,11 @@ export class Project {
   get config(){return this.data.config}
   on(fn){this.listeners.push(fn);return()=>this.listeners=this.listeners.filter(f=>f!==fn)}
   notify(){this.listeners.forEach(f=>f())}
-  checkpoint(){this.undoStack.push(clone(this.data));if(this.undoStack.length>30)this.undoStack.shift();this.redoStack=[];}
+  checkpoint(){this.undoStack.push(projectSnapshot(this.data));if(this.undoStack.length>30)this.undoStack.shift();this.redoStack=[];}
   event(action,detail={}){this.data.events.push({id:uid(),at:new Date().toISOString(),action,image_id:this.data.activeId,...detail});this.dirty=true;this.notify();}
   mutate(action,fn,detail={}){this.checkpoint();fn();this.event(action,detail)}
-  undo(){if(!this.undoStack.length)return;this.redoStack.push(clone(this.data));this.data=this.undoStack.pop();this.epoch++;this.pending.clear();this.imageStore.reset({keepCache:true});this.dirty=true;this.notify();}
-  redo(){if(!this.redoStack.length)return;this.undoStack.push(clone(this.data));this.data=this.redoStack.pop();this.epoch++;this.pending.clear();this.imageStore.reset({keepCache:true});this.dirty=true;this.notify();}
+  undo(){if(!this.undoStack.length)return;this.redoStack.push(projectSnapshot(this.data));this.data=this.undoStack.pop();this.epoch++;this.pending.clear();this.imageStore.reset({keepCache:true});this.dirty=true;this.notify();}
+  redo(){if(!this.redoStack.length)return;this.undoStack.push(projectSnapshot(this.data));this.data=this.redoStack.pop();this.epoch++;this.pending.clear();this.imageStore.reset({keepCache:true});this.dirty=true;this.notify();}
   async load(data,decode){
     if(!['agentcv-project-0.5','agentcv-desktop-0.8'].includes(data.schema)||!Array.isArray(data.images))throw Error('不支援的專案格式');
     const token=this.loadSequence=(this.loadSequence||0)+1,loadEpoch=this.epoch,next=clone(data),loadWarnings=[],knownFileIdentities=new Map(next.images.map(image=>[image.id,!!image.contentSha256||!!image.assetRef]));next.events=Array.isArray(next.events)?next.events:[];next.chat=Array.isArray(next.chat)?next.chat:[];

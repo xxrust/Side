@@ -35,7 +35,7 @@ function outputRole(run,artifact){
  return artifact?.role||artifact?.contractBinding?.role||declared?.role||'intermediate';
 }
 
-export function retainDatasetArtifacts(product,{retention,unitIndex=0,total=null}={}){
+export function datasetArtifactRetentionDecision(product,{retention,unitIndex=0,total=null}={}){
  const policy=normalizeArtifactRetention(retention);
  const record=product?.record||{};
  const fault=record.execution?.status==='FAULT'||product.runs?.some(run=>run.status!=='SUCCEEDED'||run.execution?.status==='FAULT');
@@ -51,16 +51,22 @@ export function retainDatasetArtifacts(product,{retention,unitIndex=0,total=null
  const keepPixels=policy.mode==='all'||(policy.mode!=='metadata'&&reasons.length>0);
  const reason=reasons.length?reasons.join('+'):'metadata-only';
  const decision={schema:'agentcv-artifact-retention-decision-1',mode:policy.mode,unitIndex,total,keepPixels,reason,imageArtifacts:0,retainedImageArtifacts:0,metadataOnlyImageArtifacts:0,roles:[]};
- const runs=(product.runs||[]).map(run=>({...run,artifacts:(run.artifacts||[]).map(artifact=>{
-  if(artifact.type!=='image'||keepPixels)return {...artifact,pixelRetention:artifact.type==='image'?'full':artifact.pixelRetention};
-  const next={...artifact,pixelRetention:'metadata-only',pixelAvailable:false,retentionReason:reason};
-  for(const key of ['data','dataUrl','dataURL','path','assetRef'])delete next[key];
-  return next;
- })}));
  const imageArtifacts=(product.runs||[]).reduce((sum,run)=>sum+(run.artifacts||[]).filter(a=>a.type==='image').length,0);
  const retainedImageArtifacts=keepPixels?imageArtifacts:0;
  Object.assign(decision,{imageArtifacts,retainedImageArtifacts,metadataOnlyImageArtifacts:imageArtifacts-retainedImageArtifacts,roles:keepPixels?[...new Set((product.runs||[]).flatMap(run=>(run.artifacts||[]).filter(a=>a.type==='image').map(a=>outputRole(run,a))))]:[]});
+ return decision;
+}
+export function applyDatasetArtifactRetention(product,decision){
+ const runs=(product.runs||[]).map(run=>({...run,artifacts:(run.artifacts||[]).map(artifact=>{
+  if(artifact.type!=='image'||decision.keepPixels)return {...artifact,pixelRetention:artifact.type==='image'?'full':artifact.pixelRetention};
+  const next={...artifact,pixelRetention:'metadata-only',pixelAvailable:false,retentionReason:decision.reason};
+  for(const key of ['data','dataUrl','dataURL','path','assetRef'])delete next[key];
+  return next;
+ })}));
  const {runs:_liveRuns,...metadata}=product;
  const durable={...clone(metadata),runs};durable.record={...durable.record,artifactRetention:decision};
  return {product:durable,decision};
+}
+export function retainDatasetArtifacts(product,options={}){
+ return applyDatasetArtifactRetention(product,datasetArtifactRetentionDecision(product,options));
 }

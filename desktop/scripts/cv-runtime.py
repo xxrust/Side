@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import base64
 import contextlib
+from collections import OrderedDict
+import functools
 from datetime import datetime, timezone
 import hashlib
 import importlib
@@ -31,6 +33,56 @@ MAX_ARTIFACT_BYTES = 24 * 1024 * 1024
 MAX_TOTAL_ARTIFACT_BYTES = 64 * 1024 * 1024
 MAX_ARTIFACTS = 48
 MAX_LOG_CHARS = 512 * 1024
+MAX_PROGRAM_CACHE_ENTRIES = 32
+MAX_PROGRAM_CACHE_SOURCE_BYTES = 4 * 1024 * 1024
+
+# Load only the helper packaged beside this runtime, never an arbitrary module
+# from the selected algorithm's working directory or Python environment.
+NATIVE_JSON = None
+NATIVE_JSON_ERROR = None
+try:
+    import importlib.machinery
+    extension = Path(__file__).resolve().parent / "native-json" / ("_agentcv_json.pyd" if sys.platform == "win32" else "_agentcv_json.abi3.so")
+    if extension.is_file():
+        loader = importlib.machinery.ExtensionFileLoader("_agentcv_json", str(extension))
+        extension_spec = importlib.util.spec_from_file_location("_agentcv_json", extension, loader=loader)
+        NATIVE_JSON = importlib.util.module_from_spec(extension_spec)
+        extension_spec.loader.exec_module(NATIVE_JSON)
+        if NATIVE_JSON.format_version != 1:
+            raise ImportError("Unsupported native SDK JSON format")
+except Exception as error:
+    NATIVE_JSON, NATIVE_JSON_ERROR = None, str(error)
+
+
+def compiled_program(code, filename, resident=None):
+    """Cache immutable bytecode, but bind every nested traceback to this run.
+
+    Only code objects are retained. Globals, defaults, closures and module state
+    are created again by exec, exactly as for an uncached invocation.
+    """
+    if resident is None:
+        return compile(code, filename, "exec", dont_inherit=True)
+    cache = resident.setdefault("programs", OrderedDict())
+    key = code.encode("utf-8")
+    cached = cache.pop(key, None)
+    if cached is None:
+        # Compile with the actual filename so SyntaxError diagnostics are also
+        # specific to the current invocation. Failed compilations are not cached.
+        cached = compile(code, filename, "exec", dont_inherit=True)
+        resident["compileMisses"] = resident.get("compileMisses", 0) + 1
+    else:
+        resident["compileHits"] = resident.get("compileHits", 0) + 1
+    cache[key] = cached
+    while len(cache) > MAX_PROGRAM_CACHE_ENTRIES or sum(map(len, cache)) > MAX_PROGRAM_CACHE_SOURCE_BYTES:
+        cache.popitem(last=False)
+
+    def bind(program):
+        if program.co_filename == filename:
+            return program
+        constants = tuple(bind(value) if isinstance(value, types.CodeType) else value for value in program.co_consts)
+        return program.replace(co_filename=filename, co_consts=constants)
+
+    return bind(cached)
 
 
 LAYER_CONTRACT = json.loads(Path(__file__).with_name("structured-layers-contract.json").read_text(encoding="utf-8"))
@@ -120,8 +172,9 @@ def validate_structured_layers(layers, image_records, trace, existing_ids=()):
                 if field == "points":
                     if not isinstance(value, list) or not specification["minItems"] <= len(value) <= specification["maxItems"]:
                         invalid(gp, "Invalid point count", f"Provide {specification['minItems']}..{specification['maxItems']} actual x/y points; measurement from/to is not the points format", actual_type=kind)
-                    for pi, value_point in enumerate(value):
-                        point(value_point, f"{gp}[{pi}]")
+                    if NATIVE_JSON is None or not NATIVE_JSON.layer_points_valid(value):
+                        for pi, value_point in enumerate(value):
+                            point(value_point, f"{gp}[{pi}]")
                 elif field == "center":
                     point(value, gp)
                 elif specification.get("type") == "number":
@@ -159,19 +212,50 @@ def probe(import_optional=True):
 
 
 def json_value(value):
+    if NATIVE_JSON is not None:
+        return NATIVE_JSON.normalize(value, json_value_python)
+    return json_value_python(value)
+
+
+def json_value_python(value):
     """Preserve numeric values; non-finite values become explicit null, never truth."""
     if value is None or isinstance(value, (str, bool, int)):
         return value
     if isinstance(value, float):
         return value if math.isfinite(value) else None
     if isinstance(value, dict):
-        return {str(key): json_value(item) for key, item in value.items()}
+        # Result/geometry dictionaries contain many scalar measurements. Keep
+        # normalization (including Python's key spelling) but avoid a recursive
+        # call and container/NumPy dispatch for each ordinary scalar leaf.
+        result = {}
+        for key, item in value.items():
+            kind = type(item)
+            if item is None or kind is str or kind is bool or kind is int:
+                result[str(key)] = item
+            elif kind is float:
+                result[str(key)] = item if math.isfinite(item) else None
+            else:
+                result[str(key)] = json_value_python(item)
+        return result
     if isinstance(value, (tuple, list)):
-        return [json_value(item) for item in value]
+        # Geometry and measurement arrays usually contain plain scalar leaves.
+        # Handle those in this traversal instead of re-entering the normalizer
+        # (and its container/NumPy checks) for every coordinate. Subclasses and
+        # custom conversions still take the general path below.
+        result = []
+        for item in value:
+            kind = type(item)
+            if item is None or kind is str or kind is bool or kind is int:
+                result.append(item)
+            elif kind is float:
+                result.append(item if math.isfinite(item) else None)
+            else:
+                result.append(json_value_python(item))
+        return result
     if hasattr(value, "tolist"):
-        return json_value(value.tolist())
+        return json_value_python(value.tolist())
     if hasattr(value, "item"):
-        return json_value(value.item())
+        return json_value_python(value.item())
     raise TypeError(f"Result contains non-JSON value {type(value).__name__}; save arrays or convert explicitly")
 
 
@@ -182,6 +266,38 @@ def write_json(path, value):
     except (TypeError, ValueError):
         text = json.dumps(json_value(value), **settings)
     path.write_text(text + "\n", encoding="utf-8")
+
+
+def compact_json_fallback(value):
+    return json.dumps(json_value(value), ensure_ascii=False, allow_nan=False, separators=(",", ":"))
+
+
+def compact_json_bytes(value):
+    if NATIVE_JSON is not None:
+        return NATIVE_JSON.encode(value, compact_json_fallback)
+    return (compact_json_fallback(value) + "\n").encode("utf-8")
+
+
+def report_json_fallback(value):
+    return json.dumps(value, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
+
+
+def report_json_bytes(value):
+    if NATIVE_JSON is not None:
+        return NATIVE_JSON.encode_report(value, report_json_fallback)
+    return report_json_fallback(value).encode("utf-8")
+
+
+def report_transport_bytes(value, transport):
+    if transport == "agentcv-typed-report-v1" and NATIVE_JSON is not None:
+        try:
+            return NATIVE_JSON.encode_report_wire(value, report_json_fallback), transport
+        except NATIVE_JSON.ReportWireLimitError:
+            # The typed path uses a conservative JSON/allocation size bound.
+            # The original strict encoder remains authoritative when it cannot
+            # fit, and still rejects invalid values rather than normalizing.
+            pass
+    return report_json_bytes(value), "json-utf8"
 
 
 class BoundedLog(io.TextIOBase):
@@ -205,11 +321,12 @@ class BoundedLog(io.TextIOBase):
     def flush(self):
         pass
 
-    def save(self):
+    def save(self, persist=True):
         text = "".join(self.parts)
         if self.truncated:
             text += "\n[output truncated at runtime log limit]\n"
-        self.path.write_text(text, encoding="utf-8")
+        if persist:
+            self.path.write_text(text, encoding="utf-8")
         return text
 
 
@@ -241,6 +358,12 @@ def apply_resource_limits(request, resident=False):
 
 
 def trace_value(value):
+    if NATIVE_JSON is not None:
+        return NATIVE_JSON.normalize_trace(value, trace_value_python)
+    return trace_value_python(value)
+
+
+def trace_value_python(value):
     """Ports describe arrays by exact content hash, shape and dtype, never pixel dumps.
 
     Arrays themselves remain in ordinary Python and saved image/array artifacts.
@@ -258,15 +381,15 @@ def trace_value(value):
                 "sha256": hashlib.sha256(value.tobytes(order="C")).hexdigest(),
                 "nbytes": int(value.nbytes), "storage": "runtime-value; save_image/save_array for persisted pixels"}
     if isinstance(value, dict):
-        return {str(key): trace_value(item) for key, item in value.items()}
+        return {str(key): trace_value_python(item) for key, item in value.items()}
     if isinstance(value, (tuple, list)):
         if len(value) > 1024:
             normalized = json_value(value)
             raw = json.dumps(normalized, ensure_ascii=False, allow_nan=False).encode("utf-8")
             return {"kind": "sequence", "count": len(value), "sha256": hashlib.sha256(raw).hexdigest(),
-                    "preview": [trace_value(item) for item in value[:8]],
+                    "preview": [trace_value_python(item) for item in value[:8]],
                     "storage": "runtime-value; save_json for persisted full values"}
-        return [trace_value(item) for item in value]
+        return [trace_value_python(item) for item in value]
     return json_value(value)
 
 
@@ -289,6 +412,65 @@ def not_found(message="Target not found", code="NOT_FOUND"):
     return Invocation(False, code=code, message=message)
 
 
+class SDKClock:
+    """Exclusive SDK wall time, suspending while an SDK invokes user code."""
+    def __init__(self):
+        self.depth, self.seconds, self.since = 0, 0.0, 0.0
+        self.services, self.active_service = {}, None
+
+    def accrue(self):
+        seconds = time.perf_counter() - self.since
+        self.seconds += seconds
+        name = self.active_service or "other"
+        self.services[name] = self.services.get(name, 0.0) + seconds * 1000
+
+    @contextlib.contextmanager
+    def service(self, name="other"):
+        if not self.depth:
+            self.since = time.perf_counter()
+            self.active_service = name
+        self.depth += 1
+        try:
+            yield
+        finally:
+            self.depth -= 1
+            if not self.depth:
+                self.accrue()
+                self.active_service = None
+
+    def wrap(self, fn):
+        @functools.wraps(fn)
+        def measured(*args, **kwargs):
+            with self.service(fn.__name__):
+                return fn(*args, **kwargs)
+        return measured
+
+    def user(self, fn, *args):
+        depth = self.depth
+        active_service = self.active_service
+        if depth:
+            self.accrue()
+        self.depth = 0
+        try:
+            return fn(*args)
+        finally:
+            self.depth = depth
+            self.active_service = active_service
+            if depth:
+                self.since = time.perf_counter()
+
+
+def sdk_method(fn):
+    @functools.wraps(fn)
+    def measured(self, *args, **kwargs):
+        clock = getattr(self, 'ledger', None) or getattr(getattr(self, 'trace', None), 'ledger', None)
+        if clock is None:
+            return fn(self, *args, **kwargs)
+        with clock.service(fn.__name__):
+            return fn(self, *args, **kwargs)
+    return measured
+
+
 class ProcedureTrace:
     """Explicit execution observations, never an inferred algorithm plan.
 
@@ -300,6 +482,7 @@ class ProcedureTrace:
         self.stack = []
         self.counts = {}
 
+    @sdk_method
     def unit(self, kind, unit_id, name=None, inputs=None, outputs=None,
              depends_on=None, condition=None, justification=None, parameters=None,
              parameter_sources=None, documentation=None):
@@ -342,6 +525,7 @@ class ProcedureTrace:
         self.data["nodes"].append(node)
         return ProcedureUnit(self, node)
 
+    @sdk_method
     def bind_artifact(self, artifact):
         if not self.stack:
             return
@@ -358,12 +542,14 @@ class ProcedureTrace:
                 artifact["stepId"] = node["id"]
                 artifact["stepInstanceId"] = node["instanceId"]
 
+    @sdk_method
     def skip(self, unit_id, name=None, reason=None, **metadata):
         unit = self.unit("step", unit_id, name=name, **metadata)
         unit.finish("SKIPPED")
         unit.node["skipReason"] = str(reason or "Condition was not selected")
         return unit
 
+    @sdk_method
     def invoke(self, unit_id, callback, name=None, requires=None, any_of=None, when=True, **metadata):
         if not isinstance(when, bool):
             raise TypeError("invoke when must be an evaluated bool")
@@ -388,7 +574,7 @@ class ProcedureTrace:
             # invocations remain executable even after this callback faults.
             self.stack.append(unit)
             try:
-                value = callback(unit)
+                value = self.ledger.user(callback, unit) if getattr(self, 'ledger', None) else callback(unit)
                 outcome = value if isinstance(value, Invocation) else found(value)
                 outcome.node = unit.node
                 unit.node["outputs"]["result"] = trace_value(outcome.as_dict())
@@ -404,6 +590,7 @@ class ProcedureTrace:
         unit.node["result"] = trace_value(outcome.as_dict())
         return outcome
 
+    @sdk_method
     def run(self, unit_id, callback, name=None, when=True, **metadata):
         if not isinstance(when, bool):
             raise TypeError("run_step when must be an evaluated bool")
@@ -418,7 +605,7 @@ class ProcedureTrace:
             return None
         try:
             with unit:
-                value = callback(unit)
+                value = self.ledger.user(callback, unit) if getattr(self, 'ledger', None) else callback(unit)
                 if isinstance(value, Invocation):
                     unit.node["result"] = trace_value(value.as_dict())
                 return value
@@ -434,6 +621,7 @@ class ProcedureUnit:
         self.started = time.perf_counter()
         self.entered = False
 
+    @sdk_method
     def __enter__(self):
         if self.entered or self.node["status"] != "RUNNING":
             raise RuntimeError("A recorded execution context may only be entered once")
@@ -449,6 +637,7 @@ class ProcedureUnit:
         self.trace.stack.append(self)
         return self
 
+    @sdk_method
     def __exit__(self, error_type, error, tb):
         self.trace.stack.pop()
         self.finish("FAILED" if error is not None else "SUCCEEDED")
@@ -456,18 +645,21 @@ class ProcedureUnit:
             self.node["error"] = {"type": error_type.__name__, "message": str(error)}
         return False
 
+    @sdk_method
     def finish(self, status):
         self.node["status"] = status
         self.node["finishedAt"] = datetime.now(timezone.utc).isoformat()
         self.node["durationMs"] = (time.perf_counter() - self.started) * 1000
         self.node.setdefault("execution", {"status": "COMPLETED" if status == "SUCCEEDED" else "FAULT" if status == "FAILED" else status})
 
+    @sdk_method
     def set_judgement(self, judgement):
         if judgement not in ("OK", "NG", "UNKNOWN"):
             raise ValueError("Judgement must be OK, NG or UNKNOWN; execution errors use status FAILED")
         self.node["judgement"] = judgement
         return judgement
 
+    @sdk_method
     def set_output(self, name, value):
         if not isinstance(name, str) or not name:
             raise ValueError("An output requires a nonempty port name")
@@ -475,7 +667,7 @@ class ProcedureUnit:
         return value
 
 
-def execute(request_path: Path, run_directory: Path, resident=None):
+def execute(request_path: Path, run_directory: Path, resident=None, *, request_data=None):
     started = time.perf_counter()
     phases = []
     phase_started, phase_name = started, "request"
@@ -484,7 +676,9 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         now = time.perf_counter()
         phases.append({"key": phase_name, "ms": (now - phase_started) * 1000})
         phase_started, phase_name = now, name
-    request = json.loads(request_path.read_text(encoding="utf-8"))
+    request = request_data if request_data is not None else json.loads(request_path.read_text(encoding="utf-8"))
+    memory_transport = request_data is not None and request.get("artifactMode") == "inspection" and resident is not None
+    memory_artifacts = {}
     inspection = request.get("artifactMode") == "inspection"
     raster_outputs = set(request.get("inspectionRasterOutputs", [])) if inspection else set()
     declared_images = [o for o in request.get("expectedOutputs", []) if o.get("type") == "image"]
@@ -492,13 +686,15 @@ def execute(request_path: Path, run_directory: Path, resident=None):
     live_images = {}
     live_bytes = 0
     code = request["code"]
-    (run_directory / "algorithm.py").write_text(code, encoding="utf-8")
+    if not memory_transport:
+        (run_directory / "algorithm.py").write_text(code, encoding="utf-8", newline="")
     source = request.get("sourceBinding", {})
     result_path = run_directory / "result.json"
     outputs = run_directory / "outputs"
     inputs = run_directory / "inputs"
     outputs.mkdir(exist_ok=True)
-    inputs.mkdir(exist_ok=True)
+    if not inspection:
+        inputs.mkdir(exist_ok=True)
     stdout = BoundedLog(run_directory / "stdout.log")
     stderr = BoundedLog(run_directory / "stderr.log")
     report = {
@@ -506,7 +702,7 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         "title": request.get("title", "Python CV trial"), "sourceBinding": source, "source": source,
         "code": code, "codeSha256": hashlib.sha256(code.encode()).hexdigest(),
         "parameters": request.get("parameters", {}), "justification": request.get("justification"),
-        "upstreamBindings": {slot: {"nodeId": value.get("nodeId"), "runId": value.get("runId"), "artifactId": value.get("artifact", {}).get("id")} for slot, value in request.get("upstream", {}).items()},
+        "upstreamBindings": {slot: {"nodeId": value.get("nodeId"), "runId": value.get("runId"), "artifactId": value.get("artifact", {}).get("id")} for slot, value in (request.get("upstream") or {}).items()},
         "runDirectory": str(run_directory), "environment": {}, "artifacts": [], "result": None,
         "stage": "TRIAL", "humanConfirmed": False, "delivered": False,
         "mode": request.get("mode", "draft"), "isDraft": request.get("mode", "draft") != "scheme",
@@ -514,6 +710,9 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         "startedAt": datetime.now(timezone.utc).isoformat(),
     }
     trace = ProcedureTrace()
+    ledger = SDKClock()
+    trace.ledger = ledger
+    program_seconds = 0.0
     report["procedureTrace"] = trace.data
     total_artifact_bytes = 0
     used_names = set()
@@ -542,11 +741,19 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         image_records = []
         decoded_images = []
         raw_images = []
+        original_bytes = []
         total_input_bytes = 0
         for index, entry in enumerate(request.get("images", [])):
             data_url = entry.get("dataUrl", entry.get("dataURL", ""))
             host_asset = entry.get("hostAsset") if resident is not None else None
-            if host_asset:
+            host_original = entry.get("hostOriginal") if resident is not None else None
+            if host_original:
+                saved = resident.get("originalInputs", {}).get(host_original.get("token"))
+                if saved is None or saved[0] != host_original:
+                    raise ValueError("Original memory resource is missing or inconsistent")
+                raw = saved[1]
+                raw_hash = host_original["sha256"]
+            elif host_asset:
                 path = Path(host_asset["path"])
                 if path.stat().st_size>MAX_INPUT_BYTES:
                     raise ValueError("Original asset exceeds input size bound")
@@ -555,7 +762,8 @@ def execute(request_path: Path, run_directory: Path, resident=None):
                 if not isinstance(data_url, str) or not re.match(r"^data:image/[a-zA-Z0-9.+-]+;base64,", data_url):
                     raise ValueError(f"Input image {index} must contain original base64 image bytes")
                 raw = base64.b64decode(data_url.split(",", 1)[1], validate=True)
-            raw_hash = hashlib.sha256(raw).hexdigest()
+            if not host_original:
+                raw_hash = hashlib.sha256(raw).hexdigest()
             if host_asset and raw_hash != host_asset["sha256"]:
                 raise ValueError("Original asset content hash mismatch")
             declared_hash = (entry.get("source") or {}).get("contentSha256")
@@ -565,15 +773,10 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             if total_input_bytes > MAX_INPUT_BYTES:
                 raise ValueError("Input images exceed 64 MB in this execution")
             input_path = inputs / f"image-{index:03d}.original"
-            if resident is not None:
-                original = resident["root"] / (raw_hash + ".original")
-                if not original.exists():
-                    original.write_bytes(raw)
-                try:
-                    os.link(original, input_path)
-                except OSError:
-                    input_path.write_bytes(raw)
-            else:
+            # Ordinary inspection exposes arrays and identities, not automatic
+            # per-node files. Explicit input_file() below materializes on demand.
+            original_bytes.append(raw)
+            if not inspection:
                 input_path.write_bytes(raw)
             cache = resident["decoded"] if resident is not None else {}
             if raw_hash in cache:
@@ -618,7 +821,10 @@ def execute(request_path: Path, run_directory: Path, resident=None):
                 raise ValueError(f"Input image {entry.get('id', index)} decoded dimensions do not match current source")
             raw_images.append(decoded)
             if decoded.ndim == 2:
-                bgr = np.repeat(decoded[:, :, np.newaxis], 3, axis=2)
+                # OpenCV expands native-depth gray samples in one pass. The
+                # result is still a separate writable BGR array, as required
+                # by the SDK; raw_images and the decode cache cannot alias it.
+                bgr = cv2.cvtColor(decoded, cv2.COLOR_GRAY2BGR) if cv2 is not None else np.repeat(decoded[:, :, np.newaxis], 3, axis=2)
             elif decoded.shape[2] == 4:
                 bgr = decoded[:, :, :3].copy()
             else:
@@ -626,7 +832,8 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             decoded_images.append(bgr)
             image_records.append({
                 "id": entry.get("id", str(index)), "name": entry.get("name", str(index)),
-                "width": width, "height": height, "path": str(input_path),
+                "width": width, "height": height, "path": None if inspection else str(input_path),
+                "fileStatus": "NOT_MATERIALIZED" if inspection else "LEGACY_TEMPORARY_COPY",
                 "sha256": raw_hash, "source": entry.get("source"),
                 "colorOrder": "BGR", "rawColorOrder": "GRAY" if decoded.ndim == 2 else "BGRA" if decoded.shape[2] == 4 else "BGR",
                 "dtype": str(decoded.dtype), "rawChannels": 1 if decoded.ndim == 2 else int(decoded.shape[2]),
@@ -659,14 +866,24 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             # contract because they are structured records, not live pixels.
             memory_image = request.get("artifactMode") == "memory" and kind == "image"
             path = outputs / name
-            if not memory_image:
+            if memory_transport:
+                # Freeze bytes now: arbitrary later user mutation must not alter
+                # a returned artifact or another node's input.
+                memory_artifacts[artifact_id or name] = bytes(raw)
+            elif not memory_image:
                 path.write_bytes(raw)
             used_names.add(name)
             total_artifact_bytes += len(raw)
             artifact = {"id": artifact_id or name, "name": name, "type": kind,
                         "sha256": hashlib.sha256(raw).hexdigest(), "bytes": len(raw),
                         "source": source, **(details or {})}
-            if memory_image:
+            if memory_transport and kind == "json":
+                artifact["residentJson"] = True
+            if memory_transport:
+                artifact["storage"] = "resident-memory"
+                if kind == "image":
+                    artifact["residentRaster"] = True
+            elif memory_image:
                 artifact.update({"storage": "process-memory", "pixelRetention": "current-workpiece-memory"})
             else:
                 artifact["path"] = str(path)
@@ -703,17 +920,31 @@ def execute(request_path: Path, run_directory: Path, resident=None):
                                 "pixelAvailable": False, "rasterEncoding": "raw-le"})
                 raw = memoryview(pixels).cast("B")
                 if resident is not None and name in live_outputs:
-                    display = pixels if pixels.dtype == np.uint8 else (pixels >> 8).astype(np.uint8)
-                    if display.ndim == 3:
-                        if cv2 is not None:
-                            # Opaque BMP is for display; the downstream raw raster
-                            # still keeps its original channels and bit depth.
-                            display = cv2.cvtColor(display, cv2.COLOR_BGR2RGB if display.shape[2] == 3 else cv2.COLOR_BGRA2RGB)
-                        else:
+                    if NATIVE_JSON is not None:
+                        # Freeze once for preview conversion and graph retention.
+                        # Rust writes BGR/gray BMP directly, including native
+                        # 16-bit downshift and opaque BGRA presentation.
+                        raw = bytes(raw)
+                        preview = NATIVE_JSON.preview_bmp(raw, details["width"], details["height"], details["channels"], pixels.dtype.itemsize)
+                    elif cv2 is not None:
+                        display = pixels if pixels.dtype == np.uint8 else (pixels >> 8).astype(np.uint8)
+                        # BMP stores BGR bytes already. Avoid converting the
+                        # whole frame to RGB and copying it through Pillow.
+                        # The display stays opaque; downstream rasters retain
+                        # all their original channels and native sample depth.
+                        if display.ndim == 3 and display.shape[2] == 4:
+                            display = cv2.cvtColor(display, cv2.COLOR_BGRA2BGR)
+                        ok, encoded = cv2.imencode(".bmp", display)
+                        if not ok:
+                            raise ValueError("OpenCV could not encode live BMP")
+                        preview = encoded.tobytes()
+                    else:
+                        display = pixels if pixels.dtype == np.uint8 else (pixels >> 8).astype(np.uint8)
+                        if display.ndim == 3:
                             display = display[:, :, [2, 1, 0]]
-                    buffer = io.BytesIO()
-                    Image.fromarray(display).save(buffer, format="BMP")
-                    preview = buffer.getvalue()
+                        buffer = io.BytesIO()
+                        Image.fromarray(display).save(buffer, format="BMP")
+                        preview = buffer.getvalue()
                     if len(preview) > MAX_ARTIFACT_BYTES or live_bytes + len(preview) > MAX_TOTAL_ARTIFACT_BYTES:
                         raise ValueError("Live image bytes exceed the run's output bound")
                     live_images[name] = preview
@@ -756,7 +987,12 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             }, artifact_id=name)
 
         def save_json(name, data, section="parameters"):
-            data = json_value(data)
+            if inspection or request.get("artifactMode") == "memory":
+                return register(output_name(name, ".json"), compact_json_bytes(data), "json",
+                                {"section": section}, artifact_id=name)
+            return save_normalized_json(name, json_value(data), section)
+
+        def save_normalized_json(name, data, section):
             compact = inspection or request.get("artifactMode") == "memory"
             formatting = {"separators": (",", ":")} if compact else {"indent": 2}
             raw = (json.dumps(data, ensure_ascii=False, allow_nan=False, **formatting) + "\n").encode("utf-8")
@@ -781,15 +1017,33 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         structured_layers = []
         def save_layers(name, layers, section="tool"):
             normalized = validate_structured_layers(layers, image_records, trace, [layer["id"] for layer in structured_layers])
-            artifact_id = save_json(name, normalized, section=section)
+            # Validation already produced a fresh normalized JSON tree. Encode
+            # those exact values once; public save_json still normalizes arbitrary
+            # user values, including NumPy and non-finite scalars.
+            artifact_id = save_normalized_json(name, normalized, section)
             structured_layers.extend(normalized)
             return artifact_id
 
-        upstream_values = request.get("upstream", {})
+        upstream_values = request.get("upstream") or {}
         for slot, upstream_value in upstream_values.items():
             artifact = upstream_value.get("artifact", {})
+            if memory_transport and artifact.get("residentJson"):
+                key = (upstream_value.get("runId"), artifact.get("id"))
+                raw = resident.get("artifacts", {}).get(key)
+                if raw is None:
+                    raise ValueError(f"Upstream JSON {slot!r} is not retained in this workpiece session")
+                if len(raw) != artifact.get("bytes") or hashlib.sha256(raw).hexdigest() != artifact.get("sha256"):
+                    raise ValueError(f"Upstream JSON {slot!r} content hash changed")
+                # A fresh tree per consumer preserves the writable SDK contract.
+                # The verified immutable bytes never make a round trip via Rust.
+                artifact["data"] = json.loads(raw)
             if artifact.get("type") == "image":
-                if artifact.get("path"):
+                if memory_transport and artifact.get("residentRaster"):
+                    key = (upstream_value.get("runId"), artifact.get("id"))
+                    raw = resident.get("artifacts", {}).get(key)
+                    if raw is None:
+                        raise ValueError(f"Upstream image {slot!r} is not retained in this workpiece session")
+                elif artifact.get("path"):
                     raw = Path(artifact["path"]).read_bytes()
                 else:
                     data_url = artifact.get("dataUrl", artifact.get("dataURL", ""))
@@ -833,8 +1087,25 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         workpiece_images = [decoded_images[i] for i in query_indexes]
         workpiece_raw_images = [raw_images[i] for i in query_indexes]
         workpiece_records = [image_records[i] for i in query_indexes]
+        def input_file(index=0):
+            if isinstance(index,bool) or not isinstance(index,int) or index<0 or index>=len(query_indexes):
+                raise ValueError("INPUT_FILE_INDEX_INVALID: choose an actual workpiece input index")
+            actual=query_indexes[index]
+            record=image_records[actual]
+            if record["path"] is None:
+                # Only an explicit algorithm request creates a private copy.
+                # Never link a writable path to cached or source originals.
+                inputs.mkdir(exist_ok=True)
+                path=inputs / f"image-{actual:03d}.original"
+                path.write_bytes(original_bytes[actual])
+                record["path"]=str(path)
+                record["fileStatus"]="EXPLICIT_TEMPORARY_COPY"
+            return Path(record["path"])
+        input_file=ledger.wrap(input_file)
         first = workpiece_images[0]
         gray = workpiece_raw_images[0].copy() if workpiece_raw_images[0].ndim == 2 else cv2.cvtColor(first, cv2.COLOR_BGR2GRAY) if cv2 is not None else np.rint(first[:, :, 0] * .114 + first[:, :, 1] * .587 + first[:, :, 2] * .299).astype(first.dtype)
+        save_image, save_json, save_array, save_file, save_layers = [ledger.wrap(fn) for fn in
+            (save_image, save_json, save_array, save_file, save_layers)]
         namespace = {
             "__name__": "__agentcv_algorithm__", "__file__": str(run_directory / "algorithm.py"),
             "np": np, "cv2": cv2, "Image": Image, "image": first, "images": workpiece_images,
@@ -845,7 +1116,7 @@ def execute(request_path: Path, run_directory: Path, resident=None):
             "skip_step": trace.skip, "run_step": trace.run,
             "invoke": trace.invoke, "found": found, "not_found": not_found,
             "save_layers": save_layers, "structuredLayers": structured_layers,
-            "gray": gray, "image_records": workpiece_records, "source": source,
+            "gray": gray, "image_records": workpiece_records, "input_file": input_file, "source": source,
             "parameters": request.get("parameters", {}), "params": request.get("parameters", {}),
             "upstream": upstream_values,
             "capture_stage_diagnostics": not inspection,
@@ -858,9 +1129,15 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         module.__dict__.update(namespace)
         sys.modules[module.__name__] = module
         namespace = module.__dict__
+        phase("program-compilation")
+        program = compiled_program(code, str(run_directory / "algorithm.py"), resident)
         phase("algorithm-including-artifacts")
+        program_started = time.perf_counter()
         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-            exec(compile(code, str(run_directory / "algorithm.py"), "exec", dont_inherit=True), namespace, namespace)
+            try:
+                exec(program, namespace, namespace)
+            finally:
+                program_seconds = time.perf_counter() - program_started
         phase("result-validation")
         returned = namespace.get("result")
         report["result"] = json_value(returned.as_dict() if isinstance(returned, Invocation) else returned)
@@ -873,28 +1150,89 @@ def execute(request_path: Path, run_directory: Path, resident=None):
         report["execution"] = {"status": "FAULT", "reason": "UNHANDLED_EXCEPTION"}
         report["error"] = {"type": type(error).__name__, "message": str(error), **({"details": error.details} if isinstance(error, StructuredLayerContractError) else {})}
         report["traceback"] = traceback.format_exc()
-        (run_directory / "traceback.txt").write_text(report["traceback"], encoding="utf-8")
-    report["stdout"] = stdout.save()
-    report["stderr"] = stderr.save()
+        if not memory_transport:
+            (run_directory / "traceback.txt").write_text(report["traceback"], encoding="utf-8", newline="")
+    report["stdout"] = stdout.save(persist=not memory_transport)
+    report["stderr"] = stderr.save(persist=not memory_transport)
     phase("done")
     report["durationMs"] = (time.perf_counter() - started) * 1000
     report.setdefault("execution", {"status": "FAULT"})["durationMs"] = report["durationMs"]
     artifact_phase = "inspection-raster-and-metadata" if inspection else "artifact-encode-and-memory-retain" if request.get("artifactMode") == "memory" else "artifact-write"
     report["timing"] = {"clock": "monotonic", "totalMs": report["durationMs"], "includes": ["imports", "image-decode", "algorithm", artifact_phase], "excludes": ["host-dispatch", "host-verification", "UI-render"]}
     report["timing"]["phases"] = phases
+    report["timing"]["program"] = {"inclusiveMs": program_seconds * 1000,
+        "sdkMs": ledger.seconds * 1000, "algorithmMs": max(0.0, program_seconds - ledger.seconds) * 1000,
+        "sdkServices": ledger.services,
+        "scope": "user exec interval minus exclusive SDK output/tracing services; SDK callbacks count as user code; compilation excluded"}
     report["timing"]["opencvThreads"] = cv2.getNumThreads() if "cv2" in locals() and cv2 is not None else None
+    report["timing"]["jsonEncoder"] = {"backend": "rust-cpython-abi3" if NATIVE_JSON is not None else "python-json", "formatVersion": 1, "loadError": NATIVE_JSON_ERROR}
     if resident is not None:
+        originals = resident.get("originalInputs", {})
+        report["timing"]["originalCache"] = {"entries":len(originals), "bytes":sum(len(v[1]) for v in originals.values()),
+            "maxEntries":16, "maxBytes":128*1024*1024,
+            "hits":resident.get("originalHits", 0), "misses":resident.get("originalMisses", 0)}
         report["timing"]["imageCache"] = {"entries":len(resident["decoded"]), "bytes":sum(v[0].nbytes for v in resident["decoded"].values()), "hits":resident["decodeHits"], "misses":resident["decodeMisses"], "scope":"process-resident immutable original decode cache; arrays copied for each program"}
+        report["timing"]["programCache"] = {"entries":len(resident.get("programs", {})),
+            "sourceBytes":sum(map(len, resident.get("programs", {}))),
+            "hits":resident.get("compileHits", 0), "misses":resident.get("compileMisses", 0),
+            "maxEntries":MAX_PROGRAM_CACHE_ENTRIES, "maxSourceBytes":MAX_PROGRAM_CACHE_SOURCE_BYTES}
     report["finishedAt"] = datetime.now(timezone.utc).isoformat()
     report["limits"] = {
         "algorithmTypes": "not-restricted", "imports": "normal Python imports from selected environment",
         "hardSandbox": False, "outputArtifactBytes": MAX_TOTAL_ARTIFACT_BYTES,
         "meaning": "Execution and saved evidence do not establish accuracy, human acceptance or formal delivery",
     }
-    write_json(result_path, report)
+    if not memory_transport:
+        write_json(result_path, report)
     if resident is not None:
         resident["liveImages"] = live_images
+    if memory_transport:
+        cache = resident.setdefault("artifacts", {})
+        for artifact in report["artifacts"]:
+            if artifact.get("residentRaster") or artifact.get("residentJson"):
+                cache[(request["runId"], artifact["id"])] = memory_artifacts[artifact["id"]]
+        if sum(map(len, cache.values())) > 128 * 1024 * 1024 or len(cache) > 256:
+            raise ValueError("Workpiece resident raster retention exceeds limit")
+        return {"report": report, "artifacts": memory_artifacts}
     return {"status": report["status"], "resultFile": str(result_path), "runId": request["runId"]}
+
+
+def receive_originals(channel, frames, resident):
+    from collections import OrderedDict
+    if not isinstance(frames, list) or len(frames) > 16:
+        raise ValueError("Original resource frame count exceeds limit")
+    cache = resident.setdefault("originalInputs", OrderedDict())
+    total, seen = 0, set()
+    for frame in frames:
+        reference, size = frame["reference"], frame["bytes"]
+        token = reference.get("token")
+        if reference.get("kind") != "runtime-original" or not isinstance(token, str) or not re.fullmatch(r"[a-f0-9]{64}", token) or token in seen:
+            raise ValueError("Original resource identity is invalid")
+        seen.add(token)
+        length = reference.get("bytes")
+        if type(length) is not int or not 0 < length <= MAX_INPUT_BYTES or type(size) is not int or size not in (0, length):
+            raise ValueError("Original resource frame length is invalid")
+        total += length
+        if total > MAX_INPUT_BYTES:
+            raise ValueError("Original resources exceed input size bound")
+        if size:
+            raw = channel.read(size)
+            if len(raw) != size:
+                raise EOFError("Truncated original resource frame")
+            if hashlib.sha256(raw).hexdigest() != reference.get("sha256"):
+                raise ValueError("Original resource content hash mismatch")
+            if token in cache and cache[token] != (reference, raw):
+                raise ValueError("Original resource token was redefined")
+            resident["originalMisses"] = resident.get("originalMisses", 0) + 1
+        else:
+            if token not in cache or cache[token][0] != reference:
+                raise ValueError("Original resource has expired or changed")
+            raw = cache[token][1]
+            resident["originalHits"] = resident.get("originalHits", 0) + 1
+        cache.pop(token, None)
+        cache[token] = (reference, raw)
+        while len(cache) > 16 or sum(len(v[1]) for v in cache.values()) > 128*1024*1024:
+            cache.popitem(last=False)
 
 
 def serve(address, token):
@@ -905,25 +1243,53 @@ def serve(address, token):
         raise ValueError("Resident control must be loopback")
     with socket.create_connection((host, int(port)), timeout=60) as connection:
         connection.settimeout(None)
+        connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         channel = connection.makefile("rwb")
-        channel.write((json.dumps({"protocol":"agentcv-resident-1","token":token})+"\n").encode())
+        channel.write((json.dumps({"protocol":"agentcv-resident-3","token":token})+"\n").encode())
         channel.flush()
         resident = {"decoded":OrderedDict(),"decodeHits":0,"decodeMisses":0,"environment":None}
+        shared_previews = []
         while True:
             raw = channel.readline(32769)
             if not raw:
                 return
             if len(raw)>32768:
                 raise ValueError("Resident request envelope exceeds limit")
+            # Requests are serial: the next request acknowledges that Rust has
+            # copied the preceding frames into its immutable resource registry.
+            # Pagefile mappings never create image files or durable references.
+            for mapping in shared_previews:
+                mapping.close()
+            shared_previews = []
+            exchange_started = time.perf_counter()
             message = json.loads(raw)
             directory = Path(message["directory"]).resolve()
             resident["root"] = Path(message["cacheRoot"]).resolve() / "originals"
             resident["root"].mkdir(parents=True,exist_ok=True)
             cwd = Path.cwd()
             resident["liveImages"] = {}
+            payload = None
             try:
                 os.chdir(directory)
-                execute(Path(message["request"]), directory, resident=resident)
+                if "requestBytes" in message:
+                    size = message["requestBytes"]
+                    if not isinstance(size, int) or not 0 < size <= 100 * 1024 * 1024:
+                        raise ValueError("Resident request frame exceeds limit")
+                    encoded = channel.read(size)
+                    if len(encoded) != size:
+                        raise EOFError("Truncated resident request frame")
+                    request = json.loads(encoded)
+                    receive_originals(channel, message.get("originals", []), resident)
+                    scope = request["runtimeMemoryScope"]
+                    if not isinstance(scope, str) or len(scope) != 64:
+                        raise ValueError("Invalid workpiece memory scope")
+                    if resident.get("scope") != scope:
+                        resident["artifacts"] = {}
+                        resident["scope"] = scope
+                    payload = execute(None, directory, resident=resident, request_data=request)
+                else:
+                    receive_originals(channel, message.get("originals", []), resident)
+                    execute(Path(message["request"]), directory, resident=resident)
                 reply = {"call":message["call"],"ok":True}
             except BaseException as error:
                 reply = {"call":message.get("call"),"ok":False,"error":str(error)[:1000]}
@@ -931,9 +1297,41 @@ def serve(address, token):
                 os.chdir(cwd)
             images = resident.pop("liveImages", {})
             reply["liveImages"] = [[name,len(data)] for name,data in images.items()]
+            shared_copy_started = time.perf_counter()
+            if message.get("sharedImageTransport") == "windows-pagefile-v1":
+                if os.name != "nt":
+                    raise ValueError("Windows shared preview transport requested on another platform")
+                import mmap
+                frames = []
+                for name, data in images.items():
+                    mapping_name = "Local\\AgentCV-preview-" + hashlib.sha256(os.urandom(32)).hexdigest()
+                    mapping = mmap.mmap(-1, len(data), tagname=mapping_name, access=mmap.ACCESS_WRITE)
+                    shared_previews.append(mapping)
+                    mapping[:] = data
+                    frames.append([name,len(data),{"kind":"windows-pagefile-v1","name":mapping_name,"bytes":len(data)}])
+                reply["liveImages"] = frames
+            shared_copy_ms = (time.perf_counter()-shared_copy_started)*1000
+            reply["originalTokens"] = list(resident.get("originalInputs", {}))
+            artifacts = payload["artifacts"] if payload else {}
+            serialization_started = time.perf_counter()
+            report, report_encoding = report_transport_bytes(payload["report"], message.get("reportTransport")) if payload else (b"", "json-utf8")
+            reply["reportEncoding"] = report_encoding
+            reply["transportTiming"] = {"clock":"monotonic", "serializationMs":(time.perf_counter()-serialization_started)*1000,
+                                        "reportEncoder":"rust-cpython-abi3" if NATIVE_JSON is not None else "python-json",
+                                        "reportEncoding":report_encoding,
+                                        "sharedImageCopyMs":shared_copy_ms,"sharedImageBytes":sum(len(data) for data in images.values()) if shared_previews else 0,
+                                        "beforeReplyMs":(time.perf_counter()-exchange_started)*1000}
+            if len(report) > 32 * 1024 * 1024:
+                raise ValueError("Resident report frame exceeds limit")
+            reply["reportBytes"] = len(report)
+            reply["artifacts"] = [[name,len(data)] for name,data in artifacts.items()]
             channel.write((json.dumps(reply)+"\n").encode())
-            for data in images.values():
+            channel.write(report)
+            for data in artifacts.values():
                 channel.write(data)
+            if not shared_previews:
+                for data in images.values():
+                    channel.write(data)
             channel.flush()
 
 

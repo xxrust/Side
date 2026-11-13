@@ -1,6 +1,6 @@
 {
   "schema": "agentcv-build-contract-1",
-  "version": "0.16.7",
+  "version": "0.16.9",
   "contractSha256": "73a9d8dd9d6445b6b0440c84a019a2de694c26abc8ef2f11a35c55b2fe26fa93",
   "toolCount": 84,
   "tools": [
@@ -92,52 +92,52 @@
   "systemPromptSha256": "210568434ff7b1a5cfb177d199236c2bf37292fd5abe375db3d0386fc79872ac",
   "skills": [
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/canvas.md",
-      "sha256": "fc3a445e7d574358086a06d10ac15933a26a8c35e3477a1bb88a7d73378b1bf1"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\canvas.md",
+      "sha256": "c5431d84223a3601004c637b45fcb75962bbfa6a4733c3d735164ca94a0144e9"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/data-contracts.md",
-      "sha256": "63c3b74121c80b0d83b73791c1c5aae02c490816a5cb4f6f38ab8123def785ea"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\data-contracts.md",
+      "sha256": "856c831916f3cf032c1d0ea3db72a70f2a5637c990c9e33df7212295e19a3743"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/engineering-model.md",
-      "sha256": "f9c916760e111230941c9257a00b51953fdef68889bdb3c8ca58555ea65c7196"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\engineering-model.md",
+      "sha256": "447115fa1942e468ba3c6b8a3b626b1bc385b7458afe9fa05d898fa187bbd73f"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/evidence.md",
-      "sha256": "65dc6baf0b549cca484a5b2e26eab7915a9fb8d6e26ebb7c39ac28b2b276aad0"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\evidence.md",
+      "sha256": "f49623f2fb9df4d0670389efaa3c9527b02c76f4d8c25878354ba023e6ed33d8"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/execution.md",
-      "sha256": "245179f6c02e262999184d203d081d3acedb6537fcf3c7dcc0be42fc67dcfc3b"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\execution.md",
+      "sha256": "7a842cc3540e41b4acdabcad4b858b0a914ca5b223d74e832908f8a076ca3f22"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/node-documentation-example.md",
-      "sha256": "3e56dfde5308da9e5c10240cdb4f8e9bdb6b27d14761be7b5ae308bf6e091603"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\node-documentation-example.md",
+      "sha256": "022e2bc21e53e83fb4c73a7a1abbe35c0cf32ec353b72fac321564d51e83dbd3"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/project-acceptance.md",
-      "sha256": "8c9f368222e7fa6025edd80173229d18a29ba7f199561e8f4f6cb0fb110d6588"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\project-acceptance.md",
+      "sha256": "276ea4793b4047162c5e9eb5282ac79587294044fb9332e9dd3c950a164068bc"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/project-workflow.md",
-      "sha256": "6df6f02e97ed049d71238af03f79d0fcd168325590c420f3b3e3c6b9d7128119"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\project-workflow.md",
+      "sha256": "43aa571a78c296e418ba75935a444c15874a6cd73627c77ffe846c80243e87ea"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/structured-layers.md",
-      "sha256": "be8367d41dc29ca48dbc9e8aebfc27685fa3d53dc2c5a41d1379474ab216ca86"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\structured-layers.md",
+      "sha256": "88540523b94917fc5614a39649ed0093a5ba6d5649650f84dd60899f1670c6be"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/validation.md",
-      "sha256": "4c2b8d009a1f94133bd656b6b3c6985e3717df02ec117b5244a08307f6015a59"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\validation.md",
+      "sha256": "ed7e5262e5bd842a3d6e8fcb001a6bb0cc849849349ab3fa954230f0140ba7a4"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/references/visual-explanations.md",
-      "sha256": "3f769a79cfe221023e00ac8bc3b7bfb13e96790809d7187fba318d7d76c06c87"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\references\\visual-explanations.md",
+      "sha256": "fa7b20da6cc6b954736c0a3f35066530bd2e7f8e49646c38c416d87387dd2e2e"
     },
     {
-      "path": "agent-packages/agentcv-cv/skills/cv/SKILL.md",
-      "sha256": "6f8fdf1ac6ba4c2e31b87384542f3e11e9c59273c863b7c5c4f9913e48b12752"
+      "path": "agent-packages\\agentcv-cv\\skills\\cv\\SKILL.md",
+      "sha256": "3bdd7ddef97e2846000694fafa1cb759f74016b785126521c18e685fb51986d6"
     }
   ]
 }

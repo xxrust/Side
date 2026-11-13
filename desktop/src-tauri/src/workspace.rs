@@ -86,7 +86,7 @@ fn preview_extension(mime: &str) -> Option<&'static str> {
         _ => return None,
     })
 }
-fn extension(mime: &str) -> Option<&'static str> {
+pub(crate) fn extension(mime: &str) -> Option<&'static str> {
     if !valid_mime(mime) {
         return None;
     }
@@ -390,12 +390,12 @@ pub(crate) fn safe_asset(root: &Path, relative: &str) -> Result<PathBuf, String>
     }
     Ok(target)
 }
-struct AssetManifestIndex { modified: std::time::SystemTime, size: u64, entries: std::collections::HashSet<String> }
+struct AssetManifestIndex { modified: std::time::SystemTime, size: u64, entries: std::collections::HashSet<String>, locations: std::collections::BTreeMap<String,Value> }
 static ASSET_INDEXES: std::sync::OnceLock<std::sync::Mutex<std::collections::HashMap<PathBuf, AssetManifestIndex>>> = std::sync::OnceLock::new();
-fn descriptor_key(value: &Value) -> String { json!([value["$asset"], value["mime"], value["sha256"], value["size"]]).to_string() }
-fn collect_asset_descriptors(value: &Value, entries: &mut std::collections::HashSet<String>) {
-    if value.get("$asset").is_some() { entries.insert(descriptor_key(value)); }
-    match value { Value::Array(items) => for item in items { collect_asset_descriptors(item, entries); }, Value::Object(items) => for item in items.values() { collect_asset_descriptors(item, entries); }, _ => {} }
+fn descriptor_key(value: &Value) -> String { crate::inspection_files::asset_pack::key(value) }
+fn collect_asset_descriptors(value: &Value, entries: &mut std::collections::HashSet<String>,locations:&mut std::collections::BTreeMap<String,Value>) {
+    if value.get("$asset").is_some() { entries.insert(descriptor_key(value));locations.insert(crate::inspection_files::asset_pack::logical_key(value),value.clone()); }
+    match value { Value::Array(items) => for item in items { collect_asset_descriptors(item, entries,locations); }, Value::Object(items) => for item in items.values() { collect_asset_descriptors(item, entries,locations); }, _ => {} }
 }
 fn manifest_owns_asset(root: &Path, asset: &Value) -> Result<bool, String> {
     let canonical = root.canonicalize().map_err(|_| "來源專案目錄不存在")?;
@@ -408,16 +408,39 @@ fn manifest_owns_asset(root: &Path, asset: &Value) -> Result<bool, String> {
     if stale {
         let manifest: Value = serde_json::from_slice(&std::fs::read(&path).map_err(|_| "無法讀取來源專案")?).map_err(|_| "來源專案清單損壞")?;
         if manifest.get("schema").and_then(Value::as_str) != Some("agentcv-workspace-1") { return Err("來源專案版本錯誤".into()); }
-        let mut entries = std::collections::HashSet::new();collect_asset_descriptors(&manifest, &mut entries);
+        let mut entries = std::collections::HashSet::new();let mut locations=std::collections::BTreeMap::new();collect_asset_descriptors(&manifest, &mut entries,&mut locations);
         if indexes.len() >= 8 && !indexes.contains_key(&canonical) { if let Some(oldest) = indexes.keys().next().cloned() { indexes.remove(&oldest); } }
-        indexes.insert(canonical.clone(), AssetManifestIndex { modified, size: metadata.len(), entries });
+        indexes.insert(canonical.clone(), AssetManifestIndex { modified, size: metadata.len(), entries,locations });
     }
     Ok(indexes.get(&canonical).is_some_and(|index| index.entries.contains(&descriptor_key(asset))))
 }
 pub(crate) fn validate_asset_workspace(root:&Path)->Result<(),String>{manifest_owns_asset(root,&Value::Null)?;Ok(())}
+pub(crate) fn validate_packed_closure(root:&Path,value:&Value)->Result<(),String>{
+    fn visit(root:&Path,value:&Value,seen:&mut std::collections::HashSet<String>)->Result<(),String>{
+        if value.get("$asset").is_some()&&value.get("packedIn").is_some(){
+            if seen.insert(descriptor_key(value)){read_workspace_asset_bytes(root,value)?;}
+            return Ok(());
+        }
+        match value{Value::Array(items)=>for item in items{visit(root,item,seen)?;},Value::Object(items)=>for item in items.values(){visit(root,item,seen)?;},_=>{}}
+        Ok(())
+    }
+    visit(root,value,&mut std::collections::HashSet::new())
+}
+pub(crate) fn manifest_asset_locations(root:&Path,keys:&[String])->Result<std::collections::BTreeMap<String,Value>,String>{
+    manifest_owns_asset(root,&Value::Null)?;
+    let canonical=root.canonicalize().map_err(|_|"來源專案不存在")?;
+    let indexes=ASSET_INDEXES.get().ok_or("資產索引不存在")?.lock().map_err(|_|"資產索引不可用")?;
+    Ok(keys.iter().filter_map(|key|indexes.get(&canonical).and_then(|index|index.locations.get(key)).map(|value|(key.clone(),value.clone()))).collect())
+}
 pub(crate) fn read_workspace_asset_bytes(root: &Path, asset: &Value) -> Result<Vec<u8>, String> {
     if !root.is_absolute() { return Err("來源專案必須是絕對路徑".into()); }
     if !manifest_owns_asset(root, asset)? && !crate::inspection_files::owns_staged_asset(root,asset)? { return Err("此資產不在來源專案清單，禁止任意讀取檔案".into()); }
+    if let Some(physical)=crate::inspection_files::asset_pack::container(asset)? {
+        // The logical authorization includes the locator. The physical file
+        // must independently belong to this workspace; nested packs are banned.
+        let bytes=read_workspace_asset_bytes(root,physical)?;
+        return Ok(crate::inspection_files::asset_pack::read_entry(&bytes,asset)?.to_vec());
+    }
     let relative = asset.get("$asset").and_then(Value::as_str).ok_or("資產缺少路徑")?;
     let mime = asset.get("mime").and_then(Value::as_str).ok_or("資產缺少類型")?;
     let suffix = extension(mime).ok_or("資產類型無效")?;
@@ -433,6 +456,16 @@ pub(crate) fn read_workspace_asset_bytes(root: &Path, asset: &Value) -> Result<V
 fn copy_workspace_asset(reference: &Value, destination: &Path) -> Result<Value, String> {
     let source_root = PathBuf::from(reference.get("root").and_then(Value::as_str).ok_or("圖像引用缺少來源專案")?);
     let bytes = read_workspace_asset_bytes(&source_root, reference)?;
+    if let Some(physical)=crate::inspection_files::asset_pack::container(reference)? {
+        let packed=read_workspace_asset_bytes(&source_root,physical)?;
+        let relative=physical["$asset"].as_str().ok_or("容器缺少路徑")?;
+        let path=destination.join(relative);
+        if std::fs::symlink_metadata(&path).map(|m|m.file_type().is_symlink()).unwrap_or(false){return Err("容器不能是符號連結".into());}
+        if path.exists(){if std::fs::read(&path).map_err(|_|"無法核對容器")?!=packed{return Err("容器內容衝突".into());}}
+        else{atomic_write(&path,&packed)?;}
+        let mut owned=crate::inspection_files::asset_pack::core(reference);owned["packedIn"]=reference["packedIn"].clone();
+        return Ok(owned);
+    }
     let relative = reference.get("$asset").and_then(Value::as_str).ok_or("資產缺少路徑")?;
     let path = destination.join(relative);
     if std::fs::symlink_metadata(&path).map(|m| m.file_type().is_symlink()).unwrap_or(false) { return Err("資產不能是符號連結".into()); }
@@ -479,6 +512,13 @@ fn hydrate(v: &mut Value, root: &Path, total: &mut usize, count: &mut usize) -> 
         safe_asset(root, relative)?;
         v["root"] = json!(root.canonicalize().map_err(|_| "工程目錄不存在")?.to_string_lossy());
         return Ok(());
+    }
+    if v.get("packedIn").is_some(){
+        let mime=v["mime"].as_str().ok_or("容器資產缺少類型")?;
+        let bytes=read_workspace_asset_bytes(root,v)?;
+        *total=total.checked_add(bytes.len()).ok_or("資產過大")?;*count+=1;
+        if *total>MAX_TOTAL||*count>500{return Err("專案資產超過限制".into());}
+        *v=Value::String(format!("data:{mime};base64,{}",STANDARD.encode(bytes)));return Ok(());
     }
     if let Some(relative) = v.get("$asset").and_then(Value::as_str) {
         let mime = v

@@ -2,7 +2,7 @@ import {buildProgramFlow,programFlowNode} from './program-flow.js';
 const list=x=>Array.isArray(x)?x:[];
 /** Roles belong to a viewing boundary, never to a permanently labelled image. */
 function computeProgramScope(project,board,runId){
- const flow=buildProgramFlow(project,{runId}),root=flow.roots[0],id=board?.programBinding&&board.programBinding.runId===runId?board.programBinding.nodeId:root,node=programFlowNode(flow,id);
+ const flow=buildProgramFlow(project,{runId,shareImmutableFacts:true}),root=flow.roots[0],id=board?.programBinding&&board.programBinding.runId===runId?board.programBinding.nodeId:root,node=programFlowNode(flow,id);
  if(!node)return null;
  const inside=new Set([id]);let changed=true;while(changed){changed=false;for(const e of flow.edges)if(e.kind==='contains'&&inside.has(e.from)&&!inside.has(e.to)){inside.add(e.to);changed=true;}}
  const interfaceArtifacts=n=>{const all=list(n?.artifacts),declared=all.filter(a=>Object.hasOwn(n?.declaredOutputs||{},a.id));return n?.kind==='procedure'&&declared.length?declared:all;};const ancestors=new Set();let ancestor=programFlowNode(flow,node.parentId);while(ancestor&&!ancestors.has(ancestor.id)){ancestors.add(ancestor.id);ancestor=programFlowNode(flow,ancestor.parentId);}const externalInterface=n=>{let result=n,parent=programFlowNode(flow,n?.parentId);while(parent&&!ancestors.has(parent.id)&&!inside.has(parent.id)){if(parent.kind==='procedure'&&list(parent.artifacts).some(a=>Object.hasOwn(parent.declaredOutputs||{},a.id)))result=parent;parent=programFlowNode(flow,parent.parentId);}return result;},declaredBoundary=new Set(list(node.artifacts).filter(a=>Object.hasOwn(node.declaredOutputs||{},a.id)).map(a=>a.id));

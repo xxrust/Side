@@ -18,6 +18,20 @@ mod background_command;
 mod native_cv;
 mod two_boundary;
 mod resident_worker;
+mod report_wire;
+mod memory_resources;
+mod shared_facts;
+mod shared_preview;
+mod original_resources;
+mod inspection_session;
+mod inspection_service;
+mod inspection_decision;
+mod inspection_product;
+mod inspection_evidence;
+mod inspection_run;
+mod inspection_commit;
+mod inspection_archive;
+mod output_contract;
 mod app_session;
 mod visual_services;
 mod inspection_files;
@@ -328,6 +342,7 @@ fn main() {
         .manage(Session::default())
         .manage(project_documents::PendingDocuments::default())
         .register_uri_scheme_protocol("agentcv-preview", |_context, request| visual_services::preview_response(request))
+        .register_uri_scheme_protocol("agentcv-memory", |_context, request| memory_resources::response(request))
         .setup(|app| {
             let runtime = if cfg!(debug_assertions) {
                 PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../runtime")
@@ -389,6 +404,12 @@ fn main() {
             app_session::complete_app_exit,
             cv_runtime::cv_runtime_info,
             cv_runtime::execute_cv_algorithm,
+            cv_runtime::execute_inspection_session,
+            inspection_archive::inspection_archive_status,
+            inspection_archive::flush_inspection_archive,
+            inspection_archive::retry_inspection_archive,
+            inspection_archive::acknowledge_inspection_archive,
+            cv_runtime::cancel_inspection_session,
             execute_native_pipeline,
             execute_two_boundary_geometry,
             cv_runtime::install_cv_packages,

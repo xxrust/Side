@@ -29,7 +29,7 @@ pub fn revoke_exit() { EXIT_APPROVED.store(false, Ordering::Release); }
 
 #[tauri::command]
 pub fn complete_app_exit(app: tauri::AppHandle) -> Result<(), String> {
-    if is_saving() || crate::workspace::is_saving() {
+    if is_saving() || crate::workspace::is_saving() || crate::inspection_archive::has_unfinished() {
         revoke_exit();
         return Err("專案或工作階段仍在保存，尚未退出；請等待保存完成。".into());
     }

@@ -1,5 +1,6 @@
 import {sourceFilteredIds} from './source-classification-filter.js';
 import {schemeFingerprint} from './purpose-compiler.js';
+import {retainCompletedWorkpieceOutput} from './workpiece-live-state.js';
 const advancedExecutions=new WeakMap();
 const list=x=>Array.isArray(x)?x:[];
 function sourceMatches(project,sourceId,imageId){return list(project.data.visualInquiry?.boards).flatMap(board=>list(board.projectSpaces?.sources).filter(source=>sourceId?source.id===sourceId:source.imageIds.includes(imageId)).map(source=>({board,source})));}
@@ -45,6 +46,10 @@ export const sourceExecutionNavigationMethods={
   const current=sourceMatches(this,source.id);if(current.length!==1)return no('AMBIGUOUS_SOURCE');if(current[0].source.autoAdvance!==true)return no('DISABLED');
   if(!sourceFilteredIds(this,current[0].source).includes(nextId))return no('FILTER_CHANGED');
   if(JSON.stringify(current[0].source.imageIds)!==JSON.stringify(source.imageIds))return no('SOURCE_CHANGED');
+  // Publish the completed display identity before selectImage notifies views.
+  // Its next selection revision also makes later manual selections invalidate
+  // retention, including an explicit re-selection of this same prepared image.
+  retainCompletedWorkpieceOutput(this,saved,{imageId,nextImageId:nextId,selectionRevision:(this.imageSelection||0)+1});
   const selected=await this.selectSourceImage(source.id,nextId);if(!selected.selected)return no(selected.reason);
   let done=advancedExecutions.get(this);if(!done)advancedExecutions.set(this,done=new Set());done.add(saved.id);
   this.event('source_auto_advanced',{sourceId:source.id,executionId:saved.id,fromImageId:imageId,toImageId:nextId});
