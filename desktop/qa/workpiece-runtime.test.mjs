@@ -3,24 +3,45 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
 import {Workspace} from '../src/workspace.js';
 import {Agent} from '../src/agent.js';
-import {decodeBenchmarkImage} from '../scripts/agentcv-benchmark-batch.mjs';
+import {decodeBenchmarkImage as decodeWithPython} from '../scripts/agentcv-benchmark-batch.mjs';
 import {compileScheme} from '../src/purpose-compiler.js';
 import {runDatasetScheme} from '../src/algorithm-workspace.js';
 import {readAgentAlgorithmRun,readAgentInspectionImage} from '../src/agent-run-reader.js';
 import {compileClassificationSpec,classifyWorkpiece} from '../src/classification-spec.js';
-const root=path.resolve(new URL('..',import.meta.url).pathname),temp=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-workpiece-'));
+import {isImmutableJson} from '../src/json-snapshot.js';
+const root=fileURLToPath(new URL('..',import.meta.url)),temp=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-workpiece-'));
+const python=process.env.AGENTCV_PYTHON||path.join(root,'runtime/python/bin/python3');
+
+test('resumed real inspections preserve immutable prior units and the pre-resume undo state',async()=>{
+ const p=await project(),units=p.data.images.map((image,index)=>({id:'resume-'+index,imageIds:[image.id]}));
+ const controller=new AbortController(),saveUnitResult=async payload=>({recordRef:{executionId:payload.executionId,unitId:payload.unit.id}});
+ const first=await runDatasetScheme(p,execute,{units,signal:controller.signal,saveUnitResult,onProgress:progress=>{if(progress.processed===1)controller.abort();}});
+ assert.equal(first.execution.status,'CANCELLED');assert.equal(first.execution.processed,1);
+ const prior=p.data.datasetExecutions.at(-1),unit=prior.units[0],before=JSON.stringify(prior);
+ assert.ok(isImmutableJson(unit));assert.throws(()=>unit.imageIds.push('forged'),TypeError);
+ const resumed=await runDatasetScheme(p,execute,{units,resumeExecutionId:prior.id,saveUnitResult});
+ const current=p.data.datasetExecutions.at(-1);
+ assert.equal(resumed.execution.status,'COMPLETED');assert.equal(current.processed,2);assert.equal(current.units.length,2);
+ assert.notEqual(current,prior);assert.notEqual(current.counts,prior.counts);assert.equal(JSON.stringify(prior),before);
+ assert.equal(current.units[0],unit);assert.ok(current.units.every(isImmutableJson));
+ resumed.execution.units[0].imageIds[0]='editable-read';assert.notEqual(unit.imageIds[0],'editable-read');
+ p.undo();assert.equal(JSON.stringify(p.data.datasetExecutions.at(-1)),before);assert.equal(p.data.datasetExecutions.at(-1).units[0],unit);
+ p.redo();assert.equal(p.data.datasetExecutions.at(-1).processed,2);assert.equal(p.data.datasetExecutions.at(-1).units.length,2);
+});
+const decodeBenchmarkImage=value=>decodeWithPython(value,{python});
 const category=(id,quality)=>({id,label:id,quality});
 function spec(){return {schema:'agentcv-classification-spec-1',id:'pixel-width-grades',provenance:[{type:'human',ref:'qa/workpiece-runtime.test.mjs: explicitly authored pixel-width grading rule; not detector accuracy',status:'confirmed'}],categories:[category('small','good'),category('large','good'),category('outside','bad'),category('missing','bad')],metrics:[{id:'width',unit:'px',range:{min:0,max:1000}}],rules:[{id:'small',categoryId:'small',when:{metric:'width',interval:{min:0,max:400,includeMin:true,includeMax:false}}},{id:'large',categoryId:'large',when:{metric:'width',interval:{min:400,max:600,includeMin:true,includeMax:true}}},{id:'outside',categoryId:'outside',when:{metric:'width',interval:{min:600,max:1000,includeMin:false,includeMax:true}}}],coverage:{policy:'exhaustive'},missing:{NOT_FOUND:'missing',MISSING:'missing',SKIPPED:'missing'},conflicts:{mode:'priority',priority:['small','large','outside']},aggregation:{mode:'all-good'},fault:{exit:'FAULT'}};}
 const evidence={kind:'artifact',type:'evidence',id:'measurement'};
 const rationale={tool:{reason:'本測試直接觀察原檔像素寬度，不推測實際工件尺寸。',expectedEvidence:[evidence]},parameters:[],boundaries:[{condition:'本規則只適用於此明示的影像寬度分檔，不能用來推定物理尺寸。',check:evidence,onFailure:'UNKNOWN'}]};
 function plan(code='save_json("measurement",{"width":int(image.shape[1])})\nresult={"valid":True,"width":int(image.shape[1])}') {return {id:'actual-width-plan',execution:{unit:'workpiece',inputSlots:[{id:'image',required:true}]},classificationSpec:spec(),operatorGraph:{nodes:[{id:'measure',title:'讀取單件影像像素尺寸',code,parameters:{},expected_outputs:[{id:'measurement',type:'evidence'}],justification:rationale}],edges:[]},metricBindings:[{metric:'width',nodeId:'measure',path:'width'}]};}
 async function project(){const p=new Workspace();for(const name of ['box.png','box_in_scene.png'])await p.addImages([{name,dataUrl:'data:image/png;base64,'+(await fs.readFile(path.join(root,'../research/opencv-traditional-10-2026-10-25/assets',name))).toString('base64')}],decodeBenchmarkImage);p.data.purposeScheme=plan();return p;}
-async function execute(request){const directory=await fs.mkdtemp(path.join(temp,'run-'));await fs.writeFile(path.join(directory,'request.json'),JSON.stringify({...request,runId:randomUUID()}));return new Promise((resolve,reject)=>{const child=spawn(path.join(root,'runtime/python/bin/python3'),[path.join(root,'scripts/cv-runtime.py'),'--run',path.join(directory,'request.json'),directory],{env:{...process.env,OPENBLAS_NUM_THREADS:'1',OMP_NUM_THREADS:'1'}});let err='';child.stderr.on('data',x=>err+=x);child.on('error',reject);child.on('close',async code=>{try{if(code)throw Error(err);resolve(JSON.parse(await fs.readFile(path.join(directory,'result.json'),'utf8')));}catch(e){reject(e)}});});}
+async function execute(request){const directory=await fs.mkdtemp(path.join(temp,'run-'));await fs.writeFile(path.join(directory,'request.json'),JSON.stringify({...request,runId:randomUUID()}));return new Promise((resolve,reject)=>{const child=spawn(python,[path.join(root,'scripts/cv-runtime.py'),'--run',path.join(directory,'request.json'),directory],{windowsHide:true,env:{...process.env,OPENBLAS_NUM_THREADS:'1',OMP_NUM_THREADS:'1'}});let err='';child.stderr.on('data',x=>err+=x);child.on('error',reject);child.on('close',async code=>{try{if(code)throw Error(err);resolve(JSON.parse(await fs.readFile(path.join(directory,'result.json'),'utf8')));}catch(e){reject(e)}});});}
 test('classification intervals include explicit endpoint, multigrade good and no fictitious UNKNOWN',()=>{const s=spec();assert.equal(compileClassificationSpec(s).ok,true);for(const [value,expected]of [[399,'small'],[400,'large'],[600,'large'],[601,'outside']])assert.deepEqual(classifyWorkpiece(s,[{metric:'width',value,valid:true}]).categoryIds,[expected]);assert.equal(classifyWorkpiece(s,[{metric:'width',value:400,valid:true}]).quality,'good');assert.deepEqual(classifyWorkpiece(s,[{metric:'width',valid:false,status:'NOT_FOUND'}]).categoryIds,['missing']);assert.equal(classifyWorkpiece(s,[],{faults:[{reason:'injected crash'}]}).status,'FAULT');assert.deepEqual(classifyWorkpiece(s,[],{faults:[{}]}).categoryIds,[]);});
 test('compile asks concrete questions for gap, missing mapping, inferred source and depth >3',()=>{const s=plan();s.classificationSpec.rules[1].when.interval.includeMin=false;delete s.classificationSpec.missing.NOT_FOUND;s.classificationSpec.provenance=[{type:'agent-inference',ref:'guess',status:'confirmed'}];const base=s.operatorGraph.nodes[0];s.operatorGraph.nodes.push(...['two','three','four'].map((id,i)=>({...base,id,parentId:i===0?'measure':['two','three'][i-1]})));const c=compileScheme(s);assert.equal(c.ok,false);for(const code of ['CLASSIFICATION_RANGE_GAP','CLASSIFICATION_MISSING_MAPPING','CLASSIFICATION_SOURCE_INVALID','NODE_DEPTH_EXCEEDED'])assert.ok(c.errors.some(e=>e.code===code),code);assert.ok(c.questions.length>=4);});
 test('one compile, actual OpenCV pixels, sequential workpieces and durable receipts keep only last artifact set',async()=>{const p=await project();p.data.purposeScheme.execution.timingRequirement={maxUnitMs:250,provenance:{type:'human',status:'confirmed',ref:'Explicit QA timing snapshot, not a production target'}};const units=p.data.images.map((image,i)=>({id:'part-'+i,imageIds:[image.id],expected:{categoryIds:[i?'large':'small'],provenance:{type:'human',status:'confirmed',ref:'explicit test expectation for actual source dimensions'}}})),saved=[],dispatched=[];const outcome=await runDatasetScheme(p,request=>{dispatched.push(request);return execute(request);},{units,saveUnitResult:async payload=>{saved.push(payload);await fs.writeFile(path.join(temp,payload.unit.id+'.json'),JSON.stringify(payload));return {recordRef:{unitId:payload.unit.id,executionId:payload.executionId}};}});assert.deepEqual(outcome.execution.timingRequirement,p.data.purposeScheme.execution.timingRequirement);assert.equal(dispatched.length,2);assert.ok(dispatched.every(r=>r.images.length===1));assert.deepEqual(saved.map(p=>p.record.result.categoryIds),[['small'],['large']]);assert.equal(outcome.execution.counts.regression.matched,2);assert.equal(outcome.execution.counts.execution.FAULT,0);assert.equal(p.data.algorithmRuns.length,1);assert.equal(outcome.execution.units.length,2);assert.ok(saved.every(p=>p.record.timing.totalMs>0&&p.runs[0].timing.hostExecutionMs>0&&p.runs[0].execution.status==='COMPLETED'));assert.ok(saved[0].context.scheme);assert.equal(saved[1].context.scheme,undefined);assert.equal(outcome.acceptance,null);});

@@ -1,0 +1,1046 @@
+{
+  "provenance": {
+    "source": "0.16.9 frozen specimen archived execution",
+    "runId": "py-65fb4c5ed234d-16176-3",
+    "canonicalRunSha256": "8b9810051321452b480410a1be07ba39815e351f937d0f14fac1528fc8d6db70",
+    "scope": "Actual saved execution facts for history isolation tests; does not establish algorithm accuracy."
+  },
+  "run": {
+    "artifacts": [
+      {
+        "bytes": 690732,
+        "channels": 1,
+        "contractBinding": {
+          "dataContract": {
+            "coordinates": {
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "unit": "px"
+            },
+            "kind": "image"
+          },
+          "frames": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "unit": "px",
+              "width": 1280
+            }
+          ]
+        },
+        "dtype": "uint8",
+        "height": 1024,
+        "hostBytesVerified": true,
+        "id": "shared_gray",
+        "label": "shared_gray",
+        "mime": "image/png",
+        "name": "shared_gray.png",
+        "pixelRetention": "full",
+        "procedureId": "shared",
+        "procedureInstanceId": "shared#1",
+        "section": "tool",
+        "sha256": "4f7daf7a6309117bcf64109a084434e1cb5a8217a8ac9cf5e4b51407b9b2cefa",
+        "source": {
+          "images": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+              "width": 1280
+            }
+          ],
+          "projectEpoch": 2,
+          "schemeFingerprint": "878812c65833c5dc",
+          "workflowRevision": 4
+        },
+        "stepId": "normalize",
+        "stepInstanceId": "normalize#1",
+        "traceNodeId": "normalize#1",
+        "type": "image",
+        "width": 1280
+      },
+      {
+        "bytes": 895386,
+        "channels": 3,
+        "contractBinding": {
+          "dataContract": {
+            "coordinates": {
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "unit": "px"
+            },
+            "kind": "image"
+          },
+          "frames": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "unit": "px",
+              "width": 1280
+            }
+          ]
+        },
+        "dtype": "uint8",
+        "height": 1024,
+        "hostBytesVerified": true,
+        "id": "shared_overlay",
+        "label": "shared_overlay",
+        "mime": "image/png",
+        "name": "shared_overlay.png",
+        "pixelRetention": "full",
+        "procedureId": "shared",
+        "procedureInstanceId": "shared#1",
+        "section": "tool",
+        "sha256": "4d3203b1c8dc2513ae964661abdac582ec0d32eee875bada542f6b35f4c9bf5b",
+        "source": {
+          "images": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+              "width": 1280
+            }
+          ],
+          "projectEpoch": 2,
+          "schemeFingerprint": "878812c65833c5dc",
+          "workflowRevision": 4
+        },
+        "stepId": "normalize",
+        "stepInstanceId": "normalize#1",
+        "traceNodeId": "normalize#1",
+        "type": "image",
+        "width": 1280
+      },
+      {
+        "bytes": 238,
+        "contractBinding": {
+          "dataContract": {
+            "kind": "json"
+          },
+          "frames": []
+        },
+        "data": {
+          "bbox": [
+            111,
+            256,
+            711,
+            598
+          ],
+          "grayShape": [
+            1024,
+            1280
+          ],
+          "scope": "共同前提；不含最終分類",
+          "seedLevel": 65,
+          "sharedFor": [
+            "objects",
+            "unweld_analysis"
+          ],
+          "sigma": 1.5
+        },
+        "hostBytesVerified": true,
+        "id": "shared_data",
+        "mime": "application/json",
+        "name": "shared_data.json",
+        "procedureId": "shared",
+        "procedureInstanceId": "shared#1",
+        "section": "parameters",
+        "sha256": "61601fc18e915d7e2598d7a344ad24ff1d70b4b2c978e77154d684d4aceee88a",
+        "source": {
+          "images": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+              "width": 1280
+            }
+          ],
+          "projectEpoch": 2,
+          "schemeFingerprint": "878812c65833c5dc",
+          "workflowRevision": 4
+        },
+        "stepId": "normalize",
+        "stepInstanceId": "normalize#1",
+        "traceNodeId": "normalize#1",
+        "type": "json"
+      }
+    ],
+    "author": "agent",
+    "code": "import cv2,numpy as np\ndef choose_bbox(gray):\n bw=(gray>parameters['search']['seedLevel']).astype('uint8');cs=cv2.findContours(bw,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)[0]\n if not cs:return None\n return list(cv2.boundingRect(max(cs,key=cv2.contourArea)))\nwhy={'tool':{'reason':'建立兩條支路共用的灰階與搜尋域，避免歪斜和未焊各自重複前處理。','expectedEvidence':[{'kind':'artifact','type':'evidence','id':'shared_data','visuals':[{'id':'shared_overlay','caption':'共用搜尋域與灰階輸出；只表達共同前提。'}]}]},'parameters':[{'name':'search','source':'agent-proposal','reason':'沿用既有搜尋域設定，尚未跨照明比較。','verification':{'kind':'artifact','type':'evidence','id':'shared_data','visuals':[{'id':'shared_overlay','caption':'搜尋域實算。'}]}},{'name':'display','source':'agent-proposal','reason':'僅供核對，不參與分類。','verification':{'kind':'artifact','type':'evidence','id':'shared_data','visuals':[{'id':'shared_overlay','caption':'共用疊圖。'}]}}],'boundaries':[{'condition':'原圖可解碼且搜尋域存在；否則下游保持UNKNOWN。','check':{'kind':'artifact','type':'evidence','id':'shared_data','visuals':[{'id':'shared_overlay','caption':'搜尋域存在性。'}]},'onFailure':'UNKNOWN'}]}\nwith procedure('shared',name='共用影像與搜尋域',inputs={'image':image_records[0]['id']},outputs={'shared_gray':'shared_gray','shared_data':'shared_data','shared_overlay':'shared_overlay'},parameters=parameters,justification=why) as pr:\n with step('normalize',name='灰階與搜尋域',inputs={'image':image_records[0]['id']},outputs={'shared_gray':'shared_gray','shared_data':'shared_data','shared_overlay':'shared_overlay'},parameters=parameters,justification=why) as st:\n  gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY);bbox=choose_bbox(gray);overlay=image.copy()\n  if bbox is not None:\n   x,y,w,h=bbox;cv2.rectangle(overlay,(x,y),(x+w,y+h),(0,200,255),2)\n  data={'bbox':bbox,'grayShape':[int(v) for v in gray.shape],'seedLevel':parameters['search']['seedLevel'],'sigma':parameters['search']['sigma'],'sharedFor':['objects','unweld_analysis'],'scope':'共同前提；不含最終分類'}\n  save_image('shared_gray',gray,section='tool');save_image('shared_overlay',overlay,section='tool');save_json('shared_data',data,section='parameters')\n  st.set_output('shared_gray','shared_gray');st.set_output('shared_data',data);st.set_output('shared_overlay','shared_overlay');st.set_output('boundaryChecks',[{'id':'shared_bbox','status':'PASS' if bbox is not None else 'FAIL','actual':bbox,'threshold':'one connected search domain'}])\nresult={'valid':True,'bbox':bbox,'shared_data':data}\n",
+    "codeRef": {
+      "$asset": "assets/33e6aa497a813d83dc007c076ef9affce75b697a66b08faeadd2150513be6d56.txt",
+      "mime": "text/plain",
+      "sha256": "33e6aa497a813d83dc007c076ef9affce75b697a66b08faeadd2150513be6d56",
+      "size": 2690
+    },
+    "codeSha256": "33e6aa497a813d83dc007c076ef9affce75b697a66b08faeadd2150513be6d56",
+    "compilation": {
+      "errors": [],
+      "isDraft": false,
+      "lifecycleDependencies": [],
+      "mode": "scheme",
+      "ok": true,
+      "order": [
+        "shared_preprocess",
+        "objects",
+        "unweld_analysis"
+      ],
+      "questions": [],
+      "schema": "agentcv-workpiece-plan-1",
+      "schemeFingerprint": "878812c65833c5dc",
+      "validationScope": "結構、引用與明示規則檢查；不證明算法精度或效能。",
+      "version": "agentcv-purpose-compiler-2",
+      "warnings": []
+    },
+    "dataContractAudit": {
+      "bindings": {
+        "shared_data": {
+          "dataContract": {
+            "kind": "json"
+          },
+          "frames": []
+        },
+        "shared_gray": {
+          "dataContract": {
+            "coordinates": {
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "unit": "px"
+            },
+            "kind": "image"
+          },
+          "frames": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "unit": "px",
+              "width": 1280
+            }
+          ]
+        },
+        "shared_overlay": {
+          "dataContract": {
+            "coordinates": {
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "unit": "px"
+            },
+            "kind": "image"
+          },
+          "frames": [
+            {
+              "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+              "frame": {
+                "kind": "input",
+                "slot": "image"
+              },
+              "height": 1024,
+              "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+              "unit": "px",
+              "width": 1280
+            }
+          ]
+        }
+      },
+      "checked": 3,
+      "errors": [],
+      "schema": "agentcv-data-contract-audit-1",
+      "scope": "實際端口資料、來源綁定、有限數值與格式檢查；不證明算法精度或幾何轉換正確性。",
+      "untyped": 0,
+      "valid": true
+    },
+    "delivered": false,
+    "dispatchCodeSha256": "33e6aa497a813d83dc007c076ef9affce75b697a66b08faeadd2150513be6d56",
+    "dispatchSourceBinding": {
+      "images": [
+        {
+          "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+          "height": 1024,
+          "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+          "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+          "width": 1280
+        }
+      ],
+      "projectEpoch": 2,
+      "schemeFingerprint": "878812c65833c5dc",
+      "workflowRevision": 4
+    },
+    "durationMs": 94.2463749088347,
+    "environment": {
+      "algorithmAllowlist": null,
+      "canInstallPackages": true,
+      "executionModel": "normal-python-process",
+      "hardSandbox": false,
+      "installedPackages": [
+        {
+          "name": "numpy",
+          "version": "2.5.4"
+        },
+        {
+          "name": "opencv-python-headless",
+          "version": "5.0.0.93"
+        },
+        {
+          "name": "pillow",
+          "version": "13.0.0"
+        },
+        {
+          "name": "pip",
+          "version": "25.0.1"
+        }
+      ],
+      "libraries": {
+        "PIL": {
+          "available": true,
+          "version": "13.0.0"
+        },
+        "cv2": {
+          "available": true,
+          "version": "5.0.0"
+        },
+        "matplotlib": {
+          "available": false,
+          "error": "ModuleNotFoundError: No module named 'matplotlib'"
+        },
+        "numpy": {
+          "available": true,
+          "version": "2.5.4"
+        },
+        "scipy": {
+          "available": false,
+          "error": "ModuleNotFoundError: No module named 'scipy'"
+        },
+        "skimage": {
+          "available": false,
+          "error": "ModuleNotFoundError: No module named 'skimage'"
+        },
+        "torch": {
+          "available": false,
+          "error": "ModuleNotFoundError: No module named 'torch'"
+        }
+      },
+      "python": {
+        "executable": "/Users/liangshiben/13-cv/desktop/runtime/python/bin/python3",
+        "version": "3.12.14"
+      },
+      "schema": "agentcv-python-runtime-1"
+    },
+    "evidenceAudit": {
+      "delivered": false,
+      "errors": [],
+      "procedureAudit": {
+        "delivered": false,
+        "errors": [],
+        "nodes": [
+          {
+            "delivered": false,
+            "errors": [],
+            "nodeId": "shared#1",
+            "status": "READY_FOR_REVIEW"
+          },
+          {
+            "delivered": false,
+            "errors": [],
+            "nodeId": "normalize#1",
+            "status": "READY_FOR_REVIEW"
+          }
+        ],
+        "schema": "agentcv-procedure-evidence-audit-1",
+        "scope": "逐程序三項依據及實際產物／邊界引用核對；不是獨立精度驗證或工業驗收。",
+        "status": "READY_FOR_REVIEW"
+      },
+      "procedureStatus": "READY_FOR_REVIEW",
+      "schema": "agentcv-algorithm-evidence-audit-1",
+      "scope": "保存的程式自檢及產物引用核對；不是獨立精度驗證、人工採用或正式發布。",
+      "status": "READY_FOR_REVIEW"
+    },
+    "evidenceVisuals": [],
+    "execution": {
+      "durationMs": 94.2463749088347,
+      "faults": [],
+      "hostDurationMs": 109.268,
+      "status": "COMPLETED"
+    },
+    "executionBackend": "python-extension",
+    "expectedOutputs": [
+      {
+        "dataContract": {
+          "coordinates": {
+            "frame": {
+              "kind": "input",
+              "slot": "image"
+            },
+            "unit": "px"
+          },
+          "kind": "image"
+        },
+        "id": "shared_gray",
+        "role": "intermediate",
+        "type": "image"
+      },
+      {
+        "dataContract": {
+          "coordinates": {
+            "frame": {
+              "kind": "input",
+              "slot": "image"
+            },
+            "unit": "px"
+          },
+          "kind": "image"
+        },
+        "id": "shared_overlay",
+        "role": "result",
+        "type": "image"
+      },
+      {
+        "dataContract": {
+          "kind": "json"
+        },
+        "id": "shared_data",
+        "type": "evidence"
+      }
+    ],
+    "finishedAt": "2026-11-07T19:31:19.772872+00:00",
+    "humanConfirmed": false,
+    "inputContext": {
+      "calibration": [
+        {
+          "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+          "reason": "像元／倍率只提供理論比例，mm 判定需要已確認且匹配圖片的實測標定",
+          "status": "UNKNOWN",
+          "theoreticalMmPerPixel": null,
+          "theoreticalMmPerPixelX": null,
+          "theoreticalMmPerPixelY": null
+        }
+      ],
+      "targets": [
+        {
+          "description": "",
+          "id": "9b00ef9c-5308-4239-8d98-93831f2fbcc2",
+          "name": "",
+          "regions": {}
+        }
+      ]
+    },
+    "inputs": [
+      {
+        "colorOrder": "BGR",
+        "dtype": "uint8",
+        "exifOrientationApplied": false,
+        "height": 1024,
+        "id": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+        "name": "歪斜_20250828032053433.bmp",
+        "path": "/Users/liangshiben/13-cv/desktop/runtime/cv-runs/py-65fb4c5ed234d-16176-3/inputs/image-000.original",
+        "rawChannels": 1,
+        "rawColorOrder": "GRAY",
+        "referenceSlots": [],
+        "role": "workpiece",
+        "sha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+        "source": {
+          "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+          "height": 1024,
+          "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+          "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+          "width": 1280
+        },
+        "width": 1280
+      }
+    ],
+    "isDraft": false,
+    "justification": {
+      "boundaries": [
+        {
+          "check": {
+            "id": "shared_data",
+            "kind": "artifact",
+            "type": "evidence",
+            "visuals": [
+              {
+                "caption": "搜尋域存在性。",
+                "id": "shared_overlay"
+              }
+            ]
+          },
+          "condition": "原圖可解碼且搜尋域存在；否則下游保持UNKNOWN。",
+          "onFailure": "UNKNOWN"
+        }
+      ],
+      "meta": {
+        "sourceFingerprint": "{\"images\":[{\"contentSha256\":\"2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb\",\"height\":1024,\"imageId\":\"865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1\",\"imageSha256\":\"516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3\",\"width\":1280}],\"projectEpoch\":2,\"schemeFingerprint\":\"878812c65833c5dc\",\"workflowRevision\":4}"
+      },
+      "parameters": [
+        {
+          "name": "search",
+          "reason": "沿用既有搜尋域設定，尚未跨照明比較。",
+          "source": "agent-proposal",
+          "verification": {
+            "id": "shared_data",
+            "kind": "artifact",
+            "type": "evidence",
+            "visuals": [
+              {
+                "caption": "搜尋域實算。",
+                "id": "shared_overlay"
+              }
+            ]
+          }
+        },
+        {
+          "name": "display",
+          "reason": "僅供核對，不參與分類。",
+          "source": "agent-proposal",
+          "verification": {
+            "id": "shared_data",
+            "kind": "artifact",
+            "type": "evidence",
+            "visuals": [
+              {
+                "caption": "共用疊圖。",
+                "id": "shared_overlay"
+              }
+            ]
+          }
+        }
+      ],
+      "tool": {
+        "expectedEvidence": [
+          {
+            "id": "shared_data",
+            "kind": "artifact",
+            "type": "evidence",
+            "visuals": [
+              {
+                "caption": "共用前提疊圖。",
+                "id": "shared_overlay"
+              }
+            ]
+          }
+        ],
+        "reason": "先建立兩條支路都需要的灰階與搜尋域，避免歪斜和未焊各自重複前處理。"
+      }
+    },
+    "language": "python",
+    "limits": {
+      "algorithmTypes": "not-restricted",
+      "hardSandbox": false,
+      "imports": "normal Python imports from selected environment",
+      "meaning": "Execution and saved evidence do not establish accuracy, human acceptance or formal delivery",
+      "outputArtifactBytes": 67108864
+    },
+    "mode": "scheme",
+    "parameters": {
+      "display": {
+        "description": "共用灰階與搜尋域；不作分類"
+      },
+      "search": {
+        "seedLevel": 65,
+        "sigma": 1.5
+      }
+    },
+    "procedureTrace": {
+      "nodes": [
+        {
+          "artifactIds": [
+            "shared_gray",
+            "shared_overlay",
+            "shared_data"
+          ],
+          "condition": null,
+          "declaredOutputs": {
+            "shared_data": "shared_data",
+            "shared_gray": "shared_gray",
+            "shared_overlay": "shared_overlay"
+          },
+          "dependencyInstances": [],
+          "dependsOn": [],
+          "durationMs": 86.67970774695277,
+          "execution": {
+            "status": "COMPLETED"
+          },
+          "finishedAt": "2026-11-07T19:31:19.772732+00:00",
+          "id": "shared",
+          "inputs": {
+            "image": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+          },
+          "instanceId": "shared#1",
+          "judgement": null,
+          "justification": {
+            "boundaries": [
+              {
+                "check": {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "搜尋域存在性。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                },
+                "condition": "原圖可解碼且搜尋域存在；否則下游保持UNKNOWN。",
+                "onFailure": "UNKNOWN"
+              }
+            ],
+            "parameters": [
+              {
+                "name": "search",
+                "reason": "沿用既有搜尋域設定，尚未跨照明比較。",
+                "source": "agent-proposal",
+                "verification": {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "搜尋域實算。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "display",
+                "reason": "僅供核對，不參與分類。",
+                "source": "agent-proposal",
+                "verification": {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "共用疊圖。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                }
+              }
+            ],
+            "tool": {
+              "expectedEvidence": [
+                {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "共用搜尋域與灰階輸出；只表達共同前提。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                }
+              ],
+              "reason": "建立兩條支路共用的灰階與搜尋域，避免歪斜和未焊各自重複前處理。"
+            }
+          },
+          "kind": "procedure",
+          "name": "共用影像與搜尋域",
+          "outputs": {},
+          "parameterSources": {},
+          "parameters": {
+            "display": {
+              "description": "共用灰階與搜尋域；不作分類"
+            },
+            "search": {
+              "seedLevel": 65,
+              "sigma": 1.5
+            }
+          },
+          "parentId": null,
+          "parentInstanceId": null,
+          "startedAt": "2026-11-07T19:31:19.686046+00:00",
+          "status": "SUCCEEDED"
+        },
+        {
+          "artifactIds": [
+            "shared_gray",
+            "shared_overlay",
+            "shared_data"
+          ],
+          "condition": null,
+          "declaredOutputs": {
+            "shared_data": "shared_data",
+            "shared_gray": "shared_gray",
+            "shared_overlay": "shared_overlay"
+          },
+          "dependencyInstances": [],
+          "dependsOn": [],
+          "durationMs": 86.66287502273917,
+          "execution": {
+            "status": "COMPLETED"
+          },
+          "finishedAt": "2026-11-07T19:31:19.772723+00:00",
+          "id": "normalize",
+          "inputs": {
+            "image": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+          },
+          "instanceId": "normalize#1",
+          "judgement": null,
+          "justification": {
+            "boundaries": [
+              {
+                "check": {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "搜尋域存在性。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                },
+                "condition": "原圖可解碼且搜尋域存在；否則下游保持UNKNOWN。",
+                "onFailure": "UNKNOWN"
+              }
+            ],
+            "parameters": [
+              {
+                "name": "search",
+                "reason": "沿用既有搜尋域設定，尚未跨照明比較。",
+                "source": "agent-proposal",
+                "verification": {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "搜尋域實算。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "display",
+                "reason": "僅供核對，不參與分類。",
+                "source": "agent-proposal",
+                "verification": {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "共用疊圖。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                }
+              }
+            ],
+            "tool": {
+              "expectedEvidence": [
+                {
+                  "id": "shared_data",
+                  "kind": "artifact",
+                  "type": "evidence",
+                  "visuals": [
+                    {
+                      "caption": "共用搜尋域與灰階輸出；只表達共同前提。",
+                      "id": "shared_overlay"
+                    }
+                  ]
+                }
+              ],
+              "reason": "建立兩條支路共用的灰階與搜尋域，避免歪斜和未焊各自重複前處理。"
+            }
+          },
+          "kind": "step",
+          "name": "灰階與搜尋域",
+          "outputs": {
+            "boundaryChecks": [
+              {
+                "actual": [
+                  111,
+                  256,
+                  711,
+                  598
+                ],
+                "id": "shared_bbox",
+                "status": "PASS",
+                "threshold": "one connected search domain"
+              }
+            ],
+            "shared_data": {
+              "bbox": [
+                111,
+                256,
+                711,
+                598
+              ],
+              "grayShape": [
+                1024,
+                1280
+              ],
+              "scope": "共同前提；不含最終分類",
+              "seedLevel": 65,
+              "sharedFor": [
+                "objects",
+                "unweld_analysis"
+              ],
+              "sigma": 1.5
+            },
+            "shared_gray": "shared_gray",
+            "shared_overlay": "shared_overlay"
+          },
+          "parameterSources": {},
+          "parameters": {
+            "display": {
+              "description": "共用灰階與搜尋域；不作分類"
+            },
+            "search": {
+              "seedLevel": 65,
+              "sigma": 1.5
+            }
+          },
+          "parentId": "shared",
+          "parentInstanceId": "shared#1",
+          "startedAt": "2026-11-07T19:31:19.686066+00:00",
+          "status": "SUCCEEDED"
+        }
+      ],
+      "schema": "agentcv-procedure-trace-1"
+    },
+    "processExitCode": 0,
+    "processTimedOut": false,
+    "proposalAudit": {
+      "actualEvidence": "PENDING",
+      "delivered": false,
+      "errors": [],
+      "nodeId": "program",
+      "phase": "planning",
+      "schema": "agentcv-pipeline-evidence-audit-1",
+      "sections": {
+        "boundaries": {
+          "errors": [],
+          "status": "PLANNED"
+        },
+        "parameters": {
+          "errors": [],
+          "requiredNames": [
+            "search",
+            "display"
+          ],
+          "status": "PLANNED"
+        },
+        "tool": {
+          "errors": [],
+          "status": "PLANNED"
+        }
+      },
+      "status": "READY_FOR_TRIAL",
+      "valid": true
+    },
+    "referenceInputs": {},
+    "resourceLimits": {
+      "fileBytes": 268435456,
+      "wallTimeoutOwner": "Rust supervisor per invocation"
+    },
+    "result": {
+      "bbox": [
+        111,
+        256,
+        711,
+        598
+      ],
+      "shared_data": {
+        "bbox": [
+          111,
+          256,
+          711,
+          598
+        ],
+        "grayShape": [
+          1024,
+          1280
+        ],
+        "scope": "共同前提；不含最終分類",
+        "seedLevel": 65,
+        "sharedFor": [
+          "objects",
+          "unweld_analysis"
+        ],
+        "sigma": 1.5
+      },
+      "valid": true
+    },
+    "runId": "py-65fb4c5ed234d-16176-3",
+    "schema": "agentcv-algorithm-run-1",
+    "schemeNodeId": "shared_preprocess",
+    "source": {
+      "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+      "height": 1024,
+      "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+      "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+      "width": 1280
+    },
+    "sourceBinding": {
+      "images": [
+        {
+          "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+          "height": 1024,
+          "imageId": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+          "imageSha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+          "width": 1280
+        }
+      ],
+      "projectEpoch": 2,
+      "schemeFingerprint": "878812c65833c5dc",
+      "workflowRevision": 4
+    },
+    "stage": "TRIAL",
+    "startedAt": "2026-11-07T19:31:19.680133+00:00",
+    "status": "SUCCEEDED",
+    "stderr": "",
+    "stdout": "",
+    "structuredLayers": [],
+    "timing": {
+      "clock": "monotonic",
+      "excludes": [
+        "host-dispatch",
+        "host-verification",
+        "UI-render"
+      ],
+      "hostExecutionMs": 156,
+      "hostPhases": {
+        "auditMs": 13,
+        "clock": "monotonic",
+        "dispatchMs": 145,
+        "preparationMs": 9,
+        "publishMs": 0,
+        "scope": "exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process",
+        "totalMs": 167
+      },
+      "hostProcessMs": 109.268,
+      "imageCache": {
+        "bytes": 2621440,
+        "entries": 2,
+        "hits": 2,
+        "misses": 2,
+        "scope": "process-resident immutable original decode cache; arrays copied for each program"
+      },
+      "includes": [
+        "imports",
+        "image-decode",
+        "algorithm",
+        "artifact-write"
+      ],
+      "native": {
+        "clock": "monotonic",
+        "preparationMs": 9.538542000000001,
+        "processMs": 104.91233299999999,
+        "queueMs": 0.11012499999999999,
+        "resultReadMs": 1.152667,
+        "resultWriteMs": 1.695292,
+        "scope": "native handler; process includes interpreter startup, runtime execution and exit; program duration is nested, not additive",
+        "totalMs": 120.50450000000001,
+        "verificationMs": 3.202958
+      },
+      "resident": {
+        "backend": "rust-supervised-python-extension",
+        "call": 4,
+        "coldStart": false,
+        "pid": 16308,
+        "planBound": true,
+        "roundTripMs": 104.895875
+      },
+      "scope": "host wall elapsed from dispatch to returned verified output, including scheduling delay; excludes input read and subsequent audit/event rendering",
+      "totalMs": 94.2463749088347
+    },
+    "title": "共用影像與搜尋域",
+    "upstreamBindings": {},
+    "visualEvidence": [],
+    "workpieceUnit": {
+      "id": "9dee30d6-7c16-4f3e-aa69-34ba9d1f7729",
+      "imageIds": [
+        "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1"
+      ],
+      "views": null
+    }
+  },
+  "images": [
+    {
+      "contentSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+      "dataURL": {
+        "$asset": "assets/2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb.bmp",
+        "mime": "image/bmp",
+        "sha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+        "size": 1311798
+      },
+      "decoder": {
+        "alphaCompositing": "white",
+        "representation": "browser-canvas-rgba8",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+      },
+      "desktop_intents": {},
+      "desktop_refs": {},
+      "expected": {
+        "categoryIds": [
+          "SKEW"
+        ],
+        "categoryQuality": "bad",
+        "classificationSpecId": "lid-pkg-coherent-development-r5",
+        "imageSha256": "2318cc3afdd8069d40439a7043853648b98099cb44aab6a930f78cb253c60fbb",
+        "provenance": {
+          "ref": "thread:collab-lid-20261105-round3;turn:25ffe4ef-f155-4885-950d-939ae29e38fa;user explicitly confirms folder primary labels;sourceMeaning task 3f301591-68b4-41ef-830a-8f8ff86e5c98;relativePath=lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp",
+          "status": "confirmed",
+          "type": "human"
+        },
+        "reason": "本開發副本沿用已確認資料夾主類別；僅核對良品／歪斜，不代表其他缺陷合格。",
+        "schemeId": "lid-pkg-coherent-development-r5",
+        "source": "human"
+      },
+      "height": 1024,
+      "id": "865ac7fd-45ed-47b1-9cf7-a4e4cbe70ed1",
+      "labels": {},
+      "name": "歪斜_20250828032053433.bmp",
+      "objects": [],
+      "original_name": "歪斜_20250828032053433.bmp",
+      "profileId": "1a1d1e8c-530f-43b6-8b23-f1ef82d6768e",
+      "revision": 0,
+      "sha256": "516eee68f83243f23641f6abe09b288fb3d781821b2f99eac545cb6ca6d68ce3",
+      "sourceId": "fc9efcd4-4e25-49ea-bf7c-7d60edb799fc",
+      "sourceMeaning": {
+        "actor": "human",
+        "at": "2026-11-04T10:39:59.346Z",
+        "fields": {
+          "defectLabels": [
+            "歪斜"
+          ]
+        },
+        "relativePath": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp",
+        "taskId": "3f301591-68b4-41ef-830a-8f8ff86e5c98"
+      },
+      "source_path": "/Users/liangshiben/Desktop/lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp",
+      "source_relative_path": "lid瑕疵檢測樣品/歪斜/歪斜_20250828032053433.bmp",
+      "width": 1280
+    }
+  ]
+}

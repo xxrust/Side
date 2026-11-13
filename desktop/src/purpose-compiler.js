@@ -12,13 +12,29 @@ const stable = value => JSON.stringify(value, (_, item) =>
     : item
 );
 
+// Key by the full current canonical content, not object identity: callers may
+// edit a nested parameter or source in place while a session is running.
+const fingerprintCache=new Map();
+const MAX_FINGERPRINT_CACHE_ENTRIES=16,MAX_FINGERPRINT_CACHE_CHARS=2*1024*1024;
+let fingerprintCacheChars=0;
 function fingerprint(value) {
+  // JSON.stringify observes nested edits too, but runs in the engine without
+  // rebuilding a sorted object for every container on every progress event.
+  // Canonicalize only misses so equivalent property orders keep the same hash.
+  const serialized=JSON.stringify(value),cached=fingerprintCache.get(serialized);
+  if(cached!==undefined){fingerprintCache.delete(serialized);fingerprintCache.set(serialized,cached);return cached;}
+  const canonical=stable(value);
   let a = 2166136261, b = 2246822507;
-  for (const byte of new TextEncoder().encode(stable(value))) {
+  for (const byte of new TextEncoder().encode(canonical)) {
     a = Math.imul(a ^ byte, 16777619);
     b = Math.imul(b ^ byte, 3266489909);
   }
-  return (a >>> 0).toString(16).padStart(8, '0') + (b >>> 0).toString(16).padStart(8, '0');
+  const result=(a >>> 0).toString(16).padStart(8, '0') + (b >>> 0).toString(16).padStart(8, '0');
+  if(serialized.length<=MAX_FINGERPRINT_CACHE_CHARS){
+    while(fingerprintCache.size>=MAX_FINGERPRINT_CACHE_ENTRIES||fingerprintCacheChars+serialized.length>MAX_FINGERPRINT_CACHE_CHARS){const oldest=fingerprintCache.keys().next().value;fingerprintCacheChars-=oldest.length;fingerprintCache.delete(oldest);}
+    fingerprintCache.set(serialized,result);fingerprintCacheChars+=serialized.length;
+  }
+  return result;
 }
 
 function error(code, path, itemId = null, hint = null) {

@@ -1,4 +1,6 @@
 import {validateImageManager} from './image-manager-model.js';
+import {sealAlgorithmExecutionFacts,sealProjectExecutionFacts} from './execution-facts.js';
+import {immutableJson,isImmutableJson} from './json-snapshot.js';
 import {serializeProject} from './project-serialization.js';
 import {projectAcceptanceMethods,validateAcceptanceWorkspace} from './project-acceptance.js';
 import {validateProjectScheme} from './scheme-validation.js';
@@ -66,7 +68,6 @@ export class Workspace extends Project{
   constructor(engine){super();this.inspection=engine||new InspectionEngine()}
   newProject(){clearWorkpieceArtifactPixels(this);this.pipelineSession=uid();this.epoch++;this.loadSequence=(this.loadSequence||0)+1;this.imageStore?.reset();this.imageLoadErrors?.clear();this.inspectionSelection=null;this.data={schema:'agentcv-workspace-0.9',images:[],activeId:null,config:{revision:1,measurements:[],tolerances:[],classes:[],calibration:null,recipe:null},events:[],chat:[],visualInquiry:createInquiryState(),workflow:blankWorkflow()};this.pixels.clear();this.pending.clear();this.undoStack=[];this.redoStack=[];this.dirty=false;this.notify()}
   onImageSelected(imageId){for(const board of this.data.visualInquiry?.boards||[])for(const source of board.projectSpaces?.sources||[])if(source.imageIds.includes(imageId))source.selectedImageId=imageId;}
-  selectImage(id){if(this.data.activeId!==id)clearWorkpieceArtifactPixels(this);return super.selectImage(id)}
   restoreInspectionUnit(saved,reference){
     if(!record(saved)||!Array.isArray(saved.runs)||!record(saved.record))throw Error('單件存檔格式不完整');
     const restored=clone(saved.runs);prepareAlgorithmRuns({algorithmRuns:restored});
@@ -77,7 +78,7 @@ export class Workspace extends Project{
       const prior=known.get(run.runId);if(prior){if(prior.codeSha256!==run.codeSha256||pipelineEvidenceFingerprint({parameters:prior.parameters,sourceBinding:prior.sourceBinding,result:prior.result,procedureTrace:prior.procedureTrace,structuredLayers:prior.structuredLayers})!==pipelineEvidenceFingerprint({parameters:run.parameters,sourceBinding:run.sourceBinding,result:run.result,procedureTrace:run.procedureTrace,structuredLayers:run.structuredLayers}))throw Error('同一運算ID的來源程式或執行事實不一致');const old=prior.evidenceRevisions||[],incoming=run.evidenceRevisions||[],common=Math.min(old.length,incoming.length);for(let n=0;n<common;n++)if(JSON.stringify(old[n])!==JSON.stringify(incoming[n]))throw Error('單件依據修訂歷史分歧；保留當前版本，請核對來源');if(old.length>incoming.length)run.evidenceRevisions=clone(old);}
     }
     const keep=pinnedAlgorithmRuns(this),selected=new Set(restored.map(r=>r.runId)),obsolete=new Set((this.inspectionSelection?.recordRef?this.inspectionSelection.runIds:[]||[]).filter(id=>!keep.has(id)&&!selected.has(id)));
-    for(const id of obsolete)known.delete(id);for(const run of restored)known.set(run.runId,run);
+    for(const id of obsolete)known.delete(id);for(const run of restored)known.set(run.runId,sealAlgorithmExecutionFacts(run));
     this.data.algorithmRuns=[...known.values()];this.inspectionSelection={executionId:reference.executionId,unitId:saved.record.unitId,record:clone(saved.record),runIds:restored.map(run=>run.runId),recordRef:clone(reference)};this.notify();return restored;
   }
   setInspectionArtifactPreview(runId,artifactId,dataURL){
@@ -86,7 +87,14 @@ export class Workspace extends Project{
   }
   relocateProjectAssets(root){
     if(typeof root!=='string'||!(/^(?:\/|[A-Za-z]:[\\/]|\\\\)/.test(root)))throw Error('需要已保存工程的絕對目錄');
-    const visit=value=>{if(!value||typeof value!=='object')return;if(value.$asset&&value.sha256&&(value.storage==='workspace'||value.root))value.root=root;for(const item of Object.values(value))if(item&&typeof item==='object')visit(item);};visit(this.data);visit(this.inspectionSelection);return {relocated:true};
+    // Copy only changed branches. Execution facts may be shared with undo;
+    // relocating a project must never rewrite paths inside an older snapshot.
+    const visit=value=>{if(!value||typeof value!=='object')return value;let next=value;
+      const replace=(key,item)=>{if(next===value)next=Array.isArray(value)?value.slice():{...value};Object.defineProperty(next,key,{value:item,writable:true,enumerable:true,configurable:true});};
+      if(value.$asset&&value.sha256&&(value.storage==='workspace'||value.root)&&value.root!==root)replace('root',root);
+      for(const [key,item]of Object.entries(value)){if(key==='root'&&next!==value)continue;const changed=visit(item);if(changed!==item)replace(key,changed);}
+      return next!==value&&isImmutableJson(value)?immutableJson(next):next;
+    };this.data=visit(this.data);this.inspectionSelection=visit(this.inspectionSelection);return {relocated:true};
   }
   assignProfiles(imageIds,profileId){
     const selected=new Set(imageIds);if(!this.workflow.profiles.some(profile=>profile.id===profileId))throw Error('成像配置不存在');
@@ -133,7 +141,7 @@ export class Workspace extends Project{
     for(const im of this.data.images)if(im.pipelineResult){im.previousPipelineResult=im.pipelineResult;delete im.pipelineResult}if(this.workflow.pipelineValidation)this.workflow.pipelineValidation.status='STALE';
     this.workflow.workpiece={...defaults.workpiece,...this.workflow.workpiece,regions:this.workflow.workpiece?.regions||{}};
     for(const p of this.workflow.parts){p.regions=p.regions||{};p.revision=p.revision||1}for(const img of this.data.images){img.labels=img.labels||{};if(img.result){img.previous_result=img.result;delete img.result}}
-    if(this.workflow.recipe)this.workflow.recipe.status='STALE';if(this.workflow.validation)this.workflow.validation.status='STALE';if(this.workflow.publication)this.workflow.publication.status='STALE';this.dirty=false;}finally{this.loading=false}this.notify();
+    if(this.workflow.recipe)this.workflow.recipe.status='STALE';if(this.workflow.validation)this.workflow.validation.status='STALE';if(this.workflow.publication)this.workflow.publication.status='STALE';sealProjectExecutionFacts(this.data);this.dirty=false;}finally{this.loading=false}this.notify();
   }
   async addImages(files,decode){await super.addImages(files,decode);for(const img of this.data.images){img.labels=img.labels||{};if(!img.profileId&&this.workflow.profiles.length===1)img.profileId=this.workflow.profiles[0].id}this.stale('圖片集改變',true);this.notify()}
   stale(reason,recipe=true){if(this.data.purposeAcceptance)this.data.purposeAcceptance.status='STALE';if(this.workflow.pipelineValidation)this.workflow.pipelineValidation.status='STALE';for(const im of this.data.images)if(im.pipelineResult){im.previousPipelineResult=im.pipelineResult;delete im.pipelineResult}if(recipe&&this.workflow.recipe)this.workflow.recipe.status='STALE';if(this.workflow.validation)this.workflow.validation.status='STALE';if(this.workflow.publication)this.workflow.publication.status='STALE';for(const img of this.data.images)if(img.result){img.previous_result=img.result;delete img.result}this.workflow.lastChangeReason=reason}

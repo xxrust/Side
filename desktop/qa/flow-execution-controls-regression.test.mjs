@@ -14,12 +14,15 @@ test('source modal cannot suppress execution-control locking or final unlock on 
   for(const fails of [false,true]){
    let settle;
    h.w.__native.invoke=async name=>{
+    if(name==='flush_inspection_archive')return {items:[]};
     if(name==='save_project_document')return new Promise((resolve,reject)=>settle=()=>fails?reject(Error('QA save failure')):resolve('/tmp/control-regression.agentcv'));
     return null;
    };
    const pending=h.$('saveProject').onclick();
    assert.ok(buttons().every(b=>b.disabled),'modal must not leave execution available during another operation');
    h.$('openPurposeScheme').click();h.w.document.querySelector('.purpose-workspace-dialog')?.close();
+   for(let i=0;i<100&&!settle;i++)await h.tick();
+   assert.equal(typeof settle,'function','save must reach native dispatch after archive flush');
    settle();await pending;
    assert.ok(buttons().every(b=>!b.disabled),'the operation settling must unlock without closing the source modal');
    assert.equal(d.open,true);
@@ -50,6 +53,21 @@ test('execution states repaint both flow sizes without changing geometry, includ
   const node=map.main.world.querySelector('[data-program-node="a"]');
   assert.equal(h.w.getComputedStyle(node).getPropertyValue('--flow-background'),'#b6e0c4');
   node.classList.replace('state-succeeded','state-fault');assert.equal(h.w.getComputedStyle(node).getPropertyValue('--flow-background'),'#f2b8c1');
+  assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
+test('toolbar does not label the gap between batch units as a fault and settles external execution',async()=>{
+ const h=await createHarness();
+ try{
+  await h.api.startupReady;
+  const p=h.api.project,output=h.w.document.querySelector('.flow-execution-controls output');
+  p.data.datasetExecutions=[{id:'batch-external',status:'RUNNING',processed:1,total:2}];h.api.render();
+  assert.doesNotMatch(output.textContent,/執行故障/);
+  p.data.datasetExecutions[0].status='COMPLETED';p.data.datasetExecutions[0].processed=2;h.api.render();
+  assert.match(output.textContent,/執行結束.*2 \/ 2/);
+  p.data.datasetExecutions.push({id:'cancelled-external',status:'CANCELLED',processed:1,total:33});h.api.render();
+  assert.match(output.textContent,/已停止.*1 \/ 33/);
   assert.deepEqual(h.errors,[]);
  }finally{h.close();}
 });

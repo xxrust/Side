@@ -8,7 +8,6 @@ use std::{
     fs::{self, File, OpenOptions},
     io::{Read, Write},
     path::{Component, Path, PathBuf},
-    process::Command,
     sync::atomic::{AtomicU64, Ordering},
 };
 
@@ -145,6 +144,7 @@ fn parse_manifest(root: &Path) -> Result<(Vec<u8>, BTreeMap<String, Asset>), Str
     }
     let mut assets = BTreeMap::new();
     collect_assets(&value, &mut assets)?;
+    crate::workspace::validate_packed_closure(root,&value)?;
     Ok((bytes, assets))
 }
 fn mime_extension(mime: &str) -> Option<&'static str> {
@@ -179,6 +179,10 @@ fn mime_extension(mime: &str) -> Option<&'static str> {
 fn collect_assets(value: &Value, assets: &mut BTreeMap<String, Asset>) -> Result<(), String> {
     if let Some(object) = value.as_object() {
         if object.contains_key("$asset") {
+            if object.contains_key("packedIn") {
+                let physical=crate::inspection_files::asset_pack::container(value)?.ok_or("搬移容器定位缺失")?;
+                return collect_assets(physical,assets);
+            }
             let relative = object
                 .get("$asset")
                 .and_then(Value::as_str)
@@ -567,7 +571,7 @@ pub(crate) fn import_project(package: &Path, dest: &Path) -> Result<TransferRece
     transfer_impl(package, package, dest)
 }
 fn refs(repo: &Path) -> Result<Vec<u8>, String> {
-    let mut command = Command::new("git");
+    let mut command = crate::background_command::new("git");
     for key in [
         "GIT_DIR",
         "GIT_WORK_TREE",
@@ -595,7 +599,7 @@ fn refs(repo: &Path) -> Result<Vec<u8>, String> {
             "core.fsmonitor=false",
         ])
         .arg("--git-dir")
-        .arg(repo)
+        .arg(crate::git_workspace::git_path(repo))
         .args(["for-each-ref", "--format=%(refname) %(objectname)"])
         .output()
         .map_err(|e| io_error("無法核對 Git 歷史", e))?;
@@ -708,6 +712,7 @@ pub(crate) fn attach_history(source: &Path, project: &Path) -> Result<TransferRe
 
 #[cfg(test)]
 mod tests {
+    use std::process::Command;
     use super::*;
     use crate::git_lfs_storage;
     struct Temp(PathBuf);

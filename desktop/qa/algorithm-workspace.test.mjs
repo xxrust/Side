@@ -15,7 +15,7 @@ import {algorithmContext,algorithmCapabilities,runAlgorithm,readAlgorithmRun,rea
 import {getEdgeSearchContext,trialEdgeSearch} from '../src/agent-line-tools.js';
 
 const require=createRequire(import.meta.url),{createCanvas,loadImage}=require('../../qa/node_modules/@napi-rs/canvas');
-const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),python=path.join(root,'runtime/python/bin/python3'),runner=path.join(root,'scripts/cv-runtime.py');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),python=process.env.AGENTCV_PYTHON||path.join(root,'runtime/python/bin/python3'),runner=path.join(root,'scripts/cv-runtime.py');
 const artifacts=await fs.mkdtemp(path.join(root,'runtime/algorithm-workspace-qa-'));
 const copy=value=>JSON.parse(JSON.stringify(value));
 function imageFixture({nested=false}={}){

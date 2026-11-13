@@ -1,11 +1,11 @@
 {
   "name": "agentcv-desktop",
-  "version": "0.16.7",
+  "version": "0.16.9",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "node scripts/generate-agent-contract.mjs && vite build",
+    "build": "node scripts/build-native-json.mjs && node scripts/generate-agent-contract.mjs && vite build",
     "desktop": "tauri dev",
     "package": "node scripts/package-local.mjs",
     "test": "node --test qa/*.test.mjs",

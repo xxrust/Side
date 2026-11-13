@@ -52,7 +52,7 @@ export class ProgramFlowMap {
   if(this.disposed)return Promise.resolve();
   const nextRun=runId??flow?.nodes?.[0]?.runId??'empty';
   const key=JSON.stringify([nextRun,programFlowLayoutKey(flow)]);
-  const metadata=JSON.stringify([(flow?.nodes||[]).map(({id,title,status,judgement,error,reason,imageIds,durationMs,durationScope})=>[id,title,status,judgement,Boolean(error),reason,imageIds,durationMs,durationScope]),(flow?.edges||[]).map(e=>[e.id,e.label,e.executed])]),changedMetadata=metadata!==this.metadataKey;this.metadataKey=metadata;this.flow=flow;
+  const metadata=JSON.stringify([(flow?.nodes||[]).map(({id,title,status,judgement,error,reason,imageIds,durationMs,durationScope,timingPrevious,timingUnitId})=>[id,title,status,judgement,Boolean(error),reason,imageIds,durationMs,durationScope,timingPrevious,timingUnitId]),(flow?.edges||[]).map(e=>[e.id,e.label,e.executed])]),changedMetadata=metadata!==this.metadataKey;this.metadataKey=metadata;this.flow=flow;
   this.selectedId=selectedId;
   if(nextRun===this.runId&&key===this.layoutKey){if(changedMetadata&&this.geometry){this._render(this.main);if(this.expanded)this._render(this.expanded);}else this._selection();return this.ready;}
   if(this.runId!==null&&!this.main.needsFit)this.cameras.set(this.runId,copyCamera(this.main.camera));

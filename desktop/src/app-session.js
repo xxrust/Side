@@ -25,8 +25,8 @@ function compactProcedureTrace(trace){
  if(!trace||typeof trace!=='object'||!Array.isArray(trace.nodes))return trace;
  return {...trace,nodes:trace.nodes.map(node=>({...node,outputs:compactTraceValue(node.outputs),inputs:compactTraceValue(node.inputs),parameters:compactTraceValue(node.parameters),justification:compactTraceValue(node.justification)}))};
 }
-export function compactSessionProject(project){
- const snapshot=jsonSnapshot(project),walk=(value,path=[])=>{
+export function compactSessionProject(project,{retainRunIds=null}={}){
+ const source=retainRunIds&&Array.isArray(project?.algorithmRuns)?{...project,algorithmRuns:project.algorithmRuns.filter(run=>retainRunIds.has(run.runId))}:project,snapshot=jsonSnapshot(source),walk=(value,path=[])=>{
   if(Array.isArray(value)){value.forEach((item,index)=>walk(item,path.concat(index)));return value;}
   if(!value||typeof value!=='object')return value;
   // `dataURL` is the canonical project spelling.  Older records and a few
@@ -65,7 +65,7 @@ export function browserSessionStore(){
  return {read:()=>transact('readonly',store=>store.get('last')),write:content=>transact('readwrite',store=>store.put(content,'last'))};
 }
 export class AppSession{
- constructor({store,capture,restore,onError=()=>{},delay=700}){Object.assign(this,{store,capture,restore,onError,delay});this.blocked=false;this.restoring=false;this.projectPath=null;this.savedProject=null;this.tail=Promise.resolve();this.pendingWrites=0;this.ready=this.start();}
+ constructor({store,capture,restore,beforeCapture,onError=()=>{},delay=700}){Object.assign(this,{store,capture,restore,beforeCapture,onError,delay});this.blocked=false;this.restoring=false;this.projectPath=null;this.savedProject=null;this.tail=Promise.resolve();this.pendingWrites=0;this.ready=this.start();}
  async start(){
   if(!this.store)return;
   this.restoring=true;
@@ -74,12 +74,22 @@ export class AppSession{
   finally{this.restoring=false;}
  }
  schedule(){if(!this.store||this.blocked||this.restoring)return;clearTimeout(this.timer);this.timer=setTimeout(()=>{this.flush().catch(error=>this.onError('工作階段尚未保存：'+error.message));},this.delay);}
- acceptProject(project,path=null){this.savedProject=path?null:jsonSnapshot(project);this.projectPath=path;this.blocked=false;this.last=null;this.lastFingerprint=null;this.schedule();}
+ acceptProject(project,path=null){this.savedProject=jsonSnapshot(project);this.projectPath=path;this.blocked=false;this.last=null;this.lastFingerprint=null;this.schedule();}
  async flush(){
   clearTimeout(this.timer);await this.ready;if(!this.store||this.blocked||this.restoring)return false;
+  if(this.beforeCapture){if(await this.beforeCapture()===false||this.blocked||this.restoring)return false;}
   const value=this.capture();if(!value)return false;
-  const session={schema:'agentcv-app-session-1',...value,projectPath:this.projectPath,savedAt:new Date().toISOString(),...(value.dirty&&this.savedProject?{savedProject:this.savedProject}:{})};
-  const fingerprint=serializeProject({...session,savedAt:undefined});if(fingerprint===this.lastFingerprint&&this.pendingWrites===0)return true;
+  // The saved baseline is an immutable snapshot that can be tens of megabytes.
+  // Encode it once per baseline object and append the cached text as the last
+  // key, which yields exactly the bytes the single-pass encoder produced.
+  const withBaseline=!!(value.dirty&&this.savedProject)&&!Object.hasOwn(value,'savedProject');
+  const session={schema:'agentcv-app-session-1',...value,projectPath:this.projectPath,savedAt:new Date().toISOString()};
+  let fingerprint=serializeProject({...session,savedAt:undefined});
+  if(withBaseline){
+   if(this.savedProjectJsonFor!==this.savedProject){this.savedProjectJson=serializeProject(this.savedProject);this.savedProjectJsonFor=this.savedProject;}
+   fingerprint=fingerprint.slice(0,-1)+',"savedProject":'+this.savedProjectJson+'}';
+  }
+  if(fingerprint===this.lastFingerprint&&this.pendingWrites===0)return true;
   // A user can undo to the last completed snapshot while a different snapshot
   // is still being written. Do not deduplicate against a completed value until
   // the write queue is empty, or the in-flight draft would win after the undo.

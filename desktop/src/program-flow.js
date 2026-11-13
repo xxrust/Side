@@ -1,10 +1,9 @@
 import {schemeFingerprint} from './purpose-compiler.js';
-import {jsonSnapshot} from './json-snapshot.js';
+import {jsonSnapshot,projectSnapshot} from './json-snapshot.js';
 import {effectiveAlgorithmRun} from './algorithm-evidence-revisions.js';
 import {workpieceArtifactPixel} from './workpiece-live-state.js';
 // An execution graph is an observation of saved code execution, not an inference
 // from titles, source text, visual proximity, or whichever run is newest.
-const clone=jsonSnapshot;
 const asList=value=>Array.isArray(value)?value:[];
 const key=(runId,instanceId)=>`${runId}::${instanceId}`;
 const judgement=value=>['OK','NG','UNKNOWN'].includes(value)?value:null;
@@ -19,7 +18,11 @@ const hydratedArtifacts=(project,run)=>asList(run.artifacts).map(artifact=>{
  * can render contains edges as an expandable tree and dependency edges as arrows.
  * Repeated loop calls stay distinct through instanceId; they never form a fake
  * cycle by collapsing all calls into one procedure label. */
-export function buildProgramFlow(projectOrRuns,{imageId,runId}={}){
+export function buildProgramFlow(projectOrRuns,{imageId,runId,shareImmutableFacts=false}={}){
+ // Display consumers may borrow only recursively frozen, normalized facts
+ // certified by json-snapshot. Graph containers and mutable metadata still
+ // receive independent copies; ordinary readers keep detached editable facts.
+ const clone=shareImmutableFacts?projectSnapshot:jsonSnapshot;
  const project=projectOrRuns?.data?projectOrRuns:null;
  const runs=runsOf(projectOrRuns).map(effectiveAlgorithmRun).filter(run=>(!runId||run.runId===runId)&&(!imageId||asList(run.sourceBinding?.images).some(image=>image.imageId===imageId)));
  const nodes=[],edges=[],diagnostics=[],roots=[];

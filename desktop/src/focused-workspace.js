@@ -5,31 +5,53 @@ import {iconButton} from './ui-icons.js';
 import {ImageRenderer} from './image-renderer.js';
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
 export async function discussReference(view,reference,{schemeNodeId,question}={}){
- const epoch=view.project.epoch;
+ if(!reference?.dataURL)throw Error('目前沒有可引用的圖像');
+ const epoch=view.project.epoch,projectData=view.project.data;
+ if(/^data:image\/(?:bmp|x-ms-bmp);base64,/i.test(reference.dataURL)||/^(?:http:\/\/agentcv-memory\.localhost\/|agentcv-memory:\/\/localhost\/)[a-f0-9]{64}$/.test(reference.dataURL)){
+  const image=new Image();image.crossOrigin='anonymous';image.src=reference.dataURL;await image.decode();
+  const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+  const context=canvas.getContext('2d');if(!context)throw Error('無法轉換引用圖像');
+  context.drawImage(image,0,0);
+  reference={...reference,dataURL:canvas.toDataURL('image/png'),width:canvas.width,height:canvas.height};
+ }
+ const assertCurrent=()=>{if(view.project.epoch!==epoch||view.project.data!==projectData)throw Error('專案已切換，未加入舊引用');};
+ assertCurrent();
  let board=view.board();const isDiscussion=board?.title.startsWith('討論 · ');
  if(!isDiscussion){board=view.project.createInquiryBoard({title:'討論 · '+(reference.label||'圖像')});await view.open({boardId:board.id});}
- if(view.project.epoch!==epoch)throw Error('專案已切換，未加入舊引用');
+ assertCurrent();
  const selected=new Set(view.selected),result=await view.addReference(reference,{x:Math.max(0,...board.items.map(i=>i.x+i.width))+40,y:40});
  selected.add(result.item.id);view.selected=selected;view.outputView.mode='canvas';view.outputView.schemeNodeId=schemeNodeId||reference.source?.schemeNodeId||null;
  const snapshot=view.snapshot({selectedOnly:true}),image=await view.composite({snapshot}),text=question||'請根據引用的圖像與標註分析問題，先說明觀察依據與適用邊界。';
- await view.onAsk?.({text,question:text,reference:{kind:'visual_inquiry',boardId:view.boardId,revision:snapshot.revision,snapshot},images:[image],visual:{images:[image],attachments:snapshot.items.map(i=>({assetId:i.assetId,itemId:i.id,label:i.asset.label,source:i.asset.source})),snapshot}});
+ assertCurrent();await view.onAsk?.({text,question:text,reference:{kind:'visual_inquiry',boardId:view.boardId,revision:snapshot.revision,snapshot},images:[image],visual:{images:[image],attachments:snapshot.items.map(i=>({assetId:i.assetId,itemId:i.id,label:i.asset.label,source:i.asset.source})),snapshot}});
  view.fit();return result;
 }
 export function mountInputPane(view,initial,gallery){
- const card=el('article',undefined,'node-output-card node-input-card'),header=el('header',undefined,'node-image-heading'),label=el('strong','本步實際輸入'),choices=el('div',undefined,'node-input-choices'),note=el('small'),actions=el('div',undefined,'node-output-actions'),rgb=el('output','RGB —','image-rgb-readout'),renderer=new ImageRenderer({label:'本步實際輸入'}),viewport=renderer.viewport,img=renderer.image;choices.setAttribute('aria-label','選擇本步輸入');header.append(label,choices);renderer.viewport.append(rgb);viewport.addEventListener('pointermove',event=>{const rect=img.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;if(img.naturalWidth&&x>=0&&y>=0&&x<rect.width&&y<rect.height){const c=document.createElement('canvas');c.width=c.height=1;const ctx=c.getContext('2d');try{ctx.drawImage(img,Math.floor(x/rect.width*img.naturalWidth),Math.floor(y/rect.height*img.naturalHeight),1,1,0,0,1,1);const d=ctx.getImageData(0,0,1,1).data;rgb.textContent=`RGB ${d[0]}, ${d[1]}, ${d[2]}`}catch{rgb.textContent='RGB —'}}});card.append(header,renderer.root,note,actions);gallery.prepend(card);
- let model=initial,sources=[],selected=0,current=null,generation=0,signature='',hasFrame=false;
+ const card=el('article',undefined,'node-output-card node-input-card'),header=el('header',undefined,'node-image-heading'),label=el('strong','本步實際輸入'),choices=el('div',undefined,'node-input-choices'),note=el('small'),actions=el('div',undefined,'node-output-actions'),renderer=new ImageRenderer({label:'本步實際輸入'});choices.setAttribute('aria-label','選擇本步輸入');header.append(label,choices);card.append(header,renderer.root,note,actions);gallery.prepend(card);
+ let model=initial,sources=[],selected=0,current=null,generation=0,signature='',originalFrame=null;
+ // This pane holds one already verified display snapshot. New executions can
+ // update their inquiry binding without rereading/re-hashing the same original.
+ // Image/source edits, undo, project changes and image switching invalidate it.
+ const originalKey=record=>[view.project.epoch,record.id,record.width,record.height,record.sha256,record.contentSha256,record.dataURL,JSON.stringify(record.assetRef)];
+ const originalURL=record=>{const key=originalKey(record),data=view.project.data;if(originalFrame?.data===data&&key.every((value,index)=>value===originalFrame.key[index]))return originalFrame.promise;const frame={key,data,promise:view.project.readImageAsset(record.id)};originalFrame=frame;frame.promise.catch(()=>{if(originalFrame===frame)originalFrame=null;});return frame.promise;};
  const edit=view.button('標記／詢問',()=>discussReference(view,current,{schemeNodeId:model.schemeNodeId}));edit.disabled=true;actions.append(edit);
- const load=async()=>{const ticket=++generation,epoch=view.project.epoch,data=view.project.data,activeId=view.project.image?.id,source=sources[selected];current=null;edit.disabled=true;if(!source){if(!hasFrame){renderer.clear();img.hidden=true;}note.textContent='等待本步輸入';return;}try{
+ const resolve=async(next,source,guard)=>{
+  if(!source)return null;
+  let ref;if(source.original){const dataURL=await originalURL(source.original);ref={label:source.label,kind:'original',dataURL,width:source.original.width,height:source.original.height,source:{kind:'project-original',imageId:source.original.id,inputSha256:source.identity.imageSha256,schemeNodeId:next.schemeNodeId,runId:next.run?.runId,unitId:next.unitId,executionId:next.executionId,coordinateSpace:'original-image-pixels'}};}
+  else{let a=source.artifact;const cached=workpieceArtifactPixel(view.project,next.unitId,source.run.runId,a.id);if(!a.dataURL&&!a.dataUrl&&cached)a={...a,dataURL:cached,dataUrl:cached};if(!a.dataURL&&!a.dataUrl){await view.onLoadOutputImage?.({...next,run:source.run},a,guard);a=view.project.data.algorithmRuns.find(r=>r.runId===source.run.runId)?.artifacts.find(x=>x.id===a.id)||a;}const dataURL=a.dataURL||a.dataUrl||workpieceArtifactPixel(view.project,next.unitId,source.run.runId,a.id);if(!dataURL)throw Error('此輸入圖尚未載入');ref={label:source.label,kind:'stage',dataURL,width:a.width,height:a.height,source:{kind:'algorithm-output',schemeNodeId:source.run.schemeNodeId,runId:source.run.runId,artifactId:a.id,artifactSha256:a.sha256,unitId:next.unitId,executionId:next.executionId,coordinateSpace:'algorithm-output-pixels'}};}
+  const frame=await renderer.prepareSource({src:ref.dataURL,width:ref.width,height:ref.height,alt:ref.label});return {ref,frame};
+ };
+ const commit=ready=>{if(!ready)return;renderer.commitSource(ready.frame);current=ready.ref;renderer.image.hidden=false;card.dataset.imageId=model.imageId||'';card.dataset.unitId=model.unitId||'';edit.disabled=false;note.textContent='';};
+ const prepare=async(next,guard)=>{const active=view.project.imageRecord(next.imageId);if(!active)throw Error('找不到此工件的原圖，保留目前畫面');return resolve(next,{label:'工件 · '+active.name,original:active,identity:{imageSha256:active.sha256}},guard);};
+ const load=async()=>{const ticket=++generation,epoch=view.project.epoch,data=view.project.data,activeId=view.project.image?.id,source=sources[selected];edit.disabled=true;try{
   const guard={activeId,isCurrent:()=>ticket===generation&&epoch===view.project.epoch&&data===view.project.data&&activeId===view.project.image?.id};
-  let ref;if(source.original){const dataURL=await view.project.readImageAsset(source.original.id);ref={label:source.label,kind:'original',dataURL,width:source.original.width,height:source.original.height,source:{kind:'project-original',imageId:source.original.id,inputSha256:source.identity.imageSha256,schemeNodeId:model.schemeNodeId,runId:model.run.runId,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'original-image-pixels'}};}
-  else{let a=source.artifact;const cached=workpieceArtifactPixel(view.project,model.unitId,source.run.runId,a.id);if(!a.dataURL&&!a.dataUrl&&cached)a={...a,dataURL:cached,dataUrl:cached};if(!a.dataURL&&!a.dataUrl){await view.onLoadOutputImage?.({...model,run:source.run},a,guard);a=view.project.data.algorithmRuns.find(r=>r.runId===source.run.runId)?.artifacts.find(x=>x.id===a.id)||a;}const dataURL=a.dataURL||a.dataUrl||workpieceArtifactPixel(view.project,model.unitId,source.run.runId,a.id);if(!dataURL)throw Error('此輸入圖尚未載入');ref={label:source.label,kind:'stage',dataURL,width:a.width,height:a.height,source:{kind:'algorithm-output',schemeNodeId:source.run.schemeNodeId,runId:source.run.runId,artifactId:a.id,artifactSha256:a.sha256,unitId:model.unitId,executionId:model.executionId,coordinateSpace:'algorithm-output-pixels'}};}
-  if(ticket!==generation||epoch!==view.project.epoch||!card.isConnected)return;const preload=new Image();await new Promise((resolve,reject)=>{preload.onload=resolve;preload.onerror=reject;preload.src=ref.dataURL});if(preload.decode)try{await preload.decode()}catch{}if(ticket!==generation||epoch!==view.project.epoch||!card.isConnected)return;current=ref;if(renderer.source?.src!==ref.dataURL){renderer.setSource({src:ref.dataURL,width:ref.width,height:ref.height,alt:ref.label});hasFrame=true}img.hidden=false;img.alt=ref.label;edit.disabled=false;note.textContent='';
+  const ready=await resolve(model,source,guard);if(!guard.isCurrent()||!card.isConnected)return;if(ready)commit(ready);else note.textContent='等待本步輸入';
  }catch(e){if(ticket===generation&&card.isConnected)note.textContent=e.message;}};
- const update=next=>{model=next;const key=[view.project.epoch,model.schemeNodeId,model.run?.runId,model.unitId].join(':');if(key===signature)return;signature=key;sources=[];selected=0;current=null;edit.disabled=true;if(!hasFrame){renderer.clear();img.hidden=true;}note.textContent='載入新本步輸入…';
-  for(const [slot,binding]of Object.entries(model.run?.upstreamBindings||{})){const producer=view.project.data.algorithmRuns.find(r=>r.runId===binding.runId),artifact=producer?.artifacts.find(a=>a.id===binding.artifactId&&a.type==='image');if(producer?.workpieceUnit?.id===model.run.workpieceUnit?.id&&artifact)sources.push({label:slot+' · '+artifact.name,run:producer,artifact});}
-  for(const identity of model.run?.sourceBinding?.images||[]){const original=view.project.imageRecord(identity.imageId);if(original&&original.sha256===identity.imageSha256)sources.push({label:(Object.values(model.run.referenceInputs||{}).includes(original.id)?'參考 · ':'工件 · ')+original.name,original,identity});}
-  choices.replaceChildren();for(const [i,source]of sources.entries()){const b=view.button(source.label,()=>{selected=i;for(const [j,child]of [...choices.children].entries())child.setAttribute('aria-pressed',String(i===j));void load();});b.setAttribute('aria-pressed',String(i===0));choices.append(b);}queueMicrotask(load);
- };update(initial);return {update,card};
+ const update=(next,{prepared}={})=>{const active=view.project.imageRecord(next.imageId),key=[view.project.epoch,active?.id,next.schemeNodeId,next.run?.runId,next.unitId].join(':');if(key===signature){if(prepared)commit(prepared);return;}model=next;signature=key;generation++;sources=[];selected=0;edit.disabled=true;
+  if(active)sources.push({label:'工件 · '+active.name,original:active,identity:{imageSha256:active.sha256}});
+  for(const identity of model.run?.sourceBinding?.images||[]){const original=view.project.imageRecord(identity.imageId);if(original&&original.id!==active?.id&&original.sha256===identity.imageSha256)sources.push({label:(Object.values(model.run.referenceInputs||{}).includes(original.id)?'參考 · ':'工件 · ')+original.name,original,identity});}
+  for(const [slot,binding]of Object.entries(model.run?.upstreamBindings||{})){const producer=view.project.data.algorithmRuns.find(r=>r.runId===binding.runId),artifact=producer?.artifacts.find(a=>a.id===binding.artifactId&&a.type==='image');if(producer&&producer.workpieceUnit?.id===model.run?.workpieceUnit?.id&&artifact&&(artifact.pixelRetention!=='metadata-only'||workpieceArtifactPixel(view.project,model.unitId,producer.runId,artifact.id)))sources.push({label:slot+' · '+artifact.name,run:producer,artifact});}
+  choices.replaceChildren();for(const [i,source]of sources.entries()){const b=view.button(source.label,()=>{selected=i;for(const [j,child]of [...choices.children].entries())child.setAttribute('aria-pressed',String(i===j));void load();});b.setAttribute('aria-pressed',String(i===0));choices.append(b);}if(prepared)commit(prepared);else queueMicrotask(load);
+ };update(initial);return {update,prepare,card,renderer,restore:()=>renderer.restoreMaximize(),destroy:()=>{generation++;renderer.destroy();}};
 }
 export function mountWorkspaceHistory(view,section,model){
  const bar=el('section',undefined,'workspace-history');bar.setAttribute('aria-label','圖文討論時間線');const heading=el('header');heading.append(el('strong','圖文時間線'));

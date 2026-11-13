@@ -12,12 +12,18 @@ import {compileScheme,schemeFingerprint,sourceFingerprint,evaluatePurposeRule} f
 import {validateOperationEvidenceJustification,PipelineEvidenceContractError} from './pipeline-evidence-contract.js';
 import {workpieceArtifactPixel} from './workpiece-live-state.js';
 import {nativeGrayImage} from './gray-transport.js';
+import {sealAlgorithmExecutionFacts,rememberNativeExecutionFacts} from './execution-facts.js';
+import {jsonDataEqual} from './json-data-equal.js';
 
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
 const record=value=>!!value&&typeof value==='object'&&!Array.isArray(value);
 const text=value=>typeof value==='string'&&value.trim().length>0;
 const locks=new WeakSet();
+export function lockAlgorithmExecution(project){if(locks.has(project))throw Error('目前已有算法程式正在執行');locks.add(project);return ()=>locks.delete(project);}
 const compiledSessions=new WeakMap();
+const originalInputResources=new WeakMap();
+function originalResourceStore(project){let store=originalInputResources.get(project);if(!store){store=new WeakMap();originalInputResources.set(project,store);}return store;}
+const originalResourceIdentity=(original,image)=>JSON.stringify({assetRef:original.assetRef,width:image.width,height:image.height,sha256:image.contentSha256||original.contentSha256||original.assetRef?.sha256});
 export function executionBackendForNode(node){
  if(node?.nativePlan?.backend==='rust-native'&&node.nativePlan.plan?.nodes?.length)return 'rust-native';
  return 'python-extension';
@@ -86,9 +92,16 @@ async function resolveEvidenceVisuals(project,justification){
  }
  return result;
 }
-export function algorithmContext(project,{imageIds}={}){
+// Execution needs identities and calibration, not the Agent's complete catalogue,
+// editable scheme clone and thirty historical run summaries on every check.
+export function algorithmExecutionContext(project,{imageIds}={}){
  const images=selectedImages(project,imageIds),bindings=images.map(image=>imageSource(project,image));
  const source = {projectEpoch:project.epoch,workflowRevision:project.workflow.revision,schemeFingerprint:schemeFingerprint(project.data.purposeScheme),images:bindings};
+ return {sourceFingerprint:sourceFingerprint(source),source,images:images.map(image=>({id:image.id,name:image.name,width:image.width,height:image.height,sha256:image.sha256})),calibration:images.map(image=>({imageId:image.id,...project.scale(image.id)})),targets:clone(project.targets?.map(target=>({id:target.id,name:target.name,description:target.description,regions:Object.fromEntries(images.filter(image=>target.regions?.[image.id]).map(image=>[image.id,target.regions[image.id]]))}))||[])};
+}
+export function algorithmContext(project,{imageIds}={}){
+ const context=algorithmExecutionContext(project,{imageIds}),images=selectedImages(project,imageIds);
+ const {source}=context;
  const schemeNodes=project.data.purposeScheme?.operatorGraph?.nodes||[];
  const backendRows=schemeNodes.map(node=>{const backend=executionBackendForNode(node);return {nodeId:node.id,backend,label:executionBackendLabel(backend),explicit:!!node.nativePlan||node.executionBackend==='rust-native'}});
  return {sourceFingerprint:sourceFingerprint(source),scheme:clone(project.data.purposeScheme || null),schema:'agentcv-algorithm-context-1',source,images:images.map(image=>({id:image.id,name:image.name,width:image.width,height:image.height,sha256:image.sha256})),calibration:images.map(image=>({imageId:image.id,...project.scale(image.id)})),calibrationPolicy:{pixelDevelopment:'allowed in px units',physicalUnits:'requires calibration status VALID',batchDispatch:'mm/m schemes block when any workpiece input is UNKNOWN or THEORETICAL'},executionPolicy:clone(algorithmCapabilities().executionPolicy),schemeBackends:backendRows,targets:clone(project.targets?.map(target=>({id:target.id,name:target.name,description:target.description,regions:Object.fromEntries(images.filter(image=>target.regions?.[image.id]).map(image=>[image.id,target.regions[image.id]]))}))||[]),runs:algorithmRunSummaries(project),next:'run_algorithm',scope:'輸入為完整原圖；固定方案按節點明確選擇 Rust 原生或 Python fallback，任意 Python 算法仍可在 draft 或明確 fallback 節點中使用。像素結果、作者理由與正式驗收分別保存。'};
@@ -107,7 +120,7 @@ function validateRequest(project,args){
  let parameters;try{parameters=JSON.parse(args.parameters_json??'{}')}catch{fail('ALGORITHM_PARAMETERS_INVALID','parameters_json','參數不是有效 JSON。','傳送 JSON 物件字串，例如 {"threshold":18}。')}
  if(!record(parameters))fail('ALGORITHM_PARAMETERS_INVALID','parameters_json','算法參數必須是 JSON 物件。','數字、陣列和其他配置放在具名參數中。');
  if(args.timeout_seconds!==undefined&&(!Number.isInteger(args.timeout_seconds)||args.timeout_seconds<1||args.timeout_seconds>600))fail('ALGORITHM_BUDGET_INVALID','timeout_seconds','本次執行時間預算需為 1–600 秒。','在本機資源預算內分階段執行或調整時間。');
- const context=algorithmContext(project,{imageIds:args.image_ids});
+ const context=algorithmExecutionContext(project,{imageIds:args.image_ids});
  if(stable(args.source)!==stable(context.source))fail('ALGORITHM_SOURCE_STALE','source','原圖或專案已改變，不能沿用舊來源執行。','重新 get_algorithm_context 並原樣傳回 source。');
  validateNodeDocumentation(args.documentation);
  const outputs=args.expected_outputs;
@@ -117,13 +130,13 @@ function validateRequest(project,args){
  if(!proposal.valid)throw new PipelineEvidenceContractError('ALGORITHM_EVIDENCE_PROPOSAL_REJECTED',proposal,'舊版說明的引用無效，請依錯誤補正。');
  return {context,parameters,proposal,outputs};
 }
-function resolveRunInputs(project,args,active){
+function resolveRunInputs(project,args,active,stagedRuns){
  if(args.mode!=='scheme')return {};
  const node=project.data.purposeScheme?.operatorGraph?.nodes?.find(n=>n.id===args.scheme_node_id),resolved={};
  for(const [slot,input]of Object.entries(node?.inputs||{})){
   const supplied=args.upstream?.[slot];
   if(!supplied&&node.prerequisites?.anyOf?.includes(input.nodeId))continue;
-  const parent=project.data.algorithmRuns?.find(r=>r.runId===supplied?.runId);
+  const parent=stagedRuns?.find(r=>r.runId===supplied?.runId)||project.data.algorithmRuns?.find(r=>r.runId===supplied?.runId);
   const sameExecution=active?.basis===schemeFingerprint(project.data.purposeScheme)&&(isWorkpiecePlan(project.data.purposeScheme)?!!args.workpieceUnit&&stable(parent?.workpieceUnit)===stable(args.workpieceUnit):active.legacyRunIds?.has(parent?.runId));
   if(!sameExecution||!parent||parent.schemeNodeId!==input.nodeId||supplied.nodeId!==input.nodeId||supplied.artifact?.id!==input.artifactId||parent.execution?.status==='FAULT'||parent.status!=='SUCCEEDED'||parent.result?.valid===false||!algorithmRunCurrent(project,parent))
    fail('ALGORITHM_UPSTREAM_UNAVAILABLE',`inputs.${slot}`,'輸入不是目前編譯方案、同一工件的有效上游結果。','使用 run_workpiece_scheme 由平台依圖執行；不要把歷史產物或自行重算的資料冒充上游。');
@@ -169,6 +182,29 @@ export async function runAlgorithm(project,args,execute){
  return runAlgorithmLoaded(project,args,execute);
 }
 async function runAlgorithmLoaded(project,args,execute){
+ const prepared=await prepareAlgorithmExecution(project,args);
+ if(prepared.reusable)return prepared.reusable;
+ const release=lockAlgorithmExecution(project);
+ try{
+  const hostStart=performance.now(),response=await execute(prepared.request);
+  return prepared.complete(response,{hostStart});
+ }finally{release()}
+}
+// Preparation and import are separate ports: a native workpiece session can
+// prepare every node once, execute its graph without a UI round trip per node,
+// then import the exact observed records with the ordinary evidence checks.
+// Production envelope construction is also the differential oracle for native
+// sessions. It never fabricates browser publication or durable-save timings.
+export function assembleAlgorithmRunEnvelope(response,{args,mode,compilation,context,visualEvidence,parameters,outputs,proposal,schemeNode}){
+ const {runtimeInputResources:_runtimeInputs,...runtimeResponse}=response;
+  const run={...runtimeResponse,artifactMode:args.artifactMode??response.artifactMode,schema:'agentcv-algorithm-run-1',evidenceVisuals:clone(response.visualEvidence||visualEvidence),title:mode==='draft'?'DRAFT · '+args.title:args.title,mode,isDraft:mode==='draft',compilation:clone(compilation),code:args.code||'/* nativePlan: rust-native */',codeKind:args.code?'python':'native-plan',language:response.backend==='rust-native'?'rust':'python',executionBackend:response.backend||'python-extension',parameters,sourceBinding:clone(context.source),source:clone(context.source.images[0]),inputContext:{calibration:clone(context.calibration),targets:clone(context.targets)},justification:clone(args.justification),documentation:args.documentation??schemeNode?.documentation,expectedOutputs:clone(outputs),proposalAudit:proposal,stage:'TRIAL',author:'agent',humanConfirmed:false};
+  run.execution||={status:run.status==='SUCCEEDED'?'COMPLETED':'FAULT',reason:run.status==='TIMEOUT'?'TIMEOUT':run.status==='FAILED'?'RUNTIME_FAILURE':undefined};
+  if(args.workpieceUnit)run.workpieceUnit=clone(args.workpieceUnit);
+  if(args.referenceInputs)run.referenceInputs=clone(args.referenceInputs);
+  if(mode==='scheme')run.schemeNodeId=args.scheme_node_id;
+ return run;
+}
+export async function prepareAlgorithmExecution(project,args,{deferUpstream=false}={}){
  const phaseStart=performance.now();
  if(locks.has(project))throw Error('目前已有算法程式正在執行');
  const mode=args.mode || (project.data.purposeScheme ? 'scheme' : 'draft');
@@ -184,37 +220,57 @@ async function runAlgorithmLoaded(project,args,execute){
      fail('SCHEME_EXECUTION_MISMATCH','scheme_node_id','运行请求与已编译节点不一致。','通过方案运行入口执行已保存的节点。');
  }
  const {context,parameters,proposal,outputs}=validateRequest(project,args),visualEvidence=await resolveEvidenceVisuals(project,args.justification),data=project.data,epoch=project.epoch;
- const reusable=findReusableAlgorithmRun(project,{mode,schemeNodeId:args.scheme_node_id,code:args.code||'',parameters,sourceBinding:context.source,expectedOutputs:outputs,workpieceUnit:args.workpieceUnit});if(reusable){return {...clone(reusable),reused:true,reusedAt:new Date().toISOString()};}
- const upstream=resolveRunInputs(project,{...args,mode},active);
+ const reusable=findReusableAlgorithmRun(project,{mode,schemeNodeId:args.scheme_node_id,code:args.code||'',parameters,sourceBinding:context.source,expectedOutputs:outputs,workpieceUnit:args.workpieceUnit});if(reusable){return {reusable:{...clone(reusable),reused:true,reusedAt:new Date().toISOString()}};}
+ let upstream=deferUpstream?{}:resolveRunInputs(project,{...args,mode},active);
  const nativeSpec=schemeNode?.nativePlan||args.nativePlan||null;
- locks.add(project);
- try{
-  const inputs=await Promise.all(context.images.map(async image=>{const original=project.imageRecord?.(image.id)||project.data.images.find(item=>item.id===image.id);return {id:image.id,name:image.name,...(args.fileBackedInputs&&active&&mode==='scheme'&&original.assetRef?{assetRef:clone(original.assetRef)}:{dataUrl:project.readImageAsset?await project.readImageAsset(image.id):original.dataURL}),width:image.width,height:image.height,source:context.source.images.find(binding=>binding.imageId===image.id)}}));
+  const originalStore=originalResourceStore(project);
+  const inputs=await Promise.all(context.images.map(async image=>{const original=project.imageRecord?.(image.id)||project.data.images.find(item=>item.id===image.id),saved=originalStore.get(original),resource=saved?.identity===originalResourceIdentity(original,image)?saved.reference:null;return {id:image.id,name:image.name,...(args.fileBackedInputs&&active&&mode==='scheme'&&original.assetRef?{assetRef:clone(original.assetRef),...(resource?{runtimeInput:resource}:{})}:{dataUrl:project.readImageAsset?await project.readImageAsset(image.id):original.dataURL}),width:image.width,height:image.height,source:context.source.images.find(binding=>binding.imageId===image.id)}}));
   const nativePipeline=nativeSpec?{backend:'rust-native',plan:clone(nativeSpec.plan||nativeSpec),image:context.images.map(image=>{const raster=project.pixels.get(image.id);return nativeGrayImage(raster,{id:image.id,sha256:image.sha256,sourceSha256:image.contentSha256||image.sha256});})}:null;
-  const hostStart=performance.now();
-  const response=await execute({...(active&&mode==='scheme'?{runtimePlan:{fingerprint:active.basis,nodeId:args.scheme_node_id,definition:clone(project.data.purposeScheme)}}:{}),...(nativePipeline?{nativePipeline}:{}),upstream,artifactMode:args.artifactMode,workpieceUnit:clone(args.workpieceUnit),referenceInputs:clone(args.referenceInputs||{}),visualEvidence:clone(visualEvidence),title:mode==='draft'?'DRAFT · '+args.title:args.title,mode,isDraft:mode==='draft',code:args.code,parameters,images:inputs,sourceBinding:context.source,justification:clone(args.justification),documentation:args.documentation??schemeNode?.documentation,expectedOutputs:clone(outputs),proposalAudit:clone(proposal),inputContext:{calibration:clone(context.calibration),targets:clone(context.targets)},timeoutSeconds:args.timeout_seconds??120});
+  const preparedAt=performance.now();
+  const request={...(active&&mode==='scheme'?{runtimePlan:{fingerprint:active.basis,nodeId:args.scheme_node_id,...(active.planToken?{token:active.planToken}:{definition:clone(project.data.purposeScheme)})}}:{}),...(nativePipeline?{nativePipeline}:{}),upstream,artifactMode:args.artifactMode,workpieceUnit:clone(args.workpieceUnit),referenceInputs:clone(args.referenceInputs||{}),visualEvidence:clone(visualEvidence),title:mode==='draft'?'DRAFT · '+args.title:args.title,mode,isDraft:mode==='draft',code:args.code,parameters,images:inputs,sourceBinding:context.source,justification:clone(args.justification),documentation:args.documentation??schemeNode?.documentation,expectedOutputs:clone(outputs),proposalAudit:clone(proposal),inputContext:{calibration:clone(context.calibration),targets:clone(context.targets)},timeoutSeconds:args.timeout_seconds??120};
+  const publish=run=>{
+   if(project.data!==data||project.epoch!==epoch)throw Error('专案已切换；未发布先前运行结果');
+   const started=performance.now();
+   if(!compiledSessions.has(project))project.checkpoint();project.data.algorithmRuns||=[];project.data.algorithmRuns.push(run);project.event('algorithm_program_executed',{runId:run.runId,title:run.title,status:run.status,evidenceStatus:run.evidenceAudit.status,source:clone(context.source)});
+   if(run.timing?.hostPhases){const elapsed=performance.now()-started;run.timing.hostPhases.publishMs+=elapsed;run.timing.hostPhases.totalMs+=elapsed;}
+  };
+  return {request,compilation,publish,complete(response,{hostStart=preparedAt,nativeSession=false,upstream:sessionUpstream,deferPublication=false,stagedRuns}={}){
   const returnedAt=performance.now();
-  if(project.data!==data||project.epoch!==epoch||JSON.stringify(algorithmContext(project,{imageIds:context.images.map(image=>image.id)}).source)!==JSON.stringify(context.source))fail('ALGORITHM_SOURCE_CHANGED','source','執行期間原圖或專案已改變，結果僅留在執行目錄，不作當前專案結果。','重新讀取來源後重跑。');
+  if(deferUpstream)upstream=resolveRunInputs(project,{...args,mode,upstream:sessionUpstream},active,stagedRuns);
+  if(project.data!==data||project.epoch!==epoch||JSON.stringify(algorithmExecutionContext(project,{imageIds:context.images.map(image=>image.id)}).source)!==JSON.stringify(context.source))fail('ALGORITHM_SOURCE_CHANGED','source','執行期間原圖或專案已改變，結果僅留在執行目錄，不作當前專案結果。','重新讀取來源後重跑。');
   if(!text(response?.runId)||!['SUCCEEDED','FAILED','TIMEOUT'].includes(response.status)||!Array.isArray(response.artifacts))throw Error('算法執行器沒有回傳有效運算記錄');
   if(response.dispatchSourceBinding&&stable(response.dispatchSourceBinding)!==stable(context.source))fail('ALGORITHM_DISPATCH_MISMATCH','source','執行器的派發來源與目前請求不一致。','重新核對運算來源，保留原紀錄並重跑。');
-  const run={...response,schema:'agentcv-algorithm-run-1',evidenceVisuals:clone(response.visualEvidence||visualEvidence),title:mode==='draft'?'DRAFT · '+args.title:args.title,mode,isDraft:mode==='draft',compilation:clone(compilation),code:args.code||'/* nativePlan: rust-native */',codeKind:args.code?'python':'native-plan',language:response.backend==='rust-native'?'rust':'python',executionBackend:response.backend||'python-extension',parameters,sourceBinding:clone(context.source),source:clone(context.source.images[0]),inputContext:{calibration:clone(context.calibration),targets:clone(context.targets)},justification:clone(args.justification),documentation:args.documentation??schemeNode?.documentation,expectedOutputs:clone(outputs),proposalAudit:proposal,stage:'TRIAL',author:'agent',humanConfirmed:false};
-  run.timing={...run.timing,hostExecutionMs:performance.now()-hostStart,clock:'monotonic',scope:'host wall elapsed from dispatch to returned verified output, including scheduling delay; excludes input read and subsequent audit/event rendering'};
-  run.execution||={status:run.status==='SUCCEEDED'?'COMPLETED':'FAULT',reason:run.status==='TIMEOUT'?'TIMEOUT':run.status==='FAILED'?'RUNTIME_FAILURE':undefined};
-  if(args.workpieceUnit)run.workpieceUnit=clone(args.workpieceUnit);
-  if(args.referenceInputs)run.referenceInputs=clone(args.referenceInputs);
-  if(mode==='scheme')run.schemeNodeId=args.scheme_node_id;
-  run.dataContractAudit=auditDataContracts(run,outputs,{scheme:project.data.purposeScheme,upstream});
+  if(active&&compiledSessions.get(project)===active&&/^[a-f0-9]{64}$/.test(response.runtimePlanToken||''))active.planToken=response.runtimePlanToken;
+  for(const reference of response.runtimeInputResources||[]){const image=context.images.find(i=>i.id===reference.imageId),original=image&&(project.imageRecord?.(image.id)||project.data.images.find(i=>i.id===image.id));if(original?.assetRef&&reference.kind==='runtime-original'&&reference.sha256===(image.contentSha256||original.contentSha256||original.assetRef.sha256)&&reference.width===image.width&&reference.height===image.height)originalStore.set(original,{identity:originalResourceIdentity(original,image),reference:clone(reference)});}
+  const {runtimeInputResources:_runtimeInputs,...runtimeResponse}=response;
+  let run=assembleAlgorithmRunEnvelope(response,{args,mode,compilation,context,visualEvidence,parameters,outputs,proposal,schemeNode});
+  if(nativeSession&&response.nativeRunEnvelopeBackend==='rust-native-run-v1'){
+   // Observed result/artifact trees are the same references in the ordinary
+   // constructor. Compare every field, serializing only replaced metadata.
+   for(const key of new Set([...Object.keys(run),...Object.keys(runtimeResponse)]))if(run[key]!==runtimeResponse[key]&&!jsonDataEqual(run[key],runtimeResponse[key]))throw Error('原生与前端完整运行记录不一致：'+key);
+   run=runtimeResponse;run.nativeRunEnvelopeParityChecked=true;
+  }
+  run.timing={...run.timing,hostExecutionMs:nativeSession?response.timing?.native?.totalMs:performance.now()-hostStart,clock:'monotonic',scope:nativeSession?'native session node wall elapsed; whole-session bridge and import are measured separately':'host wall elapsed from dispatch to returned verified output, including scheduling delay; excludes input read and subsequent audit/event rendering'};
+  const auditInput=nativeSession&&run.execution.reason==='OUTPUT_CONTRACT_VIOLATION'?{...run,execution:{status:'COMPLETED'}}:run;
+  run.dataContractAudit=auditDataContracts(auditInput,outputs,{scheme:project.data.purposeScheme,upstream});
   if(!run.dataContractAudit.valid&&run.execution.status!=='FAULT')run.execution={status:'FAULT',reason:'OUTPUT_CONTRACT_VIOLATION',errors:clone(run.dataContractAudit.errors)};
   if(run.dataContractAudit.valid)for(const artifact of run.artifacts){const binding=run.dataContractAudit.bindings[artifact.id];if(binding)artifact.contractBinding=clone(binding);}
   run.evidenceAudit=auditAlgorithmRun(run,outputs);
+  if(nativeSession&&response.nativeEvidenceAuditBackend==='rust-native-evidence-v1'){
+   if(!jsonDataEqual(run.evidenceAudit,response.evidenceAudit))throw Error('原生与前端程序证据审计不一致');
+   run.evidenceAudit=response.evidenceAudit;run.nativeEvidenceAuditParityChecked=true;
+  }
   if(mode==='draft'){run.result={...run.result,mode:'draft',status:'DRAFT'};run.delivered=false;}
   if(mode==='scheme')run.schemeNodeId=args.scheme_node_id;
+  sealAlgorithmExecutionFacts(run);
+  if(nativeSession)rememberNativeExecutionFacts(run);
   const auditFinishedAt=performance.now();
-  if(!compiledSessions.has(project))project.checkpoint();project.data.algorithmRuns||=[];project.data.algorithmRuns.push(run);project.event('algorithm_program_executed',{runId:run.runId,title:run.title,status:run.status,evidenceStatus:run.evidenceAudit.status,source:clone(context.source)});
+  if(!deferPublication)publish(run);
   const publishedAt=performance.now();
-  run.timing.hostPhases={clock:'monotonic',preparationMs:hostStart-phaseStart,dispatchMs:returnedAt-hostStart,auditMs:auditFinishedAt-returnedAt,publishMs:publishedAt-auditFinishedAt,totalMs:publishedAt-phaseStart,scope:'exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process'};
+  const preparationMs=preparedAt-phaseStart,dispatchMs=nativeSession?response.timing?.native?.totalMs:returnedAt-hostStart;
+  run.timing.hostPhases={clock:'monotonic',preparationMs,dispatchMs,auditMs:auditFinishedAt-returnedAt,publishMs:publishedAt-auditFinishedAt,totalMs:preparationMs+dispatchMs+publishedAt-returnedAt,scope:nativeSession?'node preparation, native dispatch and import; whole-session bridge is in workpiece nativeSession timing':'exclusive sequential host spans; publish includes synchronous project listeners and UI work; dispatch includes native bridge and process'};
   return run;
- }finally{locks.delete(project)}
+ }};
 }
 export function readAlgorithmRun(project,runId){
  const run=(project.data.algorithmRuns||[]).find(run=>run.runId===runId)||(runId?null:project.data.algorithmRuns?.at(-1));if(!run)throw Error('尚無這筆算法運算紀錄');
