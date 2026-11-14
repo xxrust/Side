@@ -14,9 +14,23 @@ static REGISTRY: OnceLock<Mutex<Registry>> = OnceLock::new();
 #[cfg(test)]
 pub(crate) static TEST_LOCK:Mutex<()>=Mutex::new(());
 
+// Own both bytes and their host-computed digest. No mutable access or caller-
+// supplied digest can separate verification from the payload retained below.
+pub(crate) struct VerifiedBytes { bytes: Vec<u8>, digest: String }
+impl VerifiedBytes {
+    pub(crate) fn new(bytes: Vec<u8>) -> Self {
+        let digest = format!("{:x}", Sha256::digest(&bytes));
+        Self { bytes, digest }
+    }
+    pub(crate) fn bytes(&self) -> &[u8] { &self.bytes }
+    pub(crate) fn digest(&self) -> &str { &self.digest }
+}
 pub fn retain(scope: &str, run: &str, artifact: &str, mime: &str, bytes: Vec<u8>) -> Result<Value, String> {
-    let size=bytes.len();
-    let digest=format!("{:x}",Sha256::digest(&bytes));
+    retain_verified(scope, run, artifact, mime, VerifiedBytes::new(bytes))
+}
+pub(crate) fn retain_verified(scope: &str, run: &str, artifact: &str, mime: &str, verified: VerifiedBytes) -> Result<Value, String> {
+    let VerifiedBytes { bytes, digest } = verified;
+    let size = bytes.len();
     retain_payload(scope,run,artifact,mime,Payload::Bytes(Arc::new(bytes)),size,Some(digest))
 }
 

@@ -43,7 +43,7 @@ pub fn execute_with_commit(request:Value, mut extension:impl FnMut(Value)->Resul
    return Err("SESSION_EVIDENCE_CONTRACT_INVALID".into());
   }
   if !r.is_object()||prepared.insert(id,r).is_some(){return Err("SESSION_DUPLICATE_REQUEST".into());}
-  if ["images","sourceBinding","workpieceUnit","referenceInputs","inputContext","compilation","runtimePlan","upstream"].iter().any(|key|r.get(*key).is_some()){return Err("SESSION_SHARED_OVERRIDE".into());}
+  if ["images","sourceBinding","workpieceUnit","referenceInputs","inputContext","compilation","runtimePlan","upstream","deferredJsonArtifactIds"].iter().any(|key|r.get(*key).is_some()){return Err("SESSION_SHARED_OVERRIDE".into());}
   if r["mode"]!="scheme"||r["code"]!=node["code"]||r["parameters"]!=node["parameters"]||r["expectedOutputs"]!=node["expected_outputs"]
    ||r["nativePipeline"].is_object() != node["nativePlan"].is_object()
    ||r["nativePipeline"].is_object()&&r["nativePipeline"]["plan"]!=*node["nativePlan"].get("plan").unwrap_or(&node["nativePlan"]){return Err("SESSION_NODE_DEFINITION_MISMATCH".into());}
@@ -55,6 +55,7 @@ pub fn execute_with_commit(request:Value, mut extension:impl FnMut(Value)->Resul
  let mut emit=|event:Value|{sequence+=1;let mut event=event;event["sessionId"]=request["sessionId"].clone();event["executionId"]=request["executionId"].clone();event["unitId"]=request["unitId"].clone();event["sequence"]=json!(sequence);publish(event);};
  emit(json!({"phase":"session-started"}));
  let mut token:Option<Value>=None;let mut originals:BTreeMap<String,Value>=BTreeMap::new();let mut durations=BTreeMap::new();
+ let pending_preview=std::cell::RefCell::new(None::<Value>);
  let mut result=graph.run(|node,upstream|{
   let node_start=Instant::now();let id=node["id"].as_str().unwrap();
   let mut r=Value::Object(shared.clone());
@@ -65,6 +66,8 @@ pub fn execute_with_commit(request:Value, mut extension:impl FnMut(Value)->Resul
   // Repeating the same image is a new execution, not the same retention group.
   // All nodes in this session share ownership, while old sessions can expire.
   r["runtimeSessionId"]=request["sessionId"].clone();
+  r["deferredJsonArtifactIds"]=json!(crate::deferred_trace::eligible_artifacts(&request,node));
+  if request["previewNodeId"].as_str()==Some(id){if let Some(limit)=request.get("previewMaxDimension"){r["previewMaxDimension"]=limit.clone();}}
   if let Some(token)=&token{r["runtimePlan"]["token"]=token.clone();}else{r["runtimePlan"]["definition"]=scheme.clone();}
   for image in r["images"].as_array_mut().ok_or("SESSION_IMAGES_REQUIRED")?{
    if let Some(reference)=image["id"].as_str().and_then(|id|originals.get(id)){image["runtimeInput"]=reference.clone();}
@@ -101,8 +104,22 @@ pub fn execute_with_commit(request:Value, mut extension:impl FnMut(Value)->Resul
   run["timing"]["native"]["extensionHandlerMs"]=handler_ms;
   run["timing"]["native"]["totalMs"]=json!(node_start.elapsed().as_secs_f64()*1000.);
   durations.insert(id.to_owned(),run["timing"]["native"]["totalMs"].clone());
+  // Decode hints are emitted after this verified node completes, so the
+  // browser can overlap decoding with remaining graph work. No publication.
+  if request["previewNodeId"].as_str()==Some(id){
+   let previews:Vec<Value>=run["artifacts"].as_array().into_iter().flatten().filter_map(|a|{
+    let src=a["dataUrl"].as_str().or_else(||a["dataURL"].as_str())?;
+    if a["type"]!="image"||!(src.starts_with("http://agentcv-memory.localhost/")||src.starts_with("agentcv-memory://localhost/")){return None;}
+    let p=&a["displayPreview"];
+    Some(if p.is_object(){json!({"nodeId":id,"artifactId":a["id"],"src":p["src"],"width":p["width"],"height":p["height"]})}else{json!({"nodeId":id,"artifactId":a["id"],"src":src,"width":a["width"],"height":a["height"]})})
+   }).collect();
+   if !previews.is_empty(){*pending_preview.borrow_mut()=Some(json!({"phase":"preview-ready","previews":previews}));}
+  }
   Ok(run)
- },||cancelled(),|event|emit(event.clone()));
+ },||cancelled(),|event|{
+  emit(event.clone());
+  if event["phase"]=="node-completed"{if let Some(preview)=pending_preview.borrow_mut().take(){emit(preview);}}
+ });
  let evidence:BTreeMap<String,Value>=result["runs"].as_array().unwrap().iter().filter_map(|run|Some((run["schemeNodeId"].as_str()?.to_owned(),run["evidenceAudit"]["status"].clone()))).collect();
  for state in result["nodeStates"].as_array_mut().unwrap(){if let Some(id)=state["nodeId"].as_str().map(str::to_owned){if let Some(ms)=durations.get(&id){state["durationMs"]=ms.clone();}if let Some(status)=evidence.get(&id).filter(|v|!v.is_null()){state["evidenceStatus"]=status.clone();}}}
  if scheme["classificationSpec"].is_object(){
@@ -116,23 +133,11 @@ pub fn execute_with_commit(request:Value, mut extension:impl FnMut(Value)->Resul
  }
  result["sessionId"]=request["sessionId"].clone();result["unitId"]=request["unitId"].clone();result["executionId"]=request["executionId"].clone();
  result["sourceBinding"]=request["shared"]["sourceBinding"].clone();
- // Pixels are immutable and already verified, but a preview event is never a
- // published inspection result. The UI may decode the selected node's pixels
- // while the durable writer works; final identity/parity/save gates still own
- // adoption. No user program or downstream dispatch is changed by this hint.
- if let Some(node)=request["previewNodeId"].as_str(){
-  let previews:Vec<Value>=result["runs"].as_array().unwrap().iter().filter(|r|r["schemeNodeId"]==node)
-   .flat_map(|r|r["artifacts"].as_array().into_iter().flatten().filter_map(move|a|{
-    let src=a["dataUrl"].as_str().or_else(||a["dataURL"].as_str())?;
-    if a["type"]!="image"||!(src.starts_with("http://agentcv-memory.localhost/")||src.starts_with("agentcv-memory://localhost/")){return None;}
-    Some(json!({"nodeId":node,"artifactId":a["id"],"src":src,"width":a["width"],"height":a["height"]}))
-   })).collect();
-  if !previews.is_empty(){emit(json!({"phase":"preview-ready","previews":previews}));}
- }
  let execution_ms=started.elapsed().as_secs_f64()*1000.;
  // Cancellation is sampled in the terminal decision above. An abort received
  // during commit stops the next unit, never relabels this already decided one.
  crate::inspection_commit::execute(&request,&mut result,execution_ms,save)?;
+ crate::deferred_trace::project(&request,&mut result)?;
  result["timing"]=json!({"clock":"monotonic","nativeMs":started.elapsed().as_secs_f64()*1000.,"executionMs":execution_ms,"commitWallMs":result["commit"]["timing"]["totalMs"].as_f64().unwrap_or(0.),"scope":if request["commit"]["mode"]=="background"{"whole native graph including preparation, verified execution, decision and owned archive admission; excludes background persistence, dispatch queue and UI presentation"}else{"whole native graph including preparation, verified execution, decision and acknowledged commit when requested; excludes queue and UI presentation"}});
  emit(json!({"phase":"session-completed"}));
  Ok(result)

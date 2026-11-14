@@ -7,6 +7,22 @@ function sourceMatches(project,sourceId,imageId){return list(project.data.visual
 function uniqueSource(project,sourceId){const matches=sourceMatches(project,sourceId);if(matches.length!==1)throw Error(matches.length?'圖像源識別在多個畫板重複，請先修正來源身份':'圖像源不存在');return matches[0];}
 const activeId=p=>p.image?.id||p.data.activeId;
 export const sourceExecutionNavigationMethods={
+ prepareSourceNextImage({imageId,epoch,sourceId,batch=false,selectionRevision,autoAdvance}={}){
+  const idle=()=>{};
+  if(batch||autoAdvance===false||epoch!==this.epoch||activeId(this)!==imageId||selectionRevision!==this.imageSelection)return idle;
+  const matches=sourceMatches(this,sourceId,imageId);
+  if(matches.length!==1||matches[0].source.autoAdvance!==true)return idle;
+  const source=matches[0].source,references=new Set(Object.values(this.data.purposeScheme?.execution?.referenceInputs||{}));
+  const candidates=sourceFilteredIds(this,source).filter(id=>!references.has(id)),index=candidates.indexOf(imageId),nextId=candidates[(index+1)%candidates.length];
+  if(index<0||!nextId||nextId===imageId)return idle;
+  // Only one speculative raster, using the ordinary verified, bounded store.
+  // This does not select or publish an image. advanceSourceAfterExecution still
+  // rechecks the completed result, user selection, source and filter after I/O.
+  const data=this.data,unpin=this.pinImages([nextId]);let closed=false;
+  const release=()=>{if(closed)return;closed=true;unpin();};
+  Promise.resolve().then(()=>{if(closed||this.data!==data||this.epoch!==epoch){release();return;}return this.ensureImagePixels(nextId);}).catch(()=>{release();});
+  return release;
+ },
  setSourceAutoAdvance(sourceId,enabled){
   if(typeof enabled!=='boolean')throw Error('自動切換必須是布林值');const {board,source}=uniqueSource(this,sourceId);
   if(source.autoAdvance===enabled)return {...source};return this.updateCanvasSpace(board.id,sourceId,{autoAdvance:enabled});

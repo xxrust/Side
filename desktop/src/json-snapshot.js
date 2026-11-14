@@ -47,7 +47,10 @@ export function freezeParsedJson(value){
  if(Array.isArray(value)){for(let i=0;i<value.length;i++){
   const item=value[i];if(item!==null&&typeof item==='object')freezeParsedJson(item);
   else if(typeof item==='number'){if(item===0)value[i]=0;else if(!Number.isFinite(item))value[i]=null;}
- }}else for(const key of Object.keys(value)){
+ }}else for(const key in value){
+  // Parsed fact objects own their fields. Avoid allocating a key array for
+  // every coordinate object, while ignoring any enumerable prototype fields.
+  if(!Object.hasOwn(value,key))continue;
   const item=value[key];if(item!==null&&typeof item==='object')freezeParsedJson(item);
   else if(typeof item==='number'){if(item===0)value[key]=0;else if(!Number.isFinite(item))value[key]=null;}
  }

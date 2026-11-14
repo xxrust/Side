@@ -2,7 +2,28 @@
 //! Paths are out of band: user objects never serve as reference markers.
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use std::{collections::{hash_map::DefaultHasher, HashMap}, hash::{Hash, Hasher}};
+use std::{collections::HashMap, hash::{Hash, Hasher}};
+
+// Candidate-only hash: collision resolution always uses ordered recursive
+// equality, including exact numeric representation. Avoid SipHash setup for
+// every tiny coordinate container; this is not a security/content digest.
+struct CandidateHasher(u64);
+impl CandidateHasher {
+    fn new()->Self{Self(0x517cc1b727220a95)}
+    #[inline] fn word(&mut self,value:u64){self.0=(self.0.rotate_left(5)^value).wrapping_mul(0x9e3779b185ebca87);}
+}
+impl Hasher for CandidateHasher {
+    #[inline] fn finish(&self)->u64{self.0}
+    fn write(&mut self,bytes:&[u8]){
+        let mut chunks=bytes.chunks_exact(8);
+        for chunk in &mut chunks{self.word(u64::from_le_bytes(chunk.try_into().unwrap()));}
+        let tail=chunks.remainder();if !tail.is_empty(){let mut word=[0;8];word[..tail.len()].copy_from_slice(tail);self.word(u64::from_le_bytes(word));}
+        self.word(bytes.len() as u64);
+    }
+    #[inline] fn write_u8(&mut self,value:u8){self.word(value as u64);}
+    #[inline] fn write_u64(&mut self,value:u64){self.word(value);}
+    #[inline] fn write_usize(&mut self,value:usize){self.word(value as u64);}
+}
 
 const MIN_SIZE: usize = 4096;
 const MAX_LINKS: usize = 4096;
@@ -42,7 +63,7 @@ fn fingerprint(value: &Value, cache: &mut HashMap<usize, (u64, usize)>) -> (u64,
         _ => None,
     };
     if let Some(result) = scalar { return result; }
-    let mut hash = DefaultHasher::new();
+    let mut hash = CandidateHasher::new();
     let mut size = 2usize;
     match value {
         Value::Null | Value::Bool(_) | Value::Number(_) => unreachable!(),

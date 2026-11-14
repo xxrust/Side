@@ -2,6 +2,7 @@
 //! The writer runs on one worker and is triggered by count, age or explicit flush.
 use crate::inspection_files::PreparedUnit;
 use serde_json::{json,Value};
+use tauri::Emitter;
 use std::{collections::{BTreeMap,VecDeque},sync::{Arc,Condvar,Mutex},time::{Duration,Instant}};
 use std::sync::OnceLock;
 
@@ -11,7 +12,11 @@ fn queue_id()->&'static str{QUEUE_ID.get_or_init(||format!("{}-{}",std::process:
 fn desktop(app:tauri::AppHandle)->Result<Arc<Archive>,String>{
  let mut slot=DESKTOP.lock().map_err(|e|e.to_string())?;
  if let Some(archive)=slot.as_ref(){return Ok(archive.clone());}
- let archive=Arc::new(Archive::new_batch(Policy::default(),Arc::new(move|units|crate::inspection_files::save_prepared_batch(app.clone(),units)))?);
+ let notifier=app.clone();
+ let archive=Arc::new(Archive::new_notifying_batch(Policy::default(),Arc::new(move|units|crate::inspection_files::save_prepared_batch(app.clone(),units)),Some(Arc::new(move||{
+  // A hint only: consumers still obtain and validate authoritative receipts.
+  let _=notifier.emit("inspection-archive-changed",json!({"queueId":queue_id()}));
+ })))?);
  *slot=Some(archive.clone());Ok(archive)
 }
 pub(crate) fn enqueue_desktop(app:tauri::AppHandle,request:Value)->Result<Value,String>{
@@ -37,10 +42,10 @@ pub(crate) fn acknowledge_inspection_archive(app:tauri::AppHandle,reference:Valu
 
 #[derive(Clone,Copy)]
 pub(crate) struct Policy {pub max_items:usize,pub max_bytes:usize,pub batch_items:usize,pub interval:Duration}
-impl Default for Policy {fn default()->Self{Self{max_items:32,max_bytes:128*1024*1024,batch_items:8,interval:Duration::from_millis(500)}}}
+impl Default for Policy {fn default()->Self{Self{max_items:32,max_bytes:128*1024*1024,batch_items:8,interval:Duration::from_millis(5)}}}
 struct Entry {payload:Option<Arc<PreparedUnit>>,identity:Value,bytes:usize,queued:Instant,status:&'static str,error:Option<String>,receipt:Option<Value>,wait_ms:f64,write_ms:f64,batch:u64,batch_size:usize}
 struct State {entries:BTreeMap<u64,Entry>,pending:VecDeque<u64>,bytes:usize,sequence:u64,batch:u64,flush:bool,closed:bool}
-struct Shared {state:Mutex<State>,changed:Condvar,policy:Policy}
+struct Shared {state:Mutex<State>,changed:Condvar,policy:Policy,notify:Option<Arc<dyn Fn()+Send+Sync>>}
 type Writer=Arc<dyn Fn(&PreparedUnit)->Result<Value,String>+Send+Sync>;
 type BatchWriter=Arc<dyn Fn(&[Arc<PreparedUnit>])->Vec<Result<Value,String>>+Send+Sync>;
 pub(crate) struct Archive {shared:Arc<Shared>,worker:Mutex<Option<std::thread::JoinHandle<()>>>}
@@ -48,9 +53,10 @@ impl Archive {
  pub fn new(policy:Policy,writer:Writer)->Result<Self,String>{
   Self::new_batch(policy,Arc::new(move|units|units.iter().map(|unit|writer(unit)).collect()))
  }
- pub fn new_batch(policy:Policy,writer:BatchWriter)->Result<Self,String>{
+ pub fn new_batch(policy:Policy,writer:BatchWriter)->Result<Self,String>{Self::new_notifying_batch(policy,writer,None)}
+ pub fn new_notifying_batch(policy:Policy,writer:BatchWriter,notify:Option<Arc<dyn Fn()+Send+Sync>>)->Result<Self,String>{
   if policy.max_items==0||policy.max_bytes==0||policy.batch_items==0||policy.batch_items>policy.max_items||policy.interval.is_zero(){return Err("ARCHIVE_POLICY_INVALID".into());}
-  let shared=Arc::new(Shared{state:Mutex::new(State{entries:BTreeMap::new(),pending:VecDeque::new(),bytes:0,sequence:0,batch:0,flush:false,closed:false}),changed:Condvar::new(),policy});
+  let shared=Arc::new(Shared{state:Mutex::new(State{entries:BTreeMap::new(),pending:VecDeque::new(),bytes:0,sequence:0,batch:0,flush:false,closed:false}),changed:Condvar::new(),policy,notify});
   let worker_shared=shared.clone();
   let worker=std::thread::Builder::new().name("inspection-archive".into()).spawn(move||work(worker_shared,writer)).map_err(|e|e.to_string())?;
   Ok(Self{shared,worker:Mutex::new(Some(worker))})
@@ -120,8 +126,10 @@ fn work(shared:Arc<Shared>,writer:BatchWriter){
     if state.closed{return;}
     let age=state.pending.front().and_then(|id|state.entries.get(id)).map(|e|e.queued.elapsed()).unwrap_or_default();
     if !state.pending.is_empty()&&(state.flush||state.pending.len()>=shared.policy.batch_items||age>=shared.policy.interval){break;}
-    let delay=if state.pending.is_empty(){shared.policy.interval}else{shared.policy.interval.saturating_sub(age)};
-    state=shared.changed.wait_timeout(state,delay).unwrap().0;
+    // Idle queues sleep until admission/close. A short coalescing window must
+    // not turn an empty archive into a periodic polling thread.
+    state=if state.pending.is_empty(){shared.changed.wait(state).unwrap()}
+      else{shared.changed.wait_timeout(state,shared.policy.interval.saturating_sub(age)).unwrap().0};
    }
    state.batch+=1;let batch_id=state.batch;let draining=state.flush;state.flush=false;let mut batch=Vec::new();
    // A batch owns immutable leases, while enqueue/status/cancel stay responsive.
@@ -150,6 +158,9 @@ fn work(shared:Arc<Shared>,writer:BatchWriter){
    }
    shared.changed.notify_all();
   }
+  // All receipts are terminal and the state lock has been released. Failed
+  // notification delivery never changes durability or kills the writer.
+  if let Some(notify)=&shared.notify{let _=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||notify()));}
  }
 }
 impl Drop for Archive {fn drop(&mut self){
@@ -164,6 +175,14 @@ mod tests {
  use std::sync::atomic::{AtomicBool,AtomicUsize,Ordering};
  fn unit(id:&str)->PreparedUnit{PreparedUnit::prepare(json!({"executionId":"actual-execution","unit":{"id":id},"runs":[]})).unwrap()}
  fn saved(unit:&PreparedUnit)->Value{let identity=unit.identity();json!({"status":"SAVED","recordRef":{"executionId":identity["executionId"],"unitId":identity["unitId"],"sha256":"exact"}})}
+ #[test]
+ fn default_single_unit_writes_without_waiting_for_another_image_or_flush(){
+  let (send,receive)=std::sync::mpsc::channel();
+  let archive=Archive::new(Policy::default(),Arc::new(move|unit|{send.send(()).unwrap();Ok(saved(unit))})).unwrap();
+  let admitted=archive.enqueue(unit("single")).unwrap();assert_eq!(admitted["durable"],false);
+  receive.recv_timeout(Duration::from_millis(200)).expect("single-image archival remained deferred");
+  let status=archive.flush(Duration::from_secs(2)).unwrap();assert_eq!(status["items"][0]["status"],"SAVED");
+ }
  fn policy()->Policy{Policy{max_items:4,max_bytes:1024*1024,batch_items:2,interval:Duration::from_secs(60)}}
  #[test]
  fn count_flush_and_explicit_flush_do_not_acknowledge_until_writer_finishes(){
@@ -212,4 +231,15 @@ mod tests {
   assert!(archive.enqueue_request(json!({"executionId":"actual-execution","unit":{"id":"one"},"runs":[]})).unwrap_err().starts_with("ARCHIVE_BACKPRESSURE"));
   assert_eq!(archive.status().unwrap()["pendingBytes"],0);
  }
+ #[test]
+ fn completion_hints_follow_terminal_receipts_for_success_and_failure(){
+  for fail in [false,true]{
+   let (send,receive)=std::sync::mpsc::channel();let writer_done=Arc::new(AtomicBool::new(false));let in_writer=writer_done.clone();
+   let archive=Archive::new_notifying_batch(Policy::default(),Arc::new(move|units|{let result=units.iter().map(|u|if fail{Err("disk failure".into())}else{Ok(saved(u))}).collect();in_writer.store(true,Ordering::Release);result}),Some(Arc::new(move||{assert!(writer_done.load(Ordering::Acquire));send.send(()).unwrap();}))).unwrap();
+   archive.enqueue(unit("notified")).unwrap();receive.recv_timeout(Duration::from_secs(2)).expect("missing completion hint");
+   let status=archive.status().unwrap();assert_eq!(status["items"][0]["status"],if fail{"FAILED"}else{"SAVED"});
+   if fail{assert_eq!(status["items"][0]["error"],"disk failure");}else{assert_eq!(status["items"][0]["receipt"]["recordRef"]["unitId"],"notified");}
+  }
+ }
+
 }

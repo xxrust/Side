@@ -36,13 +36,24 @@ export const canvasProjectMethods={
  ...structuredLayerMethods,
  syncCanvasConsultations(){
   if(this.data.purposeScheme?.execution?.unit!=='workpiece')return [];
-  this.ensureProjectCanvas();const next=state(this),created=[];
-  for(const board of next.boards){const spaces=board.projectSpaces;if(!spaces)continue;
-   for(const source of spaces.sources){if(!inspectionCardContext(this,source.id).questions.length||(spaces.cards||[]).some(c=>c.kind==='consultation'&&c.sourceId===source.id))continue;
+  // Validate existing spaces without allocating the detached board returned by
+  // ensureProjectCanvas. Only clone editing state if a card really is missing.
+  if(this.data.visualInquiry?.boards.some(b=>b.projectSpaces))prepareProjectCanvases(this.data);
+  else this.ensureProjectCanvas();
+  const pending=[];
+  for(const board of this.data.visualInquiry.boards){const spaces=board.projectSpaces;if(!spaces)continue;
+   for(const source of spaces.sources){
+    if((spaces.cards||[]).some(c=>c.kind==='consultation'&&c.sourceId===source.id))continue;
+    if(inspectionCardContext(this,source.id).questions.length)pending.push({boardId:board.id,sourceId:source.id});
+   }
+  }
+  if(!pending.length)return [];
+  const next=state(this),created=[];
+  for(const {boardId,sourceId} of pending){
+    const board=boardOf(next,boardId),spaces=board.projectSpaces,source=spaces.sources.find(s=>s.id===sourceId);
     const obstacles=[...spaces.sources,...spaces.references,...(spaces.cards||[]),...board.items],x=source.x+source.width+40;let y=source.y;
     for(let n=0;n<=obstacles.length;n++){const hits=obstacles.filter(o=>x<o.x+o.width+30&&x+440+30>o.x&&y<o.y+o.height+30&&y+300+30>o.y);if(!hits.length)break;y=Math.max(...hits.map(o=>o.y+o.height))+40;}
     const card={id:uid(),kind:'consultation',sourceId:source.id,title:'？ Agent 需要你的確認',x,y,width:440,height:300,answerHistory:[]};(spaces.cards??=[]).push(card);board.revision++;created.push({boardId:board.id,cardId:card.id,sourceId:source.id});
-   }
   }
   if(created.length)commit(this,next,'classification_consultations_created',{cards:created});return created;
  },

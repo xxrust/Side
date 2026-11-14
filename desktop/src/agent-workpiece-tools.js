@@ -18,8 +18,11 @@ export async function executeWorkpieceTool(agent,name,args){
  if(name==='get_inspection_unit'){if(!agent.ui.inspectionRecords)throw Error('單件結果儲存未連接');const reference=JSON.parse(args.reference_json),saved=await(args.open_on_canvas&&agent.ui.openInspectionUnit?agent.ui.openInspectionUnit(reference):agent.ui.inspectionRecords.read(reference));return {...saved,context:args.include_scheme?saved.context:{schemeId:saved.context?.scheme?.id,schemeFingerprint:saved.context?.schemeFingerprint,nodeCount:saved.context?.scheme?.operatorGraph?.nodes?.length,read:'get_inspection_unit(reference_json, include_scheme:true) explicitly reads the archived scheme'},recordRef:reference,runs:(saved.runs||[]).map(run=>({...algorithmRunIndex(run),recordRef:reference})),scope:'單件摘要；完整歷史方案只在 include_scheme:true 時回傳。用 get_algorithm_run(run_id, reference_json) 讀程式及數據；get_visual_image(reference_json, run_id, artifact_id) 只讀指定封存圖，不切換畫板。'};}
  if(name==='run_workpiece_scheme'||name==='run_dataset_scheme'){
   if(!agent.ui.runPurposeScheme)throw Error('完整方案執行器未連接');
+  if(args.diagnostics!==undefined&&typeof args.diagnostics!=='boolean')throw Error('diagnostics 必須為布林值');
+  if(args.diagnostics&&!(name==='run_workpiece_scheme'?args.image_ids?.length:args.units_json))throw Error('診斷重跑需明確指定圖片或工件，不預設重跑整個圖像源');
   const imageIds=args.image_ids||[p.image?.id],options=name==='run_workpiece_scheme'?{sourceId:args.source_id,units:[{id:args.unit_id||crypto.randomUUID(),imageIds,...(args.views_json?{views:JSON.parse(args.views_json)}:{})}]}:{sourceId:args.source_id,...(args.resume_execution_id?{resumeExecutionId:args.resume_execution_id}:{}),...(args.units_json?{units:JSON.parse(args.units_json)}:{})};
   const epoch=p.epoch,turn=agent.turn;
+  options.diagnostics=args.diagnostics===true;options.expectedSchemeFingerprint=args.expected_scheme_fingerprint;
   if(name==='run_dataset_scheme'&&args.async!==false){if(!agent.ui.startPurposeSchemeJob)throw Error('背景任務啟動器未連接');return {...agent.ui.startPurposeSchemeJob(options),scope:'背景逐件執行；用 get_agent_job 讀取狀態，再用 get_dataset_execution 讀取實算。'};}
   const result=await agent.ui.runPurposeScheme(options);if(p.epoch!==epoch||agent.turn!==turn)throw Error('原回合已停止；已完成單件保留於原執行紀錄。');
   const visual=[];if(agent.visualBoardId())for(const run of result.runs||[])visual.push(await agent.publishVisualRun({run_id:run.runId}));

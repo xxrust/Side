@@ -88,6 +88,7 @@ pub fn audit(run: &Value, expected: &[Value], scheme: &Value, upstream: &Value) 
         let mut add = |code: &str| {
             let id=output["id"].as_str().unwrap_or("");let kind=contract["kind"].as_str().unwrap_or("");
             let message=match code {
+                "DATA_OUTPUT_NOT_CAPTURED"=>"必要或未經核對的產物不可省略採集。".into(),
                 "DATA_OUTPUT_MISSING"=>format!("缺少宣告的產物 {id}。"),
                 "DATA_OUTPUT_TYPE_MISMATCH"=>format!("{id} 的實際儲存型別不符合 {kind}。"),
                 "DATA_FRAME_UNRESOLVED"=>format!("{id} 的座標系未能綁定本次真實圖像。"),
@@ -112,6 +113,11 @@ pub fn audit(run: &Value, expected: &[Value], scheme: &Value, upstream: &Value) 
         let transport = match kind { "image" | "mask" => "image", "file" => "file", _ => "evidence" };
         let actual = if artifact["type"] == "json" { "evidence" } else { artifact["type"].as_str().unwrap_or("") };
         if actual != transport { add("DATA_OUTPUT_TYPE_MISMATCH"); continue; }
+        if artifact.get("collection").is_some(){
+            let consumed=scheme["operatorGraph"]["nodes"].as_array().is_some_and(|nodes|nodes.iter().any(|node|node["inputs"].as_object().is_some_and(|inputs|inputs.values().any(|input|input["nodeId"]==run["schemeNodeId"]&&input["artifactId"]==artifact["id"]))));
+            if kind!="json"||!crate::artifact_capture::verified(artifact)||consumed{add("DATA_OUTPUT_NOT_CAPTURED");continue;}
+            bindings.insert(output["id"].as_str().unwrap_or("").to_owned(),json!({"dataContract":contract,"frames":[],"collection":artifact["collection"]}));continue;
+        }
         let resolved: Vec<_> = frames(contract).iter().map(|c| frame_binding(c, run, scheme, upstream)).collect();
         if resolved.iter().any(Option::is_none) { add("DATA_FRAME_UNRESOLVED"); }
         let bound: Vec<_> = resolved.into_iter().flatten().collect();

@@ -68,6 +68,9 @@ test('loaded workpiece units share immutable snapshots while batch counters and 
  const expected=JSON.stringify(source);sealProjectExecutionFacts(source);assert.equal(JSON.stringify(source),expected);
  const unit=source.datasetExecutions[0].units[0],history=projectSnapshot(source);
  assert.equal(history.datasetExecutions[0].units[0],unit);
+ // A restored terminal batch is replaced before resuming mutable counters.
+ assert.ok(Object.isFrozen(source.datasetExecutions[0]));
+ source.datasetExecutions[0]={...jsonSnapshot({...source.datasetExecutions[0],units:undefined}),units:source.datasetExecutions[0].units.slice()};
  source.datasetExecutions[0].processed=2;source.datasetExecutions[0].counts.completed=2;
  assert.equal(history.datasetExecutions[0].processed,1);assert.equal(history.datasetExecutions[0].counts.completed,1);
  assert.throws(()=>{unit.cycleTiming.totalMs=99;},TypeError);
@@ -113,4 +116,24 @@ test('Save As relocates references inside shared facts without changing undo his
  assert.equal(run.result.unrelated.root,'domain-root');assert.throws(()=>{run.result.asset.root='corrupted';},TypeError);
  assert.equal(JSON.stringify(p.undoStack.at(-1)),before);
  p.undo();assert.equal(JSON.stringify(p.data),before);p.redo();assert.equal(p.data.algorithmRuns[0].result.asset.root,'E:/new.agentcv');
+});
+
+test('restored terminal batch summaries share across undo while running batches remain writable',()=>{
+ const completed={id:'done',status:'COMPLETED',counts:{completed:1},timing:{totalMs:3},units:[{unitId:'u'}]},running={id:'live',status:'RUNNING',counts:{completed:0},units:[]};
+ const data={datasetExecutions:[completed,running]},before=JSON.stringify(data);
+ sealProjectExecutionFacts(data);assert.equal(JSON.stringify(data),before);
+ const saved=data.datasetExecutions[0],history=projectSnapshot(data);
+ assert.equal(history.datasetExecutions[0],saved);assert.notEqual(saved,completed);
+ completed.counts.completed=99;assert.equal(saved.counts.completed,1);
+ running.counts.completed++;running.units.push({unitId:'next'});
+ assert.equal(history.datasetExecutions[1].counts.completed,0);assert.equal(history.datasetExecutions[1].units.length,0);
+ assert.doesNotThrow(()=>sealProjectExecutionFacts(data));assert.equal(data.datasetExecutions[0],saved);
+});
+
+test('relocation replaces immutable historical batches without changing prior undo snapshots',()=>{
+ const p=new Workspace();p.data.datasetExecutions=[{id:'historical',status:'COMPLETED',units:[{unitId:'u',recordRef:{$asset:'assets/unit.json',mime:'application/json',size:1,sha256:'a'.repeat(64),root:'E:/old.agentcv'}}]}];
+ sealProjectExecutionFacts(p.data);const original=p.data.datasetExecutions[0];p.checkpoint();
+ p.relocateProjectAssets('E:/new.agentcv');assert.notEqual(p.data.datasetExecutions[0],original);
+ assert.equal(original.units[0].recordRef.root,'E:/old.agentcv');assert.equal(p.data.datasetExecutions[0].units[0].recordRef.root,'E:/new.agentcv');
+ p.undo();assert.equal(p.data.datasetExecutions[0],original);p.redo();assert.equal(p.data.datasetExecutions[0].units[0].recordRef.root,'E:/new.agentcv');
 });

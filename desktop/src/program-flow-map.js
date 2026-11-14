@@ -61,8 +61,9 @@ export class ProgramFlowMap {
   const version=++this.version;
   if(changedRun){this.geometry=null;this._render(this.main);}
   let promise=this.cache.get(key);
-  if(!promise){promise=layoutProgramFlow(flow);this.cache.set(key,promise);if(this.cache.size>12)this.cache.delete(this.cache.keys().next().value);}
+  if(!promise){if(import.meta.env?.VITE_INSPECTION_QA==='1')globalThis.AgentCVDesktop?.qaExecutionPhase?.('flow-layout-start');promise=layoutProgramFlow(flow);this.cache.set(key,promise);if(this.cache.size>12)this.cache.delete(this.cache.keys().next().value);}
   this.ready=promise.then(geometry=>{
+   if(import.meta.env?.VITE_INSPECTION_QA==='1')globalThis.AgentCVDesktop?.qaExecutionPhase?.('flow-layout-ready');
    if(this.disposed||version!==this.version)return;
    this.geometry=geometry;this._render(this.main);if(this.expanded)this._layoutExpanded();
   }).catch(error=>{this.cache.delete(key);if(this.disposed||version!==this.version)return;this.geometry=null;this._render(this.main);this.main.empty.textContent='流程圖暫時無法排列';this.onError(error);});
@@ -77,13 +78,23 @@ export class ProgramFlowMap {
  }
  _render(surface){
   const focused=surface.world.contains(document.activeElement)?document.activeElement.closest?.('[data-program-node]')?.dataset.programNode:null;
-  surface.world.replaceChildren();surface.previewLoads=[];const geometry=surface.geometry||this.geometry;
+  const previousNodes=surface.nodeViews||new Map(),nextNodes=new Map(),children=[];surface.previewLoads=[];const geometry=surface.geometry||this.geometry;
+  const labelContext=JSON.stringify((this.flow?.edges||[]).map(edge=>[edge.id,edge.label]));
+  const previousEdges=surface.edgeGeometry===geometry&&surface.edgeLabelContext===labelContext?surface.edgeViews||new Map():new Map(),nextEdges=new Map();
+  surface.edgeLabelContext=labelContext;
+  surface.edgeGeometry=geometry;surface.edgeViews=nextEdges;
   surface.empty.hidden=Boolean(geometry?.nodes?.length||geometry?.groups?.length);
-  if(!geometry?.nodes?.length&&!geometry?.groups?.length){this._apply(surface,false);return;}
+  if(!geometry?.nodes?.length&&!geometry?.groups?.length){surface.world.replaceChildren();surface.nodeViews=nextNodes;this._apply(surface,false);return;}
   const allNodes=[...(geometry.groups||[]),...(geometry.nodes||[])],groups=new Set((geometry.groups||[]).map(node=>node.id));
   const byId=new Map((this.flow?.nodes||[]).map(node=>[node.id,node]));
+  const edgeMetadata=new Map((this.flow?.edges||[]).map(edge=>[edge.id,edge])),positions=new Map(allNodes.map(node=>[node.id,node]));
   const drawNode=(node,isGroup)=>{
-   node={...node,...byId.get(node.id)};const state=flowExecutionState(node),timing=flowNodeTiming(node),quality=['OK','NG','UNKNOWN'].includes(node.judgement)?node.judgement:null;const group=svg('g',{class:`program-flow-map-node ${isGroup?'is-group':''} state-${state.key} kind-${node.kind}`,transform:`translate(${node.x} ${node.y})`,role:'button',tabindex:0,'data-program-node':node.id,'data-state':state.key,'data-status':node.status||'UNKNOWN','aria-label':`${node.title||'未命名步驟'}，${state.label}`,'aria-current':node.id===this.selectedId?'step':'false'});
+   node={...node,...byId.get(node.id),title:byId.get(node.id)?.title};const state=flowExecutionState(node),timing=flowNodeTiming(node),quality=['OK','NG','UNKNOWN'].includes(node.judgement)?node.judgement:null;
+   const signature=JSON.stringify([this.version,isGroup,node.id,node.x,node.y,node.width,node.height,node.title,node.kind,node.status,state,timing,quality,node.reason,node.imageIds?.[0]]);
+   const previous=previousNodes.get(node.id);
+   if(previous?.signature===signature&&!previous.failed){previous.group.setAttribute('aria-current',node.id===this.selectedId?'step':'false');children.push(previous.group);nextNodes.set(node.id,previous);if(previous.preview)surface.previewLoads.push(previous.preview);return;}
+   const group=svg('g',{class:`program-flow-map-node ${isGroup?'is-group':''} state-${state.key} kind-${node.kind}`,transform:`translate(${node.x} ${node.y})`,role:'button',tabindex:0,'data-program-node':node.id,'data-state':state.key,'data-status':node.status||'UNKNOWN','aria-label':`${node.title||'未命名步驟'}，${state.label}`,'aria-current':node.id===this.selectedId?'step':'false'});
+   const entry={signature,group};nextNodes.set(node.id,entry);
    const visual=flowVisual(node),w=node.width,h=node.height;
    group.setAttribute('data-shape',isGroup?'container':visual.shape);
    group.setAttribute('aria-label',`${visual.label} · ${node.title||'未命名步驟'}，${state.label}`);
@@ -102,7 +113,7 @@ export class ProgramFlowMap {
     const frame=svg('rect',{x:14,y:12,width:w-28,height:h-48,rx:4,class:'flow-image-well'});group.append(frame);
     const label=svg('text',{x:23,y:31,class:'flow-image-role'});label.textContent=visual.label;group.append(label);
     const imageId=node.imageIds?.[0];
-    if(imageId&&this.loadImagePreview){const version=this.version;surface.previewLoads.push(Promise.resolve().then(()=>this.loadImagePreview(imageId)).then(value=>{if(this.disposed||version!==this.version||!group.isConnected)return;const url=value?.dataURL;if(!url||!/^data:image\//.test(url))return;const picture=svg('image',{href:url,x:14,y:12,width:w-28,height:h-48,preserveAspectRatio:'xMidYMid meet','data-image-id':imageId});group.insertBefore(picture,label);label.setAttribute('y','10');label.setAttribute('class','flow-image-role loaded');}).catch(()=>{if(group.isConnected){label.textContent=visual.label+' · 預覽未就緒';}}));}
+    if(imageId&&this.loadImagePreview){const version=this.version;surface.previewLoads.push(entry.preview=Promise.resolve().then(()=>this.loadImagePreview(imageId)).then(value=>{if(this.disposed||version!==this.version||!group.isConnected)return;const url=value?.dataURL;if(!url||!/^data:image\//.test(url)){entry.failed=true;return;}const picture=svg('image',{href:url,x:14,y:12,width:w-28,height:h-48,preserveAspectRatio:'xMidYMid meet','data-image-id':imageId});group.insertBefore(picture,label);label.setAttribute('y','10');label.setAttribute('class','flow-image-role loaded');}).catch(()=>{entry.failed=true;if(group.isConnected){label.textContent=visual.label+' · 預覽未就緒';}}));}
    }
    if(!isGroup&&visual.shape==='subprocess'){const expand=svg('text',{x:w/2,y:h-9,'text-anchor':'middle',class:'flow-expand-mark'});expand.textContent='⊞';group.append(expand);}
    const footerY=isGroup?42:visual.shape==='subprocess'?h-24:h-10;
@@ -114,7 +125,7 @@ export class ProgramFlowMap {
    group.addEventListener('contextmenu',event=>this.onContextMenu(node.id,event));
    group.addEventListener('dblclick',event=>{event.stopPropagation();event.preventDefault();if(surface.expanded)select();});
    group.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();select();}});
-   surface.world.append(group);
+   children.push(group);
   };
   // Layout lists outer frames first. Draw every frame before routes and leaves.
   for(const node of allNodes)if(groups.has(node.id))drawNode(node,true);
@@ -122,16 +133,32 @@ export class ProgramFlowMap {
   const labelPosition=(edge,label)=>{const width=Math.min(label.length,32)*6+12,height=14,candidates=[];for(let i=1;i<edge.points.length;i++){const a=edge.points[i-1],b=edge.points[i],length=Math.hypot(b.x-a.x,b.y-a.y);if(length<18)continue;for(const side of [1,-1]){const x=(a.x+b.x)/2+(side===1?6:-width-6),y=(a.y+b.y)/2-5,box={x,y:y-height,width,height};const overlap=[...allNodes,...usedLabels].some(n=>box.x<n.x+n.width+3&&box.x+width>n.x-3&&box.y<n.y+n.height+3&&box.y+height>n.y-3);if(!overlap)candidates.push({x,y,box,score:length+(a.x===b.x?30:0)});}}const chosen=candidates.sort((a,b)=>b.score-a.score)[0];if(chosen)usedLabels.push(chosen.box);return chosen;};
   for(const edge of geometry.edges||[]){
    if(edge.kind!=='dependency'||edge.points?.length<2)continue;
-   const meta=(this.flow?.edges||[]).find(e=>e.id===edge.id)||edge,meaning=flowEdgeVisual(meta,byId.get(edge.from),byId.get(edge.to));
-   const source=allNodes.find(n=>n.id===edge.from),target=allNodes.find(n=>n.id===edge.to),points=edge.points.map(p=>({...p}));
+   const meta=edgeMetadata.get(edge.id)||edge,meaning=flowEdgeVisual(meta,byId.get(edge.from),byId.get(edge.to));
+   // Reused free labels still reserve their box for later labels. Changing
+   // any label invalidates the shared placement context above.
+   let labelBox=null;const signature=JSON.stringify([this.version,meta.label,meta.executed,meaning,byId.get(edge.from)?.title,byId.get(edge.to)?.title]);
+   const previous=previousEdges.get(edge.id);
+   if(previous?.signature===signature){children.push(...previous.children);if(previous.labelBox)usedLabels.push(previous.labelBox);nextEdges.set(edge.id,previous);continue;}
+   const firstChild=children.length;
+   const source=positions.get(edge.from),target=positions.get(edge.to),points=edge.points.map(p=>({...p}));
    if(!groups.has(edge.from))points[0]=flowAnchor(source,points[0],points[1]);
    if(!groups.has(edge.to))points[points.length-1]=flowAnchor(target,points.at(-1),points.at(-2));
    const path=svg('path',{class:'program-flow-map-edge edge-'+meaning.kind+(meta.executed===true?' is-executed':meta.executed===false?' is-declared':''),'data-program-edge':edge.id,'data-edge-kind':meaning.kind,'data-from':edge.from,'data-to':edge.to,d:points.map((p,i)=>`${i?'L':'M'} ${p.x} ${p.y}`).join(' '),'marker-end':`url(#${surface.markerId})`,role:'img','aria-label':`${byId.get(edge.from)?.title} → ${byId.get(edge.to)?.title} · ${meaning.label} · ${meta.label||''} · ${meta.executed?'本件已有紀錄':'未記錄執行'}`});
-   const tip=svg('title');tip.textContent=path.getAttribute('aria-label');path.append(tip);surface.world.append(path);
-   for(const p of [points[0],points.at(-1)])surface.world.append(svg('circle',{cx:p.x,cy:p.y,r:2.5,class:'flow-port edge-'+meaning.kind}));
-   if(meta.label){const reserved=edge.labelLayout,position=reserved?{x:reserved.x+4,y:reserved.y+13}:labelPosition(edge,meta.label);if(!position)continue;const label=svg('text',{x:position.x,y:position.y,class:'program-flow-map-edge-label','data-edge-label':edge.id});if(reserved){reserved.lines.forEach((value,i)=>{const line=svg('tspan',{x:position.x,y:position.y+i*15});line.textContent=value;label.append(line);});}else label.textContent=meta.label.length>24?meta.label.slice(0,23)+'…':meta.label;const title=svg('title');title.textContent=meta.label+(meta.executed?' · 本件已有紀錄':' · 方案宣告');label.append(title);surface.world.append(label);}
+   const tip=svg('title');tip.textContent=path.getAttribute('aria-label');path.append(tip);children.push(path);
+   for(const p of [points[0],points.at(-1)])children.push(svg('circle',{cx:p.x,cy:p.y,r:2.5,class:'flow-port edge-'+meaning.kind}));
+   if(meta.label){const reserved=edge.labelLayout,position=reserved?{x:reserved.x+4,y:reserved.y+13}:labelPosition(edge,meta.label);if(position){labelBox=position.box||null;const label=svg('text',{x:position.x,y:position.y,class:'program-flow-map-edge-label','data-edge-label':edge.id});if(reserved){reserved.lines.forEach((value,i)=>{const line=svg('tspan',{x:position.x,y:position.y+i*15});line.textContent=value;label.append(line);});}else label.textContent=meta.label.length>24?meta.label.slice(0,23)+'…':meta.label;const title=svg('title');title.textContent=meta.label+(meta.executed?' · 本件已有紀錄':' · 方案宣告');label.append(title);children.push(label);}}
+   nextEdges.set(edge.id,{signature,labelBox,children:children.slice(firstChild)});
   }
   for(const node of allNodes)if(!groups.has(node.id))drawNode(node,false);
+  // Leave unchanged nodes connected so their decoded SVG images and focus survive.
+  // Remove obsolete siblings before reconciling order. Otherwise a replaced
+  // first child keeps the cursor pinned and moves every retained sibling.
+  const retainedChildren=new Set(children);
+  for(const child of Array.from(surface.world.childNodes))if(!retainedChildren.has(child))child.remove();
+  let cursor=surface.world.firstChild;
+  for(const child of children){if(child===cursor)cursor=cursor.nextSibling;else surface.world.insertBefore(child,cursor);}
+  while(cursor){const next=cursor.nextSibling;cursor.remove();cursor=next;}
+  surface.nodeViews=nextNodes;
   if(surface.needsFit)this._fit(surface);else this._apply(surface,false);
   if(focused)Array.from(surface.world.querySelectorAll('[data-program-node]')).find(node=>node.dataset.programNode===focused)?.focus?.({preventScroll:true});
  }

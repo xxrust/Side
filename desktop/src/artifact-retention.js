@@ -60,7 +60,7 @@ export function applyDatasetArtifactRetention(product,decision){
  const runs=(product.runs||[]).map(run=>({...run,artifacts:(run.artifacts||[]).map(artifact=>{
   if(artifact.type!=='image'||decision.keepPixels)return {...artifact,pixelRetention:artifact.type==='image'?'full':artifact.pixelRetention};
   const next={...artifact,pixelRetention:'metadata-only',pixelAvailable:false,retentionReason:decision.reason};
-  for(const key of ['data','dataUrl','dataURL','path','assetRef'])delete next[key];
+  for(const key of ['data','dataUrl','dataURL','path','assetRef','displayPreview'])delete next[key];
   return next;
  })}));
  const {runs:_liveRuns,...metadata}=product;

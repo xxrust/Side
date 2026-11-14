@@ -49,11 +49,11 @@ const limitedFacts=(value,count)=>compactFacts(value).sort((a,b)=>a.priority-b.p
 /** A reader for one real, immutable programmable-CV run. It does not execute or
  * certify the program and never turns a program-authored check into acceptance. */
 export class AlgorithmRunView{
- constructor({onReference,onClose,isCurrent,onOpenExternal}={}){
-  Object.assign(this,{onReference,onClose,isCurrent,onOpenExternal});
+ constructor({onReference,onClose,isCurrent,onOpenExternal,loadRunDetails}={}){
+  Object.assign(this,{onReference,onClose,isCurrent,onOpenExternal,loadRunDetails});this.openGeneration=0;
   this.dialog=el('dialog',undefined,'algorithm-run-dialog');this.dialog.id='algorithmRunDialog';this.dialog.setAttribute('aria-label','算法程式 · 圖像結果與節點文檔');
   document.body.append(this.dialog);this.section='document';this.index=0;this.page=0;this.camera=null;this.rotation=0;this.run=null;this.repeat=null;
-  this.dialog.addEventListener('close',()=>{this.stopRepeat();this.run=null;this.dialog.replaceChildren();this.onClose?.()});
+  this.dialog.addEventListener('close',()=>{this.openGeneration++;this.stopRepeat();this.run=null;this.dialog.replaceChildren();this.onClose?.()});
   this.dialog.addEventListener('keydown',event=>{
    if(/INPUT|TEXTAREA|SELECT|PRE/.test(event.target.tagName))return;
    if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();this.move(event.key==='ArrowLeft'?-1:1)}
@@ -68,15 +68,33 @@ export class AlgorithmRunView{
  glyph(icon,label,action){return iconButton(this.button('',action),icon,label)}
  open(run,{section='document',artifactId}={}){
   if(!record(run))throw Error('請提供真實算法執行紀錄');
-  this.stopRepeat();this.run=clone(run);this.section=Object.hasOwn(sectionNames,section)?section:'document';this.page=0;this.camera=null;this.rotation=0;this.drawer=null;
+  if(run.deferredProcedureTrace!==undefined)return this.openDeferred(run,{section,artifactId});
+  this.openGeneration++;this.stopRepeat();this.run=clone(run);this.section=Object.hasOwn(sectionNames,section)?section:'document';this.page=0;this.camera=null;this.rotation=0;this.drawer=null;
   const binding=bindingOf(this.run),all=rows(this.run.artifacts);this.rejectedArtifacts=all.filter(artifact=>!sameBinding(artifact.sourceBinding||artifact.source,binding));
   this.artifacts=all.filter(artifact=>artifact.type==='image'&&sameBinding(artifact.sourceBinding||artifact.source,binding));
   this.index=Math.max(0,this.artifacts.findIndex(artifact=>artifact.id===artifactId));
   if(!artifactId)this.chooseSectionImage();this.render();if(!this.dialog.open)this.dialog.showModal();this.resizeObserver?.observe(this.viewport);
   return this;
  }
- close(){this.stopRepeat();if(this.dialog.open)this.dialog.close()}
- destroy(){this.stopRepeat();this.resizeObserver?.disconnect();for(const name of ['pointerup','pointercancel','blur'])window.removeEventListener(name,this.releaseRepeat);this.dialog.remove();this.run=null}
+ async openDeferred(run,options){
+  const generation=++this.openGeneration,current=()=>generation===this.openGeneration;
+  this.stopRepeat();this.run=null;this.artifacts=[];this.drawer=null;
+  const message=el('p','正在讀取完整程序證據…');message.setAttribute('role','status');
+  this.dialog.replaceChildren(message,this.button('關閉',()=>this.close()));
+  if(!this.dialog.open)this.dialog.showModal();
+  try{
+   if(!this.loadRunDetails)throw Error('完整程序證據讀取未連接');
+   const complete=await this.loadRunDetails(run,{isCurrent:current});
+   if(!current())return null;
+   if(!record(complete)||complete.runId!==run.runId||complete.deferredProcedureTrace!==undefined)throw Error('完整程序證據與指定運算不一致');
+   return this.open(complete,options);
+  }catch(error){
+   if(current()){message.textContent='無法讀取完整程序證據：'+String(error?.message||error);message.setAttribute('role','alert');}
+   return null;
+  }
+ }
+ close(){this.openGeneration++;this.stopRepeat();if(this.dialog.open)this.dialog.close()}
+ destroy(){this.openGeneration++;this.stopRepeat();this.resizeObserver?.disconnect();for(const name of ['pointerup','pointercancel','blur'])window.removeEventListener(name,this.releaseRepeat);this.dialog.remove();this.run=null}
  currentArtifact(){return this.artifacts?.[this.index]||null}
  snapshot(){
   if(!this.run)return null;const artifact=this.currentArtifact(),binding=bindingOf(this.run);
@@ -104,6 +122,7 @@ export class AlgorithmRunView{
   const inspector=el('aside',undefined,'algorithm-run-inspector');inspector.setAttribute('aria-label','節點文檔');content.append(inspector);this.renderExplanation(inspector);
   const footer=el('footer',undefined,'algorithm-run-footer'),identity=el('small',`${this.snapshot().historical?'歷史試算':'保存來源'} · ${binding.width||'—'} × ${binding.height||'—'} px · ${(binding.imageSha256||binding.inputSha256||'未提供原圖 SHA').slice(0,20)} · ${run.durationMs!==undefined?Number(run.durationMs).toFixed(0)+' ms':'未提供耗時'}`);identity.title=JSON.stringify(binding,null,2);footer.append(identity);const reference=iconLabelButton(this.button('引用此圖問 Agent',()=>this.reference()),'quote');reference.disabled=!artifact||!rasterURL(imageURL(artifact));footer.append(reference);d.append(footer);
   if(this.rejectedArtifacts.length){const notice=el('small',`${this.rejectedArtifacts.length} 個產物來源與本次運算不一致，未混入圖像。`,'algorithm-run-source-warning');notice.setAttribute('role','status');footer.prepend(notice)}
+  if(this.run.procedureTrace?.capture?.mode==='essential'){const notice=el('p','日常檢測未採集完整過程數據；需要時請讓 Agent 對此圖片開啟診斷重跑。新診斷不會補寫歷史觀測。','algorithm-run-capture-notice');notice.setAttribute('role','status');this.dialog.append(notice);}
   this.resizeObserver?.observe(this.viewport);queueMicrotask(()=>{if(this.camera)this.paintImage();else if(this.image?.complete)this.fit()});if(this.drawer)this.showDrawer(this.drawer);
  }
  renderFilmstrip(parent){const strip=el('nav',undefined,'algorithm-run-filmstrip');strip.setAttribute('aria-label','本輪圖像序列');parent.append(strip);const count=4,page=Math.floor(this.index/count),visible=this.artifacts.slice(page*count,page*count+count);for(const [local,artifact]of visible.entries()){const index=page*count+local,button=this.button('',()=>{this.index=index;this.camera=null;this.render()},'algorithm-run-thumbnail');button.setAttribute('aria-label',`第 ${index+1} 張：${artifactTitle(artifact,index)}`);button.setAttribute('aria-pressed',String(index===this.index));if(rasterURL(imageURL(artifact))){const thumb=el('img');thumb.src=imageURL(artifact);thumb.alt='';thumb.draggable=false;button.append(thumb)}else button.append(el('span','無預覽','algorithm-run-thumbnail-empty'));const label=el('span',`${index+1} · ${artifactTitle(artifact,index)}`);label.title=artifactTitle(artifact,index);button.append(label);strip.append(button)}if(!visible.length)strip.append(el('small','本次沒有圖像'));if(this.artifacts.length>count){const pager=el('div',undefined,'algorithm-run-filmstrip-pager'),previous=this.glyph('previous','前四張',()=>{this.index=Math.max(0,(page-1)*count);this.camera=null;this.render()}),next=this.glyph('next','後四張',()=>{this.index=Math.min(this.artifacts.length-1,(page+1)*count);this.camera=null;this.render()});previous.disabled=page===0;next.disabled=(page+1)*count>=this.artifacts.length;pager.append(previous,next);strip.append(pager)}}

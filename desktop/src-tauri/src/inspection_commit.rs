@@ -189,6 +189,34 @@ mod tests{
   assert_eq!(error,"ACTUAL_SAVE_FAILURE");assert!(events.borrow().iter().all(|e|e["phase"]!="session-completed"));
  }
  #[test]
+ fn selected_preview_is_available_before_the_next_operator_runs(){
+  let mut request=request();request["previewNodeId"]=json!("actual");
+  let mut node=request["scheme"]["operatorGraph"]["nodes"][0].clone();node["id"]=json!("later");
+  request["scheme"]["operatorGraph"]["nodes"].as_array_mut().unwrap().push(node);
+  request["scheme"]["operatorGraph"]["edges"]=json!([{"from":"actual","to":"later"}]);
+  let mut prepared=request["nodes"][0].clone();prepared["nodeId"]=json!("later");
+  request["nodes"].as_array_mut().unwrap().push(prepared);
+  let events=RefCell::new(Vec::<Value>::new());
+  let result=crate::inspection_service::execute_with_commit(request,|r|{
+   let mut run=observed();
+   if r["runtimePlan"]["nodeId"]=="actual"{
+    run["artifacts"].as_array_mut().unwrap().push(json!({"id":"overlay","type":"image","dataUrl":format!("http://agentcv-memory.localhost/{}","a".repeat(64)),"width":1280,"height":1024}));
+   }else{
+    run["runId"]=json!("later-run");
+    let emitted=events.borrow();
+    assert_eq!(emitted.iter().filter(|e|e["phase"]=="preview-ready").count(),1);
+    let completed=emitted.iter().position(|e|e["phase"]=="node-completed").unwrap();
+    let preview=emitted.iter().position(|e|e["phase"]=="preview-ready").unwrap();
+    assert!(completed<preview);
+    assert!(emitted.iter().all(|e|e["phase"]!="session-completed"));
+   }
+   Ok(run)
+  },||false,|e|events.borrow_mut().push(e),|_|Ok(ack())).unwrap();
+  assert_eq!(result["runs"].as_array().unwrap().len(),2);
+  let events=events.borrow();
+  assert!(events.windows(2).all(|pair|pair[0]["sequence"].as_u64().unwrap()<pair[1]["sequence"].as_u64().unwrap()));
+ }
+ #[test]
  fn durable_run_rejects_future_browser_observations_even_when_extension_supplies_them(){
   let mut run=observed();
   run["nativeRunEnvelopeParityChecked"]=json!(true);
@@ -201,4 +229,33 @@ mod tests{
   assert_eq!(saved["timing"]["native"],run["timing"]["native"]);
   assert_eq!(saved["timing"]["program"],run["timing"]["program"]);
  }
+ #[test]
+ fn deferred_json_policy_and_archive_projection_are_bound_to_session(){
+  let mut req=request();req["deferProcedureTrace"]=json!(true);
+  let outputs=json!([{"id":"data","type":"evidence","dataContract":{"kind":"json"}}]);
+  req["scheme"]["operatorGraph"]["nodes"][0]["expected_outputs"]=outputs.clone();req["nodes"][0]["request"]["expectedOutputs"]=outputs;
+  let mut forged=req.clone();forged["nodes"][0]["request"]["deferredJsonArtifactIds"]=json!(["data"]);
+  assert_eq!(crate::inspection_service::execute_with_commit(forged,|_|panic!("must not dispatch"),||false,|_|{},|_|Ok(ack())).unwrap_err(),"SESSION_SHARED_OVERRIDE");
+  let result=crate::inspection_service::execute_with_commit(req,|r|{
+   assert_eq!(r["deferredJsonArtifactIds"],json!(["data"]));
+   let mut run=observed();run["artifacts"][0]["memoryRef"]=json!({"kind":"runtime-memory"});
+   run["artifacts"][0]["data"]=crate::deferred_trace::artifact_reference(&json!("actual-run"),&json!("data"));Ok(run)
+  },||false,|_|{},|product|{
+   let artifact=&product["runs"][0]["artifacts"][0];assert!(artifact.get("data").is_none());assert_eq!(artifact["dataStorage"],"artifact-bytes");
+   assert!(product["runs"][0].get("deferredProcedureTrace").is_none());Ok(ack())
+  }).unwrap();
+  assert_eq!(result["runs"][0]["deferredProcedureTrace"]["runId"],"actual-run");
+ }
+ #[test]
+ fn deferred_trace_returns_projection_only_after_full_archive_ownership(){
+  let mut req=request();req["deferProcedureTrace"]=json!(true);
+  let saved=RefCell::new(Value::Null);
+  let result=crate::inspection_service::execute_with_commit(req,|_|{
+   let mut run=observed();run["procedureTrace"]=json!({"schema":"agentcv-procedure-trace-1","nodes":[{"instanceId":"step#1","outputs":{"model":vec![17;5000],"boundaryChecks":[]}}]});Ok(run)
+  },||false,|_|{},|product|{*saved.borrow_mut()=product;Ok(ack())}).unwrap();
+  assert_eq!(saved.borrow()["runs"][0]["procedureTrace"]["nodes"][0]["outputs"]["model"].as_array().unwrap().len(),5000);
+  assert!(saved.borrow()["runs"][0].get("deferredProcedureTrace").is_none());
+  assert_eq!(result["runs"][0]["procedureTrace"]["nodes"][0]["outputs"]["model"]["deferred"],true);
+ }
+
 }

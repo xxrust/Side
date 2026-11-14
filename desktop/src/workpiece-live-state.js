@@ -8,13 +8,13 @@ export function clearWorkpieceExecution(project){active.delete(project);}
 // One completed unit owns the displayed input/output pair while the next unit
 // is computing. This is process state, bounded to one unit and never archived.
 const completedUnits=new WeakMap();
-export function publishCompletedWorkpiece(project,execution,record,runs){
- completedUnits.set(project,{data:project.data,epoch:project.epoch,selectionRevision:project.imageSelection,executionId:execution.id,schemeFingerprint:execution.schemeFingerprint,sourceId:execution.sourceId,record,runs});
+export function publishCompletedWorkpiece(project,execution,record,runs,{selectionRevision=project.imageSelection}={}){
+ completedUnits.set(project,{data:project.data,epoch:project.epoch,selectionRevision,executionId:execution.id,schemeFingerprint:execution.schemeFingerprint,sourceId:execution.sourceId,record,runs});
 }
 export function completedWorkpiece(project){
  const value=completedUnits.get(project);
  if(!value)return null;
- if(value.data!==project.data||value.epoch!==project.epoch||value.selectionRevision!==project.imageSelection){completedUnits.delete(project);return null;}
+ if(value.data!==project.data||value.epoch!==project.epoch||(value.selectionRevision??0)!==(project.imageSelection??0)){completedUnits.delete(project);return null;}
  return value;
 }
 
@@ -30,7 +30,7 @@ export function retainCompletedWorkpieceOutput(project,execution,{imageId,nextIm
 export function retainedWorkpieceOutput(project){
  const value=completedOutputs.get(project);
  if(!value)return null;
- if(value.data!==project.data||value.epoch!==project.epoch||value.selectionRevision!==project.imageSelection||value.nextImageId!==(project.image?.id||project.data.activeId)){
+ if(value.data!==project.data||value.epoch!==project.epoch||(value.selectionRevision??0)!==(project.imageSelection??0)||value.nextImageId!==(project.image?.id||project.data.activeId)){
   completedOutputs.delete(project);return null;
  }
  return value;

@@ -69,3 +69,43 @@ test('actual boundary data remains available in execution files independently of
   await h.view.showDrawer('result');const full=await fs.promises.readFile(h.externalFiles.at(-1).receipt.files.find(f=>f.kind==='data').path,'utf8');assert.deepEqual(JSON.parse(full).result.boundaryChecks,native.boundaryChecks);assert.deepEqual(h.errors,[]);
  }finally{h.close()}
 });
+
+test('deferred records show loading and render complete evidence only after the requested read',async()=>{
+ const h=await harness();try{
+  const summary=h.from({...run(),deferredProcedureTrace:{schema:'agentcv-deferred-procedure-trace-1'}});let release;
+  h.view.loadRunDetails=(_run,guard)=>{assert.equal(guard.isCurrent(),true);return new Promise(resolve=>release=resolve);};
+  const opened=h.view.open(summary);assert.equal(h.view.run,null);assert.match(h.view.dialog.textContent,/正在讀取完整/);assert.equal(h.view.snapshot(),null);
+  const complete=h.from({...run(),documentation:'完整封存證據'});release(complete);assert.equal(await opened,h.view);
+  assert.equal(h.view.run.deferredProcedureTrace,undefined);assert.match(h.view.dialog.textContent,/完整封存證據/);
+ }finally{h.close();}
+});
+test('late detail reads cannot reopen closed dialogs or replace a newer selection',async()=>{
+ for(const action of ['close','replace','destroy']){
+  const h=await harness();try{
+   let release,guard;h.view.loadRunDetails=(_run,g)=>{guard=g;return new Promise(resolve=>release=resolve);};
+   const pending=h.view.open(h.from({...run(),deferredProcedureTrace:{}}));
+   if(action==='close')h.view.close();if(action==='destroy')h.view.destroy();if(action==='replace')h.view.open(h.from({...run(),runId:'new-selection'}));
+   assert.equal(guard.isCurrent(),false);release(h.from(run()));assert.equal(await pending,null);
+   if(action==='close')assert.equal(h.view.dialog.open,false);
+   if(action==='replace')assert.equal(h.view.run.runId,'new-selection');
+   if(action==='destroy')assert.equal(h.view.dialog.isConnected,false);
+  }finally{h.close();}
+ }
+});
+test('failed or mismatched detail reads display an error without presenting summary as evidence',async()=>{
+ for(const failure of ['missing','reject','wrong-run','still-deferred']){
+  const h=await harness();try{
+   if(failure!=='missing')h.view.loadRunDetails=async()=>{if(failure==='reject')throw Error('disk unavailable');return h.from({...run(),...(failure==='wrong-run'?{runId:'other'}:{deferredProcedureTrace:{}})});};
+   assert.equal(await h.view.open(h.from({...run(),deferredProcedureTrace:{}})),null);
+   assert.equal(h.view.run,null);assert.equal(h.view.snapshot(),null);assert.match(h.view.dialog.querySelector('[role=alert]').textContent,/無法讀取完整/);assert.equal(h.references.length,0);
+  }finally{h.close();}
+ }
+});
+
+
+test('routine capture notice survives rendering and does not promise an archived full snapshot',async()=>{
+ const h=await harness();try{const value=run();value.procedureTrace={capture:{mode:'essential'},nodes:[]};h.view.open(h.from(value));
+  assert.match(h.view.dialog.querySelector('.algorithm-run-capture-notice').textContent,/未採集.*診斷重跑/);
+  h.view.render();assert.equal(h.view.dialog.querySelectorAll('.algorithm-run-capture-notice').length,1);
+ }finally{h.close();}
+});

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {beginNativePreviewPrefetch} from '../src/native-preview-prefetch.js';
+import {beginNativePreviewPrefetch,takeVerifiedNativePreview} from '../src/native-preview-prefetch.js';
 import {createNativeSessionExecutor} from '../src/native-session-bridge.js';
 const src='http://agentcv-memory.localhost/'+'a'.repeat(64);
 const preview={src,nodeId:'node',artifactId:'overlay',width:1280,height:1024};
@@ -11,6 +11,24 @@ class ImageStub{
  decode(){return Promise.resolve();}
  removeAttribute(name){delete this[name];}
 }
+test('only final verified pixels transfer once and survive cache eviction',async()=>{
+ const lease=beginNativePreviewPrefetch({ImageClass:ImageStub});lease.stage([preview]);
+ const image=ImageStub.images.at(-1);
+ assert.equal(takeVerifiedNativePreview(preview),null,'speculative pixels cannot be displayed');
+ lease.complete(result());
+ assert.equal(takeVerifiedNativePreview({...preview,width:1279}),null);
+ const frame=takeVerifiedNativePreview(preview);assert.equal(frame.image,image);await frame.ready;
+ assert.equal(takeVerifiedNativePreview(preview),null,'one element has one display owner');
+ assert.equal(lease.complete(result()).bytes,0);lease.dispose();
+ assert.equal(image.src,src,'disposing the speculative cache must not clear visible pixels');
+});
+test('a transferred decode failure still rejects before display',async()=>{
+ let reject;
+ class Pending extends ImageStub{decode(){return new Promise((_,r)=>{reject=r;});}}
+ const lease=beginNativePreviewPrefetch({ImageClass:Pending});lease.stage([preview]);lease.complete(result());
+ const frame=takeVerifiedNativePreview(preview);reject(Error('decode failed'));
+ await assert.rejects(frame.ready,/decode failed/);lease.dispose();
+});
 test('speculative decode retains only exact final artifact identities and releases explicitly',async()=>{
  const lease=beginNativePreviewPrefetch({ImageClass:ImageStub});
  lease.stage([preview,preview,{...preview,src:'https://untrusted.example/image'},{...preview,width:1e9}]);
@@ -48,7 +66,7 @@ test('bridge filters stale, duplicate and foreign progress and discards decode o
 });
 test('binary bridge imports full facts and attributes native encoding separately without subtracting it',async()=>{
  const response=result();response.runs[0].result={measurement:1.2345678901234567};
- response._responseEncoding={backend:'rust-json-once-v1',encodeNs:1234567,releaseNs:321000,jsonBytes:1};
+ response._responseEncoding={backend:'rust-json-once-v1',encodeNs:1234567,compactNs:900000,jsonEncodeNs:330000,releaseNs:321000,jsonBytes:1};
  const bytes=new TextEncoder().encode(JSON.stringify(response));
  class Channel{}
  const execute=createNativeSessionExecutor({Channel,invoke:async()=>bytes.buffer});
@@ -57,10 +75,29 @@ test('binary bridge imports full facts and attributes native encoding separately
  assert.ok(Object.isFrozen(actual.runs[0].result));
  assert.equal(actual.timing.nativeResponse.encodeMs,1.234567);
  assert.equal(actual.timing.nativeResponse.releaseMs,.321);
+ assert.equal(actual.timing.nativeResponse.compactMs,.9);
+ assert.equal(actual.timing.nativeResponse.jsonEncodeMs,.33);
  assert.equal(actual.timing.hostResponse.bytes,bytes.length);
  assert.equal(Object.hasOwn(actual,'_responseEncoding'),false);
+ for(const parts of [{compactNs:-1,jsonEncodeNs:0},{compactNs:1234567,jsonEncodeNs:1},{compactNs:1},{jsonEncodeNs:1}]){
+  const bad={...response,_responseEncoding:{backend:'rust-json-once-v1',encodeNs:1234567,releaseNs:321000,jsonBytes:1,...parts}};
+  const frame=new TextEncoder().encode(JSON.stringify(bad));
+  const executeBad=createNativeSessionExecutor({Channel,invoke:async()=>frame.buffer});
+  await assert.rejects(executeBad({sessionId:'s',executionId:'e',unitId:'u'}),/SESSION_RESPONSE_TIMING_INVALID/);
+ }
+ const legacy={...response,_responseEncoding:{backend:'rust-json-once-v1',encodeNs:1234567,releaseNs:321000,jsonBytes:1}};
+ const legacyBytes=new TextEncoder().encode(JSON.stringify(legacy));
+ const executeLegacy=createNativeSessionExecutor({Channel,invoke:async()=>legacyBytes.buffer});
+ assert.equal((await executeLegacy({sessionId:'s',executionId:'e',unitId:'u'})).timing.nativeResponse.encodeMs,1.234567);
  response._responseEncoding.encodeNs=-1;
  const invalid=new TextEncoder().encode(JSON.stringify(response));
  const broken=createNativeSessionExecutor({Channel,invoke:async()=>invalid.buffer});
  await assert.rejects(broken({sessionId:'s',executionId:'e',unitId:'u'}),/SESSION_RESPONSE_TIMING_INVALID/);
+});
+
+test('preparation observes each dispatched unit and its live identity guard before native invoke',async()=>{
+ class Channel{};let valid=true;const observed=[];
+ const executor=createNativeSessionExecutor({Channel,onStart:(request,{isCurrent})=>observed.push({unit:request.unitId,image:request.shared.workpieceUnit.imageIds[0],isCurrent}),invoke:async(_name,{request})=>{assert.equal(observed.at(-1).unit,request.unitId);return {runs:[],timing:{}};}});
+ for(const id of ['one','two'])await executor({sessionId:id,executionId:'batch',unitId:id,shared:{workpieceUnit:{imageIds:[id+'-image']}}},{isCurrent:()=>valid});
+ assert.deepEqual(observed.map(o=>o.image),['one-image','two-image']);assert.equal(observed[0].isCurrent(),true);valid=false;assert.equal(observed[1].isCurrent(),false);
 });

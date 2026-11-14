@@ -1,3 +1,4 @@
+const qaPhase=phase=>{if(import.meta.env?.VITE_INSPECTION_QA==='1')globalThis.AgentCVDesktop?.qaExecutionPhase?.(phase);};
 import {prepareAlgorithmExecution,lockAlgorithmExecution} from './algorithm-workspace.js';
 import {jsonDataEqual} from './json-data-equal.js';
 const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value));
@@ -5,13 +6,14 @@ const clone=value=>value===undefined?undefined:JSON.parse(JSON.stringify(value))
 // Same prepared request and same import path as single-node execution. Only
 // scheduling and the intermediate output-contract gate move into the host.
 export async function runNativeWorkpieceSession(project,{nodes,scheme,unit,executionId,fingerprint,argsForNode,
- executeSession,signal,onEvent,productContext,commit,isCurrent=()=>true}){
+ executeSession,signal,onEvent,productContext,commit,inputVerification,isCurrent=()=>true}){
+ qaPhase('session-prepare-start');
  const sessionId=crypto.randomUUID(),prepared=new Map(),requests=[];
  for(const node of nodes){
   if(!isCurrent())throw Error('方案／專案在執行準備期間改變；停止派發。');
   const item=await prepareAlgorithmExecution(project,argsForNode(node),{deferUpstream:true});
   if(!item.request)throw Error('逐件執行不可使用歷史替代觀測');
-  prepared.set(node.id,item);requests.push({nodeId:node.id,request:item.request});
+  qaPhase('session-node-prepared:'+node.id);prepared.set(node.id,item);requests.push({nodeId:node.id,request:item.request});
  }
  const shared={};
  shared.compilation=clone(prepared.get(nodes[0].id).compilation);
@@ -23,12 +25,14 @@ export async function runNativeWorkpieceSession(project,{nodes,scheme,unit,execu
  }
  for(const row of requests){delete row.request.runtimePlan;delete row.request.upstream;}
  const request={sessionId,executionId,unitId:unit.id,fingerprint,scheme,shared,nodes:requests,evidenceAuditBackend:'rust-native-evidence-v1',runEnvelopeBackend:'rust-native-run-v1',...(productContext?{productContext}: {}),...(commit?{commit:{...commit,backend:'rust-native-commit-v1',unit:clone(unit)}}:{})};
+ qaPhase('session-dispatch-start');
  const dispatchStart=performance.now();let lastSequence=0;
  const release=lockAlgorithmExecution(project);let result;
- try{result=await executeSession(request,{signal,isCurrent,onEvent:event=>{
+ try{result=await executeSession(request,{signal,isCurrent,inputVerification,onEvent:event=>{
   if(event.sessionId!==sessionId||event.executionId!==executionId||event.unitId!==unit.id||!Number.isSafeInteger(event.sequence)||event.sequence<=lastSequence)return;
   lastSequence=event.sequence;if(isCurrent())onEvent?.(event);
  }});
+ qaPhase('session-dispatch-complete');
  const dispatchMs=performance.now()-dispatchStart;
  if(!isCurrent())throw Error('方案／原圖／專案在執行期間改變；未採用舊工件結果。');
  if(result.sessionId!==sessionId||result.executionId!==executionId||result.unitId!==unit.id||!jsonDataEqual(result.sourceBinding,shared.sourceBinding))throw Error('原生工件回覆身份不一致');
@@ -61,6 +65,7 @@ export async function runNativeWorkpieceSession(project,{nodes,scheme,unit,execu
  }
  const nodeStates=clone(result.nodeStates);
  for(const state of nodeStates){const run=runMap.get(state.nodeId);if(run)state.evidenceStatus=run.evidenceAudit?.status;}
+ qaPhase('session-import-complete');
  let published=false;
  return {runs,nodeStates,decision:result.decision,commit:result.commit,publish:()=>{
   if(published)throw Error('原生工件不可重复发布');

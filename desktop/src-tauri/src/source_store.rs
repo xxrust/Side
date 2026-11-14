@@ -87,6 +87,15 @@ pub async fn read_workspace_asset(root:String,asset:Value)->Result<Value,String>
     tauri::async_runtime::spawn_blocking(move||{let bytes=crate::workspace::read_workspace_asset_bytes(Path::new(&root),&asset)?;let mime=asset["mime"].as_str().ok_or("圖像類型缺失")?;if !mime.starts_with("image/"){return Err("此接口只讀取圖像資產".into());}Ok(json!({"dataUrl":format!("data:{mime};base64,{}",STANDARD.encode(&bytes)),"mime":mime,"sha256":asset["sha256"],"size":bytes.len()}))}).await.map_err(|_|"圖像來源讀取服務失敗")?
 }
 #[tauri::command]
+pub async fn read_workspace_image_bytes(root:String,asset:Value)->Result<tauri::ipc::Response,String>{
+    tauri::async_runtime::spawn_blocking(move||{
+        let mime=asset["mime"].as_str().ok_or("圖像類型缺失")?;
+        if !matches!(mime,"image/png"|"image/jpeg"|"image/webp"|"image/bmp"){return Err("此接口只讀取圖像資產".into());}
+        let bytes=crate::workspace::read_workspace_asset_bytes(Path::new(&root),&asset)?;
+        Ok(tauri::ipc::Response::new(bytes))
+    }).await.map_err(|_|"圖像來源讀取服務失敗")?
+}
+#[tauri::command]
 pub async fn open_dataset_workspace(root:String)->Result<String,String>{
     tauri::async_runtime::spawn_blocking(move||crate::workspace::read_workspace_lazy(Path::new(&root))).await.map_err(|_|"圖像來源索引開啟失敗")?
 }

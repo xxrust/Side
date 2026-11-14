@@ -1,4 +1,4 @@
-import {immutableJson,freezeParsedJson} from './json-snapshot.js';
+import {immutableJson,freezeParsedJson,isImmutableJson} from './json-snapshot.js';
 const nativeFacts=new WeakMap();
 export function sealParsedNativeExecutionFacts(result){
  for(const run of result.runs||[]){
@@ -23,15 +23,22 @@ export function sealAlgorithmExecutionFacts(run){
  return run;
 }
 export function sealProjectExecutionFacts(data){
+ // Audit events are append-only observations. Freeze detached copies once on
+ // restore so every undo boundary can share their unchanged nested payloads.
+ if(Array.isArray(data.events))data.events=data.events.map(event=>immutableJson(event));
  for(const run of data.algorithmRuns||[])sealAlgorithmExecutionFacts(run);
  // Each stored execution owns a historical definition, never the editable
  // current scheme. Sharing its normalized frozen tree keeps undo snapshots
  // from copying the same source and parameters for every historical cycle.
- for(const execution of data.datasetExecutions||[]){
+ if(Array.isArray(data.datasetExecutions))data.datasetExecutions=data.datasetExecutions.map(execution=>{
+  if(isImmutableJson(execution))return execution;
   if(execution.schemeSnapshot!==undefined)execution.schemeSnapshot=immutableJson(execution.schemeSnapshot);
   // A completed unit is an observation. Only the surrounding batch counters,
   // progress and UI timing keep changing. Share each immutable unit across
   // undo snapshots instead of cloning all prior units on every execution.
   if(Array.isArray(execution.units))execution.units=execution.units.map(unit=>immutableJson(unit));
- }
+  // Restored terminal batches are history. Resume and archive updates replace
+  // them rather than making every undo boundary copy all their summaries.
+  return ['COMPLETED','COMPLETED_WITH_FAULTS','FAULT','CANCELLED'].includes(execution.status)?immutableJson(execution):execution;
+ });
 }

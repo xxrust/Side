@@ -62,3 +62,70 @@ test('failed acknowledgement remains owned and retries without leaking completed
   assert.deepEqual(await archive.resolve(reference),receipt.recordRef);
  }finally{archive.dispose();}
 });
+test('new admission checks on the next task and resolves without a frame delay or explicit flush',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});const p=specimen();let calls=0;
+ const archive=createInspectionArchive({project:p,invoke:async command=>{calls++;if(command==='acknowledge_inspection_archive')return;return {queueId:reference.queueId,items:[{archiveId:1,identity:reference,status:'SAVED',receipt}]};}});
+ try{archive.track({status:'PENDING',durable:false,archiveRef:reference});assert.equal(calls,0);t.mock.timers.tick(0);await new Promise(setImmediate);assert.deepEqual(p.data.datasetExecutions[0].units[0].recordRef,receipt.recordRef);assert.equal(archive.pendingCount,0);const completed=calls;t.mock.timers.tick(1000);await new Promise(setImmediate);assert.equal(calls,completed);}finally{archive.dispose();}
+});
+test('failed writes stop automatic polling and disposal during an in-flight poll cannot resurrect it',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});let calls=0,finish;const p=specimen();
+ const archive=createInspectionArchive({project:p,invoke:async()=>{calls++;return {queueId:reference.queueId,items:[{archiveId:1,identity:reference,status:'FAILED',error:'disk failure'}]};}});
+ archive.track({status:'PENDING',durable:false,archiveRef:reference});t.mock.timers.tick(20);await new Promise(setImmediate);t.mock.timers.tick(1000);await new Promise(setImmediate);assert.equal(calls,1);assert.equal(archive.pendingCount,1);archive.dispose();
+ const closing=createInspectionArchive({project:p,invoke:()=>new Promise(resolve=>{calls++;finish=resolve;})});closing.track({status:'PENDING',durable:false,archiveRef:reference});t.mock.timers.tick(20);closing.dispose();finish({queueId:reference.queueId,items:[]});await new Promise(setImmediate);const stopped=calls;t.mock.timers.tick(1000);await new Promise(setImmediate);assert.equal(calls,stopped);
+});
+test('an unfinished first poll keeps the normal interval and invocation errors keep backoff',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});let calls=0,fail=false;
+ const archive=createInspectionArchive({project:specimen(),onError:()=>{},invoke:async()=>{
+  calls++;if(fail)throw Error('temporary IPC failure');
+  return {queueId:reference.queueId,items:[{archiveId:1,identity:reference,status:'PENDING'}]};
+ }});
+ try{
+  archive.track({status:'PENDING',durable:false,archiveRef:reference});
+  t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(calls,1);
+  t.mock.timers.tick(15);await new Promise(setImmediate);assert.equal(calls,1);
+  fail=true;t.mock.timers.tick(1);await new Promise(setImmediate);assert.equal(calls,2);
+  archive.track({status:'PENDING',durable:false,archiveRef:reference});
+  t.mock.timers.tick(249);await new Promise(setImmediate);assert.equal(calls,2);
+  t.mock.timers.tick(1);await new Promise(setImmediate);assert.equal(calls,3);
+ }finally{archive.dispose();}
+});
+
+test('archive completion replaces restored immutable batches across live data and undo history',()=>{
+ const p=specimen(),historical=immutableJson({...p.data.datasetExecutions[0],status:'COMPLETED'});
+ p.data.datasetExecutions=[historical];p.undoStack=[projectSnapshot(p.data)];p.redoStack=[projectSnapshot(p.data)];
+ applyArchivedInspection(p,reference,receipt,{writeMs:2});
+ assert.equal(historical.units[0].recordRef,null);
+ for(const data of [p.data,...p.undoStack,...p.redoStack]){
+  const execution=data.datasetExecutions[0];assert.notEqual(execution,historical);
+  assert.ok(Object.isFrozen(execution));assert.deepEqual(execution.units[0].recordRef,receipt.recordRef);
+ }
+});
+
+test('completion hints wake receipt polling without treating events as durable proof',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});const p=specimen();let reads=0,saved=false;
+ const archive=createInspectionArchive({project:p,invoke:async command=>{
+  if(command==='acknowledge_inspection_archive')return;reads++;
+  return {queueId:reference.queueId,items:[{archiveId:1,identity:reference,status:saved?'SAVED':'PENDING',...(saved?{receipt}:{})}]};
+ }});
+ try{
+  archive.notify({queueId:reference.queueId});t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(reads,0);
+  archive.track({status:'PENDING',durable:false,archiveRef:reference});t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(reads,1);
+  archive.notify({queueId:'wrong-process'});t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(reads,1);
+  archive.notify({queueId:reference.queueId});assert.equal(p.data.datasetExecutions[0].units[0].recordRef,null);t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(reads,2);assert.equal(p.data.datasetExecutions[0].units[0].recordRef,null);
+  saved=true;archive.notify({queueId:reference.queueId});t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(reads,3);assert.deepEqual(p.data.datasetExecutions[0].units[0].recordRef,receipt.recordRef);
+ }finally{archive.dispose();}
+});
+test('a completion hint during an unfinished poll survives its pending response',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});const p=specimen();let release,reads=0;
+ const archive=createInspectionArchive({project:p,invoke:async command=>{
+  if(command==='acknowledge_inspection_archive')return;
+  if(++reads===1)return new Promise(resolve=>release=resolve);
+  return {queueId:reference.queueId,items:[{archiveId:1,identity:reference,status:'SAVED',receipt}]};
+ }});
+ try{
+  archive.track({status:'PENDING',durable:false,archiveRef:reference});t.mock.timers.tick(0);await new Promise(setImmediate);
+  archive.notify({queueId:reference.queueId});release({queueId:reference.queueId,items:[{archiveId:1,identity:reference,status:'PENDING'}]});await new Promise(setImmediate);
+  t.mock.timers.tick(0);await new Promise(setImmediate);assert.equal(reads,2);assert.equal(archive.pendingCount,0);assert.deepEqual(p.data.datasetExecutions[0].units[0].recordRef,receipt.recordRef);
+  archive.dispose();archive.notify({queueId:reference.queueId});t.mock.timers.tick(100);await new Promise(setImmediate);assert.equal(reads,2);
+ }finally{archive.dispose();}
+});

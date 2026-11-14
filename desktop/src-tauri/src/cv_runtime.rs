@@ -285,7 +285,15 @@ fn verify_artifact_files_mode(result: &mut Value, directory: &Path, source_bindi
     verify_artifact_bytes(result,directory,source_binding,artifact_mode,None,"","").map(|_|())
 }
 fn verify_artifact_bytes(result: &mut Value, directory: &Path, source_binding: &Value, artifact_mode: &str,
-    mut memory:Option<&mut std::collections::BTreeMap<String,Vec<u8>>>,scope:&str,run_id:&str) -> Result<Value, String> {
+    memory:Option<&mut std::collections::BTreeMap<String,Vec<u8>>>,scope:&str,run_id:&str) -> Result<Value, String> {
+    verify_artifact_bytes_with_deferred(result,directory,source_binding,artifact_mode,memory,scope,run_id,&[])
+}
+fn verify_artifact_bytes_with_deferred(result: &mut Value, directory: &Path, source_binding: &Value, artifact_mode: &str,
+    memory:Option<&mut std::collections::BTreeMap<String,Vec<u8>>>,scope:&str,run_id:&str,deferred:&[Value]) -> Result<Value, String> {
+    verify_artifact_bytes_with_capture(result,directory,source_binding,artifact_mode,memory,scope,run_id,deferred,&[])
+}
+fn verify_artifact_bytes_with_capture(result: &mut Value, directory: &Path, source_binding: &Value, artifact_mode: &str,
+    mut memory:Option<&mut std::collections::BTreeMap<String,Vec<u8>>>,scope:&str,run_id:&str,deferred:&[Value],optional:&[Value]) -> Result<Value, String> {
     let mut stages=[0f64;5];
     let inspection = artifact_mode == "inspection";
     let inline = artifact_mode != "references" && !inspection;
@@ -297,6 +305,12 @@ fn verify_artifact_bytes(result: &mut Value, directory: &Path, source_binding: &
         stages[0]+=canonical_started.elapsed().as_secs_f64()*1000.;
         let mut bytes_total = 0usize;
         for artifact in artifacts {
+            if artifact.get("collection").is_some() {
+                if !inspection||memory.is_none()||!optional.contains(&artifact["id"])||!crate::artifact_capture::descriptor(artifact)
+                    ||memory.as_ref().is_some_and(|m|artifact["id"].as_str().is_some_and(|id|m.contains_key(id))){return Err("未採集產物不符合本次診斷採集政策".into());}
+                artifact["source"]=source_binding.clone();artifact["hostBytesVerified"]=json!(false);artifact["hostCollectionVerified"]=json!(true);
+                continue;
+            }
             let is_image = artifact.get("type").and_then(Value::as_str).unwrap_or("file") == "image";
             let raster = inspection && is_image;
             let raster_bytes = if raster {
@@ -354,7 +368,9 @@ fn verify_artifact_bytes(result: &mut Value, directory: &Path, source_binding: &
             bytes_total += bytes.len();
             if bytes_total > 64 * 1024 * 1024 { return Err("算法回傳產物合計超過 64 MB".into()); }
             let hash_started=Instant::now();
-            let hash=format!("{:x}", Sha256::digest(&bytes));
+            let verified=crate::memory_resources::VerifiedBytes::new(bytes);
+            let bytes=verified.bytes();
+            let hash=verified.digest();
             stages[2]+=hash_started.elapsed().as_secs_f64()*1000.;
             if from_memory && (artifact["sha256"]!=hash || artifact["bytes"].as_u64()!=Some(bytes.len() as u64)) {
                 return Err("內存產物與實際回傳 bytes 不一致".into());
@@ -383,7 +399,12 @@ fn verify_artifact_bytes(result: &mut Value, directory: &Path, source_binding: &
                 }
                 "json" => {
                     let parse_started=Instant::now();
-                    artifact["data"] = serde_json::from_slice(&bytes).map_err(|error| format!("算法 JSON 產物無效：{error}"))?;
+                    if inspection&&from_memory&&bytes.len()>=4096&&deferred.contains(&artifact["id"]){
+                        crate::json_validation::validate(bytes).map_err(|error|format!("算法 JSON 產物無效：{error}"))?;
+                        artifact["data"]=crate::deferred_trace::artifact_reference(&json!(run_id),&artifact["id"]);
+                    }else{
+                        artifact["data"] = serde_json::from_slice(&bytes).map_err(|error| format!("算法 JSON 產物無效：{error}"))?;
+                    }
                     stages[3]+=parse_started.elapsed().as_secs_f64()*1000.;
                     // Parsed values do not preserve whitespace, numeric spelling or raw hashes.
                     // Archive the verified original JSON alongside its convenient parsed view.
@@ -409,7 +430,7 @@ fn verify_artifact_bytes(result: &mut Value, directory: &Path, source_binding: &
             if from_memory && !is_image {
                 let retain_started=Instant::now();
                 let mime=artifact["mime"].as_str().unwrap_or("application/octet-stream");
-                artifact["memoryRef"]=crate::memory_resources::retain(scope,run_id,artifact["id"].as_str().ok_or("產物識別無效")?,mime,bytes)?;
+                artifact["memoryRef"]=crate::memory_resources::retain_verified(scope,run_id,artifact["id"].as_str().ok_or("產物識別無效")?,mime,verified)?;
                 stages[4]+=retain_started.elapsed().as_secs_f64()*1000.;
             }
         }
@@ -473,6 +494,7 @@ fn execute_impl(script: PathBuf, request: Value) -> Result<Value, String> {
 fn execute_locked(script: PathBuf, mut request: Value) -> Result<Value, String> {
     let native_started = Instant::now();
     if !request.is_object() { return Err("算法請求必須為 JSON object".into()); }
+    let preview_limit=request.get("previewMaxDimension").map(|limit|limit.as_u64().filter(|n|(64..=4096).contains(n)).map(|n|n as usize).ok_or("顯示預覽尺寸限制無效")).transpose()?;
     let code = request.get("code").and_then(Value::as_str).ok_or("缺少 Python code")?.to_owned();
     if code.trim().is_empty() || code.len() > 1024 * 1024 { return Err("Python code 必須為 1–1048576 bytes".into()); }
     let images = request.get("images").and_then(Value::as_array).ok_or("缺少原圖 images")?;
@@ -493,6 +515,10 @@ fn execute_locked(script: PathBuf, mut request: Value) -> Result<Value, String> 
     let resident_key=resident_plan.as_ref().map(|plan|plan.key.clone());
     let plan_token=resident_key.clone();
     let memory_transport=resident_key.is_some()&&request["artifactMode"]=="inspection";
+    let optional_json=if memory_transport{resident_plan.as_ref().map(|plan|crate::artifact_capture::eligible(&request,&plan.definition)).unwrap_or_default()}else{vec![]};
+    // Never accept a caller-supplied list in place of the resolved graph policy.
+    request["optionalJsonArtifactIds"]=json!(optional_json);
+
     let memory_scope=format!("{:x}",Sha256::digest(serde_json::to_vec(&json!({"plan":resident_key,"root":base,"session":request["runtimeSessionId"],
         "unit":if request["workpieceUnit"].is_object(){&request["workpieceUnit"]}else{&request["sourceBinding"]}})).map_err(|e|e.to_string())?));
     if memory_transport {request["runtimeMemoryScope"]=json!(memory_scope);}
@@ -652,8 +678,12 @@ fn execute_locked(script: PathBuf, mut request: Value) -> Result<Value, String> 
     let result_read_ms = read_started.elapsed().as_secs_f64() * 1000.0;
     let verify_started = Instant::now();
     let artifact_mode = request["artifactMode"].as_str().unwrap_or("inline");
-    let verification_stages=verify_artifact_bytes(&mut result, &directory, &request["sourceBinding"], artifact_mode,
-        if memory_transport{resident_receipt.as_mut().map(|receipt|&mut receipt.artifacts)}else{None},&memory_scope,&id)?;
+    // A direct request cannot defer typed outputs even if it supplies an ID.
+    let deferred:Vec<Value>=request["deferredJsonArtifactIds"].as_array().into_iter().flatten().filter(|id|
+        request["expectedOutputs"].as_array().is_some_and(|outputs|outputs.iter().any(|output|output["id"]==**id&&output["dataContract"]==json!({"kind":"json"})))
+    ).cloned().collect();
+    let verification_stages=verify_artifact_bytes_with_capture(&mut result, &directory, &request["sourceBinding"], artifact_mode,
+        if memory_transport{resident_receipt.as_mut().map(|receipt|&mut receipt.artifacts)}else{None},&memory_scope,&id,&deferred,&optional_json)?;
     let verification_ms = verify_started.elapsed().as_secs_f64() * 1000.0;
     let host_ms = started.elapsed().as_secs_f64() * 1000.0;
     if !result["execution"].is_object() { result["execution"] = json!({}); }
@@ -706,8 +736,15 @@ fn execute_locked(script: PathBuf, mut request: Value) -> Result<Value, String> 
                         || Some(u32::from_le_bytes(bytes[22..26].try_into().unwrap()) as u64) != artifact["height"].as_u64() {
                         return Err("即時顯示影像與本次產物尺寸不一致".into());
                     }
+                    let reduced=if let Some(limit)=preview_limit{
+                        crate::display_preview::resize(&bytes,limit)?
+                    }else{None};
                     let reference=crate::memory_resources::retain(&memory_scope,&id,artifact["id"].as_str().ok_or("即時產物識別無效")?,"image/bmp",bytes)?;
                     artifact["dataUrl"] = json!(crate::memory_resources::url(&reference));
+                    if let Some((preview,width,height))=reduced{
+                        let derived=crate::memory_resources::retain(&memory_scope,&id,&format!("{}#display-preview",artifact["id"].as_str().unwrap()),"image/bmp",preview)?;
+                        artifact["displayPreview"]=json!({"schema":"agentcv-display-preview-1","src":crate::memory_resources::url(&derived),"width":width,"height":height,"reference":derived,"originalReference":reference,"sampling":"bilinear-pixel-centers"});
+                    }
                     artifact["storage"] = json!("process-memory");
                 }
             }
@@ -724,24 +761,86 @@ fn execute_locked(script: PathBuf, mut request: Value) -> Result<Value, String> 
 }
 
 #[tauri::command]
+pub async fn prepare_inspection_runtime(app:tauri::AppHandle,request:Value)->Result<Value,String>{
+ let script=runner(&app)?;
+ tauri::async_runtime::spawn_blocking(move||{
+  let _environment=ENVIRONMENT_LOCK.read().map_err(|e|e.to_string())?;
+  let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;
+  let plan=crate::resident_worker::resolve_plan(&request)?.ok_or("缺少準備方案")?;
+  // Desktop sessions use this same default worker root. This prepares imports
+  // only: no image read, program compilation, operator exec or result creation.
+  let root=runtime_root().join("cv-runs").join("resident").join(&plan.key);
+  crate::resident_worker::prepare(&plan.key,&script,&root,||clean_command(&python()?,&root))
+ }).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
+pub async fn prepare_inspection_programs(app:tauri::AppHandle,request:Value)->Result<Value,String>{
+ let command_started=Instant::now();
+ let script=runner(&app)?;
+ tauri::async_runtime::spawn_blocking(move||{
+  let _environment=ENVIRONMENT_LOCK.read().map_err(|e|e.to_string())?;
+  let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;
+  let queue_ms=command_started.elapsed().as_secs_f64()*1000.;
+  let plan_started=Instant::now();
+  let plan=crate::resident_worker::resolve_plan(&request)?.ok_or("缺少準備方案")?;
+  let nodes=plan.definition["operatorGraph"]["nodes"].as_array().ok_or("SESSION_NODES_REQUIRED")?;
+  let codes:Vec<String>=nodes.iter().filter(|node|!node["nativePlan"].is_object()).map(|node|node["code"].as_str().map(str::to_owned).ok_or("SESSION_CODE_REQUIRED")).collect::<Result<_,_>>()?;
+  let root=runtime_root().join("cv-runs").join("resident").join(&plan.key);
+  let plan_ms=plan_started.elapsed().as_secs_f64()*1000.;
+  let worker_started=Instant::now();
+  let mut result=crate::resident_worker::prepare_programs(&plan.key,&script,&root,&codes,||clean_command(&python()?,&root))?;
+  let worker_ms=worker_started.elapsed().as_secs_f64()*1000.;
+  result["commandTiming"]=json!({"queueMs":queue_ms,"planMs":plan_ms,"workerMs":worker_ms,"totalMs":command_started.elapsed().as_secs_f64()*1000.,"scope":"command entry through worker completion; queue includes setup and locks; compileMs/preparationMs are nested inside workerMs; IPC decoding and return delivery excluded"});
+  Ok(result)
+ }).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
 pub async fn execute_inspection_session(app: tauri::AppHandle, request: Value, progress:tauri::ipc::Channel<Value>) -> Result<tauri::ipc::Response,String> {
     let queued=Instant::now();let script=runner(&app)?;
     let registration=crate::inspection_service::register(request["sessionId"].as_str().ok_or("SESSION_ID_REQUIRED")?)?;
+    let input_gate=crate::inspection_input_gate::register(&request)?;
     tauri::async_runtime::spawn_blocking(move||{
         let _environment=ENVIRONMENT_LOCK.read().map_err(|e|e.to_string())?;
         let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;
         let queue_ms=queued.elapsed().as_secs_f64()*1000.;
         let deferred=request["commit"]["mode"]=="background";
+        let maintenance=request["runtimeMaintenance"]==true;
+        let maintenance_session=request["sessionId"].as_str().unwrap_or_default().to_owned();
+        let maintenance_unit=request["unitId"].as_str().unwrap_or_default().to_owned();
+        let mut input_admitted=false;
         let mut result=crate::inspection_service::execute_with_commit(request,|node|execute_locked(script.clone(),node),
             ||registration.cancelled.load(Ordering::Acquire),|event|{let _=progress.send(event);},|product|{
+                if let Some(gate)=&input_gate{gate.wait(||registration.cancelled.load(Ordering::Acquire))?;}
+                input_admitted=true;
                 if deferred {crate::inspection_archive::enqueue_desktop(app.clone(),product)}
                 else {crate::inspection_files::save_inspection_unit_impl(app.clone(),product)}
             })?;
+        // A cancellation after archive admission must not relabel that terminal unit.
+        if !input_admitted{if let Some(gate)=&input_gate{gate.wait(||registration.cancelled.load(Ordering::Acquire))?;}}
         result["timing"]["queueMs"]=json!(queue_ms);
+        if maintenance {
+            if let Some(run)=result["runs"].as_array().and_then(|runs|runs.iter().rev().find(|run|run["timing"]["resident"]["pid"].is_u64())) {
+                let pid=run["timing"]["resident"]["pid"].as_u64().unwrap() as u32;
+                let call=run["timing"]["resident"]["call"].as_u64().ok_or("MAINTENANCE_CALL_REQUIRED")?;
+                result["runtimeMaintenance"]=crate::runtime_maintenance::begin(&maintenance_session,&maintenance_unit,pid,call)?;
+            }
+        }
         // Return UTF-8 bytes through Tauri's binary response body. A large JSON
         // tree otherwise gets escaped again as JavaScript callback source.
         Ok(tauri::ipc::Response::new(encode_session_response(result)?))
     }).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
+pub async fn await_inspection_maintenance(reference:Value)->Result<Value,String>{
+    tauri::async_runtime::spawn_blocking(move||crate::runtime_maintenance::join(reference)).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
+pub fn verify_inspection_session_input(session_id:String,accepted:bool,source_binding:Value)->Result<(),String>{
+    crate::inspection_input_gate::acknowledge(&session_id,accepted,&source_binding)
 }
 
 // Measure the previously invisible return path without serializing the tree a
@@ -755,13 +854,16 @@ fn encode_session_response(mut result: Value) -> Result<Vec<u8>,String> {
     }
     let started=Instant::now();
     crate::shared_facts::compact(&mut result)?;
+    let compact_ns=started.elapsed().as_nanos();
+    let serializing=Instant::now();
     let mut bytes=serde_json::to_vec(&result).map_err(|e|e.to_string())?;
+    let json_encode_ns=serializing.elapsed().as_nanos();
     let encode_ns=started.elapsed().as_nanos();
     let releasing=Instant::now();drop(result);
     let release_ns=releasing.elapsed().as_nanos();
     let json_bytes=bytes.len();
     let sent_ms=std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d|d.as_millis()).unwrap_or(0);let closing=bytes.pop();debug_assert_eq!(closing,Some(b'}'));
-    write!(&mut bytes,",\"_responseEncoding\":{{\"backend\":\"rust-json-once-v1\",\"encodeNs\":{encode_ns},\"releaseNs\":{release_ns},\"jsonBytes\":{json_bytes},\"sentAtMs\":{sent_ms}}}}}").map_err(|e|e.to_string())?;
+    write!(&mut bytes,",\"_responseEncoding\":{{\"backend\":\"rust-json-once-v1\",\"encodeNs\":{encode_ns},\"compactNs\":{compact_ns},\"jsonEncodeNs\":{json_encode_ns},\"releaseNs\":{release_ns},\"jsonBytes\":{json_bytes},\"sentAtMs\":{sent_ms}}}}}").map_err(|e|e.to_string())?;
     Ok(bytes)
 }
 
@@ -776,7 +878,10 @@ mod response_encoding_tests {
         let timing=parsed.as_object_mut().unwrap().remove("_responseEncoding").unwrap();
         assert_eq!(parsed,original);
         assert_eq!(timing["jsonBytes"].as_u64().unwrap() as usize,serde_json::to_vec(&original).unwrap().len());
-        assert!(timing["encodeNs"].as_u64().is_some());
+        let encode=timing["encodeNs"].as_u64().unwrap();
+        let compact=timing["compactNs"].as_u64().unwrap();
+        let serialize=timing["jsonEncodeNs"].as_u64().unwrap();
+        assert!(compact+serialize<=encode);
         assert!(timing["releaseNs"].as_u64().is_some());
     }
     #[test]
@@ -855,6 +960,73 @@ mod tests {
         assert!(recorded_sources(&base,base.parent().unwrap().to_str().unwrap()).is_err());
         fs::write(run.join("big.py"),vec![65u8;1024*1024+1]).unwrap();assert!(recorded_sources(&base,run.to_str().unwrap()).is_err());
         fs::remove_dir_all(&base).unwrap();
+    }
+
+    #[test]
+    fn memory_json_verification_retains_exact_bytes_and_rejects_corruption() {
+        let _exclusive=crate::memory_resources::TEST_LOCK.lock().unwrap();
+        let (_,directory)=unique_directory(&std::env::temp_dir().join("agentcv-verified-json-tests")).unwrap();
+        let bytes=br#"{ "value": 1.000, "text": "actual bytes" }"#.to_vec();
+        let digest=format!("{:x}",Sha256::digest(&bytes));
+        let binding=json!({"imageId":"actual-source"});
+        for case in 0..4 {
+            let mut actual=bytes.clone();
+            let mut descriptor=json!({"id":"facts","type":"json","sha256":digest,"bytes":bytes.len(),"data":{"forged":true}});
+            if case==1 { actual[2]=b'x'; }
+            if case==2 { descriptor["bytes"]=json!(bytes.len()+1); }
+            if case==3 { actual=b"not json".to_vec();descriptor["bytes"]=json!(actual.len());descriptor["sha256"]=json!(format!("{:x}",Sha256::digest(&actual))); }
+            let mut result=json!({"artifacts":[descriptor]});
+            let mut memory=std::collections::BTreeMap::from([("facts".to_owned(),actual)]);
+            let verified=verify_artifact_bytes(&mut result,&directory,&binding,"inspection",Some(&mut memory),"verified-json","run");
+            if case==0 {
+                verified.unwrap();
+                let artifact=&result["artifacts"][0];
+                assert_eq!(artifact["data"],json!({"value":1.0,"text":"actual bytes"}));
+                assert_eq!(artifact["source"],binding);
+                assert_eq!(artifact["memoryRef"]["sha256"],digest);
+                assert_eq!(crate::memory_resources::read(&artifact["memoryRef"]).unwrap().as_slice(),bytes);
+            } else { assert!(verified.is_err(),"corruption case {case}"); }
+        }
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn uncaptured_json_requires_host_policy_and_has_no_payload() {
+        let (_,directory)=unique_directory(&std::env::temp_dir().join("agentcv-uncaptured-json-tests")).unwrap();
+        let artifact=json!({"id":"optional","type":"json","storage":"not-captured","collection":crate::artifact_capture::marker()});
+        for case in 0..5{
+            let mut result=json!({"artifacts":[artifact.clone()]});let mut memory=std::collections::BTreeMap::new();
+            let allowed=if case==1{vec![]}else{vec![json!("optional")]};
+            if case==2{result["artifacts"][0]["sha256"]=json!("fake");}
+            if case==3{memory.insert("optional".into(),b"{}".to_vec());}
+            if case==4{result["artifacts"][0]["type"]=json!("image");}
+            let verdict=verify_artifact_bytes_with_capture(&mut result,&directory,&json!({"actual":true}),"inspection",Some(&mut memory),"scope","run",&[],&allowed);
+            if case==0{assert!(verdict.is_ok());assert!(crate::artifact_capture::verified(&result["artifacts"][0]));assert_eq!(result["artifacts"][0]["source"],json!({"actual":true}));}
+            else{assert!(verdict.is_err(),"case {case}");}
+        }
+        fs::remove_dir_all(directory).unwrap();
+    }
+    #[test]
+    fn deferred_memory_json_keeps_verified_bytes_and_strict_validation() {
+        let _exclusive=crate::memory_resources::TEST_LOCK.lock().unwrap();
+        let (_,directory)=unique_directory(&std::env::temp_dir().join("agentcv-deferred-json-tests")).unwrap();
+        let valid=serde_json::to_vec(&json!({"values":vec![1.25;2000]})).unwrap();
+        for case in 0..6 {
+            let raw=match case {2=>[vec![b' ';4096],b"[1e9999]".to_vec()].concat(),3=>[valid.clone(),b" false".to_vec()].concat(),4=>b"{\"small\":true}".to_vec(),_=>valid.clone()};
+            let digest=format!("{:x}",Sha256::digest(&raw));
+            let mut descriptor=json!({"id":"facts","type":"json","sha256":digest,"bytes":raw.len()});
+            if case==1{descriptor["sha256"]=json!("wrong");}
+            let mut result=json!({"artifacts":[descriptor]});
+            let mut memory=std::collections::BTreeMap::from([("facts".to_owned(),raw.clone())]);
+            let deferred=if case==5{vec![]}else{vec![json!("facts")]};
+            let verified=verify_artifact_bytes_with_deferred(&mut result,&directory,&json!({}),"inspection",Some(&mut memory),"deferred-json","run",&deferred);
+            if [1,2,3].contains(&case){assert!(verified.is_err(),"case {case}");continue;}
+            verified.unwrap();let artifact=&result["artifacts"][0];
+            assert_eq!(crate::memory_resources::read(&artifact["memoryRef"]).unwrap().as_slice(),raw);
+            if case==0{assert_eq!(artifact["data"],crate::deferred_trace::artifact_reference(&json!("run"),&json!("facts")));}
+            else{assert_eq!(artifact["data"],serde_json::from_slice::<Value>(&raw).unwrap());}
+        }
+        fs::remove_dir_all(directory).unwrap();
     }
 
     #[test]
@@ -1081,7 +1253,7 @@ pub(crate) fn headless_service()->Result<(),String>{
    "decision_evidence"=>{let r=&message["request"];Ok(crate::inspection_decision::evidence(&r["scheme"],&r["record"],&r["runs"]))},
    "workpiece_decision"=>{let r=&message["request"];Ok(crate::inspection_decision::decide(&r["request"],&r["session"],r["cancelled"]==true))},
    "adapt_native_session"=>Ok(crate::inspection_service::adapt_native(message["request"]["native"].clone(),&message["request"]["request"],message["request"]["elapsedMs"].as_f64().unwrap_or(0.))),
-   "execute_session"=>{let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;crate::inspection_service::execute_with_commit(message["request"].clone(),|r|execute_locked(desktop_root().join("scripts/cv-runtime.py"),r),||false,|_|{},crate::inspection_files::save_headless_unit)},
+   "execute_session" | "execute_session_wire"=>{let _execution=EXECUTION_LOCK.lock().map_err(|e|e.to_string())?;crate::inspection_service::execute_with_commit(message["request"].clone(),|r|execute_locked(desktop_root().join("scripts/cv-runtime.py"),r),||false,|_|{},crate::inspection_files::save_headless_unit)},
    "inspection_commit_product"=>{let r=&message["request"];crate::inspection_commit::product(&r["request"],&r["session"],r["nativeMs"].as_f64().unwrap_or(0.),r["at"].as_str().ok_or("SESSION_TIMESTAMP_REQUIRED")?)},
    "audit_output_contracts"=>{let r=&message["request"];Ok(crate::output_contract::audit(&r["run"],r["expected"].as_array().ok_or("Missing expected outputs")?,&r["scheme"],&r["upstream"]))},
    "execute"=>execute_impl(desktop_root().join("scripts/cv-runtime.py"),message["request"].clone()),
@@ -1095,6 +1267,18 @@ pub(crate) fn headless_service()->Result<(),String>{
    "export_project"=>crate::history_transfer::export_project(std::path::Path::new(message["source"].as_str().ok_or("缺少來源專案")?),std::path::Path::new(message["destination"].as_str().ok_or("缺少目標專案")?)).and_then(|r|serde_json::to_value(r).map_err(|e|e.to_string())),
    _=>Err("未知本機執行操作".into())
   })();
+  // Diagnostic transport uses the exact desktop response encoder when asked.
+  // Keep the legacy full-tree operation for differential test clients.
+  let result=if message["op"]=="execute_session_wire" {
+   match result.and_then(encode_session_response) {
+    Ok(bytes)=>{
+     write!(&mut output,"{{\"id\":{},\"result\":",message["id"]).map_err(|e|e.to_string())?;
+     output.write_all(&bytes).and_then(|_|output.write_all(b"}\n")).and_then(|_|output.flush()).map_err(|e|e.to_string())?;
+     continue;
+    },
+    Err(error)=>Err(error),
+   }
+  }else{result};
   let response=match result{Ok(result)=>json!({"id":message["id"],"result":result}),Err(error)=>json!({"id":message["id"],"error":error})};
   serde_json::to_writer(&mut output,&response).map_err(|e|e.to_string())?;output.write_all(b"\n").and_then(|_|output.flush()).map_err(|e|e.to_string())?;
  }

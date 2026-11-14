@@ -10,6 +10,27 @@ runtime=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runtime)
 
 class MemoryRuntime(unittest.TestCase):
+    def test_optional_json_capture_keeps_boundaries_layers_and_diagnostics(self):
+        from PIL import Image
+        buffer=io.BytesIO();Image.new('RGB',(2,2)).save(buffer,'PNG')
+        image={'id':'actual','dataUrl':'data:image/png;base64,'+base64.b64encode(buffer.getvalue()).decode()}
+        with tempfile.TemporaryDirectory() as temporary:
+            base=Path(temporary);resident={'root':base,'decoded':OrderedDict(),'decodeHits':0,'decodeMisses':0,'environment':None}
+            for capture in ['essential','full']:
+                directory=base/capture;directory.mkdir()
+                request={'runId':capture,'artifactMode':'inspection','procedureValueCapture':capture,'optionalJsonArtifactIds':['optional','boundary','geometry'],'images':[image],
+                    'code':"with step('actual'):\n    save_json('optional',{'values':[1,2,3]})\n    save_json('boundary',{'actual':3},section='boundary')\n    save_layers('geometry',[])\nresult={'valid':True}"}
+                payload=runtime.execute(None,directory,resident,request_data=request);report=payload['report']
+                self.assertEqual(report['status'],'SUCCEEDED',report.get('error'));artifacts={a['id']:a for a in report['artifacts']}
+                for name in ['boundary','geometry']:self.assertIn('sha256',artifacts[name]);self.assertNotIn('collection',artifacts[name])
+                optional=artifacts['optional']
+                if capture=='essential':
+                    self.assertEqual(optional['collection']['status'],'NOT_CAPTURED')
+                    self.assertTrue(all(k not in optional for k in ['sha256','bytes','data','path','memoryRef']))
+                    self.assertNotIn((capture,'optional'),resident['artifacts'])
+                else:
+                    self.assertNotIn('collection',optional);self.assertEqual(json.loads(resident['artifacts'][(capture,'optional')]),{'values':[1,2,3]})
+
     def test_inspection_originals_materialize_only_on_explicit_valid_file_request(self):
         from PIL import Image
         buffer=io.BytesIO();Image.new('RGB',(5,3),(10,20,30)).save(buffer,'PNG');raw=buffer.getvalue()

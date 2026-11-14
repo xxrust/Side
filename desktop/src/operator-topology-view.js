@@ -1,3 +1,4 @@
+import {readCompleteInspectionRun} from './inspection-run-details.js';
 import {buildOperatorTopology} from './operator-topology.js';
 import {layoutProgramFlow} from './program-flow-layout.js';
 import './operator-topology-view.css';
@@ -53,16 +54,34 @@ function createLegend(){
  const states=el('span','✓ 已執行　∅ 未找到　− 未執行　! 故障　○ 未記錄');states.className='operator-state-legend';legend.append(states);return legend;
 }
 
-export async function openOperatorTopology({project,runId,scopeId,onEvidence,onArtifact,onRecord}){
- const flow=buildOperatorTopology(project,runId,scopeId),dialog=el('dialog');dialog.className='operator-topology-dialog';dialog.setAttribute('aria-label','節點內部算子拓撲');
+export async function openOperatorTopology({project,runId,scopeId,onEvidence,onArtifact,onRecord,records,isCurrent=()=>true,onDialog}){
+ const dialog=el('dialog');dialog.className='operator-topology-dialog';dialog.setAttribute('aria-label','節點內部算子拓撲');
+ const data=project.data||project,epoch=project.epoch,run=data.algorithmRuns?.find(run=>run.runId===runId),returnFocus=document.activeElement;
+ const current=()=>isCurrent()&&(project.data||project)===data&&project.epoch===epoch&&data.algorithmRuns?.includes(run)&&dialog.isConnected;
+ dialog.addEventListener('close',()=>{dialog.remove();if(returnFocus?.isConnected)returnFocus.focus()});
+ let graphProject=project;
+ if(run?.deferredProcedureTrace!==undefined){
+  const message=el('p','正在讀取完整程序證據…'),cancel=el('button','關閉');message.setAttribute('role','status');cancel.onclick=()=>dialog.close();
+  dialog.append(message,cancel);document.body.append(dialog);onDialog?.(dialog);dialog.showModal();
+  try{
+   const loaded=await readCompleteInspectionRun(project,run,records,{isCurrent:current});
+   if(!current()){if(dialog.isConnected)dialog.close();return {dialog,cancelled:true};}
+   graphProject={data:{images:data.images,algorithmRuns:[loaded.run]}};
+   dialog.replaceChildren();
+  }catch(error){
+   if(!current()){if(dialog.isConnected)dialog.close();return {dialog,cancelled:true};}
+   message.textContent='無法讀取完整程序證據：'+String(error?.message||error);message.setAttribute('role','alert');return {dialog,error};
+  }
+ }
+ const flow=buildOperatorTopology(graphProject,runId,scopeId);
  const header=el('header'),heading=el('div');heading.append(el('strong',flow.title+' · 內部算子'),el('small','輸入 → 算子 → 產物 · 點選查看接口與依據'));
  const close=el('button','關閉');close.onclick=()=>dialog.close();header.append(heading,close);
  const notice=el('div');notice.className='operator-topology-notice';notice.append(el('span',flow.coverage));for(const d of flow.diagnostics){const warning=el('p',d.message||d.code);warning.dataset.diagnostic=d.code;notice.append(warning);}
  const toolbar=el('nav'),zoomOut=el('button','−'),fit=el('button','配適'),zoomIn=el('button','＋'),legendButton=el('button','圖例');zoomOut.setAttribute('aria-label','縮小算子拓撲');zoomIn.setAttribute('aria-label','放大算子拓撲');legendButton.setAttribute('aria-expanded','false');toolbar.append(zoomOut,fit,zoomIn,legendButton,el('small','實線：資料　虛線：執行前提'));
  const viewport=el('div');viewport.className='operator-topology-viewport';const canvas=svg('svg',{role:'group','aria-label':'本節點的真實內部資料與執行前提拓撲'}),legend=createLegend();viewport.append(canvas,legend);legendButton.onclick=()=>{legend.hidden=!legend.hidden;legendButton.setAttribute('aria-expanded',String(!legend.hidden))};
  const detail=el('section');detail.className='operator-topology-detail';detail.setAttribute('aria-label','所選算子接口');detail.append(el('span','點選算子、連線或產物查看來源。'));
- dialog.append(header,notice,toolbar,viewport,detail);document.body.append(dialog);const returnFocus=document.activeElement;dialog.addEventListener('close',()=>{dialog.remove();if(returnFocus?.isConnected)returnFocus.focus()});dialog.showModal();
- const geometry=await layoutProgramFlow(flow,{direction:'RIGHT',nodeWidth:250,nodeHeight:76,portHeight:42,layerGap:72,nodeGap:22,groupHeader:40,balanced:true});if(!dialog.isConnected)return {dialog,flow};
+ dialog.append(header,notice,toolbar,viewport,detail);document.body.append(dialog);onDialog?.(dialog);if(!dialog.open)dialog.showModal();
+ const geometry=await layoutProgramFlow(flow,{direction:'RIGHT',nodeWidth:250,nodeHeight:76,portHeight:42,layerGap:72,nodeGap:22,groupHeader:40,balanced:true});if(!current()){if(dialog.isConnected)dialog.close();return {dialog,flow,cancelled:true};}
  const defs=svg('defs');for(const kind of ['data','control']){const marker=svg('marker',{id:`inner-${kind}-${runId}`,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'});marker.append(svg('path',{d:kind==='data'?'M0 0 L10 5 L0 10 Z':'M1 1 L9 5 L1 9',fill:kind==='data'?'#94b9c9':'none',stroke:'#94b9c9','stroke-width':1.4}));defs.append(marker);}canvas.append(defs);
  const positions=[...geometry.groups,...geometry.nodes],byId=new Map(flow.nodes.map(n=>[n.id,n]));let camera={x:0,y:0,w:geometry.width||1000,h:geometry.height||600};
  const apply=()=>canvas.setAttribute('viewBox',`${camera.x} ${camera.y} ${camera.w} ${camera.h}`),fitAll=()=>{camera={x:0,y:0,w:geometry.width||1000,h:geometry.height||600};apply()},zoom=factor=>{const w=camera.w*factor,h=camera.h*factor;if(w<20||w>100000)return;camera={x:camera.x+(camera.w-w)/2,y:camera.y+(camera.h-h)/2,w,h};apply()};zoomIn.onclick=()=>zoom(.8);zoomOut.onclick=()=>zoom(1.25);fit.onclick=fitAll;

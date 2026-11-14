@@ -36,7 +36,7 @@ export class RasterCache extends Map{
 }
 export class DatasetImageStore{
  constructor(project,options={}){this.project=project;this.generation=0;this.pending=new Map();this.leases=new Map();this.thumbnails=new Map();this.thumbnailPending=new Map();this.thumbnailBytes=0;this.loads=0;this.tail=Promise.resolve();this.thumbnailTail=Promise.resolve();this.configure(options);}
- configure(options={}){if(options.readAsset)this.readAsset=options.readAsset;if(options.decode)this.decode=options.decode;this.thumbnailer=options.thumbnailer||this.thumbnailer||createImageThumbnail;if(!this.cache)this.cache=new RasterCache({maxEntries:options.cacheEntries,maxBytes:options.cacheBytes,isPinned:id=>this.pinned(id)});else{this.cache.maxEntries=positive(options.cacheEntries,this.cache.maxEntries);this.cache.maxBytes=positive(options.cacheBytes,this.cache.maxBytes);this.cache.trim();}return this;}
+ configure(options={}){if(options.readAssetBytes)this.readAssetBytes=options.readAssetBytes;if(options.decodeBytes)this.decodeBytes=options.decodeBytes;if(options.readAsset)this.readAsset=options.readAsset;if(options.decode)this.decode=options.decode;this.thumbnailer=options.thumbnailer||this.thumbnailer||createImageThumbnail;if(!this.cache)this.cache=new RasterCache({maxEntries:options.cacheEntries,maxBytes:options.cacheBytes,isPinned:id=>this.pinned(id)});else{this.cache.maxEntries=positive(options.cacheEntries,this.cache.maxEntries);this.cache.maxBytes=positive(options.cacheBytes,this.cache.maxBytes);this.cache.trim();}return this;}
  pinned(id){return this.project.data?.activeId===id||(this.leases.get(id)||0)>0;}
  reset({keepCache=false}={}){this.generation++;this.pending.clear();this.leases.clear();this.thumbnails.clear();this.thumbnailPending.clear();this.thumbnailBytes=0;if(!keepCache)this.cache.clear();else for(const [id,raster]of this.cache){const image=this.project.imageRecord(id);if(!image||image.contentSha256&&raster.contentSha256!==image.contentSha256||!image.contentSha256&&raster.sha256!==image.sha256)this.cache.delete(id);}this.loads=0;}
  pin(ids){const generation=this.generation,distinct=[...new Set(ids)];for(const id of distinct){if(!this.project.imageRecord(id))throw Error('必要圖像不存在：'+id);}for(const id of distinct)this.leases.set(id,(this.leases.get(id)||0)+1);let released=false;return()=>{if(released)return;released=true;if(generation!==this.generation)return;for(const id of distinct){const n=(this.leases.get(id)||0)-1;if(n>0)this.leases.set(id,n);else this.leases.delete(id);}this.cache.trim();};}
@@ -47,11 +47,36 @@ export class DatasetImageStore{
   if(url.startsWith('data:image/')){const digest=await encodedImageSha256(url),expected=record.contentSha256||record.assetRef?.sha256;if(expected&&expected!==digest)throw Error(`原圖檔案內容雜湊不一致：${record.name||record.id}`);}
   return url;
  }
+ async readDisplay(record){
+  if(!record)throw Error('圖片不存在');
+  if(record.dataURL||!record.assetRef||!this.readAssetBytes)return {src:await this.read(record),dispose(){}};
+  if(!validImageAssetRef(record.assetRef))throw Error('圖片資產引用格式錯誤');
+  const generation=this.generation,epoch=this.project.epoch,ref=copy(record.assetRef);
+  const current=()=>generation===this.generation&&epoch===this.project.epoch&&this.project.imageRecord(record.id)===record;
+  const bytes=await this.readAssetBytes(ref,{imageId:record.id});
+  if(!(bytes instanceof ArrayBuffer)||bytes.byteLength!==ref.size)throw Error('原圖位元組長度與引用不一致');
+  // Snapshot before awaiting the digest: the displayed bytes are exactly the
+  // ones verified here, even if a custom reader reuses its ArrayBuffer.
+  const blob=new Blob([bytes],{type:ref.mime});
+  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))).map(b=>b.toString(16).padStart(2,'0')).join('');
+  if(hash!==ref.sha256||record.contentSha256&&hash!==record.contentSha256)throw Error('原圖檔案內容雜湊不一致');
+  if(!current())throw Error('專案已改變，未載入舊圖片');
+  const src=URL.createObjectURL(blob);let disposed=false;
+  return {src,snapshot:()=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error||Error('無法讀取引用原圖'));reader.readAsDataURL(blob);}),dispose(){if(!disposed){disposed=true;URL.revokeObjectURL(src);}}};
+ }
  ensure(id){
   const cached=this.cache.get(id);if(cached)return Promise.resolve(cached);if(this.pending.has(id))return this.pending.get(id);
   const record=this.project.imageRecord(id),generation=this.generation,epoch=this.project.epoch;if(!record)return Promise.reject(Error('圖片不存在：'+id));if(!this.decode)return Promise.reject(Error('尚未連接圖像解碼器'));
   const current=()=>generation===this.generation&&epoch===this.project.epoch&&this.project.imageRecord(id)===record;
-  const task=this.tail.catch(()=>{}).then(async()=>{if(!current())throw Error('專案已改變，未載入舊圖片');const again=this.cache.get(id);if(again)return again;const url=await this.read(record);if(!current())throw Error('專案已改變，未載入舊圖片');const raster=await this.decode(url);if(!current())throw Error('專案已改變，未套用舊圖片像素');this.project.acceptDecodedImage(record,raster);this.cache.set(id,raster);this.loads++;return raster;});
+  const task=this.tail.catch(()=>{}).then(async()=>{if(!current())throw Error('專案已改變，未載入舊圖片');const again=this.cache.get(id);if(again)return again;let raster;
+   if(!record.dataURL&&record.assetRef&&this.readAssetBytes&&this.decodeBytes){
+    if(!validImageAssetRef(record.assetRef))throw Error('圖片資產引用格式錯誤');
+    const ref=copy(record.assetRef),bytes=await this.readAssetBytes(ref,{imageId:id});
+    if(!current())throw Error('專案已改變，未載入舊圖片');
+    if(!(bytes instanceof ArrayBuffer)||bytes.byteLength!==ref.size)throw Error('原圖位元組長度與引用不一致');
+    raster=await this.decodeBytes(bytes,{mime:ref.mime,expectedSha256:record.contentSha256||ref.sha256});
+   }else{const url=await this.read(record);if(!current())throw Error('專案已改變，未載入舊圖片');raster=await this.decode(url);}
+   if(!current())throw Error('專案已改變，未套用舊圖片像素');this.project.acceptDecodedImage(record,raster);this.cache.set(id,raster);this.loads++;return raster;});
   this.tail=task;this.pending.set(id,task);task.then(()=>{if(this.pending.get(id)===task)this.pending.delete(id);},()=>{if(this.pending.get(id)===task)this.pending.delete(id);});return task;
  }
  thumbnail(id,{maxDimension=256}={}){

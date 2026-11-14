@@ -1,18 +1,19 @@
+import {inspectionRunReference,readCompleteInspectionRun} from './inspection-run-details.js';
 import {readAlgorithmRun,describeAlgorithmRun,compactAlgorithmRun,readAlgorithmRunData} from './algorithm-workspace.js';
 
-function savedReference(project,runId){
- for(const execution of [...(project.data.datasetExecutions||[])].reverse()){
-  const unit=(execution.units||[]).find(unit=>unit.runIds?.includes(runId)&&unit.recordRef);
-  if(unit)return unit.recordRef;
- }
- return null;
-}
 function current(agent,epoch,turn){if(agent.p.epoch!==epoch||agent.turn!==turn)throw Error('專案或對話已變更，未採用舊的封存紀錄');}
 export async function resolveAgentAlgorithmRun(agent,args){
  const {p}=agent,epoch=p.epoch,turn=agent.turn;
- if(!args.reference_json&&(!args.run_id||p.data.algorithmRuns?.some(run=>run.runId===args.run_id)))return {run:readAlgorithmRun(p,args.run_id)};
+ if(!args.reference_json&&(!args.run_id||p.data.algorithmRuns?.some(run=>run.runId===args.run_id))){
+  const described=readAlgorithmRun(p,args.run_id),local=p.data.algorithmRuns.find(run=>run.runId===described.runId);
+  if(local?.deferredProcedureTrace!==undefined){
+   const loaded=await readCompleteInspectionRun(p,local,agent.ui.inspectionRecords,{isCurrent:()=>agent.p===p&&agent.turn===turn});
+   current(agent,epoch,turn);return {...loaded,run:describeAlgorithmRun(p,loaded.run)};
+  }
+  return {run:described};
+ }
  if(!args.run_id)throw Error('讀取封存紀錄需指定 run_id');
- const reference=args.reference_json?JSON.parse(args.reference_json):savedReference(p,args.run_id);
+ const reference=args.reference_json?JSON.parse(args.reference_json):inspectionRunReference(p,args.run_id);
  if(!reference)throw Error('找不到此運算；若已封存，請從 get_dataset_execution 取得 recordRef 並傳入 reference_json');
  if(!agent.ui.inspectionRecords)throw Error('單件結果儲存未連接');
  const saved=await agent.ui.inspectionRecords.read(reference);current(agent,epoch,turn);

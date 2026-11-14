@@ -8,6 +8,7 @@ import {schemeFingerprint} from '../src/purpose-compiler.js';
 import {captureWorkpieceArtifactPixels,clearWorkpieceArtifactPixels} from '../src/workpiece-live-state.js';
 import {retainDatasetArtifacts} from '../src/artifact-retention.js';
 import {resolveNodeOutput,outputImageReference} from '../src/node-output-model.js';
+import {beginNativePreviewPrefetch} from '../src/native-preview-prefetch.js';
 
 const check=(value,message)=>{if(!value)throw Error(message);};
 const near=(a,b)=>Math.abs(a-b)<1.1;
@@ -26,8 +27,20 @@ export async function runImageRendererChecks(){
  const results=[],record=name=>results.push(name),canvas=document.createElement('canvas');canvas.width=1200;canvas.height=800;
  const ctx=canvas.getContext('2d');ctx.fillStyle='#e6bb45';ctx.fillRect(0,0,1200,800);ctx.fillStyle='#1c6a84';ctx.fillRect(80,100,600,300);
  const url=canvas.toDataURL(),area=document.createElement('div');area.style.cssText='position:relative;width:100%;height:600px';document.body.append(area);
- const owner={project:{data:{},epoch:1},button},view=new NodeOutputView(owner);view.createSurface(area);
+ const owner={project:new Workspace(),button},view=new NodeOutputView(owner);view.createSurface(area);
  const r=view.surface.renderer,input=view.surface.input.card.querySelector('.image-renderer');
+ // Real browser decoding with a private-protocol URL mapped to known test
+ // pixels. A redundant fetch by the renderer would use the unmapped URL/fail.
+ const nativeSrc='http://agentcv-memory.localhost/'+'b'.repeat(64);let reads=0,prefetched;
+ class FixtureImage{constructor(){const image=new Image();prefetched=image;Object.defineProperty(image,'src',{configurable:true,get:()=>nativeSrc,set:value=>{check(value===nativeSrc,'Unexpected preview URL');reads++;image.setAttribute('src',url);}});return image;}}
+ const lease=beginNativePreviewPrefetch({ImageClass:FixtureImage});
+ lease.stage([{src:nativeSrc,width:1200,height:800,nodeId:'preview',artifactId:'image'}]);
+ lease.complete({runs:[{schemeNodeId:'preview',artifacts:[{id:'image',type:'image',dataUrl:nativeSrc,width:1200,height:800}]}]});
+ const frame=await r.prepareSource({src:nativeSrc,width:1200,height:800});
+ check(frame.image===prefetched&&reads===1,'Verified preview was fetched/decoded again');
+ r.commitSource(frame);lease.dispose();await settle();
+ check(r.image.naturalWidth===1200&&r.image.naturalHeight===800,'Transferred pixels disappeared after cache disposal');
+ sample(r.root,'RGB 28, 106, 132');record('verified prefetch transfers decoded pixels once and survives eviction');delete prefetched.src;
  r.setSource({src:url,width:1200,height:800});view.surface.empty.hidden=true;
  await until(()=>r.image.complete&&r.image.naturalWidth);await settle();r.fit();
  check(r.bounds().height>100&&input.clientHeight>100,'Input/output renderer collapsed in grid');

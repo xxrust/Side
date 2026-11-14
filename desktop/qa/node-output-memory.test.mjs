@@ -188,7 +188,7 @@ test('output view keeps real input/output images, paging and inquiry identity af
   view.outputView.dispose();view.render();await h.tick();
   assert.equal(view.outputView.surface.section.dataset.status,'READY');assert.equal(view.outputView.currentModel.unitId,'ui-completed');
   await live.selectImage(next);view.render();await h.tick();
-  assert.equal(view.outputView.surface.image.hidden,false,'pending selection retains decoded pixels');assert.equal(view.outputView.currentModel.unitId,'ui-completed');
+  assert.equal(view.outputView.surface.image.hidden,true,'manual selection must not retain the previous workpiece output');assert.equal(view.outputView.currentModel.imageId,next);assert.equal(view.outputView.currentModel.status,'WAITING');
   assert.deepEqual(h.errors,[]);
  }finally{h.close();}
 });
@@ -210,7 +210,7 @@ test('open source dialog and main output retain matching decoded pairs throughou
   view.programFlow.refreshFlow();view.programFlow.openBoundary(view.programFlow.flow.nodes.find(n=>n.kind==='source'));await h.tick();
   const dialog=h.w.document.querySelector('.flow-source-panel[open]');
   assert.equal(dialog.querySelector('.flow-source-auto').getAttribute('aria-checked'),'true');
-  await dialog.querySelector(`[data-image-id="${first}"]`).onclick();
+  await dialog.querySelector(`button[data-image-id="${first}"]`).onclick();
   await wait(()=>dialog.querySelector('.source-decision img')?.getAttribute('src'));
   assert.equal(live.image.id,next,'automatic advance prepares the next dispatch');
   assert.equal(dialog.querySelector('.flow-source-original img').dataset.imageId,first,'source keeps the completed original');
@@ -265,7 +265,8 @@ test('slow original reads and image decoding never publish a partial pair; faile
   // The native service publishes VALID node states before handing its run and
   // pixels to the frontend. Exercise that actual publication gap, plus a
   // terminal record with no pixels, without changing the displayed identity.
-  const execution=live.data.datasetExecutions.find(e=>e.units.some(u=>u.unitId==='atomic-0')),recordIndex=execution.units.findIndex(u=>u.unitId==='atomic-0'),record=execution.units[recordIndex];
+  const originalExecution=live.data.datasetExecutions.find(e=>e.units.some(u=>u.unitId==='atomic-0')),execution={...originalExecution,units:[...originalExecution.units]},recordIndex=execution.units.findIndex(u=>u.unitId==='atomic-0'),record=execution.units[recordIndex];
+  live.data.datasetExecutions=live.data.datasetExecutions.map(e=>e===originalExecution?execution:e);
   execution.units[recordIndex]={...record,runIds:[],nodeStates:[{nodeId:'preview',status:'VALID'}]};view.render();await h.tick();
   for(const key of ['main','input','original','evidence']){assert.equal(snapshot()[key],old[key]);assert.equal(snapshot()[key].naturalWidth,64);assert.equal(snapshot()[key].hidden,false);}
   assert.equal(view.outputView.currentModel.unitId,'atomic-0');assert.deepEqual({...surface.renderer.view},camera);
@@ -276,6 +277,8 @@ test('slow original reads and image decoding never publish a partial pair; faile
   const readGate=deferred(),decodeGate=deferred(),read=live.readImageAsset.bind(live),decodeImage=h.w.HTMLImageElement.prototype.decode;
   let reads=0,decodes=0;
   live.readImageAsset=async id=>{if(id===ids[1]){reads++;await readGate.promise;}if(id===ids[2])throw Error('delayed original failed');return read(id);};
+  const readDisplay=live.readImageDisplay.bind(live);
+  live.readImageDisplay=async id=>{if(id===ids[2])throw Error('delayed original failed');return readDisplay(id);};
   const slowURL=pixels.get(ids[1])[0].url;
   h.w.HTMLImageElement.prototype.decode=async function(){await decodeImage.call(this);if(this.src===slowURL){decodes++;await decodeGate.promise;}};
   const unchanged=()=>{const now=snapshot();for(const key of ['main','input','original','evidence']){assert.equal(now[key],old[key],key+' was replaced before the whole pair was ready');assert.equal(now[key].isConnected,true);assert.equal(now[key].naturalWidth,64);assert.equal(now[key].hidden,false);}assert.equal(now.model.unitId,'atomic-0');assert.equal(old.evidence.closest('figure').hidden,false);assert.deepEqual({...surface.renderer.view},camera);};
@@ -292,5 +295,51 @@ test('slow original reads and image decoding never publish a partial pair; faile
   await live.selectSourceImage(sourceId,ids[0]);staleGate.resolve();for(let i=0;i<30;i++)await h.tick();
   assert.equal(view.outputView.currentModel.unitId,'atomic-0');assert.equal(d().querySelector('.flow-source-original img').dataset.imageId,ids[0]);assert.equal(d().querySelector('.source-decision img').dataset.runId,pixels.get(ids[0])[0].runId);
   assert.equal(d().querySelector('.flow-source-auto').getAttribute('aria-checked'),'true');assert.deepEqual(h.errors,[]);
+ }finally{h.close();}
+});
+
+test('manual source selection wins over running, later units and batch completion in the real main view',async()=>{
+ const directory=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-manual-during-run-')),p=await project();
+ for(const color of ['red','blue']){const canvas=createCanvas(64,48);canvas.getContext('2d').fillStyle=color;canvas.getContext('2d').fillRect(0,0,64,48);await p.addImages([{name:color+'.png',dataUrl:canvas.toDataURL('image/png')}],decode);}
+ const ids=p.data.images.map(i=>i.id),board=p.ensureProjectCanvas(),sourceId=board.projectSpaces.sources[0].id;p.bindCanvasImages(board.id,sourceId,ids);
+ const {createHarness}=require('./workflow-ui-harness.cjs'),h=await createHarness();
+ const deferred=()=>{let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};};
+ try{
+  await h.api.loadProject(h.w.JSON.parse(p.serialize()));const live=h.api.project,view=h.api.inquiryView;
+  const wait=async predicate=>{for(let i=0;i<200;i++){if(predicate())return;await h.tick();}assert.ok(predicate(),'main view failed to follow manual selection');};
+  const run=(units,dispatch)=>h.w.__QAWorkpiece.runDatasetScheme(live,dispatch,{sourceId,units,artifactMode:'inline'});
+  view.outputView.focus('preview');view.render();
+  await run([{id:'initial',imageIds:[ids[0]]}],r=>execute(r,directory));
+  await wait(()=>view.outputView.currentModel?.unitId==='initial'&&!view.outputView.surface.image.hidden);
+  const gates=[deferred(),deferred()],started=[deferred(),deferred()];let index=0;
+  const running=run([{id:'running-a',imageIds:[ids[0]]},{id:'running-b',imageIds:[ids[1]]}],async r=>{const n=index++;started[n].resolve();await gates[n].promise;return execute(r,directory);});
+  await started[0].promise;
+  view.programFlow.refreshFlow();view.programFlow.openBoundary(view.programFlow.flow.nodes.find(n=>n.kind==='source'));
+  await wait(()=>h.w.document.querySelector(`.flow-source-panel button[data-image-id="${ids[2]}"]`));
+  const browse=h.w.document.querySelector(`.flow-source-panel button[data-image-id="${ids[2]}"]`);
+  assert.equal(browse.disabled,false);await browse.onclick();view.render();
+  assert.equal(index,1,'browsing must not start a competing execution');
+  const check=async()=>{
+   await wait(()=>view.outputView.currentModel?.imageId===ids[2]).catch(error=>{throw Error(JSON.stringify({message:error.message,active:live.image.id,revision:live.imageSelection,model:view.outputView.currentModel?.imageId,resolved:view.outputView.resolveModel().imageId,status:view.outputView.resolveModel().status,surfaceRevision:view.outputView.surface.selectionRevision,surfaceImage:view.outputView.surface.displayImageId}));});
+   const surface=view.outputView.surface;
+   await wait(()=>surface.section.querySelector('.node-input-card img')?.getAttribute('src')===live.imageRecord(ids[2]).dataURL);
+   assert.equal(live.image.id,ids[2]);assert.equal(view.outputView.currentModel.status,'WAITING');assert.equal(surface.image.hidden,true,'never show another workpiece output for a manual selection');
+  };
+  await check();gates[0].resolve();await started[1].promise;await check();gates[1].resolve();await running;await check();
+  // Re-select an image with a completed result after the run, then return to
+  // an unexecuted image: the retained-pair shortcut must not trap either move.
+  await live.selectSourceImage(sourceId,ids[1]);view.render();await wait(()=>view.outputView.currentModel?.unitId==='running-b'&&!view.outputView.surface.image.hidden);
+  await live.selectSourceImage(sourceId,ids[2]);view.render();await check();
+  // Also cover the dialog's own busy flag, not only a toolbar-owned batch.
+  const ownStarted=deferred(),ownGate=deferred();let ownRuns=0;
+  view.onRunInspection=async options=>{ownRuns++;return run(options.units,async r=>{ownStarted.resolve();await ownGate.promise;return execute(r,directory);});};
+  h.w.document.querySelector('.flow-source-panel[open]').close();
+  view.programFlow.refreshFlow();view.programFlow.openBoundary(view.programFlow.flow.nodes.find(n=>n.kind==='source'));
+  const dialog=h.w.document.querySelector('.flow-source-panel[open]');
+  await wait(()=>dialog.querySelector(`button[data-image-id="${ids[0]}"]`));
+  const clickRun=dialog.querySelector(`button[data-image-id="${ids[0]}"]`).onclick();await ownStarted.promise;
+  const whileBusy=dialog.querySelector(`button[data-image-id="${ids[2]}"]`);assert.equal(whileBusy.disabled,false);
+  await whileBusy.onclick();await check();assert.equal(ownRuns,1);ownGate.resolve();await clickRun;await check();
+  assert.deepEqual(h.errors,[]);
  }finally{h.close();}
 });

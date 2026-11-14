@@ -188,7 +188,10 @@ pub fn audit(run:&Value,expected:&[Value])->Value{
     for row in list(&run["justification"]["parameters"]){resolve(run,&row["verification"],&format!("parameters.{}.verification",string(row.get("name"))),&mut errors);}
     for (i,row) in list(&run["justification"]["boundaries"]).iter().enumerate(){resolve(run,&row["check"],&format!("boundaries.{i}.check"),&mut errors);}
     let p=procedure(run);errors.extend(list(&p["errors"]).iter().cloned());
-    json!({"schema":"agentcv-algorithm-evidence-audit-1","procedureStatus":p["status"],"procedureAudit":p,"status":if run["status"]=="SUCCEEDED"&&run["execution"]["status"]!="FAULT"&&errors.is_empty(){"READY_FOR_REVIEW"}else{"DIAGNOSTIC_ONLY"},"delivered":false,"errors":errors,"scope":"保存的程式自檢及產物引用核對；不是獨立精度驗證、人工採用或正式發布。"})
+    let mut audit=json!({"schema":"agentcv-algorithm-evidence-audit-1","procedureStatus":p["status"],"procedureAudit":p,"status":if run["status"]=="SUCCEEDED"&&run["execution"]["status"]!="FAULT"&&errors.is_empty(){"READY_FOR_REVIEW"}else{"DIAGNOSTIC_ONLY"},"delivered":false,"errors":errors,"scope":"保存的程式自檢及產物引用核對；不是獨立精度驗證、人工採用或正式發布。"});
+    let unavailable:Vec<_>=list(&run["artifacts"]).iter().filter(|a|crate::artifact_capture::verified(a)).map(|a|a["id"].clone()).collect();
+    if !unavailable.is_empty(){audit["uncapturedArtifacts"]=json!(unavailable);}
+    audit
 }
 
 #[cfg(test)]

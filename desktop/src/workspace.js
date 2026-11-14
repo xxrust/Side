@@ -137,7 +137,8 @@ export class Workspace extends Project{
   getRegion(id,imageId=this.image?.id){return this.target(id)?.regions?.[imageId]||null}
   target(id){return id===this.workflow.workpiece.id?this.workflow.workpiece:this.workflow.parts.find(p=>p.id===id)}
   notify(){if(!this.loading)super.notify()}
-  async load(input,decode){clearWorkpieceArtifactPixels(this);this.loading=true;try{validateCanvasCollaboration(input);const data=clone(input);prepareWorkflow(data);if(data.schema==='agentcv-workspace-0.9')data.schema='agentcv-desktop-0.8';await super.load(data,decode);this.pipelineSession=uid();this.data.schema='agentcv-workspace-0.9';const defaults=blankWorkflow();this.data.workflow={...defaults,...this.data.workflow};for(const k of ['profiles','references','parts','relations','checks'])if(!Array.isArray(this.workflow[k]))this.workflow[k]=[];
+  prepareLoadedData(data){prepareWorkflow(data)}
+  async load(input,decode){clearWorkpieceArtifactPixels(this);this.loading=true;try{validateCanvasCollaboration(input);const data=input.schema==='agentcv-workspace-0.9'?{...input,schema:'agentcv-desktop-0.8'}:input;await super.load(data,decode);this.pipelineSession=uid();this.data.schema='agentcv-workspace-0.9';const defaults=blankWorkflow();this.data.workflow={...defaults,...this.data.workflow};for(const k of ['profiles','references','parts','relations','checks'])if(!Array.isArray(this.workflow[k]))this.workflow[k]=[];
     for(const im of this.data.images)if(im.pipelineResult){im.previousPipelineResult=im.pipelineResult;delete im.pipelineResult}if(this.workflow.pipelineValidation)this.workflow.pipelineValidation.status='STALE';
     this.workflow.workpiece={...defaults.workpiece,...this.workflow.workpiece,regions:this.workflow.workpiece?.regions||{}};
     for(const p of this.workflow.parts){p.regions=p.regions||{};p.revision=p.revision||1}for(const img of this.data.images){img.labels=img.labels||{};if(img.result){img.previous_result=img.result;delete img.result}}

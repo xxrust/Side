@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {restoreSharedNativeFacts} from '../src/shared-facts.js';
 import {sealParsedNativeExecutionFacts} from '../src/execution-facts.js';
-import {jsonSnapshot,isImmutableJson,projectSnapshot} from '../src/json-snapshot.js';
+import {jsonSnapshot,isImmutableJson,projectSnapshot,freezeParsedJson} from '../src/json-snapshot.js';
 import {createNativeSessionExecutor} from '../src/native-session-bridge.js';
 
 const wire=()=>JSON.parse('{"runs":[{"result":{"points":[{"x":-0.0,"y":1.2345678901234567}],"__proto__":{"safe":true}},"procedureTrace":{"nodes":[{"outputs":{"actual":null}}]},"artifacts":[{"data":null}]}],"timing":{},"_sharedFacts":{"backend":"rust-shared-facts-v1","links":[{"from":["runs",0,"result"],"to":["runs",0,"procedureTrace","nodes",0,"outputs","actual"]},{"from":["runs",0,"result"],"to":["runs",0,"artifacts",0,"data"]}]}}');
@@ -49,4 +49,13 @@ test('binary executor reconstructs full facts before normal result publication',
  assert.equal(actual.timing.hostResponse.sharedLinks,2);
  assert.ok(actual.timing.hostResponse.restoreMs>=0);
  assert.equal(actual.runs[0].result.__proto__.safe,true);
+});
+
+test('freezing owned facts ignores inherited enumerable data and getters',()=>{
+ const inherited={mutable:{x:1}};let reads=0;
+ Object.defineProperty(inherited,'getter',{enumerable:true,get(){reads++;throw Error('inherited getter must not run');}});
+ const fact=Object.assign(Object.create(inherited),{owned:{x:-0,y:Infinity}});
+ freezeParsedJson(fact);assert.equal(reads,0);assert.ok(Object.isFrozen(fact.owned));assert.ok(isImmutableJson(fact.owned));
+ assert.equal(Object.isFrozen(inherited.mutable),false);assert.equal(isImmutableJson(inherited.mutable),false);
+ assert.equal(fact.owned.y,null);assert.equal(Object.is(fact.owned.x,-0),false);
 });

@@ -3443,7 +3443,7 @@
       "type": "function",
       "function": {
         "name": "run_workpiece_scheme",
-        "description": "執行已編譯方案的一件工件；通常一張圖，多視圖必須是同件且提供views。失敗與故障分離，真輸出回原畫板。",
+        "description": "執行已編譯方案的一件工件；通常一張圖，多視圖必須是同件且提供views。diagnostics:true 會為明確指定圖片完整採集過程輸出，產生新的診斷紀錄而非恢復歷史快照；可用 expected_scheme_fingerprint 鎖定方案。失敗與故障分離，真輸出回原畫板。",
         "parameters": {
           "type": "object",
           "properties": {
@@ -3461,6 +3461,12 @@
               "minItems": 1
             },
             "views_json": {
+              "type": "string"
+            },
+            "diagnostics": {
+              "type": "boolean"
+            },
+            "expected_scheme_fingerprint": {
               "type": "string"
             }
           },
@@ -3587,6 +3593,12 @@
               "type": "boolean"
             },
             "resume_execution_id": {
+              "type": "string"
+            },
+            "diagnostics": {
+              "type": "boolean"
+            },
+            "expected_scheme_fingerprint": {
               "type": "string"
             }
           },

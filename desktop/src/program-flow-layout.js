@@ -22,7 +22,10 @@ const nodeMetadata=node=>({...project(node,['id','parentId','kind','title','stat
 /** Status/evidence changes do not change geometry. The caller can cache this
  * key and rebind the current node metadata when reusing positions. */
 export function programFlowLayoutKey(flow,options={}){
- return JSON.stringify([list(flow?.nodes).map(({id,parentId,kind,title})=>[id,parentId,kind,title]),list(flow?.edges).filter(edge=>edge.kind==='dependency').map(edge=>[edge.id,edge.from,edge.to,classificationBranchLabel(edge)]),configuration(options)]);
+ // Labels are rendered inside fixed-size nodes and do not enter ELK geometry.
+ // In particular, changing a workpiece filename must not rerun the layout.
+ // Boundary mode and port roles do affect dimensions and must invalidate it.
+ return JSON.stringify([list(flow?.nodes).map(({id,parentId,kind,role})=>[id,parentId,kind,role]),list(flow?.nodes).some(node=>node.boundary),list(flow?.edges).filter(edge=>edge.kind==='dependency').map(edge=>[edge.id,edge.from,edge.to,classificationBranchLabel(edge)]),configuration(options)]);
 }
 
 /** Layout saved instances, never infer execution from containment or names.

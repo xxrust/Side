@@ -38,3 +38,4 @@ reviews/
 # Logs / caches
 *.log
 .cache/
+framework-performance/

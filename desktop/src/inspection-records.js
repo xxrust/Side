@@ -5,7 +5,7 @@ import {nativeExecutionFactFields} from './execution-facts.js';
 const copy=(value,referenced=new WeakSet(),facts=new WeakMap())=>value===undefined?undefined:JSON.parse(JSON.stringify(value,function(key,item){
  if(facts.get(this)?.has(key))return undefined;
  if(['nativeFactRef','nativeFactFields'].includes(key)&&!facts.has(this))return undefined;
- if(['dataURL','dataUrl','base64'].includes(key)||key==='data'&&referenced.has(this))return undefined;
+ if(['dataURL','dataUrl','base64','displayPreview'].includes(key)||key==='data'&&referenced.has(this))return undefined;
  return item;
 }));
 export function durableInspectionProduct(product){

@@ -70,7 +70,9 @@ impl<'a> Reader<'a> {
                 {
                     return Err("REPORT_WIRE_LENGTH_INVALID".into());
                 }
-                let mut items = Map::new();
+                // Length has passed frame/node bounds. Reserve common objects once,
+                // but cap eager allocation for malformed or very large declarations.
+                let mut items = Map::with_capacity(length.min(4096));
                 for _ in 0..length {
                     let key = self.text()?.to_owned();
                     let value = self.value(depth + 1)?;
@@ -167,6 +169,23 @@ mod tests {
             );
         }
     }
+    #[test]
+    fn object_capacity_preserves_order_duplicates_and_growth() {
+        for length in [0usize, 2, 17, 4096, 4097] {
+            let mut payload=vec![8];payload.extend_from_slice(&(length as u32).to_le_bytes());
+            let mut expected=Map::new();
+            for index in 0..length {
+                let key=if index==1 { "key-0".to_owned() } else { format!("key-{index}") };
+                payload.extend_from_slice(&(key.len() as u32).to_le_bytes());payload.extend_from_slice(key.as_bytes());
+                payload.push(4);payload.extend_from_slice(&(index as u64).to_le_bytes());
+                expected.insert(key,Value::from(index as u64));
+            }
+            let bytes=wrapped(&payload);
+            assert_eq!(serde_json::to_vec(&decode(&bytes).unwrap()).unwrap(),serde_json::to_vec(&Value::Object(expected)).unwrap());
+            if length>0 {assert!(decode(&bytes[..bytes.len()-1]).is_err());}
+        }
+    }
+
     #[test]
     fn malformed_frames_lengths_nonfinite_values_and_deep_escapes_are_rejected() {
         let valid = wrapped(&[7, 2, 0, 0, 0, 0, 2]);

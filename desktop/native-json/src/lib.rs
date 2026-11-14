@@ -8,16 +8,29 @@ fn text(out:&mut Vec<u8>,value:&str)->PyResult<()> {
     serde_json::to_writer(out,value).map_err(|e|pyo3::exceptions::PyValueError::new_err(e.to_string()))
 }
 fn encode_value(value:&Bound<'_,PyAny>,fallback:&Bound<'_,PyAny>,out:&mut Vec<u8>,depth:usize,floats:&mut HashMap<u64,Vec<u8>>,strict:bool)->PyResult<()> {
-    let py=value.py();let kind=value.get_type();
+    let py=value.py();
     if value.is_none(){out.extend_from_slice(b"null");}
-    else if kind.is(&py.get_type::<PyString>()){text(out,value.downcast::<PyString>()?.to_str()?)?;}
-    else if kind.is(&py.get_type::<PyBool>()){out.extend_from_slice(if value.is_truthy()?{b"true"}else{b"false"});}
-    else if kind.is(&py.get_type::<PyInt>()){out.extend_from_slice(value.str()?.to_str()?.as_bytes());}
-    else if kind.is(&py.get_type::<PyFloat>()){
+    else if value.is_exact_instance_of::<PyString>(){text(out,value.downcast::<PyString>()?.to_str()?)?;}
+    else if value.is_exact_instance_of::<PyBool>(){out.extend_from_slice(if value.is_truthy()?{b"true"}else{b"false"});}
+    else if value.is_exact_instance_of::<PyInt>(){
+        // Preserve unbounded Python integers; ordinary machine-sized values can
+        // be rendered without allocating a temporary Python string object.
+        if let Ok(number)=value.extract::<i64>(){serde_json::to_writer(&mut *out,&number).map_err(|e|pyo3::exceptions::PyValueError::new_err(e.to_string()))?;}
+        else if let Ok(number)=value.extract::<u64>(){serde_json::to_writer(&mut *out,&number).map_err(|e|pyo3::exceptions::PyValueError::new_err(e.to_string()))?;}
+        else{out.extend_from_slice(value.str()?.to_str()?.as_bytes());}
+    }
+    else if value.is_exact_instance_of::<PyFloat>(){
         let number=value.extract::<f64>()?;
         if !number.is_finite(){
             if strict{return Err(pyo3::exceptions::PyValueError::new_err("Out of range float values are not JSON compliant"));}
             out.extend_from_slice(b"null");
+        }
+        else if number==0.0||(number.abs()>=1e-4&&number.abs()<1e16) {
+            // Ordinary fixed-decimal coordinates avoid CPython's temporary
+            // allocation. Scientific notation retains its Python spelling.
+            let mut buffer=zmij::Buffer::new();
+            let bytes=buffer.format_finite(number).as_bytes();
+            out.extend_from_slice(bytes);
         }
         else if let Some(bytes)=floats.get(&number.to_bits()){out.extend_from_slice(bytes);}
         else {
@@ -26,15 +39,18 @@ fn encode_value(value:&Bound<'_,PyAny>,fallback:&Bound<'_,PyAny>,out:&mut Vec<u8
                 let pointer=ffi::PyOS_double_to_string(number,b'r' as _,0,2,std::ptr::null_mut());
                 if pointer.is_null(){return Err(PyErr::fetch(py));}
                 let bytes=CStr::from_ptr(pointer).to_bytes();out.extend_from_slice(bytes);
-                if floats.len()<4096{floats.insert(number.to_bits(),bytes.to_vec());}
+                // Large geometry artifacts exceed 4096 distinct coordinates,
+                // then repeat them in candidate/evidence structures. Bound the
+                // per-call cache while retaining those exact CPython spellings.
+                if floats.len()<16384{floats.insert(number.to_bits(),bytes.to_vec());}
                 ffi::PyMem_Free(pointer.cast());
             }
         }
     }
-    else if depth<64&&kind.is(&py.get_type::<PyDict>()) {
+    else if depth<64&&value.is_exact_instance_of::<PyDict>() {
         let dict=value.downcast::<PyDict>()?;
         // Non-string keys require Python str() and collision/overwrite rules.
-        if !dict.keys().iter().all(|key|key.get_type().is(&py.get_type::<PyString>())){out.extend_from_slice(fallback.call1((value,))?.downcast::<PyString>()?.to_str()?.as_bytes());return Ok(());}
+        if !dict.keys().iter().all(|key|key.is_exact_instance_of::<PyString>()){out.extend_from_slice(fallback.call1((value,))?.downcast::<PyString>()?.to_str()?.as_bytes());return Ok(());}
         out.push(b'{');
         for (index,(key,item)) in dict.iter().enumerate(){
             if index>0{out.push(b',');}
@@ -43,12 +59,12 @@ fn encode_value(value:&Bound<'_,PyAny>,fallback:&Bound<'_,PyAny>,out:&mut Vec<u8
         }
         out.push(b'}');
     }
-    else if depth<64&&kind.is(&py.get_type::<PyList>()) {
+    else if depth<64&&value.is_exact_instance_of::<PyList>() {
         out.push(b'[');
         for (index,item) in value.downcast::<PyList>()?.iter().enumerate(){if index>0{out.push(b',');}encode_value(&item,fallback,out,depth+1,floats,strict)?;}
         out.push(b']');
     }
-    else if depth<64&&kind.is(&py.get_type::<PyTuple>()) {
+    else if depth<64&&value.is_exact_instance_of::<PyTuple>() {
         out.push(b'[');
         for (index,item) in value.downcast::<PyTuple>()?.iter().enumerate(){if index>0{out.push(b',');}encode_value(&item,fallback,out,depth+1,floats,strict)?;}
         out.push(b']');
@@ -57,9 +73,26 @@ fn encode_value(value:&Bound<'_,PyAny>,fallback:&Bound<'_,PyAny>,out:&mut Vec<u8
     Ok(())
 }
 
+// Explicit per-run cache: only exact finite float bit patterns and CPython's
+// immutable spelling, never caller containers or normalized user values.
+#[pyclass]
+#[derive(Default)]
+struct EncodingCache { floats:HashMap<u64,Vec<u8>> }
+#[pymethods]
+impl EncodingCache {
+    #[new]
+    fn new()->Self {Self::default()}
+}
 #[pyfunction]
-fn encode<'py>(py:Python<'py>,value:&Bound<'py,PyAny>,fallback:&Bound<'py,PyAny>)->PyResult<Bound<'py,PyBytes>> {
-    let mut bytes=Vec::with_capacity(4096);encode_value(value,fallback,&mut bytes,0,&mut HashMap::new(),false)?;bytes.push(b'\n');Ok(PyBytes::new(py,&bytes))
+#[pyo3(signature=(value,fallback,cache=None))]
+fn encode<'py>(py:Python<'py>,value:&Bound<'py,PyAny>,fallback:&Bound<'py,PyAny>,cache:Option<&Bound<'py,EncodingCache>>)->PyResult<Bound<'py,PyBytes>> {
+    // No cache borrow survives a Python fallback. A reentrant encoder gets a
+    // private map and cannot deadlock or alter this call's in-progress bytes.
+    let mut floats=cache.map(|state|std::mem::take(&mut state.borrow_mut().floats)).unwrap_or_default();
+    let mut bytes=Vec::with_capacity(4096);
+    let encoded=encode_value(value,fallback,&mut bytes,0,&mut floats,false);
+    if let Some(state)=cache {state.borrow_mut().floats=floats;}
+    encoded?;bytes.push(b'\n');Ok(PyBytes::new(py,&bytes))
 }
 
 // Reports already contain normalized JSON values. Unlike SDK output, this
@@ -74,6 +107,11 @@ fn encode_report<'py>(py:Python<'py>,value:&Bound<'py,PyAny>,fallback:&Bound<'py
 // Exact builtin dispatch leaves NumPy/custom/subclass behavior to the original
 // Python normalizer. Do not memoize: repeated mutable children need independent
 // copies, just as in the SDK's original recursive traversal.
+#[inline]
+fn plain_scalar(item:&Bound<'_,PyAny>)->bool {
+    item.is_none()||item.is_exact_instance_of::<PyString>()||item.is_exact_instance_of::<PyBool>()||item.is_exact_instance_of::<PyInt>()
+        ||item.is_exact_instance_of::<PyFloat>()&&item.extract::<f64>().is_ok_and(f64::is_finite)
+}
 fn normalize_value<'py>(value:&Bound<'py,PyAny>,fallback:&Bound<'py,PyAny>,depth:usize,trace:bool)->PyResult<Bound<'py,PyAny>> {
     let py=value.py();
     if value.is_none()||value.is_exact_instance_of::<PyString>()||value.is_exact_instance_of::<PyBool>()||value.is_exact_instance_of::<PyInt>() {
@@ -83,6 +121,13 @@ fn normalize_value<'py>(value:&Bound<'py,PyAny>,fallback:&Bound<'py,PyAny>,depth
         return Ok(if value.extract::<f64>()?.is_finite(){value.clone()}else{py.None().into_bound(py)});
     }
     if depth<64&&value.is_exact_instance_of::<PyDict>() {
+        let source=value.downcast::<PyDict>()?;
+        // A scalar-only builtin dictionary needs an independent container, but
+        // none of its values require normalization or can invoke user callbacks.
+        // CPython copies its existing key table without repeated insert/resize.
+        if source.iter().all(|(key,item)|key.is_exact_instance_of::<PyString>()&&plain_scalar(&item)) {
+            return Ok(source.copy()?.into_any());
+        }
         let output=PyDict::new(py);
         for (key,item) in value.downcast::<PyDict>()?.iter() {
             let key=if key.is_exact_instance_of::<PyString>(){key}else{key.str()?.into_any()};
@@ -95,6 +140,11 @@ fn normalize_value<'py>(value:&Bound<'py,PyAny>,fallback:&Bound<'py,PyAny>,depth
         // Long trace sequences have a summary/hash contract. Preserve that
         // contract in Python, including its original JSON whitespace spelling.
         if !trace||length<=1024 {
+            if let Ok(list)=value.downcast::<PyList>() {
+                if list.iter().all(|item|plain_scalar(&item)){return Ok(list.get_slice(0,length).into_any());}
+            } else if let Ok(tuple)=value.downcast::<PyTuple>() {
+                if tuple.iter().all(|item|plain_scalar(&item)){return Ok(tuple.to_list().into_any());}
+            }
             let output=PyList::empty(py);
             for item in value.try_iter()? {output.append(normalize_value(&item?,fallback,depth+1,trace)?)?;}
             return Ok(output.into_any());
@@ -170,7 +220,15 @@ fn wire_value(value:&Bound<'_,PyAny>,fallback:&Bound<'_,PyAny>,out:&mut Vec<u8>,
     }
     else if depth<64&&(value.is_exact_instance_of::<PyList>()||value.is_exact_instance_of::<PyTuple>()){
         out.push(7);wire_length(out,value.len()?)?;
-        for item in value.try_iter()?{wire_value(&item?,fallback,out,depth+1,bound)?;}
+        // Exact builtin sequences need no temporary Python iterator object.
+        // Subclasses still take the existing fallback path below.
+        if let Ok(items)=value.downcast::<PyList>() {
+            // Match Python's live list iterator if a fallback mutates it.
+            let mut index=0;
+            while index<items.len(){let item=items.get_item(index)?;index+=1;wire_value(&item,fallback,out,depth+1,bound)?;}
+        } else {
+            for item in value.downcast::<PyTuple>()?.iter(){wire_value(&item,fallback,out,depth+1,bound)?;}
+        }
     }
     else{out.push(9);wire_text(out,fallback.call1((value,))?.downcast::<PyString>()?.to_str()?,bound)?;}
     if out.len()>32*1024*1024{return Err(ReportWireLimitError::new_err("Resident report frame exceeds limit"));}
@@ -212,4 +270,4 @@ fn preview_bmp<'py>(py:Python<'py>,raw:&[u8],width:usize,height:usize,channels:u
     })
 }
 #[pymodule]
-fn _agentcv_json(module:&Bound<'_,PyModule>)->PyResult<()> {module.add("ReportWireLimitError",module.py().get_type::<ReportWireLimitError>())?;module.add_function(wrap_pyfunction!(encode,module)?)?;module.add_function(wrap_pyfunction!(encode_report,module)?)?;module.add_function(wrap_pyfunction!(encode_report_wire,module)?)?;module.add_function(wrap_pyfunction!(normalize,module)?)?;module.add_function(wrap_pyfunction!(normalize_trace,module)?)?;module.add_function(wrap_pyfunction!(layer_points_valid,module)?)?;module.add_function(wrap_pyfunction!(preview_bmp,module)?)?;module.add("format_version",1)?;Ok(())}
+fn _agentcv_json(module:&Bound<'_,PyModule>)->PyResult<()> {module.add_class::<EncodingCache>()?;module.add("ReportWireLimitError",module.py().get_type::<ReportWireLimitError>())?;module.add_function(wrap_pyfunction!(encode,module)?)?;module.add_function(wrap_pyfunction!(encode_report,module)?)?;module.add_function(wrap_pyfunction!(encode_report_wire,module)?)?;module.add_function(wrap_pyfunction!(normalize,module)?)?;module.add_function(wrap_pyfunction!(normalize_trace,module)?)?;module.add_function(wrap_pyfunction!(layer_points_valid,module)?)?;module.add_function(wrap_pyfunction!(preview_bmp,module)?)?;module.add("format_version",1)?;Ok(())}

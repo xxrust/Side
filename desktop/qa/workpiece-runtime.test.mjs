@@ -1,4 +1,5 @@
-import {flowExecutionRequest} from '../src/flow-node-contract.js';
+import {sealProjectExecutionFacts} from '../src/execution-facts.js';
+import {flowExecutionRequest,flowExecutionSelection} from '../src/flow-node-contract.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -18,11 +19,25 @@ import {isImmutableJson} from '../src/json-snapshot.js';
 const root=fileURLToPath(new URL('..',import.meta.url)),temp=await fs.mkdtemp(path.join(os.tmpdir(),'agentcv-workpiece-'));
 const python=process.env.AGENTCV_PYTHON||path.join(root,'runtime/python/bin/python3');
 
-test('resumed real inspections preserve immutable prior units and the pre-resume undo state',async()=>{
+test('first input starts before checkpoint and setup failure releases leases and batch lock',async()=>{
+ const p=await project(),units=[{id:'first',imageIds:[p.data.images[0].id]}];
+ const checkpoint=p.checkpoint,ensure=p.ensureImagePixels;let reads=0,dispatches=0;
+ p.ensureImagePixels=function(id){reads++;return ensure.call(this,id);};
+ p.checkpoint=()=>{assert.ok(reads>0);throw Error('injected checkpoint failure');};
+ await assert.rejects(runDatasetScheme(p,()=>{dispatches++;},{units,prefetchInputs:true}),/injected checkpoint failure/);
+ assert.equal(dispatches,0);assert.equal(p.imageStore.leases.size,0);
+ p.checkpoint=checkpoint;
+ const result=await runDatasetScheme(p,execute,{units,prefetchInputs:true});
+ assert.equal(result.execution.status,'COMPLETED');assert.equal(result.execution.processed,1);
+ assert.equal(p.imageStore.leases.size,0);
+});
+
+for(const restored of [false,true])test(`resumed real inspections preserve immutable prior units and undo (restored=${restored})`,async()=>{
  const p=await project(),units=p.data.images.map((image,index)=>({id:'resume-'+index,imageIds:[image.id]}));
  const controller=new AbortController(),saveUnitResult=async payload=>({recordRef:{executionId:payload.executionId,unitId:payload.unit.id}});
  const first=await runDatasetScheme(p,execute,{units,signal:controller.signal,saveUnitResult,onProgress:progress=>{if(progress.processed===1)controller.abort();}});
  assert.equal(first.execution.status,'CANCELLED');assert.equal(first.execution.processed,1);
+ if(restored)sealProjectExecutionFacts(p.data);
  const prior=p.data.datasetExecutions.at(-1),unit=prior.units[0],before=JSON.stringify(prior);
  assert.ok(isImmutableJson(unit));assert.throws(()=>unit.imageIds.push('forged'),TypeError);
  const resumed=await runDatasetScheme(p,execute,{units,resumeExecutionId:prior.id,saveUnitResult});
@@ -87,6 +102,15 @@ test('Agent reads archived real Python data and one image without restoring old 
  const expanded=await facade.execute('get_inspection_unit',{reference_json:JSON.stringify(reference),include_scheme:true});
  assert.equal(expanded.context.scheme.operatorGraph.nodes[0].code,p.purposeScheme.operatorGraph.nodes[0].code);assert.equal(pixelReads,1);
  assert.equal(p.image.id,selected);assert.equal(snapshot(),before,'read-only tools must not rehydrate history into the project');
+ const archived=await records.read(reference),full=archived.runs.find(run=>run.runId===args.run_id);
+ const hot={...full,procedureTrace:{schema:'agentcv-procedure-trace-1',nodes:[]},deferredProcedureTrace:{schema:'agentcv-deferred-procedure-trace-1',runId:full.runId,unitId:unit.unitId,executionId:reference.executionId}};
+ p.data.algorithmRuns.push(hot);
+ try{
+  const readsBefore=reads,detail=await readAgentAlgorithmRun(agent,{...args,artifact_id:'measurement',path:'columnMeans',offset:3,limit:5});
+  assert.equal(reads,readsBefore+1);assert.equal(detail.storage,'archived');assert.deepEqual(detail.items,page.items);
+  assert.equal(p.data.algorithmRuns.at(-1),hot);assert.equal(hot.procedureTrace.nodes.length,0,'read does not expand hot history');
+ }finally{p.data.algorithmRuns.pop();}
+ assert.equal(snapshot(),before);
  agent.ui.inspectionRecords={...records,read:async ref=>{const saved=await records.read(ref);agent.turn='new-turn';return saved;}};
  await assert.rejects(readAgentAlgorithmRun(agent,args),/專案或對話已變更/);
 });
@@ -199,3 +223,84 @@ test('separate real single-image inspections release previously durable unpinned
  const p=await project(),agent=new Agent(p,{locked:()=>false,reference:()=>null});
  await assert.rejects(agent.execute('verify_pipeline_delivery',{}),error=>error.code==='WRONG_PLAN_API'&&error.details.next.includes('get_dataset_execution'));
  });
+
+test('file-backed pending inputs dispatch before decode and pass actual verified identity to the gate',async()=>{
+ const p=await project(),image=p.data.images[0],raster=p.pixels.get(image.id),url=image.dataURL,raw=Buffer.from(url.split(',')[1],'base64'),hash=createHash('sha256').update(raw).digest('hex');
+ image.contentSha256=hash;image.assetRef={root:'/test-owned',$asset:`assets/${hash}.png`,mime:'image/png',sha256:hash,size:raw.length};delete image.dataURL;p.pixels.delete(image.id);
+ let ready,dispatched=false;const pending=new Promise(resolve=>ready=resolve);p.ensureImagePixels=async()=>{await pending;p.pixels.set(image.id,raster);return raster;};
+ await assert.rejects(runDatasetScheme(p,()=>{throw Error('unexpected node dispatch');},{units:[{id:'overlap',imageIds:[image.id]}],parallelInputVerification:true,fileBackedInputs:true,executeSession:async(request,{inputVerification})=>{
+  dispatched=true;assert.equal(p.pixels.has(image.id),false);assert(inputVerification);assert.equal(request.shared.images[0].assetRef.sha256,hash);ready();assert.deepEqual(await inputVerification,request.shared.sourceBinding);throw Error('stop after verified dispatch');
+ }}),/stop after verified dispatch/);
+ assert(dispatched);assert.equal(p.imageStore.leases.size,0);
+});
+
+test('failed overlapped input verification discards speculative result and records a normal input fault',async()=>{
+ const p=await project(),image=p.data.images[0],hash='a'.repeat(64);image.contentSha256=hash;image.assetRef={root:'/test-owned',$asset:`assets/${hash}.png`,mime:'image/png',sha256:hash,size:10};delete image.dataURL;p.pixels.delete(image.id);
+ let rejectInput;const pending=new Promise((_,reject)=>rejectInput=reject);p.ensureImagePixels=()=>pending;const saved=[];
+ const result=await runDatasetScheme(p,()=>{throw Error('must not run fallback operator for corrupt input');},{units:[{id:'corrupt-overlap',imageIds:[image.id]}],parallelInputVerification:true,fileBackedInputs:true,executeSession:async(request,{inputVerification})=>{
+  assert(inputVerification);rejectInput(Error('corrupt original bytes'));await assert.rejects(inputVerification,/corrupt original bytes/);throw Error('native input gate rejected');
+ },saveUnitResult:async product=>{saved.push(product);return {recordRef:{unitId:product.unit.id,executionId:product.executionId}};}});
+ assert.equal(result.execution.status,'COMPLETED_WITH_FAULTS');assert.equal(result.execution.counts.execution.FAULT,1);assert.equal(saved.length,1);assert.equal(saved[0].runs.length,0);assert.equal(saved[0].record.execution.faults[0].reason,'INPUT_UNAVAILABLE');assert.equal(p.imageStore.leases.size,0);
+});
+
+test('cancellation while first input is unverified records cancellation without adopting speculative runs',async()=>{
+ const p=await project(),image=p.data.images[0],raster=p.pixels.get(image.id),hash='a'.repeat(64);image.contentSha256=hash;image.assetRef={root:'/test-owned',$asset:`assets/${hash}.png`,mime:'image/png',sha256:hash,size:10};delete image.dataURL;p.pixels.delete(image.id);
+ let ready;const pending=new Promise(resolve=>ready=resolve);p.ensureImagePixels=async()=>{await pending;p.pixels.set(image.id,raster);return raster;};const controller=new AbortController(),saved=[];
+ const result=await runDatasetScheme(p,()=>{throw Error('cancelled input cannot run operator');},{units:[{id:'cancel-overlap',imageIds:[image.id]}],parallelInputVerification:true,fileBackedInputs:true,signal:controller.signal,executeSession:async(request,{inputVerification})=>{
+  assert(inputVerification);controller.abort();throw Error('SESSION_INPUT_VERIFICATION_CANCELLED');
+ },saveUnitResult:async product=>{saved.push(product);return {recordRef:{unitId:product.unit.id,executionId:product.executionId}};}});
+ assert.equal(result.execution.status,'CANCELLED');assert.equal(result.execution.counts.execution.CANCELLED,1);assert.equal(result.execution.counts.execution.FAULT,0);assert.equal(saved[0].runs.length,0);assert.equal(saved[0].record.execution.status,'CANCELLED');assert.equal(p.imageStore.leases.size,0);ready();
+});
+
+test('program compilation starts before checkpoint, settles before dispatch and rejects stale project adoption',async()=>{
+ for(const stale of [false,true]){
+  const p=await project();let finish,started=false,dispatched=false;
+  const pending=new Promise(resolve=>finish=resolve),checkpoint=p.checkpoint;
+  p.checkpoint=function(){assert.equal(started,true);checkpoint.call(this);if(stale)this.epoch++;finish({prepared:1,calls:0});};
+  await assert.rejects(runDatasetScheme(p,()=>assert.fail('unexpected node fallback'),{units:[{id:'compile-overlap',imageIds:[p.image.id]}],preparePrograms:scheme=>{assert.deepEqual(scheme,p.data.purposeScheme);started=true;return pending;},executeSession:async()=>{dispatched=true;assert.equal(p.data.datasetExecutions.at(-1).programPreparation.value.calls,0);throw Error('dispatch reached');}}),stale?/程式準備期間改變/:/dispatch reached/);
+  assert.equal(dispatched,!stale);assert.equal(p.imageStore.leases.size,0);
+  p.checkpoint=checkpoint;
+  await assert.rejects(runDatasetScheme(p,()=>assert.fail('unexpected fallback'),{units:[{id:'retry',imageIds:[p.image.id]}],executeSession:async()=>{throw Error('lock released');}}),/lock released/);
+ }
+});
+test('failed optional program preparation retains ordinary real execution',async()=>{
+ const p=await project();const result=await runDatasetScheme(p,execute,{units:[{id:'compile-fallback',imageIds:[p.image.id]}],preparePrograms:async()=>{throw Error('preparation unavailable');}});
+ assert.equal(result.execution.status,'COMPLETED');assert.equal(p.data.datasetExecutions.at(-1).programPreparation.ready,false);assert.match(p.data.datasetExecutions.at(-1).programPreparation.error,/preparation unavailable/);
+});
+test('an empty batch still joins compile preparation before releasing the batch',async()=>{
+ const p=await project();let finish,settled=false;
+ const pending=new Promise(resolve=>finish=resolve);
+ const work=runDatasetScheme(p,()=>assert.fail('empty batch dispatched'),{units:[],preparePrograms:()=>pending,executeSession:()=>assert.fail('empty batch dispatched')}).then(value=>{settled=true;return value;});
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(settled,false);finish({prepared:1});await work;assert.equal(settled,true);assert.equal(p.data.datasetExecutions.at(-1).programPreparation.ready,true);
+});
+
+test('toolbar selection defers compilation to runner and rejects a scheme changed before dispatch',async()=>{
+ const p=await project();p.ensureProjectCanvas();
+ p.compilePurposeScheme=()=>assert.fail('selection must not compile');
+ const request=flowExecutionSelection(p,false);
+ p.data.purposeScheme.operatorGraph.nodes=[];
+ let dispatched=0,checkpoints=0;
+ p.checkpoint=()=>{checkpoints++;};
+ await assert.rejects(runDatasetScheme(p,()=>{dispatched++;},request),error=>error.code==='SCHEME_COMPILE_FAILED');
+ assert.equal(dispatched,0);assert.equal(checkpoints,0);
+});
+test('selection-only toolbar request executes the real source through mandatory runner validation',async()=>{
+ const p=await project();p.ensureProjectCanvas();
+ p.compilePurposeScheme=()=>assert.fail('selection must not compile');
+ const result=await runDatasetScheme(p,execute,flowExecutionSelection(p,true));
+ assert.equal(result.execution.status,'COMPLETED');assert.equal(result.execution.processed,2);
+ assert.deepEqual(new Set(result.execution.units.flatMap(unit=>unit.imageIds)),new Set(p.data.images.map(image=>image.id)));
+});
+
+
+test('inspection trace capture defaults to essential and explicit diagnostics restores full collection',async()=>{
+ const p=await project(),units=[{id:'capture-one',imageIds:[p.data.images[0].id]}];
+ let dispatched=0;
+ await assert.rejects(runDatasetScheme(p,()=>{dispatched++;},{units,expectedSchemeFingerprint:'wrong-scheme'}),/方案.*不同/);
+ assert.equal(dispatched,0);
+ for(const diagnostics of [false,true]){
+  const requests=[];
+  await runDatasetScheme(p,async request=>{requests.push(request);return execute(request);},{units,artifactMode:'inspection',diagnostics});
+  assert.ok(requests.length);assert.ok(requests.every(r=>r.procedureValueCapture===(diagnostics?'full':'essential')));
+ }
+});

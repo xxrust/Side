@@ -39,6 +39,7 @@ export function compactSessionProject(project,{retainRunIds=null}={}){
   for(const key of Object.keys(value)){
    const child=value[key];
    if(key==='procedureTrace'){value[key]=compactProcedureTrace(child);continue;}
+   if(key==='displayPreview'&&child?.schema==='agentcv-display-preview-1'){delete value[key];continue;}
    if(key==='agentActivity'){delete value[key];continue;}
    if((key==='dataURL'||key==='dataUrl')&&path[0]==='algorithmRuns'&&path.includes('artifacts')){delete value[key];continue;}
    if((key==='dataURL'||key==='dataUrl')&&typeof child==='string'&&/^data:image\//i.test(child)){

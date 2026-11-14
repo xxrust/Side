@@ -22,7 +22,14 @@ export function sourceCollections(project,node){
 }
 
 export function flowExecutionRequest(project,batch=false){
- const scheme=project.purposeScheme,compiled=project.compilePurposeScheme('scheme');if(!compiled.ok)throw Error('方案尚未通過編譯：'+(compiled.errors||[]).map(e=>e.message||e.code).slice(0,3).join('；'));
+ const compiled=project.compilePurposeScheme('scheme');if(!compiled.ok)throw Error('方案尚未通過編譯：'+(compiled.errors||[]).map(e=>e.message||e.code).slice(0,3).join('；'));
+ return flowExecutionSelection(project,batch);
+}
+
+// Selection only: the execution entry point must validate the current scheme.
+// Do not reuse an earlier compilation across asynchronous UI preparation.
+export function flowExecutionSelection(project,batch=false){
+ const scheme=project.purposeScheme;
  if(scheme?.execution?.unit!=='workpiece')throw Error('此舊方案尚未定義單件圖像輸入；請讓 Agent 先補齊單件執行結構。');
  const fixed=new Set(Object.values(scheme.execution.referenceInputs||{})),imageId=project.image?.id;
  if(!imageId||fixed.has(imageId))throw Error('請先從待檢圖像源選擇工件圖片；固定參考圖不作為待檢件。');

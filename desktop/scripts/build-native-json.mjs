@@ -13,5 +13,5 @@ const name=process.platform==='win32'?'_agentcv_json.pyd':'_agentcv_json.abi3.so
 const source=path.join(target,'release',artifact),directory=path.join(desktop,'scripts/native-json');
 fs.mkdirSync(directory,{recursive:true});fs.copyFileSync(source,path.join(directory,name));
 const digest=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-fs.writeFileSync(path.join(directory,'build-receipt.json'),JSON.stringify({version:1,abi:'CPython abi3 >=3.10',platform:process.platform,arch:process.arch,file:name,sha256:digest(source),sources:Object.fromEntries(['Cargo.toml','Cargo.lock','src/lib.rs'].map(file=>[file,digest(path.join(desktop,'native-json',file))]))},null,2));
+fs.writeFileSync(path.join(directory,'build-receipt.json'),JSON.stringify({version:1,abi:'CPython abi3 >=3.10',platform:process.platform,arch:process.arch,file:name,sha256:digest(source),sources:Object.fromEntries(['Cargo.toml','Cargo.lock','build.rs','src/lib.rs'].map(file=>[file,digest(path.join(desktop,'native-json',file))]))},null,2));
 console.log('Built native SDK JSON encoder: '+name);

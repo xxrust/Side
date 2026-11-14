@@ -1,4 +1,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+mod artifact_capture;
+mod runtime_maintenance;
+mod memory_delivery;
+// Rust-owned host allocations only. Python and foreign API ownership remain
+// unchanged; disabling this feature restores Rust's platform allocator.
+#[cfg(feature = "mimalloc-host")]
+#[global_allocator]
+static HOST_ALLOCATOR: mimalloc::MiMalloc = mimalloc::MiMalloc;
 use base64::{engine::general_purpose::STANDARD, Engine};
 use serde::Serialize;
 use serde_json::{json, Value};
@@ -21,10 +29,14 @@ mod resident_worker;
 mod report_wire;
 mod memory_resources;
 mod shared_facts;
+mod deferred_trace;
+mod json_validation;
+mod display_preview;
 mod shared_preview;
 mod original_resources;
 mod inspection_session;
 mod inspection_service;
+mod inspection_input_gate;
 mod inspection_decision;
 mod inspection_product;
 mod inspection_evidence;
@@ -342,7 +354,20 @@ fn main() {
         .manage(Session::default())
         .manage(project_documents::PendingDocuments::default())
         .register_uri_scheme_protocol("agentcv-preview", |_context, request| visual_services::preview_response(request))
-        .register_uri_scheme_protocol("agentcv-memory", |_context, request| memory_resources::response(request))
+        .register_asynchronous_uri_scheme_protocol("agentcv-memory", |_context, request, responder| {
+            // Registry contention and copying an image body must not hold the
+            // platform URL-scheme callback. The response retains the same
+            // capability lookup, headers and immutable bytes.
+            let trace=memory_delivery::begin(&request);
+            tauri::async_runtime::spawn_blocking(move || {
+                let worker=trace.as_ref().map(|_|std::time::Instant::now());
+                let response=memory_resources::response(request);
+                let status=response.status().as_u16();let bytes=response.body().len();
+                let ready=trace.as_ref().map(|_|std::time::Instant::now());
+                responder.respond(response);
+                if let Some(trace)=trace{trace.finish(worker.unwrap(),ready.unwrap(),std::time::Instant::now(),status,bytes);}
+            });
+        })
         .setup(|app| {
             let runtime = if cfg!(debug_assertions) {
                 PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../runtime")
@@ -367,6 +392,7 @@ fn main() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            memory_delivery::memory_delivery_diagnostics,
             visual_services::create_visual_preview,
             visual_services::release_visual_preview,
             visual_services::open_node_article,
@@ -397,19 +423,23 @@ fn main() {
             git_workspace::export_solution_project,
             git_workspace::import_solution_project,
             cv_runtime::read_recorded_algorithm_sources,
-            source_store::import_dataset_images,source_store::read_workspace_asset,source_store::open_dataset_workspace,
+            source_store::import_dataset_images,source_store::read_workspace_asset,source_store::read_workspace_image_bytes,source_store::open_dataset_workspace,
             inspection_files::save_inspection_unit,inspection_files::read_inspection_unit,inspection_files::list_inspection_units,inspection_files::read_inspection_artifact,inspection_files::prepare_external_run_files,inspection_files::open_external_run_file,
             app_session::read_app_session,
             app_session::write_app_session,
             app_session::complete_app_exit,
             cv_runtime::cv_runtime_info,
             cv_runtime::execute_cv_algorithm,
+            cv_runtime::prepare_inspection_runtime,
+            cv_runtime::prepare_inspection_programs,
             cv_runtime::execute_inspection_session,
+            cv_runtime::await_inspection_maintenance,
             inspection_archive::inspection_archive_status,
             inspection_archive::flush_inspection_archive,
             inspection_archive::retry_inspection_archive,
             inspection_archive::acknowledge_inspection_archive,
             cv_runtime::cancel_inspection_session,
+            cv_runtime::verify_inspection_session_input,
             execute_native_pipeline,
             execute_two_boundary_geometry,
             cv_runtime::install_cv_packages,

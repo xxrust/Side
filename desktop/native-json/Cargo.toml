@@ -10,3 +10,11 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "=0.23.5", features = ["extension-module", "abi3-py310"] }
 serde_json = "1"
+zmij = "=1.0.23"
+
+[build-dependencies]
+pyo3-build-config = "=0.23.5"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

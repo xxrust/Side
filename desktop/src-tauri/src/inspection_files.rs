@@ -90,6 +90,7 @@ fn inline_artifact_bytes(value: &Value) -> Result<Option<ArtifactBytes>, String>
     Ok(None)
 }
 fn verify_memory_owner(run_id:&str,artifact:&Value)->Result<(),String>{
+    if artifact.get("collection").is_some()&&!crate::artifact_capture::verified(artifact){return Err("未採集產物描述不可含虛構內容或資產".into());}
     if let Some(reference)=artifact.get("memoryRef") {
         if reference["runId"].as_str()!=Some(run_id){return Err("內存產物不屬於本次運算".into());}
     }
@@ -174,6 +175,7 @@ fn persist_leased_runtime_artifacts(request:&mut Value,runtime:&Path,prepared:Op
                         artifact.as_object_mut().unwrap().remove("memoryRef");continue;
                     }
                     verify_memory_owner(&run_id,artifact)?;
+
                     let bytes=if let Some(prepared)=prepared{prepared.artifact_bytes(artifact)?}else{inline_artifact_bytes(artifact)?}.ok_or("內存產物缺少真實bytes")?;
                     if output.is_none(){
                         let directory=directory.as_ref().ok_or("內存產物缺少運算目錄")?.canonicalize().map_err(|e|e.to_string())?;
@@ -204,6 +206,7 @@ fn strip_inline(value: &mut Value) {
         Value::Object(o) => {
             o.remove("dataURL");
             o.remove("dataUrl");
+            o.remove("displayPreview");
             o.remove("base64");
             for item in o.values_mut() {
                 strip_inline(item)
@@ -226,7 +229,7 @@ fn strip_inline(value: &mut Value) {
 // own serializer, including its exact number representation.
 struct DurableJson<'a>(&'a Value);
 struct CanonicalJson<'a> { value:&'a Value, strip:bool }
-fn inline_key(key: &str) -> bool { matches!(key, "dataURL" | "dataUrl" | "base64") }
+fn inline_key(key: &str) -> bool { matches!(key, "dataURL" | "dataUrl" | "base64" | "displayPreview") }
 impl Serialize for DurableJson<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         CanonicalJson {value:self.0,strip:true}.serialize(serializer)
@@ -868,6 +871,7 @@ fn stage_prepared_workspace_unit(directory:&Path,prepared:&PreparedUnit,runtime:
             if let Some(artifacts) = run.get_mut("artifacts").and_then(Value::as_array_mut) {
                 for artifact in artifacts {
                     verify_memory_owner(&run_id,artifact)?;
+                    if crate::artifact_capture::verified(artifact){continue;}
                     // Batch evidence policy may intentionally retain only the
                     // verified image descriptor.  Keep the fact in the unit
                     // record, but do not turn a metadata-only image back into
@@ -880,6 +884,7 @@ fn stage_prepared_workspace_unit(directory:&Path,prepared:&PreparedUnit,runtime:
                             object.remove("assetRef");
                             object.remove("dataUrl");
                             object.remove("dataURL");
+                            object.remove("displayPreview");
                             object.remove("memoryRef");
                             object.remove("residentRaster");
                         }
@@ -1333,6 +1338,7 @@ fn artifact_of<'a>(unit: &'a Value, reference: &Value) -> Result<(&'a Value, &'a
 pub fn read_inspection_artifact(app: tauri::AppHandle, reference: Value) -> Result<Value, String> {
     let unit = read_unit(&app, &reference)?;
     let (run, artifact) = artifact_of(&unit, &reference)?;
+    if crate::artifact_capture::verified(artifact){return Err("此診斷產物未採集；請對指定圖片開啟 diagnostics 重跑".into());}
     if artifact.get("pixelRetention").and_then(Value::as_str) == Some("metadata-only") {
         return Err("此批次只保留產物摘要；若要查看像素，請重跑此工件或選擇保留全部圖像".into());
     }
@@ -1578,6 +1584,16 @@ pub fn open_external_run_file(
 mod portability_tests {
     use super::*;
     #[test]
+    fn transient_display_preview_is_not_a_durable_asset() {
+        let value=json!({"runs":[{"artifacts":[{"id":"overlay","width":1280,"displayPreview":{"schema":"agentcv-display-preview-1","reference":{"token":"process-local"}}}]}]});
+        let encoded=serde_json::to_vec(&DurableJson(&value)).unwrap();
+        let saved:Value=serde_json::from_slice(&encoded).unwrap();
+        assert!(saved["runs"][0]["artifacts"][0].get("displayPreview").is_none());
+        assert_eq!(saved["runs"][0]["artifacts"][0]["width"],1280);
+        let mut legacy=value.clone();strip_inline(&mut legacy);assert_eq!(legacy,saved);
+        assert!(value["runs"][0]["artifacts"][0]["displayPreview"].is_object());
+    }
+    #[test]
     fn canonical_serialization_preserves_bytes_for_all_small_key_orders_and_large_maps() {
         fn permutations(keys:&mut [&str],start:usize,cases:&mut usize) {
             if start<keys.len() {
@@ -1690,6 +1706,18 @@ mod portability_tests {
                 let mut filtered=request.clone();strip_inline(&mut filtered);serde_json::to_vec(&filtered).unwrap()
             });
         }
+    }
+    #[test]
+    fn uncaptured_json_roundtrips_without_a_fabricated_asset() {
+        let temp=scratch();let workspace=temp.join("workspace");fs::create_dir(&workspace).unwrap();
+        crate::workspace::write_workspace(&workspace,&json!({"schema":"agentcv-workspace-0.9","images":[]}).to_string()).unwrap();
+        let runtime=temp.join("runtime");fs::create_dir(&runtime).unwrap();
+        let artifact=json!({"id":"optional","type":"json","storage":"not-captured","collection":crate::artifact_capture::marker(),"hostCollectionVerified":true,"hostBytesVerified":false});
+        let request=json!({"executionId":"capture-execution","unit":{"id":"unit"},"runs":[{"runId":"capture-run","code":"unchanged code","artifacts":[artifact.clone()]}]});
+        let saved=save_workspace_unit(&workspace,request.clone(),&runtime).unwrap();
+        let read=read_workspace_unit(&saved["recordRef"]).unwrap();assert_eq!(read["runs"][0]["artifacts"][0],artifact);
+        let mut forged=request;forged["runs"][0]["artifacts"][0]["data"]=json!({});assert!(save_workspace_unit(&workspace,forged,&runtime).is_err());
+        fs::remove_dir_all(temp).unwrap();
     }
     #[test]
     fn leased_facts_and_artifact_bytes_survive_eviction_and_commit_without_private_handles() {

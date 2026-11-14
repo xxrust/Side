@@ -1,4 +1,4 @@
-import {jsonSnapshot,projectSnapshot} from './json-snapshot.js';
+import {jsonSnapshot,projectSnapshot,immutableJson} from './json-snapshot.js';
 import {serializeProject} from './project-serialization.js';
 import {canvasThreadMethods} from './canvas-thread-model.js';
 import {artifactGroupMethods} from './canvas-artifact-groups.js';
@@ -35,6 +35,7 @@ export class Project {
     catch(error){if(latest()){this.imageLoadErrors.set(id,String(error?.message||error));this.pixels.delete(id);for(const [key,thumbnail]of this.imageStore.thumbnails)if(thumbnail.imageId===id){this.imageStore.thumbnailBytes-=thumbnail.dataURL.length*2;this.imageStore.thumbnails.delete(key);}}throw error;}
   }
   readImageAsset(id){return this.observeImageLoad(id,record=>this.imageStore.read(record))}
+  async readImageDisplay(id){let display;try{return await this.observeImageLoad(id,async record=>display=await this.imageStore.readDisplay(record));}catch(error){display?.dispose();throw error;}}
   readImageThumbnail(id,options){return this.observeImageLoad(id,async record=>{if(this.imageLoadErrors.has(id))await this.imageStore.read(record);return this.imageStore.thumbnail(id,options)})}
   ensureImagePixels(id=this.data.activeId){return this.observeImageLoad(id,async record=>{if(this.imageLoadErrors.has(id))await this.imageStore.read(record);return this.imageStore.ensure(id)})}
   pinImages(ids){return this.imageStore.pin(ids)}
@@ -63,13 +64,18 @@ export class Project {
   on(fn){this.listeners.push(fn);return()=>this.listeners=this.listeners.filter(f=>f!==fn)}
   notify(){this.listeners.forEach(f=>f())}
   checkpoint(){this.undoStack.push(projectSnapshot(this.data));if(this.undoStack.length>30)this.undoStack.shift();this.redoStack=[];}
-  event(action,detail={}){this.data.events.push({id:uid(),at:new Date().toISOString(),action,image_id:this.data.activeId,...detail});this.dirty=true;this.notify();}
+  event(action,detail={}){this.data.events.push(immutableJson({id:uid(),at:new Date().toISOString(),action,image_id:this.data.activeId,...detail}));this.dirty=true;this.notify();}
   mutate(action,fn,detail={}){this.checkpoint();fn();this.event(action,detail)}
   undo(){if(!this.undoStack.length)return;this.redoStack.push(projectSnapshot(this.data));this.data=this.undoStack.pop();this.epoch++;this.pending.clear();this.imageStore.reset({keepCache:true});this.dirty=true;this.notify();}
   redo(){if(!this.redoStack.length)return;this.undoStack.push(projectSnapshot(this.data));this.data=this.redoStack.pop();this.epoch++;this.pending.clear();this.imageStore.reset({keepCache:true});this.dirty=true;this.notify();}
+  prepareLoadedData(data){}
   async load(data,decode){
     if(!['agentcv-project-0.5','agentcv-desktop-0.8'].includes(data.schema)||!Array.isArray(data.images))throw Error('不支援的專案格式');
-    const token=this.loadSequence=(this.loadSequence||0)+1,loadEpoch=this.epoch,next=clone(data),loadWarnings=[],knownFileIdentities=new Map(next.images.map(image=>[image.id,!!image.contentSha256||!!image.assetRef]));next.events=Array.isArray(next.events)?next.events:[];next.chat=Array.isArray(next.chat)?next.chat:[];
+    const token=this.loadSequence=(this.loadSequence||0)+1,loadEpoch=this.epoch,next=clone(data);
+    // Subclasses validate and normalize this detached candidate before decoding
+    // or publishing it. One private copy is enough for atomic load isolation.
+    this.prepareLoadedData(next);
+    const loadWarnings=[],knownFileIdentities=new Map(next.images.map(image=>[image.id,!!image.contentSha256||!!image.assetRef]));next.events=Array.isArray(next.events)?next.events:[];next.chat=Array.isArray(next.chat)?next.chat:[];
     next.config={revision:1,measurements:[],tolerances:[],classes:[],calibration:null,recipe:null,...next.config};
     const ids=new Set();this.imageStore.configure({decode});
     for(const img of next.images){
@@ -98,6 +104,7 @@ export class Project {
     const active=next.images.find(image=>image.id===next.activeId);let activeRaster;
     if(active){activeRaster=await decode(await this.imageStore.read(active));applyDecodedImage(active,activeRaster,loadWarnings,knownFileIdentities.get(active.id));if(rasterBytes(activeRaster)>this.pixels.maxBytes)throw Error('目前圖片超過像素快取預算，專案未被取代');}
     if(token!==this.loadSequence||this.epoch!==loadEpoch)throw Error('專案載入已被較新的操作取代');
+    next.events=next.events.map(event=>immutableJson(event));
     this.epoch++;this.pending.clear();this.data=next;this.imageStore.reset();if(activeRaster)this.pixels.set(active.id,activeRaster);this.loadWarnings=loadWarnings;this.imageLoadErrors.clear();this.undoStack=[];this.redoStack=[];this.dirty=false;this.notify();
   }
   async addImages(files,decode){

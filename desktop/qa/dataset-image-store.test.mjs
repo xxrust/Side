@@ -31,3 +31,41 @@ test('foreground real-image decode does not wait for a blocked background thumbn
  p.configureImageStore({readAsset:async()=>url,thumbnailer:async input=>{entered();await gate;const image=await loadImage(Buffer.from(input.split(',')[1],'base64'));return {dataURL:input,width:image.width,height:image.height};}});
  try{await p.load(data.project,realDecode);const thumb=p.readImageThumbnail('sample-1');await started;const decoded=await Promise.race([p.selectImage('sample-2'),new Promise((_,reject)=>setTimeout(()=>reject(Error('Foreground waited for thumbnail')),1000))]);assert.equal(decoded.width,size.width);assert.equal(p.image.id,'sample-2');release();await thumb;}finally{release();await fs.rm(data.root,{recursive:true,force:true});}
 });
+
+test('binary preparation preserves file integrity, coalescing, fallback and project-switch gates',async()=>{
+ const data=await setup(4),p=new Project();let binaryReads=0,byteDecodes=0,changed=false,release,entered;
+ let gate=null;const binary=()=>Uint8Array.from(changed?Buffer.concat([bytes,Buffer.from('changed')]):bytes).buffer;
+ p.configureImageStore({readAsset:async()=>url,readAssetBytes:async()=>{binaryReads++;if(gate){entered();await gate;}return binary();},decode:realDecode,decodeBytes:async(buffer,options)=>{byteDecodes++;const result=await realDecode('data:'+options.mime+';base64,'+Buffer.from(buffer).toString('base64'));assert.equal(result.contentSha256,options.expectedSha256);return result;}});
+ try{
+  await p.load(data.project,realDecode);
+  const [a,b]=await Promise.all([p.ensureImagePixels('sample-1'),p.ensureImagePixels('sample-1')]);assert.equal(a,b);assert.equal(binaryReads,1);assert.equal(byteDecodes,1);assert.equal(a.contentSha256,hash);
+  changed=true;await assert.rejects(p.ensureImagePixels('sample-2'),/長度/);assert.equal(byteDecodes,1);assert.equal(p.pixels.has('sample-2'),false);
+  changed=false;let started=new Promise(resolve=>entered=resolve);gate=new Promise(resolve=>release=resolve);
+  const pending=p.ensureImagePixels('sample-3');await started;p.newProject();release();await assert.rejects(pending,/專案已改變/);assert.equal(byteDecodes,1);assert.equal(p.pixels.size,0);
+ }finally{release?.();await fs.rm(data.root,{recursive:true,force:true});}
+});
+
+test('binary display snapshots preserve original bytes, reject bad identity and revoke their own URL',async()=>{
+ const data=await setup(1),p=new Project();let supplied=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
+ p.configureImageStore({readAsset:async()=>url,readAssetBytes:async()=>supplied});
+ try{
+  await p.load(data.project,realDecode);
+  const display=await p.readImageDisplay('sample-0');assert.ok(display.src.startsWith('blob:'));
+  const actual=Buffer.from(await (await fetch(display.src)).arrayBuffer());assert.deepEqual(actual,bytes);
+  const image=await loadImage(actual);assert.equal(image.width,size.width);assert.equal(image.height,size.height);
+  display.dispose();display.dispose();await assert.rejects(fetch(display.src));
+  const priorReader=globalThis.FileReader;
+  globalThis.FileReader=class{readAsDataURL(blob){blob.arrayBuffer().then(raw=>{this.result='data:'+blob.type+';base64,'+Buffer.from(raw).toString('base64');this.onload();},error=>{this.error=error;this.onerror();});}};
+  try{assert.equal(await display.snapshot(),url,'a captured discussion snapshot remains portable after display URL retirement');}finally{if(priorReader===undefined)delete globalThis.FileReader;else globalThis.FileReader=priorReader;}
+
+  supplied=new ArrayBuffer(bytes.length-1);await assert.rejects(p.readImageDisplay('sample-0'),/長度/);
+  supplied=new ArrayBuffer(bytes.length);await assert.rejects(p.readImageDisplay('sample-0'),/雜湊/);
+  supplied=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
+  p.image.contentSha256='0'.repeat(64);await assert.rejects(p.readImageDisplay('sample-0'),/雜湊/);
+ }finally{await fs.rm(data.root,{recursive:true,force:true});}
+});
+test('binary display does not create a URL for a retired project read',async()=>{
+ const data=await setup(1),p=new Project();let release;
+ p.configureImageStore({readAsset:async()=>url,readAssetBytes:()=>new Promise(resolve=>release=resolve)});
+ try{await p.load(data.project,realDecode);const pending=p.readImageDisplay('sample-0');p.newProject();release(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));await assert.rejects(pending,/專案已改變/);assert.equal(p.imageLoadErrors.size,0);}finally{await fs.rm(data.root,{recursive:true,force:true});}
+});

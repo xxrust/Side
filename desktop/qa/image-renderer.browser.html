@@ -2,8 +2,9 @@
 <meta charset="utf-8">
 <title>Image renderer regression</title>
 <style>body{margin:0;background:#0b1820;color:#dce9ef;font:14px sans-serif}button{color:inherit;background:#203943;border:1px solid #52706f}*{box-sizing:border-box}</style>
+<pre id="result" role="status" style="white-space:pre-wrap">RUNNING</pre>
 <script type="module">
  import {runImageRendererChecks} from './image-renderer.browser.mjs';
  window.rendererCheck=runImageRendererChecks();
- window.rendererCheck.then(result=>{window.rendererResult=result;console.log(result);}).catch(error=>{window.rendererError=error.stack;console.error(error);});
+ window.rendererCheck.then(result=>{window.rendererResult=result;document.getElementById('result').textContent='PASS\n'+JSON.stringify(result,null,2);console.log(result);}).catch(error=>{window.rendererError=error.stack;document.getElementById('result').textContent='FAIL\n'+error.stack;console.error(error);});
 </script>

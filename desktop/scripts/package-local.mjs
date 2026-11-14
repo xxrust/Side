@@ -6,6 +6,7 @@ import {installLocalBundle} from './install-local-bundle.mjs';
 const desktop=path.resolve(import.meta.dirname,'..'),repo=path.dirname(desktop);
 const cli=path.join(desktop,'node_modules/.bin/tauri'),staging=path.join(desktop,'runtime/local-package-target');
 function run(cmd,args,env=process.env){const r=spawnSync(cmd,args,{cwd:desktop,stdio:'inherit',env});if(r.error)throw r.error;if(r.status!==0)throw Error(cmd+' exited '+r.status);}
+run(process.execPath,[path.join(desktop,'scripts/check-selection-regression.mjs')]);
 run(cli,['build','--no-bundle']);
 await fs.mkdir(path.join(staging,'release'),{recursive:true});
 await fs.copyFile(path.join(desktop,'src-tauri/target/release/agentcv-desktop'),path.join(staging,'release/agentcv-desktop'));

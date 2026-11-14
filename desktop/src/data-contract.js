@@ -1,3 +1,4 @@
+import {isUncapturedArtifact} from './diagnostic-capture.js';
 import validateContract from './data-contract-schema.generated.js';
 
 const record=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
@@ -76,6 +77,11 @@ export function auditDataContracts(run,expected,{scheme,upstream}={}){
   const a=run.artifacts?.find(a=>a.id===output.id),add=(code,message)=>errors.push(issue(code,path,message));
   if(!a){if(run.result?.valid!==false)add('DATA_OUTPUT_MISSING',`缺少宣告的產物 ${output.id}。`);continue;}
   if((a.type==='json'?'evidence':a.type)!==transport(c)){add('DATA_OUTPUT_TYPE_MISMATCH',`${output.id} 的實際儲存型別不符合 ${c.kind}。`);continue;}
+  if(a.collection!==undefined){
+   const consumed=scheme?.operatorGraph?.nodes?.some(node=>Object.values(node.inputs||{}).some(input=>input.nodeId===run.schemeNodeId&&input.artifactId===a.id));
+   if(c.kind!=='json'||!isUncapturedArtifact(a)||consumed){add('DATA_OUTPUT_NOT_CAPTURED','必要或未經核對的產物不可省略採集。');continue;}
+   bindings[output.id]={dataContract:c,frames:[],collection:a.collection};continue;
+  }
   const resolved=frames(c).map(coord=>frameBinding(coord,run,scheme,upstream));
   if(resolved.some(b=>!b))add('DATA_FRAME_UNRESOLVED',`${output.id} 的座標系未能綁定本次真實圖像。`);
   bindings[output.id]={dataContract:c,frames:resolved.filter(Boolean)};

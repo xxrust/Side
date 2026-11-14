@@ -6,7 +6,7 @@ use std::{collections::{BTreeMap,BTreeSet,VecDeque},fs,io::{BufRead,BufReader,Re
 static WORKER: Mutex<Option<Worker>>=Mutex::new(None);
 static PLANS: Mutex<VecDeque<(String,String,Arc<Value>)>>=Mutex::new(VecDeque::new());
 const MAX_REPLY: usize=16*1024;
-struct Worker {key:String, child:Child, channel:BufReader<TcpStream>, root:PathBuf, calls:u64,originals:BTreeSet<String>}
+struct Worker {key:String, child:Child, channel:BufReader<TcpStream>, root:PathBuf, calls:u64,prepared:bool,originals:BTreeSet<String>}
 impl Drop for Worker {
  fn drop(&mut self){
   #[cfg(unix)] unsafe{libc::kill(-(self.child.id() as i32),libc::SIGKILL);}
@@ -54,10 +54,8 @@ pub fn resolve_plan(request:&Value)->Result<Option<ResolvedPlan>,String>{
  }
  Ok(Some(ResolvedPlan{key,definition}))
 }
-pub struct Receipt{pub pid:u32,pub call:u64,pub cold:bool,pub elapsed_ms:f64,pub original_transfer_bytes:usize,pub live_images:BTreeMap<String,Vec<u8>>,pub report:Option<Value>,pub artifacts:BTreeMap<String,Vec<u8>>,pub exchange_timing:Value}
-pub fn execute(key:&str,script:&Path,root:&Path,make_command:impl FnOnce()->Result<Command,String>,request:&Path,memory_request:Option<&[u8]>,originals:&[crate::original_resources::Original],directory:&Path,seconds:u64)->Result<Receipt,String>{
- let started=Instant::now();let key=format!("{key}:{}:{}:{}",root.display(),script.display(),fs::metadata(script).and_then(|m|m.modified()).map(|v|format!("{v:?}")).unwrap_or_default());
- let mut slot=WORKER.lock().map_err(|e|e.to_string())?;
+fn ensure_worker(slot:&mut Option<Worker>,key:&str,script:&Path,root:&Path,make_command:impl FnOnce()->Result<Command,String>,seconds:u64)->Result<bool,String>{
+ let key=format!("{key}:{}:{}:{}",root.display(),script.display(),fs::metadata(script).and_then(|m|m.modified()).map(|v|format!("{v:?}")).unwrap_or_default());
  let cold=slot.as_ref().map(|w|w.key!=key).unwrap_or(true);
  if cold{
   *slot=None;fs::create_dir_all(root).map_err(|e|e.to_string())?;
@@ -79,9 +77,70 @@ pub fn execute(key:&str,script:&Path,root:&Path,make_command:impl FnOnce()->Resu
   stream.set_nonblocking(false).map_err(|e|e.to_string())?;
   stream.set_nodelay(true).map_err(|e|e.to_string())?;
   stream.set_read_timeout(Some(Duration::from_secs(seconds))).map_err(|e|e.to_string())?;stream.set_write_timeout(Some(Duration::from_secs(seconds))).map_err(|e|e.to_string())?;
-  let mut worker=Worker{key,child,channel:BufReader::new(stream),root:cache_root,calls:0,originals:BTreeSet::new()};
+  let mut worker=Worker{key,child,channel:BufReader::new(stream),root:cache_root,calls:0,prepared:false,originals:BTreeSet::new()};
   let hello=line(&mut worker.channel)?;if hello["token"]!=token||hello["protocol"]!="agentcv-resident-3"{return Err("常駐協議握手失敗".into());}*slot=Some(worker);
  }
+ Ok(cold)
+}
+// Prepare standard libraries only. No operator request, image or call counter
+// is consumed, and preparation errors invalidate the worker before retry.
+pub fn prepare(key:&str,script:&Path,root:&Path,make_command:impl FnOnce()->Result<Command,String>)->Result<Value,String>{
+ let start=Instant::now();let mut slot=WORKER.lock().map_err(|e|e.to_string())?;
+ let cold=ensure_worker(&mut slot,key,script,root,make_command,60)?;
+ let worker=slot.as_mut().unwrap();
+ if !worker.prepared {
+  let outcome=(||{
+   worker.channel.get_mut().set_read_timeout(Some(Duration::from_secs(60))).map_err(|e|e.to_string())?;
+   worker.channel.get_mut().write_all(b"{\"operation\":\"prepare\"}\n").map_err(|e|e.to_string())?;
+   let reply=line(&mut worker.channel)?;
+   if reply["operation"]!="prepare"||reply["ok"]!=true{return Err("常駐環境準備失敗".to_owned());}
+   Ok(())
+  })();
+  if let Err(error)=outcome{*slot=None;return Err(error);}
+  worker.prepared=true;
+ }
+ Ok(json!({"ready":true,"coldStart":cold,"pid":worker.child.id(),"calls":worker.calls,"preparationMs":start.elapsed().as_secs_f64()*1000.}))
+}
+// A batch may overlap exact-source compilation with its UI preflight. No
+// image frames, runtime call counters, execution globals or artifacts are used.
+pub fn prepare_programs(key:&str,script:&Path,root:&Path,codes:&[String],make_command:impl FnOnce()->Result<Command,String>)->Result<Value,String>{
+ if codes.len()>32||codes.iter().map(String::len).sum::<usize>()>4*1024*1024{return Err("PROGRAM_PREPARATION_LIMIT".into());}
+ let bytes=serde_json::to_vec(codes).map_err(|e|e.to_string())?;
+ if bytes.len()>8*1024*1024{return Err("PROGRAM_PREPARATION_FRAME_LIMIT".into());}
+ let started=Instant::now();let mut slot=WORKER.lock().map_err(|e|e.to_string())?;
+ let cold=ensure_worker(&mut slot,key,script,root,make_command,60)?;
+ let worker=slot.as_mut().unwrap();
+ let result=(||{
+  worker.channel.get_mut().set_read_timeout(Some(Duration::from_secs(60))).map_err(|e|e.to_string())?;
+  worker.channel.get_mut().set_write_timeout(Some(Duration::from_secs(60))).map_err(|e|e.to_string())?;
+  writeln!(worker.channel.get_mut(),"{}",json!({"operation":"prepare-programs","sourceBytes":bytes.len()})).map_err(|e|e.to_string())?;
+  worker.channel.get_mut().write_all(&bytes).map_err(|e|e.to_string())?;
+  let mut reply=line(&mut worker.channel)?;
+  if reply["operation"]!="prepare-programs"||reply["ok"]!=true||reply["prepared"].as_u64().zip(reply["rejected"].as_u64()).is_none_or(|(a,b)|a.checked_add(b)!=Some(codes.len() as u64)){return Err("PROGRAM_PREPARATION_REPLY_INVALID".into());}
+  reply["coldStart"]=json!(cold);reply["pid"]=json!(worker.child.id());reply["calls"]=json!(worker.calls);reply["preparationMs"]=json!(started.elapsed().as_secs_f64()*1000.);
+  Ok(reply)
+ })();
+ if result.is_err(){*slot=None;}result
+}
+// Keep the same serial channel and worker identity; never collect a newer run.
+pub fn collect_garbage(pid:u32,call:u64,id:&str)->Result<Value,String>{
+ let started=Instant::now();let mut slot=WORKER.lock().map_err(|e|e.to_string())?;
+ let worker=slot.as_mut().ok_or("MAINTENANCE_WORKER_MISSING")?;
+ if worker.child.id()!=pid||worker.calls!=call{return Err("MAINTENANCE_WORKER_CHANGED".into());}
+ let result=(||{
+  worker.channel.get_mut().set_read_timeout(Some(Duration::from_secs(10))).map_err(|e|e.to_string())?;
+  worker.channel.get_mut().write_all(format!("{}\n",json!({"operation":"collect-garbage","id":id,"pid":pid,"call":call})).as_bytes()).map_err(|e|e.to_string())?;
+  worker.channel.get_mut().flush().map_err(|e|e.to_string())?;
+  let mut reply=line(&mut worker.channel)?;
+  if reply["operation"]!="collect-garbage"||reply["id"]!=id||reply["pid"]!=pid||reply["call"]!=call||reply["ok"]!=true{return Err("MAINTENANCE_RECEIPT_INVALID".into());}
+  reply["roundTripMs"]=json!(started.elapsed().as_secs_f64()*1000.);Ok(reply)
+ })();
+ if result.is_err(){*slot=None;}result
+}
+pub struct Receipt{pub pid:u32,pub call:u64,pub cold:bool,pub elapsed_ms:f64,pub original_transfer_bytes:usize,pub live_images:BTreeMap<String,Vec<u8>>,pub report:Option<Value>,pub artifacts:BTreeMap<String,Vec<u8>>,pub exchange_timing:Value}
+pub fn execute(key:&str,script:&Path,root:&Path,make_command:impl FnOnce()->Result<Command,String>,request:&Path,memory_request:Option<&[u8]>,originals:&[crate::original_resources::Original],directory:&Path,seconds:u64)->Result<Receipt,String>{
+ let started=Instant::now();let mut slot=WORKER.lock().map_err(|e|e.to_string())?;
+ let cold=ensure_worker(&mut slot,key,script,root,make_command,seconds)?;
  let worker=slot.as_mut().unwrap();worker.calls+=1;let call=worker.calls;let pid=worker.child.id();
  worker.channel.get_mut().set_read_timeout(Some(Duration::from_secs(seconds))).map_err(|e|e.to_string())?;
  worker.channel.get_mut().set_write_timeout(Some(Duration::from_secs(seconds))).map_err(|e|e.to_string())?;

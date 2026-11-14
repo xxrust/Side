@@ -15,7 +15,7 @@ export function resolveNodeOutput(project,{schemeNodeId}={}){
  const base={schemeNodeId,title:node?purposeNodeTitle(scheme,node):'節點輸出',imageId:activeId,run:null,artifacts:[],live:false,unitId:null,executionId:null,recordRef:null};
  const empty=(status,reason,extra={})=>({...base,status,reason,...extra,artifacts:[]});
  if(!node)return empty('WAITING','請選擇方案節點');
- const basis=schemeFingerprint(scheme),live=activeWorkpieceExecution(project);
+ const basis=schemeFingerprint(scheme),active=activeWorkpieceExecution(project),live=active&&(active.selectionRevision===undefined||active.selectionRevision===(project.imageSelection??0))?active:null;
  const completed=completedWorkpiece(project),display=completed?.schemeFingerprint===basis?completed:null;
  let unit,execution,displayRuns;
  const liveRun=live&&list(live.runIds).map(id=>list(data.algorithmRuns).find(r=>r.runId===id)).find(r=>r?.schemeNodeId===schemeNodeId);

@@ -1,3 +1,6 @@
+import {beginPendingInputPreparation} from './pending-input-preparation.js';
+import {createWorkpieceInputPrefetch} from './workpiece-input-prefetch.js';
+const qaPhase=phase=>{if(import.meta.env?.VITE_INSPECTION_QA==='1')globalThis.AgentCVDesktop?.qaExecutionPhase?.(phase);};
 import {baselineRunOptions,currentAgreement} from './project-acceptance.js';
 import {validateProjectScheme} from './scheme-validation.js';
 import {buildDecisionEvidence} from './decision-evidence.js';
@@ -13,7 +16,7 @@ import {compileScheme,schemeFingerprint} from './purpose-compiler.js';
 import {algorithmExecutionContext as algorithmContext,runAlgorithm,beginCompiledSession} from './algorithm-workspace.js';
 import {classifyWorkpiece} from './classification-spec.js';
 import {DEFAULT_BATCH_ARTIFACT_RETENTION,normalizeArtifactRetention,retainDatasetArtifacts,datasetArtifactRetentionDecision,applyDatasetArtifactRetention} from './artifact-retention.js';
-import {immutableJson,projectSnapshot} from './json-snapshot.js';
+import {immutableJson,projectSnapshot,isImmutableJson} from './json-snapshot.js';
 import {jsonDataEqual} from './json-data-equal.js';
 const clone=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
 const executionError=error=>({type:error?.name||'Error',message:String(error?.message||error)});
@@ -65,8 +68,11 @@ function defaultWorkpieceCount(project,sourceId){
  return Math.max(0,total-removed);
 }
 export async function runDatasetScheme(project,execute,options={}){
+ if(options.expectedSchemeFingerprint&&schemeFingerprint(project.data.purposeScheme)!==options.expectedSchemeFingerprint)throw Error('目前方案與指定診斷紀錄不同；未以新方案冒充同條件重跑');
  if(options.baselineId)options={...options,...baselineRunOptions(project,options.baselineId,{actor:options.baselineActor})};
+ qaPhase('runner-validation-start');
  const compilation=validateProjectScheme(project,project.data.purposeScheme,{mode:'scheme'});
+ qaPhase('runner-validation-complete');
  if(!compilation.ok){const error=Error('方案未編譯：先讀errors/questions補齊分類、前提、依據。');error.code='SCHEME_COMPILE_FAILED';error.audit=compilation;throw error;}
  if(project.data.purposeScheme?.execution?.unit!=='workpiece')throw Error('逐件runner需要execution.unit=workpiece；舊方案請使用legacy入口。');
  if(schemeRequiresPhysicalCalibration(project.data.purposeScheme)){
@@ -81,62 +87,99 @@ export async function runDatasetScheme(project,execute,options={}){
   if(invalid.length){const error=Error('方案需要已確認的實測標定；目前至少一張輸入仍是 UNKNOWN 或只有理論比例，已阻止毫米判定。');error.code='CALIBRATION_REQUIRED';error.details={required:'VALID',invalid};throw error;}
  }
  if(datasetLocks.has(project))throw Error('本專案已有逐件檢測正在執行，請先完成或取消。');
- datasetLocks.add(project);
- const scheme=clone(project.data.purposeScheme),basis=schemeFingerprint(scheme),epoch=project.epoch,workflowRevision=project.workflow.revision,byNode=new Map(scheme.operatorGraph.nodes.map(n=>[n.id,n])),nodes=compilation.order.map(id=>byNode.get(id));
+ datasetLocks.add(project);let inputUnits;
+ try{
+ const scheme=clone(project.data.purposeScheme),basis=schemeFingerprint(scheme),epoch=project.epoch,selectionRevision=project.imageSelection??0,workflowRevision=project.workflow.revision,byNode=new Map(scheme.operatorGraph.nodes.map(n=>[n.id,n])),nodes=compilation.order.map(id=>byNode.get(id));
+ // Start only compilation, after validation/locking. Its wait remains inside
+ // the first click-to-completion interval and can overlap checkpoint copying.
+ let programPreparation=null;
+ if(options.preparePrograms){
+  qaPhase('runner-program-preparation-start');
+  try{programPreparation=Promise.resolve(options.preparePrograms(scheme)).then(value=>({ready:true,value}),error=>({ready:false,error:String(error?.message||error)}));}
+  catch(error){programPreparation=Promise.resolve({ready:false,error:String(error?.message||error)});}
+ }
  const total=options.total??(Array.isArray(options.units)?options.units.length:options.units?null:defaultWorkpieceCount(project,options.sourceId));
  // Generic callers keep the historical full evidence behavior. The desktop
  // batch entry point opts into the bounded diagnostic policy explicitly.
  const artifactRetention=normalizeArtifactRetention(options.artifactRetention,options.artifactRetention?DEFAULT_BATCH_ARTIFACT_RETENTION:{...DEFAULT_BATCH_ARTIFACT_RETENTION,mode:'all'});
  const resumeEntry=options.resumeExecutionId?(project.data.datasetExecutions||[]).find(candidate=>candidate.id===options.resumeExecutionId):null;
  if(options.resumeExecutionId&&(!resumeEntry||resumeEntry.schemeFingerprint!==basis||resumeEntry.sourceId!==(options.sourceId||null)))throw Error('指定的資料集執行不存在，或與目前方案／圖像源不一致，不能續跑。');
- const entry=resumeEntry?projectSnapshot(resumeEntry):{schema:'agentcv-dataset-execution-1',evidenceContract:'per-operator-triad-and-timing-1',timingRequirement:clone(scheme.execution?.timingRequirement||null),id:id(),schemeFingerprint:basis,sourceId:options.sourceId||null,status:'RUNNING',processed:0,total,units:[],artifactRetention,artifactRetentionSummary:{units:0,imageArtifacts:0,retainedImageArtifacts:0,metadataOnlyImageArtifacts:0,fullPixelUnits:0},counts:{execution:{COMPLETED:0,FAULT:0,CANCELLED:0},categories:Object.fromEntries(scheme.classificationSpec.categories.map(c=>[c.id,0])),exits:{FAULT:0,CANCELLED:0,...Object.fromEntries(scheme.classificationSpec.categories.map(c=>['PRODUCT:'+c.id,0]))},evidence:{ready:0,notReady:0},regression:createClassificationMetrics(scheme.classificationSpec.categories)},startedAt:new Date().toISOString(),retention:options.saveUnitResult?'durable-unit-records':'project-memory',cancellationPolicy:'between-node; active worker finishes or its configured timeout terminates it',humanConfirmed:false,delivered:false};
+ const entry=resumeEntry?(isImmutableJson(resumeEntry)?{...clone({...resumeEntry,units:undefined,schemeSnapshot:undefined}),units:resumeEntry.units.slice(),schemeSnapshot:resumeEntry.schemeSnapshot}:projectSnapshot(resumeEntry)):{schema:'agentcv-dataset-execution-1',evidenceContract:'per-operator-triad-and-timing-1',timingRequirement:clone(scheme.execution?.timingRequirement||null),id:id(),schemeFingerprint:basis,sourceId:options.sourceId||null,status:'RUNNING',processed:0,total,units:[],artifactRetention,artifactRetentionSummary:{units:0,imageArtifacts:0,retainedImageArtifacts:0,metadataOnlyImageArtifacts:0,fullPixelUnits:0},counts:{execution:{COMPLETED:0,FAULT:0,CANCELLED:0},categories:Object.fromEntries(scheme.classificationSpec.categories.map(c=>[c.id,0])),exits:{FAULT:0,CANCELLED:0,...Object.fromEntries(scheme.classificationSpec.categories.map(c=>['PRODUCT:'+c.id,0]))},evidence:{ready:0,notReady:0},regression:createClassificationMetrics(scheme.classificationSpec.categories)},startedAt:new Date().toISOString(),retention:options.saveUnitResult?'durable-unit-records':'project-memory',cancellationPolicy:'between-node; active worker finishes or its configured timeout terminates it',humanConfirmed:false,delivered:false};
  if(resumeEntry){entry.status='RUNNING';entry.total=entry.total??total;entry.startedAt=new Date().toISOString();delete entry.finishedAt;delete entry.error;delete entry.activeUnit;entry.retention=options.saveUnitResult?'durable-unit-records':entry.retention;}
  // One user-level undo boundary. Internal node records are durable observations,
  // not a reason to clone the entire dataset into undo once per workpiece.
  entry.schemeSnapshot=immutableJson(scheme);
  if(options.baselineId){entry.baselineId=options.baselineId;entry.acceptanceAgreementId=currentAgreement(project)?.id||null;entry.baselineActor=options.baselineActor;}
- project.checkpoint();
+ inputUnits=createWorkpieceInputPrefetch(project,unitsFrom(project,options),{enabled:options.prefetchInputs===true&&(!options.units||Array.isArray(options.units)),deferPreparation:options.deferInputPrefetch,signal:options.signal,isCurrent:()=>project.epoch===epoch&&project.workflow.revision===workflowRevision&&schemeFingerprint(project.data.purposeScheme)===basis});
+ if(!resumeEntry)await inputUnits.prime();
+ if(project.epoch!==epoch||project.workflow.revision!==workflowRevision||schemeFingerprint(project.data.purposeScheme)!==basis)throw Error('方案／專案在批次準備期間改變；停止派發。');
+ qaPhase('runner-checkpoint-start');project.checkpoint();qaPhase('runner-checkpoint-complete');
+ if(programPreparation){
+  entry.programPreparation=await programPreparation;qaPhase('runner-program-preparation-complete');
+  if(project.epoch!==epoch||project.workflow.revision!==workflowRevision||schemeFingerprint(project.data.purposeScheme)!==basis)throw Error('方案／專案在程式準備期間改變；停止派發。');
+ }
+
  project.data.datasetExecutions||=[];if(resumeEntry)project.data.datasetExecutions[project.data.datasetExecutions.indexOf(resumeEntry)]=entry;else project.data.datasetExecutions.push(entry);
  let timeSum=0,timeMax=0,cycleSum=0,cycleMax=0;const cycles=[];
  const started=performance.now(),times=[],releaseSession=beginCompiledSession(project,compilation);let latestUnitRunIds=durableLiveRuns.get(project)?.epoch===epoch?durableLiveRuns.get(project).ids:[];const pendingEviction=new Set();
  const emit=()=>{if(entry.status!=='RUNNING')finalizeClassificationMetrics(entry.counts.regression);entry.timing={clock:'monotonic',elapsedMs:performance.now()-started,unitMs:entry.status==='RUNNING'?{count:times.length,mean:times.length?timeSum/times.length:null,p50:null,p95:null,max:times.length?timeMax:null}:summarize(times),cycleMs:entry.status==='RUNNING'?{count:cycles.length,mean:cycles.length?cycleSum/cycles.length:null,p50:null,p95:null,max:cycles.length?cycleMax:null}:summarize(cycles),cycleIncludesDurableSave:!!options.saveUnitResult&&options.nativeCommit?.mode!=='background',cycleScope:options.nativeCommit?.mode==='background'?'unit-start to classification and owned archive queue admission; excludes background archival and subsequent UI presentation':'unit-start to durable-save completion (or classification completion without durable save); excludes subsequent UI presentation',scope:'batch wall elapsed including host callbacks and inter-unit UI work; not a sum of operator durations',includes:['image-read','node-dispatch','algorithm','artifact-verification','unit-save','host-callbacks-and-inter-unit-UI'],excludes:['Agent-planning']};project.event('dataset_execution_progress',{executionId:entry.id,status:entry.status,processed:entry.processed,total:entry.total,counts:clone(entry.counts)});options.onProgress?.({...entry,units:entry.units.slice(-1),counts:clone(entry.counts),timing:clone(entry.timing),activeUnit:clone(entry.activeUnit)});};
  try{
-  for await(const unit of unitsFrom(project,options)){
+  for await(const unit of inputUnits){
    if(resumeEntry&&entry.units.some(saved=>saved.unitId===unit.id))continue;
    if(options.signal?.aborted){entry.status='CANCELLED';break;}
    if(project.epoch!==epoch||project.workflow.revision!==workflowRevision||schemeFingerprint(project.data.purposeScheme)!==basis)throw Error('方案／專案在批次執行期間改變；已保存單件仍保留，停止派發。');
    const imageIds=unit.imageIds||Object.values(unit.views||{});
+   if(import.meta.env?.VITE_INSPECTION_QA==='1')globalThis.AgentCVDesktop?.qaWorkpieceStarted?.({executionId:entry.id,unitId:unit.id,imageIds});
    if(!unit.id||!Array.isArray(imageIds)||!imageIds.length||new Set(imageIds).size!==imageIds.length)throw Error('單件需要穩定id及不重複imageIds；多視圖只能屬於同一工件。');
    if(scheme.execution.inputSlots.length>1){if(!unit.views||scheme.execution.inputSlots.some(s=>s.required&&!unit.views[s.id])||Object.values(unit.views).some(imageId=>!imageIds.includes(imageId)))throw Error('同件多視圖需views:{slotId:imageId}，不得把資料集誤當多視圖。');}
    else if(imageIds.length!==1)throw Error('單視圖方案每件只能一張圖；多視圖須先聲明inputSlots並提供views。');
    // Keep the completed display until the next unit has a verified replacement.
    beginWorkpieceArtifactPixels(project,unit.id,{preserveDisplay:true});
    const referenceInputs=scheme.execution.referenceInputs||{},referenceIds=[...new Set(Object.values(referenceInputs))],inputIds=[...new Set([...imageIds,...referenceIds])];
-   let releaseInputs=()=>{},inputFault=null;
+   let releaseInputs=()=>{},inputFault=null,pendingInputs=null,inputVerification,inputVerificationError=null,inputVerificationMs=null,nativeInputCancelled=false;
    const expectedResolution=resolveWorkpieceExpected(project,unit,scheme);
    const referenceIdentities=Object.fromEntries(Object.entries(referenceInputs).map(([slot,id])=>[slot,project.imageIdentity?.(id)||{imageId:id}]));
    let publishMs=0,inputReadMs=0,nativeSessionTiming=null,nativeDecision=null,nativeCommit=null,publishNativeRuns=null;const unitStart=performance.now(),runMap=new Map(),nodeStates=[],runs=[];
-   const publish=(phase,currentNodeId=null)=>{const publishStart=performance.now();const states=nodes.map(n=>clone(nodeStates.find(s=>s.nodeId===n.id)||{nodeId:n.id,status:n.id===currentNodeId?'RUNNING':'PENDING'}));aggregatePurposeStates(scheme.operatorGraph.nodes,states);const live={executionId:entry.id,schemeFingerprint:basis,unitId:unit.id,imageIds:clone(imageIds),views:clone(unit.views||null),referenceInputs:clone(referenceInputs),nodeStates:states,runIds:runs.map(r=>r.runId),phase,currentNodeId};entry.activeUnit=live;publishWorkpieceExecution(project,live);project.event('workpiece_execution_progress',{executionId:entry.id,unitId:unit.id,phase,nodeId:currentNodeId});options.onNodeProgress?.(clone(live));publishMs+=performance.now()-publishStart;};
+   const publish=(phase,currentNodeId=null)=>{const publishStart=performance.now();const states=nodes.map(n=>clone(nodeStates.find(s=>s.nodeId===n.id)||{nodeId:n.id,status:n.id===currentNodeId?'RUNNING':'PENDING'}));aggregatePurposeStates(scheme.operatorGraph.nodes,states);const live={selectionRevision,executionId:entry.id,schemeFingerprint:basis,unitId:unit.id,imageIds:clone(imageIds),views:clone(unit.views||null),referenceInputs:clone(referenceInputs),nodeStates:states,runIds:runs.map(r=>r.runId),phase,currentNodeId};entry.activeUnit=live;publishWorkpieceExecution(project,live);project.event('workpiece_execution_progress',{executionId:entry.id,unitId:unit.id,phase,nodeId:currentNodeId});options.onNodeProgress?.(clone(live));publishMs+=performance.now()-publishStart;};
    const recordNodeState=value=>{nodeStates.push(value);publish('node-completed');};
-   publish('unit-started');
+   qaPhase('runner-unit-start');publish('unit-started');
    try{
    const inputReadStart=performance.now();
-   try{if(referenceIds.some(id=>imageIds.includes(id)))throw Error('固定參考圖不可同時當作本件待檢圖；請分開referenceInputs與工件圖像源。');releaseInputs=project.pinImages?.(inputIds)||(()=>{});if(project.ensureImagePixels)for(const imageId of inputIds)await project.ensureImagePixels(imageId);}
+   try{if(referenceIds.some(id=>imageIds.includes(id)))throw Error('固定參考圖不可同時當作本件待檢圖；請分開referenceInputs與工件圖像源。');releaseInputs=project.pinImages?.(inputIds)||(()=>{});
+    if(options.parallelInputVerification===true&&options.executeSession&&options.fileBackedInputs===true&&project.ensureImagePixels&&nodes.every(n=>!n.nativePlan)&&inputIds.some(id=>!project.pixels.has(id)))pendingInputs=beginPendingInputPreparation(project,inputIds);
+    const load=async()=>{if(project.ensureImagePixels)for(const imageId of inputIds)await project.ensureImagePixels(imageId);};
+    if(pendingInputs){
+     const expected=algorithmContext(project,{imageIds:inputIds,inputPreparation:pendingInputs.token}).source;
+     inputVerification=load().then(()=>{
+      const actual=algorithmContext(project,{imageIds:inputIds}).source;
+      if(!jsonDataEqual(actual,expected))throw Error('原圖核驗後身分改變，未採用預先派發結果');
+      inputVerificationMs=performance.now()-inputReadStart;qaPhase('runner-input-ready');return actual;
+     }).catch(error=>{inputVerificationError=error;throw error;});
+     inputVerification.catch(()=>{});
+    }else await load();
+   }
    catch(error){if(project.epoch!==epoch)throw error;inputFault={phase:'input-read',status:'FAULT',reason:'INPUT_UNAVAILABLE',imageIds:clone(imageIds),error:executionError(error),durationMs:performance.now()-unitStart};}
-   inputReadMs=performance.now()-inputReadStart;
-   const argsForNode=(node,upstream={})=>{const context=algorithmContext(project,{imageIds:inputIds});return {mode:'scheme',scheme_node_id:node.id,title:node.title||node.id,code:node.code,parameters_json:JSON.stringify(node.parameters||{}),source:context.source,image_ids:inputIds,referenceInputs,upstream,documentation:node.documentation,justification:{...clone(node.justification),meta:{...clone(node.justification?.meta),sourceFingerprint:context.sourceFingerprint}},expected_outputs:node.expected_outputs,fileBackedInputs:options.fileBackedInputs===true,artifactMode:options.artifactMode|| (options.saveUnitResult?'references':'inline'),workpieceUnit:{id:unit.id,imageIds,views:unit.views||null}};};
+   inputReadMs=performance.now()-inputReadStart;if(!pendingInputs)qaPhase('runner-input-ready');else qaPhase('runner-input-verification-overlapped');
+   const argsForNode=(node,upstream={})=>{const context=algorithmContext(project,{imageIds:inputIds,inputPreparation:pendingInputs?.token});return {mode:'scheme',scheme_node_id:node.id,title:node.title||node.id,code:node.code,parameters_json:JSON.stringify(node.parameters||{}),source:context.source,image_ids:inputIds,referenceInputs,upstream,documentation:node.documentation,justification:{...clone(node.justification),meta:{...clone(node.justification?.meta),sourceFingerprint:context.sourceFingerprint}},expected_outputs:node.expected_outputs,fileBackedInputs:options.fileBackedInputs===true,...(pendingInputs?{inputPreparation:pendingInputs.token}:{}),procedureValueCapture:options.artifactMode==='inspection'&&options.diagnostics!==true?'essential':'full',artifactMode:options.artifactMode|| (options.saveUnitResult?'references':'inline'),workpieceUnit:{id:unit.id,imageIds,views:unit.views||null}};};
    if(options.executeSession&&!inputFault){
-    const sourceBefore=JSON.stringify(algorithmContext(project,{imageIds:inputIds}).source);
-    const native=await runNativeWorkpieceSession(project,{nodes,scheme,unit,executionId:entry.id,fingerprint:basis,argsForNode,
-     executeSession:options.executeSession,signal:options.signal,
-     commit:options.saveUnitResult?options.nativeCommit:undefined,
+    const sourceBefore=JSON.stringify(algorithmContext(project,{imageIds:inputIds,inputPreparation:pendingInputs?.token}).source);
+    try{const native=await runNativeWorkpieceSession(project,{nodes,scheme,unit,executionId:entry.id,fingerprint:basis,argsForNode,
+     executeSession:(...args)=>{const result=options.executeSession(...args);inputUnits.start();return result;},signal:options.signal,
+     inputVerification,commit:options.saveUnitResult?options.nativeCommit:undefined,
      productContext:{expectedResolution:clone(expectedResolution),referenceIdentities,regressionCategoryIds:Object.keys(entry.counts.regression.perCategory),retention:artifactRetention,unitIndex:entry.processed,total:entry.total},
-     isCurrent:()=>project.epoch===epoch&&project.workflow.revision===workflowRevision&&schemeFingerprint(project.data.purposeScheme)===basis&&JSON.stringify(algorithmContext(project,{imageIds:inputIds}).source)===sourceBefore,
+     isCurrent:()=>project.epoch===epoch&&project.workflow.revision===workflowRevision&&schemeFingerprint(project.data.purposeScheme)===basis&&JSON.stringify(algorithmContext(project,{imageIds:inputIds,inputPreparation:pendingInputs?.token}).source)===sourceBefore,
      onEvent:event=>{if(event.phase==='node-started')publish(event.phase,event.nodeId);else if(event.phase==='node-completed'){nodeStates.push(event.state);publish(event.phase);}}
     });
     nodeStates.splice(0,nodeStates.length,...native.nodeStates);runs.push(...native.runs);for(const run of runs)runMap.set(run.schemeNodeId,run);
-    nativeSessionTiming=native.timing;nativeDecision=native.decision;nativeCommit=native.commit;publishNativeRuns=native.publish;publish('nodes-completed');
-   }else await scheduleWorkpieceNodes({nodes,graph:scheme.operatorGraph,nodeStates,runMap,runs,inputFault,
+    nativeSessionTiming=native.timing;if(pendingInputs)nativeSessionTiming.inputVerification={elapsedMs:inputVerificationMs,overlapped:true,scope:'browser input verification overlaps native dispatch; not additive'};nativeDecision=native.decision;nativeCommit=native.commit;publishNativeRuns=native.publish;publish('nodes-completed');
+    }catch(error){
+     if(project.epoch!==epoch)throw error;
+     if(pendingInputs&&options.signal?.aborted){nativeInputCancelled=true;nodeStates.splice(0);}
+     else {if(!inputVerificationError)throw error;
+     nodeStates.splice(0);inputFault={phase:'input-read',status:'FAULT',reason:'INPUT_UNAVAILABLE',imageIds:clone(imageIds),error:executionError(inputVerificationError),durationMs:performance.now()-unitStart};}
+    }
+   }
+   if(!options.executeSession||inputFault||nativeInputCancelled)await scheduleWorkpieceNodes({nodes,graph:scheme.operatorGraph,nodeStates,runMap,runs,inputFault,
     cancelled:()=>options.signal?.aborted,onNodeStart:node=>publish('node-started',node.id),recordNodeState,
     isFatalError:error=>error instanceof PipelineEvidenceContractError||project.epoch!==epoch||project.workflow.revision!==workflowRevision||schemeFingerprint(project.data.purposeScheme)!==basis,
     execute:async(node,upstream)=>runAlgorithm(project,argsForNode(node,upstream),request=>execute(request,{signal:options.signal}))
@@ -213,14 +256,15 @@ export async function runDatasetScheme(project,execute,options={}){
    else {entry.units.push(immutableJson(record));latestUnitRunIds=runs.map(r=>r.runId);}
    times.push(record.timing.totalMs);timeSum+=record.timing.totalMs;timeMax=Math.max(timeMax,record.timing.totalMs);entry.processed++;entry.counts.execution[record.execution.status]++;entry.counts.exits[record.finalExit]=(entry.counts.exits[record.finalExit]||0)+1;entry.counts.evidence[record.evidenceReady?'ready':'notReady']++;for(const cat of result.categoryIds)entry.counts.categories[cat]=(entry.counts.categories[cat]||0)+1;
    updateClassificationMetrics(entry.counts.regression,record);
-   publishCompletedWorkpiece(project,entry,record,runs);
+   publishCompletedWorkpiece(project,entry,record,runs,{selectionRevision});
    delete entry.activeUnit;clearWorkpieceExecution(project);emit();if(cancelled||options.signal?.aborted){entry.status='CANCELLED';break;}
-   }finally{releaseInputs();}
+   }finally{pendingInputs?.release();releaseInputs();}
   }
   if(entry.status==='RUNNING')entry.status=entry.counts.execution.FAULT?'COMPLETED_WITH_FAULTS':'COMPLETED';
  }catch(error){entry.status='FAULT';entry.error={type:error?.name||'Error',message:String(error?.message??error)};throw error;}
- finally{delete entry.activeUnit;clearWorkpieceExecution(project);releaseSession();datasetLocks.delete(project);entry.finishedAt=new Date().toISOString();emit();}
- return {compilation,execution:readDatasetExecution(project,entry.id,{offset:Math.max(0,entry.units.length-32),limit:32}),runs:project.data.algorithmRuns.filter(r=>latestUnitRunIds.includes(r.runId)),acceptance:null,scope:'逐件正常分類與執行故障分開；有人工真值才計回歸，未發布。'};
+ finally{delete entry.activeUnit;clearWorkpieceExecution(project);releaseSession();entry.finishedAt=new Date().toISOString();emit();}
+ return {compilation,execution:readDatasetExecution(project,entry.id,{offset:Math.max(0,entry.units.length-32),limit:32}),runs:(project.data.algorithmRuns||[]).filter(r=>latestUnitRunIds.includes(r.runId)),acceptance:null,scope:'逐件正常分類與執行故障分開；有人工真值才計回歸，未發布。'};
+ }finally{inputUnits?.dispose();datasetLocks.delete(project);}
 }
 
 export function readDatasetExecution(project,executionId,{offset=0,limit=32}={}){

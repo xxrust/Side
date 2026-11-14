@@ -42,6 +42,55 @@ class NativeJson(unittest.TestCase):
         expected=(runtime.compact_json_fallback(value)+'\n').encode('utf-8')
         self.assertEqual(runtime.compact_json_bytes(value),expected)
 
+    def test_scalar_leaf_dictionary_snapshots_preserve_types_order_and_alias_isolation(self):
+        leaf = {"text":"检测", "none":None, "bool":True, "integer":2**100, "float":1.5, "negativeZero":-0.0}
+        for normalize, fallback in [(runtime.NATIVE_JSON.normalize,runtime.json_value_python),
+                                    (runtime.NATIVE_JSON.normalize_trace,runtime.trace_value_python)]:
+            result=normalize([leaf,leaf],fallback)
+            self.assertEqual(result,[leaf,leaf]);self.assertIsNot(result[0],leaf);self.assertIsNot(result[0],result[1])
+            self.assertEqual(list(result[0]),list(leaf));self.assertEqual(math.copysign(1,result[0]['negativeZero']),-1)
+            result[0]['integer']=3;self.assertEqual(result[1]['integer'],2**100)
+            for sequence in [list(leaf.values()),tuple(leaf.values())]:
+                copies=normalize([sequence,sequence],fallback)
+                self.assertEqual(copies,[list(sequence),list(sequence)])
+                self.assertIsNot(copies[0],sequence);self.assertIsNot(copies[0],copies[1])
+                copies[0][0]='changed';self.assertEqual(copies[1][0],'检测')
+            unusual={1:'first','1':'last','nonfinite':float('nan'),'nested':{'x':1}}
+            self.assertEqual(normalize(unusual,fallback),fallback(unusual))
+
+    def test_per_run_float_cache_keeps_exact_bytes_after_mutation_failure_and_reentry(self):
+        native=runtime.NATIVE_JSON;cache=native.EncodingCache()
+        rng=random.Random(20261113)
+        values=[struct.unpack('d',rng.getrandbits(64).to_bytes(8,'little'))[0] for _ in range(20000)]
+        for value in [values,list(reversed(values)),[0.0,-0.0,1e-7,1e20],{'mutable':[1.5,2.5]}]:
+            expected=(runtime.compact_json_fallback(value)+'\n').encode()
+            self.assertEqual(native.encode(value,runtime.compact_json_fallback,cache),expected)
+        marker=object()
+        def nested(value):
+            self.assertIs(value,marker)
+            self.assertEqual(native.encode([-0.0,7.5],runtime.compact_json_fallback,cache),b'[-0.0,7.5]\n')
+            return '{"ok":true}'
+        self.assertEqual(native.encode([1.5,marker,1.5],nested,cache),b'[1.5,{"ok":true},1.5]\n')
+        def fail(value):raise ValueError('expected fallback failure')
+        with self.assertRaisesRegex(ValueError,'expected fallback failure'):native.encode([1.5,marker],fail,cache)
+        data={'mutable':[1.5,2.5]};before=native.encode(data,runtime.compact_json_fallback,cache);data['mutable'][0]=9.5
+        self.assertNotEqual(native.encode(data,runtime.compact_json_fallback,cache),before)
+        self.assertEqual(native.encode(data,runtime.compact_json_fallback,cache),(runtime.compact_json_fallback(data)+'\n').encode())
+
+    def test_fixed_decimal_fast_path_matches_python_at_boundaries_and_dense_mantissas(self):
+        rng=random.Random(20261114)
+        values=[0.0,-0.0]
+        for exponent in range(-14,54):
+            for _ in range(1000):
+                bits=((exponent+1023)<<52)|rng.getrandbits(52)
+                value=struct.unpack('d',struct.pack('Q',bits))[0]
+                values.extend([value,-value])
+        for exponent in range(-4,17):
+            value=10.0**exponent
+            values.extend([value,-value,math.nextafter(value,0.0),math.nextafter(value,math.inf)])
+        self.equal_bytes(values)
+        self.equal_bytes(list(reversed(values)))
+
     def test_random_float_bits_and_extremes(self):
         rng=random.Random(20261112)
         values=[struct.unpack('d',rng.getrandbits(64).to_bytes(8,'little'))[0] for _ in range(20000)]
@@ -57,6 +106,14 @@ class NativeJson(unittest.TestCase):
         deep=1
         for _ in range(80):deep=[deep]
         self.equal_bytes(deep)
+
+    def test_integer_encoding_signed_unsigned_and_unbounded_boundaries(self):
+        values = [sign * (2**bits + delta)
+                  for bits in (0, 7, 31, 32, 53, 63, 64, 65, 127, 1024)
+                  for delta in (-1, 0, 1) for sign in (-1, 1)]
+        self.equal_bytes(values)
+        self.assertEqual(runtime.NATIVE_JSON.encode_report(values, runtime.report_json_fallback),
+                         runtime.report_json_fallback(values).encode('utf-8'))
 
     def test_numpy_and_custom_normalization(self):
         import numpy as np
